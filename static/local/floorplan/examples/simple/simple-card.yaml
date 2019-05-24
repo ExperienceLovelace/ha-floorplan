@@ -1,0 +1,57 @@
+        config:
+          image: /local/floorplan/examples/simple/simple.svg
+          log_level: info
+          rules:
+            - action:
+                service: homeassistant.toggle
+              element: light.double_garage
+              entity: light.double_garage
+              image_template: '/local/floorplan/examples/simple/light_${entity.state}.svg'
+              more_info: false
+            - action:
+                service: homeassistant.toggle
+              class_template: 'background-${entity.state}'
+              element: light.double_garage.background
+              entity: light.double_garage
+            - action:
+                service: homeassistant.toggle
+              element: light.double_garage.text
+              entity: light.double_garage
+              text_template: '${entity.state}'
+            - action:
+                service: homeassistant.toggle
+              entity: switch.living_area_fan
+              more_info: false
+            - entity: switch.living_area_fan
+              more_info: false
+              propagate: false
+              states:
+                - state: 'on'
+                  class:
+                    - spinning
+                    - some_other_class
+            - action:
+                service: homeassistant.toggle
+              class_template: 'background-${entity.state}'
+              element: switch.living_area_fan.background
+              entity: switch.living_area_fan
+            - action:
+                service: homeassistant.toggle
+              element: switch.living_area_fan.text
+              entity: switch.living_area_fan
+              text_template: '${entity.state}'
+            - entity: camera.new_york_broadway
+              image_refresh_interval: 5
+              image_template: '${entity.attributes.entity_picture}'
+            - entities:
+                - binary_sensor.main_bedroom
+                - binary_sensor.living_area
+                - binary_sensor.double_garage
+              states:
+                - state: 'off'
+                  class: binary-sensor-off
+                - state: 'on'
+                  class: binary-sensor-on
+          stylesheet: /local/floorplan/examples/simple/simple.css
+        title: Simple Floorplan
+        type: 'custom:floorplan-card'

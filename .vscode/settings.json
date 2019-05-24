@@ -1,0 +1,6 @@
+{
+  "search.exclude": {
+    "**/.cache": true,
+    "**/dist": true
+  }
+}

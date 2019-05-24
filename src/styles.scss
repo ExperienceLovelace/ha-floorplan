@@ -1,0 +1,13 @@
+$primary-color: white;
+$bg: black;
+$font-family: Arial, Helvetica, sans-serif;
+
+html * {
+  font-family: $font-family;
+}
+
+body {
+  color: $primary-color;
+  background-color: $bg;
+  font-family: Arial, Helvetica, sans-serif;
+}

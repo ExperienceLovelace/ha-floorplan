@@ -1,0 +1,34 @@
+{
+  "name": "ha-floorplan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "shx rm -rf dist/*",
+    "start": "npm run clean && parcel src/index.html",
+    "build-demo": "npm run clean && parcel build src/index.html --public-url ./",
+    "build-prod": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --out-file floorplan",
+    "build-test": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --out-file floorplan --no-minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/debounce": "^1.2.0",
+    "@types/js-yaml": "^3.12.1",
+    "@types/node": "^12.0.2",
+    "babel-core": "^6.26.3",
+    "cross-env": "^5.2.0",
+    "parcel-bundler": "^1.12.3",
+    "parcel-plugin-wrapper": "^0.2.2",
+    "shx": "^0.3.2",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "debounce": "^1.2.0",
+    "js-yaml": "^3.13.1"
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ]
+}

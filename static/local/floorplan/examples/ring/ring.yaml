@@ -1,0 +1,17 @@
+image: /local/floorplan/examples/ring/ring.svg
+stylesheet: /local/floorplan/examples/ring/ring.css
+
+rules:
+  - entity: sensor.ring_salon_battery
+    text_template: '${entity.state ? entity.state + "%" : "unknown"}'
+
+  - entities:
+      - binary_sensor.ring_salon_motion
+    states:
+      - state: 'on'
+        class: 'ring-motion'
+
+  - entity: binary_sensor.ring_salon_ding
+    states:
+      - state: 'on'
+        class: 'ring-ding'

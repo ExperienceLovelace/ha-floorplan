@@ -1,0 +1,76 @@
+          log_level: error
+          image: /local/floorplan/examples/ian/home.svg
+          stylesheet: /local/floorplan/examples/ian/home.css
+          rules:
+            - entities:
+                - group.lounge_lamps
+                - switch.dining_room_lamp
+              states:
+                - state: off
+                  class: invisible
+                - state: on
+                  class: visible
+              action:
+                service: light.toggle
+            - entities:
+                - entity: light.double_garage
+                  element: sensor.heating_relay_state
+              states:
+                - state: off
+                  class: invisible
+                - state: on
+                  class: boiler-on
+            - entities:
+                - entity: switch.living_area_fan
+                  element: binary_sensor.nas
+                - binary_sensor.xbox_one
+                - binary_sensor.tp_link_wifi_plug
+                - binary_sensor.wiser_heat_hub
+                - binary_sensor.bollard_light
+                - binary_sensor.dining_room_lamp
+                - binary_sensor.lamp
+                - binary_sensor.lounge_floor_lamp
+                - binary_sensor.outside_camera_front
+              states:
+                - state: off
+                  class: blinking
+                - state: on
+                  class: device-on
+            - entities:
+                - sensor.dining_room_temperature
+                - sensor.lounge_room_temperature
+                - sensor.met_office_temperature
+                - sensor.wc_temperature
+                - sensor.dining_room_setpoint
+                - sensor.lounge_room_setpoint
+                - sensor.wc_setpoint
+                - input_number.dining_boost_timer
+                - input_number.lounge_boost_timer
+                - input_number.wc_boost_timer
+                - sensor.dining_state
+                - sensor.wc_state
+                - sensor.lounge_state
+                - switch.dining_room_lamp
+                - sensor.time
+                - sensor.date
+                - light.outside_light
+                - camera.4k_camera
+              states:
+                - state: off
+                  class:
+                    - device-off
+                    - layer-hidden
+                    - light-off
+                    - image-off
+                    - invisible
+                    - blinking
+                    - switch-off
+                - state: on
+                  class:
+                    - device-on
+                    - layer-visible
+                    - light-on
+                    - image-on
+                    - visible
+                    - boiler-on
+                    - switch-on

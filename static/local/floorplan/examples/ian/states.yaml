@@ -1,0 +1,48 @@
+simulations:
+  - enabled: true
+    entities:
+      - binary_sensor.front_hallway
+      - binary_sensor.salon
+      - binary_sensor.back_hallway
+      - binary_sensor.kitchen
+      - binary_sensor.master_bedroom
+      - binary_sensor.theatre_room
+      - binary_sensor.entry_kiosk_motion
+      - binary_sensor.bedroom_kiosk_motion
+      - binary_sensor.garage
+      - binary_sensor.garage_door
+      - binary_sensor.laundry_door    
+      - binary_sensor.double_garage
+      - binary_sensor.living_area
+    states:
+      - state: on
+        duration: 2
+      - state: off
+        duration: 5
+
+  - enabled: false
+    entities:
+      - light.double_garage
+    states:
+      - state: on
+        duration: 3
+      - state: off
+        duration: 3
+
+  - enabled: false
+    entities:
+      - switch.living_area_fan
+    states:
+      - state: on
+        duration: 10
+      - state: off
+        duration: 10
+
+  - enabled: false
+    entities:
+      - media_player.alfresco
+    states:
+      - state: on
+        duration: 10
+      - state: off
+        duration: 10

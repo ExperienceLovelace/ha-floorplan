@@ -1,0 +1,68 @@
+/* SVG size */
+
+#floorplan  {
+  padding: 10px;
+}
+
+/* SVG elements */
+
+svg * {
+  vector-effect: non-scaling-stroke !important;
+}
+
+svg tspan {
+  fill: var(--primary-text-color);
+}
+
+/* Animation */
+
+.spinning {
+  animation-name: spin;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hover over */
+
+.floorplan-item:hover {
+  stroke: #03A9F4 !important;
+  stroke-width: 1px !important;
+  stroke-opacity: 1 !important;
+}
+
+/* Binary sensors */
+
+.binary-sensor-on {
+  fill: #F9D27C !important;
+}
+
+.binary-sensor-off {
+  fill: #7CB1F9 !important;
+  transition: fill 5s ease;
+}
+
+/* Buttons */
+
+.background-on {
+  fill: #1ABA92 !important;
+}
+
+.background-off {
+  fill: #d32f2f !important;
+}
+
+.background-on tspan {
+  fill: white !important;
+}
