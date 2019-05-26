@@ -40,9 +40,12 @@ export namespace Utils {
   }
 
   export async function fetchText(resourceUrl: string, useCache: boolean = true): Promise<string> {
-    if (process.env.NODE_ENV !== 'production') {
+    /*
+    resourceUrl = (process.env.NODE_ENV === 'production') ?
+      resourceUrl.replace(/^\/local\/floorplan/g, "/static/local/floorplan") :
       resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
-    }
+    */
+    resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
 
     resourceUrl = useCache ? resourceUrl : cacheBuster(resourceUrl);
 
@@ -66,9 +69,12 @@ export namespace Utils {
   }
 
   export async function fetchImage(resourceUrl: string, useCache: boolean = true): Promise<string> {
-    if (process.env.NODE_ENV !== 'production') {
+    /*
+    resourceUrl = (process.env.NODE_ENV === 'production') ?
+      resourceUrl.replace(/^\/local\/floorplan/g, "/static/local/floorplan") :
       resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
-    }
+    */
+    resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
 
     resourceUrl = useCache ? resourceUrl : cacheBuster(resourceUrl);
 

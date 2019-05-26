@@ -51,7 +51,11 @@ export class FloorplanProjectDemo {
   }
 
   async init() {
+    console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+    console.log("process.env.EXAMPLES_DIR", process.env.EXAMPLES_DIR);
+    
     const configUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.configFile}`;
+    console.log("configUrl", configUrl);
     let configYamlText = await Utils.fetchText(configUrl);
     const config = Utils.parseYaml(configYamlText) as FloorplanConfig.FloorplanConfig | Lovelace.CardConfig;
 

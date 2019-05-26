@@ -6,10 +6,11 @@
   "scripts": {
     "clean": "shx rm -rf dist/*",
     "start": "npm run clean && parcel src/index.html",
-    "build-docs": "npm run clean && parcel build src/index.html --public-url aaaaaaaaaaaa  --no-content-hash",
+    "build-docs": "npm run clean && parcel build src/index.html --public-url ./",
     "build-demo": "npm run clean && parcel build src/index.html --public-url ./",
     "build-prod": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --out-file floorplan",
-    "build-test": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --out-file floorplan --no-minify"
+    "build-test": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --out-file floorplan --no-minify",
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +21,9 @@
     "@types/node": "^12.0.2",
     "babel-core": "^6.26.3",
     "cross-env": "^5.2.0",
+    "gh-pages": "^2.0.1",
     "parcel-bundler": "^1.12.3",
+    "parcel-plugin-static-files-copy": "^2.1.1",
     "parcel-plugin-wrapper": "^0.2.2",
     "shx": "^0.3.2",
     "typescript": "^3.4.5"

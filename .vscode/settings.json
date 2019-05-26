@@ -1,6 +1,7 @@
 {
   "search.exclude": {
     "**/.cache": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/docs": true
   }
 }
