@@ -1,6 +1,11 @@
-# empty-project
+# "WORK IN PROGRESS"
+You're welcome to test it, but we suggest you to use the [normal version](https://github.com/ExperienceLovelace/lovelace-floorplan) for daily usage.
 
-Empty project.
+<hr>
+
+# lovelace-floorplan-ts
+It's Lovelace Floorplan, but with a must better codebase.
+
 
 ## Building and running on localhost
 
