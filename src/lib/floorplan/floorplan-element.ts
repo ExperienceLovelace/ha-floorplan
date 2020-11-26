@@ -1,13 +1,13 @@
-import { Hass as HassObject } from '../hass/hass';
+import { HassObject } from '../hass/hass';
 import { Floorplan } from './floorplan';
-import { Floorplan as FloorplanOptions } from './floorplan-options';
-import { Floorplan as FloorplanConfig } from './floorplan-config';
-import { Lovelace } from './card-config';
+import { FloorplanOptions } from './floorplan-options';
+import { FloorplanConfig } from './floorplan-config';
+import { CardConfig } from './card-config';
 
 export class FloorplanElement extends HTMLElement {
   isFloorplanLoading = false;
   isFloorplanLoaded = false;
-  _config?: FloorplanConfig.FloorplanConfig | Lovelace.CardConfig;
+  _config?: FloorplanConfig | CardConfig;
   floorplanElement?: HTMLElement;
   floorplan?: Floorplan;
   log?: HTMLElement;
@@ -30,19 +30,19 @@ export class FloorplanElement extends HTMLElement {
 
     return {
       config: {
-        set(config: FloorplanConfig.FloorplanConfig | Lovelace.CardConfig) {
+        set(config: FloorplanConfig | CardConfig) {
           that.setConfig(config);
         }
       },
       hass: {
-        set(hass: HassObject.HassObject) {
+        set(hass: HassObject) {
           that.setHass(hass);
         }
       },
     };
   }
 
-  setConfig(config: FloorplanConfig.FloorplanConfig | Lovelace.CardConfig) {
+  setConfig(config: FloorplanConfig | CardConfig) {
     this._config = config;
 
     this.initDom();
@@ -50,7 +50,7 @@ export class FloorplanElement extends HTMLElement {
     this.setIsLoading(true);
   }
 
-  setHass(hass: HassObject.HassObject) {
+  setHass(hass: HassObject) {
     if (!this._config || !this.isConnected) return;
 
     this.loadFloorplanOnce(hass, this._config);
@@ -58,7 +58,7 @@ export class FloorplanElement extends HTMLElement {
     this.floorplan!.hassChanged(hass);
   }
 
-  loadFloorplanOnce(hass: any, config: FloorplanConfig.FloorplanConfig | Lovelace.CardConfig) {
+  loadFloorplanOnce(hass: any, config: FloorplanConfig | CardConfig) {
     if (this.isFloorplanLoading || this.isFloorplanLoaded) return;
 
     this.isFloorplanLoading = true;
@@ -70,7 +70,7 @@ export class FloorplanElement extends HTMLElement {
       config: (config && (config as any).config) || config,
       openMoreInfo: this.openMoreInfo.bind(this),
       setIsLoading: this.setIsLoading.bind(this),
-    } as FloorplanOptions.FloorplanOptions;
+    } as FloorplanOptions;
 
     this.floorplan = new Floorplan(options);
 

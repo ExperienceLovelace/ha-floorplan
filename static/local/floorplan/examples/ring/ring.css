@@ -26,6 +26,7 @@ svg * {
 
 .ring-motion {
   fill: #F9D27C !important;
+  fill-opacity: 1 !important;
 }
 
 .ring-ding {

@@ -1,8 +1,8 @@
 import { FloorplanElement } from './lib/floorplan/floorplan-element';
 import { FloorplanCard } from './lib/floorplan/floorplan-exports';
-import { Floorplan as FloorplanConfig } from './lib/floorplan/floorplan-config';
-import { Lovelace } from './lib/floorplan/card-config';
-import { Simulator } from './lib/hass/simulator';
+import { FloorplanConfig } from './lib/floorplan/floorplan-config';
+import { CardConfig } from './lib/floorplan/card-config';
+import { Simulator, SimulatorConfig } from './lib/hass/simulator';
 import { Utils } from './lib/utils';
 
 window.onload = function () {
@@ -44,7 +44,7 @@ window.onload = function () {
 }
 
 export class FloorplanProjectDemo {
-  simulator?: Simulator.Simulator;
+  simulator?: Simulator;
 
   constructor(private floorplan: FloorplanElement, private project: FloorplanProject) {
     this.init();
@@ -57,15 +57,15 @@ export class FloorplanProjectDemo {
     const configUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.configFile}`;
     console.log("configUrl", configUrl);
     let configYamlText = await Utils.fetchText(configUrl);
-    const config = Utils.parseYaml(configYamlText) as FloorplanConfig.FloorplanConfig | Lovelace.CardConfig;
+    const config = Utils.parseYaml(configYamlText) as FloorplanConfig | CardConfig;
 
     this.floorplan.setConfig(config);
 
     if (this.project.statesFile) {
       const simulatorUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.statesFile}`;
       let simulatorYamlText = await Utils.fetchText(simulatorUrl);
-      const simulatorConfig = Utils.parseYaml(simulatorYamlText) as Simulator.SimulatorConfig;
-      this.simulator = new Simulator.Simulator(simulatorConfig, this.floorplan.setHass.bind(this.floorplan));
+      const simulatorConfig = Utils.parseYaml(simulatorYamlText) as SimulatorConfig;
+      this.simulator = new Simulator(simulatorConfig, this.floorplan.setHass.bind(this.floorplan));
     }
   }
 }

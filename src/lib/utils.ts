@@ -1,24 +1,24 @@
 import * as yaml from 'js-yaml';
 
-export namespace Utils {
+export class Utils {
 
   /***************************************************************************************************************************/
   /* HTML DOM functions
   /***************************************************************************************************************************/
 
-  export function hasClass(element: Element, className: string): boolean {
+  static hasClass(element: Element, className: string): boolean {
     return (element.classList) ?
       element.classList.contains(className) :
       new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
   }
 
-  export function removeClass(element: Element, className: string) {
+  static removeClass(element: Element, className: string) {
     (element.classList) ?
       element.classList.remove(className) :
       element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
   }
 
-  export function addClass(element: Element, className: string) {
+  static addClass(element: Element, className: string) {
     (element.classList) ?
       element.classList.add(className) :
       element.className += ' ' + className;
@@ -28,18 +28,18 @@ export namespace Utils {
   /* General helper functions
   /***************************************************************************************************************************/
 
-  export function formatDate(date: Date): string {
+  static formatDate(date: Date): string {
     if (!date) return '';
 
     return (typeof date === 'string') ?
       new Date(date).toLocaleString() : date.toLocaleString();
   }
 
-  export function parseYaml(yamlText: string): any {
+  static parseYaml(yamlText: string): any {
     return yaml.safeLoad(yamlText);
   }
 
-  export async function fetchText(resourceUrl: string, useCache: boolean = true): Promise<string> {
+  static async fetchText(resourceUrl: string, useCache: boolean = true): Promise<string> {
     /*
     resourceUrl = (process.env.NODE_ENV === 'production') ?
       resourceUrl.replace(/^\/local\/floorplan/g, "/static/local/floorplan") :
@@ -47,7 +47,7 @@ export namespace Utils {
     */
     resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
 
-    resourceUrl = useCache ? resourceUrl : cacheBuster(resourceUrl);
+    resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
       cache: useCache ? 'reload' : 'no-cache',
@@ -68,7 +68,7 @@ export namespace Utils {
     }
   }
 
-  export async function fetchImage(resourceUrl: string, useCache: boolean = true): Promise<string> {
+  static async fetchImage(resourceUrl: string, useCache: boolean = true): Promise<string> {
     /*
     resourceUrl = (process.env.NODE_ENV === 'production') ?
       resourceUrl.replace(/^\/local\/floorplan/g, "/static/local/floorplan") :
@@ -76,7 +76,7 @@ export namespace Utils {
     */
     resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
 
-    resourceUrl = useCache ? resourceUrl : cacheBuster(resourceUrl);
+    resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
       cache: useCache ? 'reload' : 'no-cache',
@@ -87,7 +87,7 @@ export namespace Utils {
       const response = await fetch(request);
       if (response.ok) {
         const result = await response.arrayBuffer();
-        return `data:image/jpeg;base64,${arrayBufferToBase64(result)}`; //`
+        return `data:image/jpeg;base64,${Utils.arrayBufferToBase64(result)}`; //`
       }
       else {
         throw new Error(`Error fetching resource`); //`
@@ -102,11 +102,11 @@ export namespace Utils {
   /* Utility functions
   /***************************************************************************************************************************/
 
-  export function getArray(list: any): Array<any> {
+  static getArray(list: any): Array<any> {
     return Array.isArray(list) ? list : Object.keys(list).map(key => list[key]);
   }
 
-  export function arrayBufferToBase64(buffer: ArrayBufferLike): string {
+  static arrayBufferToBase64(buffer: ArrayBufferLike): string {
     let binary = '';
     const bytes = [].slice.call(new Uint8Array(buffer));
 
@@ -122,11 +122,11 @@ export namespace Utils {
     return base64;
   }
 
-  export function cacheBuster(url: string): string {
+  static cacheBuster(url: string): string {
     return `${url}${(url.indexOf('?') >= 0) ? '&' : '?'}_=${new Date().getTime()}`; //`
   }
 
-  export function equal(a: any, b: any): boolean {
+  static equal(a: any, b: any): boolean {
     if (a === b) return true;
 
     let arrA = Array.isArray(a)
@@ -136,7 +136,7 @@ export namespace Utils {
     if (arrA && arrB) {
       if (a.length != b.length) return false;
       for (i = 0; i < a.length; i++)
-        if (!equal(a[i], b[i])) return false;
+        if (!Utils.equal(a[i], b[i])) return false;
       return true;
     }
 
@@ -160,12 +160,11 @@ export namespace Utils {
         if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
 
       for (i = 0; i < keys.length; i++)
-        if (!equal(a[keys[i]], b[keys[i]])) return false;
+        if (!Utils.equal(a[keys[i]], b[keys[i]])) return false;
 
       return true;
     }
 
     return false;
   }
-
 }

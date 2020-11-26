@@ -1,5 +1,5 @@
 simulations:
-  - name: Simulate some Some binary sensors
+  - name: Simulate some binary sensors
     enabled: true
     entities:
       - binary_sensor.double_garage

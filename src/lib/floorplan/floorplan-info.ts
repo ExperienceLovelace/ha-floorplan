@@ -1,46 +1,42 @@
-import { Hass } from '../hass/hass';
-import { Floorplan as Config } from './floorplan-config';
+import { HassEntityState } from '../hass/hass';
+import { FloorplanPageConfig, FloorplanRuleConfig } from './floorplan-config';
 
-export namespace FloorplanInfo {
+export class FloorplanPageInfo {
+  index?: number;
+  config?: FloorplanPageConfig;
+  svg?: SVGGraphicsElement;
+  isMaster: boolean = false;
+  isDefault: boolean = false;
+}
 
-  export class PageInfo {
-    index?: number;
-    config?: Config.PageConfig;
-    svg?: SVGGraphicsElement;
-    isMaster: boolean = false;
-    isDefault: boolean = false;
+export class FloorplanElementInfo {
+  ruleInfos = new Array<FloorplanRuleInfo>();
+}
+
+export class FloorplanSvgElementInfo {
+  constructor(
+    public entityId: string,
+    public svg: SVGGraphicsElement | undefined,
+    public svgElement: SVGGraphicsElement,
+    public originalSvgElement: SVGGraphicsElement,
+    public originalClasses: Array<string>,
+    public originalBBox: DOMRect,
+    public originalClientRect: ClientRect | DOMRect) {
   }
+}
 
-  export class ElementInfo {
-    ruleInfos = new Array<RuleInfo>();
+export class FloorplanRuleInfo {
+  svgElementInfos = new Map<string, FloorplanSvgElementInfo>();
+  imageUrl?: string;
+  imageLoader: any;
+  propagate: boolean = false;
+
+  constructor(public rule: FloorplanRuleConfig) {
   }
+}
 
-  export class SvgElementInfo {
-    constructor(
-      public entityId: string,
-      public svg: SVGGraphicsElement | undefined,
-      public svgElement: SVGGraphicsElement,
-      public originalSvgElement: SVGGraphicsElement,
-      public originalClasses: Array<string>,
-      public originalBBox: DOMRect,
-      public originalClientRect: ClientRect | DOMRect) {
-    }
-  }
-
-  export class RuleInfo {
-    svgElementInfos = new Map<string, SvgElementInfo>();
-    imageUrl?: string;
-    imageLoader: any;
-    propagate: boolean = false;
-
-    constructor(public rule: Config.RuleConfig) {
-      this.rule = rule;
-    }
-  }
-
-  export class EntityInfo {
-    lastState?: Hass.HassEntityState;
-    entityId?: string;
-    ruleInfos = new Array<RuleInfo>();
-  }
+export class FloorplanEntityInfo {
+  lastState?: HassEntityState;
+  entityId?: string;
+  ruleInfos = new Array<FloorplanRuleInfo>();
 }
