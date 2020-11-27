@@ -67,7 +67,7 @@ export class FloorplanElement extends HTMLElement {
       root: this.shadowRoot!,
       element: this.floorplanElement,
       hass: hass,
-      config: (config && (config as any).config) || config,
+      config: ((config as CardConfig)?.config) || config,
       openMoreInfo: this.openMoreInfo.bind(this),
       setIsLoading: this.setIsLoading.bind(this),
     } as FloorplanOptions;
@@ -87,7 +87,7 @@ export class FloorplanElement extends HTMLElement {
     style.textContent = this.getStyle();
     root.appendChild(style);
 
-    const container = this.createAppendContainer();
+    const container = this.createAndAppendContainer();
 
     const spinner = document.createElement('paper-spinner-lite');
     container.appendChild(spinner);
@@ -117,7 +117,7 @@ export class FloorplanElement extends HTMLElement {
     this.floorplanElement = floorplan;
   }
 
-  createAppendContainer(): HTMLElement {
+  createAndAppendContainer(): HTMLElement {
     const container = document.createElement('div');
     container.id = 'container';
     this.shadowRoot!.appendChild(container);

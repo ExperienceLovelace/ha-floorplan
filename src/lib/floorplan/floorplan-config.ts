@@ -1,3 +1,4 @@
+
 export class FloorplanConfigBase {
   image?: FloorplanImageConfig | string;
   stylesheet: string = "";

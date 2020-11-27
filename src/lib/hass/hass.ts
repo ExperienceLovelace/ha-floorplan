@@ -1,6 +1,8 @@
 export class HassObject {
-  callService = (domain: string, service: string, data: any) => { };
   states?: { [index: string]: HassEntityState } = {};
+
+  constructor(public callService: (domain: string, service: string, data: any) => void) {
+  }
 }
 
 export class HassEntityStates {

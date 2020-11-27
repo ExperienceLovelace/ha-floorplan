@@ -1,7 +1,7 @@
 import { HassObject, HassEntityState } from '../hass/hass';
 import { FloorplanOptions } from './floorplan-options';
 import { FloorplanConfig, FloorplanConfigBase, FloorplanLastMotionConfig, FloorplanPageConfig } from './floorplan-config';
-import { FloorplanRuleConfig, FloorplanVariableConfig,FloorplanActionConfig, FloorplanRuleStateConfig } from './floorplan-config';
+import { FloorplanRuleConfig, FloorplanVariableConfig, FloorplanActionConfig, FloorplanRuleStateConfig } from './floorplan-config';
 import { FloorplanRuleEntityElementConfig } from './floorplan-config';
 import { FloorplanPageInfo, FloorplanRuleInfo, FloorplanSvgElementInfo } from './floorplan-info';
 import { FloorplanElementInfo, FloorplanEntityInfo } from './floorplan-info';
@@ -23,7 +23,7 @@ export class Floorplan {
   fullyKiosk?: FullyKiosk;
   logger?: Logger;
 
-  handleEntitiesDebounced = debounce(this.handleEntities, 100, true);
+  handleEntitiesDebounced = debounce(this.handleEntities.bind(this), 100, true);
 
   isLoading = false;
   isLoaded = false;
@@ -54,8 +54,8 @@ export class Floorplan {
 
       const logElement = (this.options.root as Element)!.querySelector('#log') as HTMLElement;
       this.logger = new Logger(logElement, config.log_level, config.debug_level);
-  
-      this.logInfo('VERSION', `Floorplan v${this.version}`) //`;
+
+      this.logInfo('VERSION', `Floorplan v${this.version}`);
 
       if (!this.validateConfig(config)) {
         this.options.setIsLoading(false);
@@ -151,7 +151,7 @@ export class Floorplan {
       script.src = useCache ? scriptUrl : Utils.cacheBuster(scriptUrl);
       script.onload = () => resolve();
       script.onerror = (err) => {
-        reject(new URIError(`${(err as any).target.src}`)); //`
+        reject(new URIError(`${(err as any).target.src}`));
       };
 
       this.options.root!.appendChild(script);
@@ -207,7 +207,7 @@ export class Floorplan {
       imageUrl = config.image;
     }
     else {
-      if (config.image && config.image.sizes) {
+      if (config.image?.sizes) {
         config.image.sizes.sort((a, b) => b.min_width - a.min_width); // sort descending
         for (let pageSize of config.image.sizes) {
           if (screen.width >= pageSize.min_width) {
@@ -240,10 +240,10 @@ export class Floorplan {
     const stylesheet = await Utils.fetchText(stylesheetUrl);
     const link = document.createElement('style');
     link.type = 'text/css';
-    (link as any).innerHTML = stylesheet;
+    link.innerHTML = stylesheet;
     this.options.root!.appendChild(link);
 
-    const cssRules = Utils.getArray((link.sheet as any).cssRules);
+    const cssRules = Utils.getArray(link.sheet?.cssRules);
     this.cssRules = this.cssRules.concat(cssRules);
   }
 
@@ -280,7 +280,7 @@ export class Floorplan {
         const height = Number.parseFloat(svg.getAttribute('height')!);
         const width = Number.parseFloat(svg.getAttribute('width')!);
         if (!svg.getAttribute('viewBox')) {
-          svg.setAttribute('viewBox', `0 0 ${width} ${height}`); //`
+          svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
         }
 
         svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
@@ -323,7 +323,7 @@ export class Floorplan {
 
   async loadBitmapImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, rule: FloorplanRuleConfig): Promise<SVGGraphicsElement> {
     const imageData = await Utils.fetchImage(imageUrl);
-    this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`); //`
+    this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     let svgElement = svgElementInfo.svgElement!; // assume the target element already exists
 
@@ -351,7 +351,7 @@ export class Floorplan {
 
   async loadSvgImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, rule: FloorplanRuleConfig): Promise<SVGGraphicsElement> {
     const svgText = await Utils.fetchText(imageUrl, true);
-    this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`); //`
+    this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
@@ -360,7 +360,7 @@ export class Floorplan {
     const height = Number.parseFloat(svg.getAttribute('height')!);
     const width = Number.parseFloat(svg.getAttribute('width')!);
     if (!svg.getAttribute('viewBox')) {
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`); //`
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     }
 
     svg.id = svgElementInfo.svgElement!.id;
@@ -487,7 +487,7 @@ export class Floorplan {
     let actions = new Array<FloorplanActionConfig>();
 
     const startup = this.options.config!.startup;
-    if (startup && startup.action) {
+    if (startup?.action) {
       actions = actions.concat(Array.isArray(startup.action) ? startup.action : [startup.action]);
     }
 
@@ -496,7 +496,7 @@ export class Floorplan {
         const pageInfo = this.pageInfos.get(key);
 
         const startup = pageInfo!.config && pageInfo!.config.startup;
-        if (startup && startup.action) {
+        if (startup?.action) {
           actions = actions.concat(Array.isArray(startup.action) ? startup.action : [startup.action]);
         }
       }
@@ -534,7 +534,7 @@ export class Floorplan {
 
   initLastMotion(config: FloorplanConfigBase, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
     // Add the last motion entity if required
-    if (config.last_motion && config.last_motion.entity && config.last_motion.class) {
+    if (config.last_motion?.entity && config.last_motion.class) {
       this.lastMotionConfig = config.last_motion;
 
       const entityInfo = { entityId: config.last_motion.entity, ruleInfos: [], lastState: undefined };
@@ -579,7 +579,7 @@ export class Floorplan {
 
       const svgElement = svgElements.find(svgElement => svgElement.id === elementId);
       if (!svgElement) {
-        this.logWarning('CONFIG', `Cannot find element '${elementId}' in SVG file`); //`
+        this.logWarning('CONFIG', `Cannot find element '${elementId}' in SVG file`);
         continue;
       }
 
@@ -631,7 +631,7 @@ export class Floorplan {
         }
       }
       else {
-        this.logWarning('CONFIG', `Cannot find '${entityId}' in Home Assistant groups`); //`
+        this.logWarning('CONFIG', `Cannot find '${entityId}' in Home Assistant groups`);
       }
     }
 
@@ -664,7 +664,7 @@ export class Floorplan {
       targetEntities.push({ entityId: entiyId, elementId: elementId });
     }
     else {
-      this.logWarning('CONFIG', `Cannot find '${entiyId}' in Home Assistant entities`); //`
+      this.logWarning('CONFIG', `Cannot find '${entiyId}' in Home Assistant entities`);
     }
   }
 
@@ -731,7 +731,7 @@ export class Floorplan {
         }
       }
       else {
-        this.logWarning('CONFIG', `Cannot find '${elementId}' in SVG file`); //`
+        this.logWarning('CONFIG', `Cannot find '${elementId}' in SVG file`);
       }
     }
   }
@@ -801,12 +801,12 @@ export class Floorplan {
       if (Utils.hasClass(svgElement, 'ha-leave-me-alone')) return;
 
       if (!Utils.hasClass(svgElement, className)) {
-        this.logDebug('CLASS', `${entityId} (adding class: ${className})`); //`
+        this.logDebug('CLASS', `${entityId} (adding class: ${className})`);
         Utils.addClass(svgElement, className);
 
         if (svgElement.nodeName === 'text') {
           /*
-          svgElement.parentElement.querySelectorAll(`[id="${entityId}.background"]`).forEach((rectElement) => { //`
+          svgElement.parentElement.querySelectorAll(`[id="${entityId}.background"]`).forEach((rectElement) => {
             if (!this.hasClass(rectElement, className + '-background')) {
               this.addClass(rectElement, className + '-background');
             }
@@ -832,12 +832,12 @@ export class Floorplan {
 
     for (let className of classes) {
       if (Utils.hasClass(svgElement, className)) {
-        this.logDebug('CLASS', `${entityId} (removing class: ${className})`); //`
+        this.logDebug('CLASS', `${entityId} (removing class: ${className})`);
         Utils.removeClass(svgElement, className);
 
         /*
         if (svgElement.nodeName === 'text') {
-          svgElement.parentElement.querySelectorAll(`[id="${entityId}.background"]`).forEach((rectElement) => { //`
+          svgElement.parentElement.querySelectorAll(`[id="${entityId}.background"]`).forEach((rectElement) => {
             if (this.hasClass(rectElement, className + '-background')) {
               this.removeClass(rectElement, className + '-background');
             }
@@ -866,7 +866,7 @@ export class Floorplan {
     let changedEntityIds = this.getChangedEntities(isInitialLoad);
     changedEntityIds = changedEntityIds.concat(Array.from(this.variables.keys())); // always assume variables need updating
 
-    if (changedEntityIds && changedEntityIds.length) {
+    if (changedEntityIds?.length) {
       for (let entityId of changedEntityIds) {
         await this.handleEntity(entityId, isInitialLoad);
       }
@@ -882,7 +882,7 @@ export class Floorplan {
 
     if (this.lastMotionConfig) {
       lastMotionEntityInfo = this.entityInfos.get(this.lastMotionConfig.entity!);
-      if (lastMotionEntityInfo && lastMotionEntityInfo.lastState) {
+      if (lastMotionEntityInfo?.lastState) {
         oldLastMotionState = lastMotionEntityInfo.lastState.state;
         newLastMotionState = this.hass!.states![this.lastMotionConfig.entity!].state;
       }
@@ -894,7 +894,7 @@ export class Floorplan {
         const entityState = this.hass!.states![entityId];
 
         if (isInitialLoad) {
-          this.logDebug('STATE', `${entityId}: ${entityState.state} (initial load)`); //`
+          this.logDebug('STATE', `${entityId}: ${entityState.state} (initial load)`);
           if (changedEntityIds.indexOf(entityId) < 0) {
             changedEntityIds.push(entityId);
           }
@@ -904,14 +904,14 @@ export class Floorplan {
           const newState = entityState.state;
 
           if (entityState.last_changed !== entityInfo.lastState.last_changed) {
-            this.logDebug('STATE', `${entityId}: ${newState} (last changed ${Utils.formatDate(entityInfo.lastState.last_changed)})`); //`
+            this.logDebug('STATE', `${entityId}: ${newState} (last changed ${Utils.formatDate(entityInfo.lastState.last_changed)})`);
             if (changedEntityIds.indexOf(entityId) < 0) {
               changedEntityIds.push(entityId);
             }
           }
           else {
             if (!Utils.equal(entityInfo.lastState.attributes, entityState.attributes)) {
-              this.logDebug('STATE', `${entityId}: attributes (last updated ${Utils.formatDate(entityInfo.lastState.last_changed)})`); //`
+              this.logDebug('STATE', `${entityId}: attributes (last updated ${Utils.formatDate(entityInfo.lastState.last_changed)})`);
               if (changedEntityIds.indexOf(entityId) < 0) {
                 changedEntityIds.push(entityId);
               }
@@ -923,13 +923,13 @@ export class Floorplan {
               const friendlyName = entityState.attributes!.friendly_name;
 
               if (friendlyName === newLastMotionState) {
-                this.logDebug('LAST_MOTION', `${entityId} (new)`); //`
+                this.logDebug('LAST_MOTION', `${entityId} (new)`);
                 if (changedEntityIds.indexOf(entityId) < 0) {
                   changedEntityIds.push(entityId);
                 }
               }
               else if (friendlyName === oldLastMotionState) {
-                this.logDebug('LAST_MOTION', `${entityId} (old)`); //`
+                this.logDebug('LAST_MOTION', `${entityId} (old)`);
                 if (changedEntityIds.indexOf(entityId) < 0) {
                   changedEntityIds.push(entityId);
                 }
@@ -1032,7 +1032,7 @@ export class Floorplan {
 
     /*
     if (!svgElementInfo.alreadyHadBackground) {
-      const rect = svgElement.parentElement.querySelectorAll(`[id="${entityId}.background"]`); //`
+      const rect = svgElement.parentElement.querySelectorAll(`[id="${entityId}.background"]`);
       if (rect) {
         if (svgElementstyle.display !== 'none') {
           const parentSvg = this.getParent(svgElement, document.querySelector('svg'));
@@ -1103,16 +1103,16 @@ export class Floorplan {
       const lastChangedDate = Utils.formatDate(entityState.last_changed!);
       const lastUpdatedDate = Utils.formatDate(entityState.last_updated!);
 
-      let titleText = `${entityState.attributes!.friendly_name}\n`; //`
-      titleText += `State: ${entityState.state}\n\n`; //`
+      let titleText = `${entityState.attributes!.friendly_name}\n`;
+      titleText += `State: ${entityState.state}\n\n`;
 
       Object.keys(entityState.attributes!).map(key => {
-        titleText += `${key}: ${entityState.attributes![key]}\n`; //`
+        titleText += `${key}: ${entityState.attributes![key]}\n`;
       });
       titleText += '\n';
 
-      titleText += `Last changed: ${lastChangedDate}\n`; //`
-      titleText += `Last updated: ${lastUpdatedDate}`; //`
+      titleText += `Last changed: ${lastChangedDate}\n`;
+      titleText += `Last updated: ${lastUpdatedDate}`;
 
       titleElement.textContent = titleText;
     });
@@ -1197,7 +1197,7 @@ export class Floorplan {
     }
 
     // Remove any obsolete classes from the entity
-    //this.logDebug(`${entityId}: Removing obsolete classes: ${obsoleteClasses.join(', ')}`); //`
+    //this.logDebug(`${entityId}: Removing obsolete classes: ${obsoleteClasses.join(', ')}`);
     this.removeClasses(entityId, svgElement, obsoleteClasses, ruleInfo.rule.propagate);
 
     // Add the target classes to the entity
@@ -1245,11 +1245,11 @@ export class Floorplan {
 
         if (this.hass!.states![this.lastMotionConfig.entity!] &&
           (entityState.attributes!.friendly_name === this.hass!.states![this.lastMotionConfig.entity!].state)) {
-          //this.logDebug(`${entityId}: Adding last motion class '${this.lastMotionConfig.class}'`); //`
+          //this.logDebug(`${entityId}: Adding last motion class '${this.lastMotionConfig.class}'`);
           this.addClasses(entityId, svgElement, stateConfigClasses, ruleInfo.propagate);
         }
         else {
-          //this.logDebug(`${entityId}: Removing last motion class '${this.lastMotionConfig.class}'`); //`
+          //this.logDebug(`${entityId}: Removing last motion class '${this.lastMotionConfig.class}'`);
           this.removeClasses(entityId, svgElement, stateConfigClasses, ruleInfo.propagate);
         }
       }
@@ -1273,31 +1273,31 @@ export class Floorplan {
 
     if (!config.pages && !config.rules) {
       this.options.setIsLoading(false);
-      this.logWarning('CONFIG', `Cannot find 'pages' nor 'rules' in floorplan configuration`); //`
+      this.logWarning('CONFIG', `Cannot find 'pages' nor 'rules' in floorplan configuration`);
       //isValid = false;
     }
     else {
       if (config.pages) {
         if (!config.pages.length) {
-          this.logWarning('CONFIG', `The 'pages' section must contain one or more pages in floorplan configuration`); //`
+          this.logWarning('CONFIG', `The 'pages' section must contain one or more pages in floorplan configuration`);
           //isValid = false;
         }
       }
       else {
         if (!config.rules) {
-          this.logWarning('CONFIG', `Cannot find 'rules' in floorplan configuration`); //`
+          this.logWarning('CONFIG', `Cannot find 'rules' in floorplan configuration`);
           //isValid = false;
         }
 
         let invalidRules = config.rules.filter(x => x.entities && x.elements);
         if (invalidRules.length) {
-          this.logError('CONFIG', `A rule cannot contain both 'entities' and 'elements' in floorplan configuration`); //`
+          this.logError('CONFIG', `A rule cannot contain both 'entities' and 'elements' in floorplan configuration`);
           isValid = false;
         }
 
         invalidRules = config.rules.filter(x => !(x.entity || x.entities) && !(x.element || x.elements));
         if (invalidRules.length) {
-          this.logError('CONFIG', `A rule must contain either 'entities' or 'elements' in floorplan configuration`); //`
+          this.logError('CONFIG', `A rule must contain either 'entities' or 'elements' in floorplan configuration`);
           isValid = false;
         }
       }
@@ -1309,8 +1309,8 @@ export class Floorplan {
   evaluate(code: string, entityId?: string, svgElement?: SVGGraphicsElement): any {
     try {
       const entityState = entityId ? this.hass!.states![entityId] : undefined;
-      let functionBody = (code.indexOf('${') >= 0) ? `\`${code}\`;` : code; //`
-      functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody};`; //`
+      let functionBody = (code.indexOf('${') >= 0) ? `\`${code}\`;` : code;
+      functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody};`;
       const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody);
       const result = func(entityState, this.hass!.states, this.hass, this.options.config!, svgElement);
       return result;
@@ -1339,7 +1339,7 @@ export class Floorplan {
 
   onActionClick(svgElementInfo: FloorplanSvgElementInfo, entityId: string, elementId: string, rule: FloorplanRuleConfig): void {
     let entityInfo = this.entityInfos.get(entityId) as FloorplanEntityInfo;
-    const actionRuleInfo = entityInfo && entityInfo.ruleInfos.find(ruleInfo => (ruleInfo.rule.action !== undefined));
+    const actionRuleInfo = entityInfo?.ruleInfos.find(ruleInfo => (ruleInfo.rule.action !== undefined));
     const actionRule = rule.action ? rule : (actionRuleInfo ? actionRuleInfo.rule : undefined);
 
     if (!rule || !actionRule) {
@@ -1391,7 +1391,7 @@ export class Floorplan {
           const classes = actionData.classes;
 
           for (let otherElementId of actionData.elements) {
-            const otherSvgElement = svgElementInfo!.svg!.querySelector(`[id="${otherElementId}"]`); //`
+            const otherSvgElement = svgElementInfo!.svg!.querySelector(`[id="${otherElementId}"]`);
             if (otherSvgElement) {
               if (Utils.hasClass(otherSvgElement, classes[0])) {
                 Utils.removeClass(otherSvgElement, classes[0]);
@@ -1552,28 +1552,28 @@ export class Floorplan {
       message = error;
     }
     if (error.stack) {
-      message = `${error.stack}`; //`
+      message = `${error.stack}`;
     }
     else if (error.message) {
-      message = `${error.message}`; //`
+      message = `${error.message}`;
     }
 
     this.logger!.log('error', message);
   }
 
   logError(area: string, message: string): void {
-    this.logger!.log('error', `${area} ${message}`); //`
+    this.logger!.log('error', `${area} ${message}`);
   }
 
   logWarning(area: string, message: string): void {
-    this.logger!.log('warning', `${area} ${message}`); //`
+    this.logger!.log('warning', `${area} ${message}`);
   }
 
   logInfo(area: string, message: string): void {
-    this.logger!.log('info', `${area} ${message}`); //`
+    this.logger!.log('info', `${area} ${message}`);
   }
 
   logDebug(area: string, message: string): void {
-    this.logger!.log('debug', `${area} ${message}`); //`
+    this.logger!.log('debug', `${area} ${message}`);
   }
 }

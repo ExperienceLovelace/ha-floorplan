@@ -60,11 +60,11 @@ export class Utils {
         return text;
       }
       else {
-        throw new Error(`Error fetching resource`); //`
+        throw new Error(`Error fetching resource`);
       }
     }
     catch (error) {
-      throw new URIError(`${resourceUrl}: ${error.message}`); //`
+      throw new URIError(`${resourceUrl}: ${error.message}`);
     }
   }
 
@@ -81,20 +81,21 @@ export class Utils {
     const request = new Request(resourceUrl, {
       cache: useCache ? 'reload' : 'no-cache',
       headers: new Headers({ 'Content-Type': 'text/plain; charset=x-user-defined' }),
+      mode: 'no-cors',
     });
 
     try {
       const response = await fetch(request);
-      if (response.ok) {
+      if (response.ok || response.type === 'opaque') {
         const result = await response.arrayBuffer();
-        return `data:image/jpeg;base64,${Utils.arrayBufferToBase64(result)}`; //`
+        return `data:image/jpeg;base64,${Utils.arrayBufferToBase64(result)}`;
       }
       else {
-        throw new Error(`Error fetching resource`); //`
+        throw new Error(`Error fetching resource`);
       }
     }
     catch (error) {
-      throw new URIError(`${resourceUrl}: ${error.message}`); //`
+      throw new URIError(`${resourceUrl}: ${error.message}`);
     }
   }
 
@@ -123,7 +124,7 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${(url.indexOf('?') >= 0) ? '&' : '?'}_=${new Date().getTime()}`; //`
+    return `${url}${(url.indexOf('?') >= 0) ? '&' : '?'}_=${new Date().getTime()}`;
   }
 
   static equal(a: any, b: any): boolean {

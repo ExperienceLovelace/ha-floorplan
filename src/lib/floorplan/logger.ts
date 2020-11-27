@@ -30,10 +30,10 @@ export class Logger extends LoggerBase {
   }
 
   log(level: string, message: string, force: boolean = false): void {
-    const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`; //`
+    const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
 
     let targetLogLevels = this.logLevel && this.logLevelGroups[this.logLevel.toLowerCase()];
-    let shouldLog = targetLogLevels && targetLogLevels.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
+    let shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
 
     if (force || shouldLog) {
       if (this.element) {
@@ -49,10 +49,10 @@ export class Logger extends LoggerBase {
   }
 
   consoleLog(level: string, message: string, force: boolean = false): void {
-    const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`; //`
+    const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
 
     const targetLogLevels = this.debugLevel && this.logLevelGroups[this.debugLevel.toLowerCase()];
-    const shouldLog = targetLogLevels && targetLogLevels.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
+    const shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
 
     if (force || shouldLog) {
       switch (level) {

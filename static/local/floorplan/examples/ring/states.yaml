@@ -1,39 +1,33 @@
 simulations:
-  - name: Motion
-    entities:
-      - binary_sensor.ring_salon_motion
+  - entity: binary_sensor.ring_salon_motion
     states:
       - state: on
         duration: 3
       - state: off
         duration: 3
 
-  - name: Doorbell ding
-    entities:
-      - binary_sensor.ring_salon_ding
+  - entity: binary_sensor.ring_salon_ding
     states:
       - state: on
         duration: 2
       - state: off
         duration: 2
 
-  - name: Battery
-    entities:
-      - sensor.ring_salon_battery
+  - entity: sensor.ring_salon_battery
     states:
       - state: 75.8
-        duration: 2
+        duration: 1
       - state: 75.7
-        duration: 2
+        duration: 1
       - state: 75.6
-        duration: 2
+        duration: 1
       - state: 75.5
-        duration: 2
+        duration: 1
       - state: 75.4
-        duration: 2
+        duration: 1
       - state: 75.5
-        duration: 2
+        duration: 1
       - state: 75.6
-        duration: 2
+        duration: 1
       - state: 75.7
-        duration: 2
+        duration: 1
