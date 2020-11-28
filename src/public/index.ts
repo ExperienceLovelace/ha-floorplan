@@ -1,15 +1,14 @@
-import { FloorplanElement } from './lib/floorplan/floorplan-element';
-import { FloorplanCard } from './lib/floorplan/floorplan-exports';
-import { FloorplanConfig } from './lib/floorplan/floorplan-config';
-import { CardConfig } from './lib/floorplan/card-config';
-import { Simulator, SimulatorConfig } from './lib/hass/simulator';
-import { Utils } from './lib/utils';
+import { FloorplanElement } from '../lib/floorplan/floorplan-element';
+import { FloorplanCard } from '../lib/floorplan/floorplan-exports';
+import { FloorplanConfig } from '../lib/floorplan/floorplan-config';
+import { CardConfig } from '../lib/floorplan/card-config';
+import { Simulator, SimulatorConfig } from '../lib/hass/simulator';
+import { Utils } from '../lib/utils';
 
 window.onload = function () {
   const projects = [
-    //{ dir: "move", configFile: "move.yaml", statesFile: "states.yaml", },
     { dir: "simple", configFile: "simple-card.yaml", statesFile: "states.yaml", },
-    { dir: "simple", configFile: "simple.yaml", statesFile: "states.yaml", },
+    //{ dir: "simple", configFile: "simple.yaml", statesFile: "states.yaml", },
     //{ dir: "home-multi", configFile: "main.yaml", statesFile: "states.yaml", },
     //{ dir: "ian", configFile: "home.yaml", statesFile: "states.yaml", },
     //{ dir: "home", configFile: "home.yaml", statesFile: "states.yaml", },
@@ -53,17 +52,18 @@ export class FloorplanProjectDemo {
   async init() {
     console.log("process.env.NODE_ENV", process.env.NODE_ENV);
     console.log("process.env.EXAMPLES_DIR", process.env.EXAMPLES_DIR);
+
+    this.floorplan._isDemo = true;; // running in demo Web page
     
     const configUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.configFile}`;
-    console.log("configUrl", configUrl);
-    let configYamlText = await Utils.fetchText(configUrl);
+    let configYamlText = await Utils.fetchText(configUrl, true);
     const config = Utils.parseYaml(configYamlText) as FloorplanConfig | CardConfig;
 
     this.floorplan.setConfig(config);
 
     if (this.project.statesFile) {
       const simulatorUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.statesFile}`;
-      let simulatorYamlText = await Utils.fetchText(simulatorUrl);
+      let simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
       const simulatorConfig = Utils.parseYaml(simulatorYamlText) as SimulatorConfig;
       this.simulator = new Simulator(simulatorConfig, this.floorplan.setHass.bind(this.floorplan));
     }

@@ -38,8 +38,8 @@ rules:
     element: switch.living_area_fan.text
     entity: switch.living_area_fan
     text_template: '${entity.state}'
-  - entity: camera.new_york_broadway
-    image_refresh_interval: 5
+  - entity: camera.zagreb_ban_jelacic_square
+    image_refresh_interval: 10
     image_template: '${entity.attributes.entity_picture}'
   - entities:
       - binary_sensor.main_bedroom

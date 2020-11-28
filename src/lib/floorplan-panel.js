@@ -72,7 +72,7 @@ class FloorplanPanel extends Polymer.Element {
     this.showAppToolbar = !hideAppToolbar;
     this.containerClass = this.showAppToolbar ? 'container-with-toolbar' : 'container-fullscreen';
 
-    console.log(this.panel.config);
+    //console.log(this.panel.config);
   }
 }
 

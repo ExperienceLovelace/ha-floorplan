@@ -2,7 +2,7 @@ import { CardConfig } from './card-config';
 import { FloorplanElement } from './floorplan-element';
 
 export class FloorplanCard extends FloorplanElement {
-  createAppendContainer(): HTMLElement {
+  createAndAppendContainer(): HTMLElement {
     const card = document.createElement('ha-card') as HTMLElement;
     (card as any).header = (this._config as CardConfig).title;
     this.shadowRoot!.appendChild(card);
@@ -13,6 +13,12 @@ export class FloorplanCard extends FloorplanElement {
 
     return container;
   }
+
+  /*
+  getCardSize(): number {
+    return 3;
+  }
+  */
 }
 
 if (!customElements.get('floorplan-card')) {

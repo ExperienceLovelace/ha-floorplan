@@ -39,23 +39,21 @@ export class Utils {
     return yaml.safeLoad(yamlText);
   }
 
-  static async fetchText(resourceUrl: string, useCache: boolean = true): Promise<string> {
-    /*
-    resourceUrl = (process.env.NODE_ENV === 'production') ?
-      resourceUrl.replace(/^\/local\/floorplan/g, "/static/local/floorplan") :
-      resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
-    */
-    resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
+  static async fetchText(resourceUrl: string, isDemo: boolean, useCache: boolean = false): Promise<string> {
+    if (isDemo) {
+      resourceUrl = resourceUrl.replace(/^\/local\//g, "./local/");
+    }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
-      cache: useCache ? 'reload' : 'no-cache',
+      cache: useCache ? 'reload' : 'no-store',
+      mode: isDemo ? 'no-cors' : undefined,
     });
 
     try {
       const response = await fetch(request);
-      if (response.ok) {
+      if (response.ok || (isDemo && response.type === 'opaque')) {
         const text = await response.text();
         return text;
       }
@@ -63,30 +61,27 @@ export class Utils {
         throw new Error(`Error fetching resource`);
       }
     }
-    catch (error) {
-      throw new URIError(`${resourceUrl}: ${error.message}`);
+    catch (err) {
+      throw new URIError(`${resourceUrl}: ${err.message}`);
     }
   }
 
-  static async fetchImage(resourceUrl: string, useCache: boolean = true): Promise<string> {
-    /*
-    resourceUrl = (process.env.NODE_ENV === 'production') ?
-      resourceUrl.replace(/^\/local\/floorplan/g, "/static/local/floorplan") :
-      resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
-    */
-    resourceUrl = resourceUrl.replace(/^\/local\/floorplan/g, "./local/floorplan");
+  static async fetchImage(resourceUrl: string, isDemo: boolean, useCache: boolean = false): Promise<string> {
+    if (isDemo) {
+      resourceUrl = resourceUrl.replace(/^\/local\//g, "./local/");
+    }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
-      cache: useCache ? 'reload' : 'no-cache',
+      cache: useCache ? 'reload' : 'no-store',
       headers: new Headers({ 'Content-Type': 'text/plain; charset=x-user-defined' }),
-      mode: 'no-cors',
+      mode: isDemo ? 'no-cors' : undefined,
     });
 
     try {
       const response = await fetch(request);
-      if (response.ok || response.type === 'opaque') {
+      if (response.ok || (isDemo && response.type === 'opaque')) {
         const result = await response.arrayBuffer();
         return `data:image/jpeg;base64,${Utils.arrayBufferToBase64(result)}`;
       }
@@ -94,8 +89,8 @@ export class Utils {
         throw new Error(`Error fetching resource`);
       }
     }
-    catch (error) {
-      throw new URIError(`${resourceUrl}: ${error.message}`);
+    catch (err) {
+      throw new URIError(`${resourceUrl}: ${err.message}`);
     }
   }
 

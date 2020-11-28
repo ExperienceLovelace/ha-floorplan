@@ -25,30 +25,29 @@ export class Floorplan {
 
   handleEntitiesDebounced = debounce(this.handleEntities.bind(this), 100, true);
 
-  isLoading = false;
-  isLoaded = false;
-
   constructor(private options: FloorplanOptions) {
     window.onerror = this.handleWindowError.bind(this);
   }
 
-  hassChanged(hass: HassObject): void {
-    this.hass = hass;
+  async hassChanged(hass: HassObject): Promise<void> {
+    if (!this.options || !this.options.config!.svg) return; // wait for SVG to be loaded
 
-    this.loadOnce();
-
-    this.handleEntitiesDebounced(); // use debounced wrapper
+    if (!this.hass) {
+      this.hass = hass;
+      this.initFloorplanRules(this.options.config!.svg!, this.options.config!)
+      await this.handleEntities(true);
+    }
+    else {
+      this.hass = hass;
+      this.handleEntitiesDebounced(); // use debounced wrapper
+    }
   }
 
   /***************************************************************************************************************************/
   /* Startup
   /***************************************************************************************************************************/
 
-  async loadOnce(): Promise<void> {
-    if (this.isLoading || this.isLoaded) return;
-
-    this.isLoading = true;
-
+  async init(): Promise<void> {
     try {
       const config = await this.loadConfig(this.options.config!);
 
@@ -73,16 +72,10 @@ export class Floorplan {
       else {
         await this.initSinglePage();
       }
-
-      this.isLoaded = true;
-      this.isLoading = false;
     }
-    catch (error) {
-      this.isLoaded = true;
-      this.isLoading = false;
-
+    catch (err) {
       this.options.setIsLoading(false);
-      this.handleError(error);
+      this.handleError(err);
     }
   }
 
@@ -93,25 +86,24 @@ export class Floorplan {
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
-      await this.handleEntities(true);
+      //await this.handleEntities(true);
     }
-    catch (error) {
-      this.handleError(error);
+    catch (err) {
+      this.handleError(err);
     }
   }
 
   async initSinglePage(): Promise<void> {
     try {
-      const imageUrl = this.getBestImage(this.options.config!);
-      const svg = await this.loadFloorplanSvg(imageUrl);
-      this.options.config!.svg = svg;
       await this.loadStyleSheet(this.options.config!.stylesheet)
-      this.initFloorplan(svg, this.options.config!)
+      const imageUrl = this.getBestImage(this.options.config!);
+      this.options.config!.svg = await await this.loadFloorplanSvg(imageUrl);;
+      //this.initFloorplanRules(svg, this.options.config!)
       this.options.setIsLoading(false);
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
-      await this.handleEntities(true);
+      //await this.handleEntities(true);
     }
     catch (error) {
       this.handleError(error);
@@ -124,7 +116,7 @@ export class Floorplan {
 
   async loadConfig(config: FloorplanConfig | string): Promise<FloorplanConfigBase> {
     if (typeof config === 'string') {
-      const targetConfig = await Utils.fetchText(config)
+      const targetConfig = await Utils.fetchText(config, this.options._isDemo)
       const configYaml = yaml.safeLoad(targetConfig);
       return configYaml as FloorplanConfigBase;
     }
@@ -197,7 +189,7 @@ export class Floorplan {
     svg.id = pageInfo.config!.page_id; // give the SVG an ID so it can be styled (i.e. background color)
     pageInfo.svg = svg;
     await this.loadStyleSheet(pageInfo.config!.stylesheet)
-    this.initFloorplan(pageInfo.svg, pageInfo.config!);
+    this.initFloorplanRules(pageInfo.svg, pageInfo.config!);
   }
 
   getBestImage(config: FloorplanConfigBase): string {
@@ -237,7 +229,7 @@ export class Floorplan {
   async loadStyleSheet(stylesheetUrl: string): Promise<void> {
     if (!stylesheetUrl) return;
 
-    const stylesheet = await Utils.fetchText(stylesheetUrl);
+    const stylesheet = await Utils.fetchText(stylesheetUrl, this.options._isDemo);
     const link = document.createElement('style');
     link.type = 'text/css';
     link.innerHTML = stylesheet;
@@ -248,7 +240,7 @@ export class Floorplan {
   }
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: any): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(imageUrl);
+    const svgText = await Utils.fetchText(imageUrl, this.options._isDemo);
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
     const svg = svgContainer.querySelector("svg") as SVGGraphicsElement;
@@ -322,7 +314,7 @@ export class Floorplan {
   }
 
   async loadBitmapImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, rule: FloorplanRuleConfig): Promise<SVGGraphicsElement> {
-    const imageData = await Utils.fetchImage(imageUrl);
+    const imageData = await Utils.fetchImage(imageUrl, this.options._isDemo);
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     let svgElement = svgElementInfo.svgElement!; // assume the target element already exists
@@ -343,6 +335,7 @@ export class Floorplan {
 
     const existingHref = svgElement.getAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href');
     if (existingHref !== imageData) {
+      svgElement.removeAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href');
       svgElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', imageUrl);
     }
 
@@ -523,7 +516,7 @@ export class Floorplan {
   /* SVG initialization
   /***************************************************************************************************************************/
 
-  initFloorplan(svg: SVGGraphicsElement, config: FloorplanConfigBase): void {
+  initFloorplanRules(svg: SVGGraphicsElement, config: FloorplanConfigBase): void {
     if (!config.rules) return;
 
     const svgElements = this.querySelectorAll(svg, '*', true) as Array<SVGGraphicsElement>;
@@ -1066,19 +1059,14 @@ export class Floorplan {
       if (ruleInfo.rule.image_refresh_interval) {
         const refreshInterval = parseInt(ruleInfo.rule.image_refresh_interval);
 
-        ruleInfo.imageLoader = setInterval((imageUrl: string, svgElement: SVGGraphicsElement) => {
-          this.loadImage(imageUrl, svgElementInfo, entityId, ruleInfo.rule)
-            .catch(error => {
-              this.handleError(error);
-            });
-        }, refreshInterval * 1000, imageUrl, svgElement);
+        ruleInfo.imageLoader = setInterval(this.loadImage.bind(this), refreshInterval * 1000, imageUrl, svgElementInfo, entityId, ruleInfo.rule);
       }
 
       try {
         await this.loadImage(imageUrl, svgElementInfo, entityId, ruleInfo.rule);
       }
-      catch (error) {
-        this.handleError(error);
+      catch (err) {
+        this.handleError(err);
       }
     }
   }
@@ -1547,6 +1535,8 @@ export class Floorplan {
   }
 
   handleError(error: any): void {
+    console.error(error);
+
     let message = 'Error';
     if (typeof error === 'string') {
       message = error;

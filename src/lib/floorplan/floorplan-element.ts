@@ -5,14 +5,14 @@ import { FloorplanConfig } from './floorplan-config';
 import { CardConfig } from './card-config';
 
 export class FloorplanElement extends HTMLElement {
-  isFloorplanLoading = false;
-  isFloorplanLoaded = false;
   _config?: FloorplanConfig | CardConfig;
   floorplanElement?: HTMLElement;
   floorplan?: Floorplan;
   log?: HTMLElement;
   spinner?: HTMLElement;
   isLoading: boolean = false;
+
+  _isDemo: boolean = false; // whether running in demo Web page
 
   constructor() {
     super();
@@ -42,40 +42,37 @@ export class FloorplanElement extends HTMLElement {
     };
   }
 
-  setConfig(config: FloorplanConfig | CardConfig) {
-    this._config = config;
+  async setConfig(config: FloorplanConfig | CardConfig) {
+    this.setIsLoading(true);
+
+    this._config = JSON.parse(JSON.stringify(config)); // clone the config
 
     this.initDom();
 
-    this.setIsLoading(true);
+    await this.initFloorplan(this._config as FloorplanConfig);
   }
 
-  setHass(hass: HassObject) {
-    if (!this._config || !this.isConnected) return;
+  async setHass(hass: HassObject) {
+    if (!this._config || !this.isConnected) return; ``
 
-    this.loadFloorplanOnce(hass, this._config);
-
-    this.floorplan!.hassChanged(hass);
+    if (this.floorplan) {
+      await this.floorplan.hassChanged(hass);
+    }
   }
 
-  loadFloorplanOnce(hass: any, config: FloorplanConfig | CardConfig) {
-    if (this.isFloorplanLoading || this.isFloorplanLoaded) return;
-
-    this.isFloorplanLoading = true;
-
+  async initFloorplan(config: FloorplanConfig | CardConfig) {
     const options = {
       root: this.shadowRoot!,
       element: this.floorplanElement,
-      hass: hass,
+      hass: undefined, // undefined, since hass state has not been set yet by HA
       config: ((config as CardConfig)?.config) || config,
-      openMoreInfo: this.openMoreInfo.bind(this),
+      openMoreInfo: this._isDemo ? this.openMoreInfoDemo.bind(this) : this.openMoreInfo.bind(this),
       setIsLoading: this.setIsLoading.bind(this),
+      _isDemo: this._isDemo,
     } as FloorplanOptions;
 
     this.floorplan = new Floorplan(options);
-
-    this.isFloorplanLoading = false;
-    this.isFloorplanLoaded = true;
+    await this.floorplan.init();
   }
 
   initDom(): void {
@@ -89,7 +86,7 @@ export class FloorplanElement extends HTMLElement {
 
     const container = this.createAndAppendContainer();
 
-    const spinner = document.createElement('paper-spinner-lite');
+    const spinner = document.createElement('ha-circular-progress');
     container.appendChild(spinner);
 
     const floorplan = document.createElement('div');
@@ -151,7 +148,7 @@ export class FloorplanElement extends HTMLElement {
         pointer-events: all !important;
       }
      
-      paper-spinner-lite {
+      ha-circular-progress {
         margin-top: 50px;
         margin-bottom: 50px;
         align-self: center;
@@ -192,6 +189,10 @@ export class FloorplanElement extends HTMLElement {
 
   openMoreInfo(entityId: string) {
     this.fire('hass-more-info', { entityId: entityId });
+  }
+
+  openMoreInfoDemo(entityId: string) {
+    alert(`Displaying more info for entity: ${entityId}`);
   }
 
   setIsLoading(isLoading: boolean) {

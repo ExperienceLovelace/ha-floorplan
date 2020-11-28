@@ -32,8 +32,8 @@ simulations:
     states:
       - state: on
 
-  - entity: camera.new_york_broadway
+  - entity: camera.zagreb_ban_jelacic_square
     states:
       - state: idle
         attributes:
-          entity_picture: http://archives.earthcam.com/archives5/ecnetwork/us/ny/nyc/tsmpr/archive10/live2.jpg
+          entity_picture: https://cdn.whatsupcams.com/snapshot/hr_zagreb6.jpg
