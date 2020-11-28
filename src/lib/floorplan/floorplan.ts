@@ -333,10 +333,10 @@ export class Floorplan {
 
         const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
 
-        if (rule.on_click) {
+        //if (rule.on_click) {
           (element).addEventListener('click', this.onEntityClick.bind(context));
-          (element).addEventListener('shortClick', this.onEntityClick.bind(context));
-        }
+          //(element).addEventListener('shortClick', this.onEntityClick.bind(context));
+        //}
 
         if (rule.on_long_click) {
           this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
@@ -389,10 +389,10 @@ export class Floorplan {
 
       const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
 
-      if (rule.on_click) {
+      //if (rule.on_click) {
         (element).addEventListener('click', this.onEntityClick.bind(context));
-        (element).addEventListener('shortClick', this.onEntityClick.bind(context));
-      }
+        //(element).addEventListener('shortClick', this.onEntityClick.bind(context));
+      //}
 
       if (rule.on_long_click) {
         this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
@@ -626,10 +626,10 @@ export class Floorplan {
 
         const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
 
-        if (rule.on_click) {
+        //if (rule.on_click) {
           (element).addEventListener('click', this.onEntityClick.bind(context));
-          (element).addEventListener('shortClick', this.onEntityClick.bind(context));
-        }
+          //(element).addEventListener('shortClick', this.onEntityClick.bind(context));
+        //}
 
         if (ruleInfo.rule.on_long_click) {
           this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
@@ -735,10 +735,10 @@ export class Floorplan {
 
           const context = { instance: this, svgElementInfo: svgElementInfo, elementId: elementId, rule: rule } as ClickEventContext;
 
-          if (rule.on_click) {
+          //if (rule.on_click) {
             (element).addEventListener('click', this.onElementClick.bind(context));
-            (element).addEventListener('shortClick', this.onElementClick.bind(context));
-          }
+            //(element).addEventListener('shortClick', this.onElementClick.bind(context));
+          //}
 
           if (rule.on_long_click) {
             this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
