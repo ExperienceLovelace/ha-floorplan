@@ -1,6 +1,7 @@
 
 export class FloorplanConfigBase {
   image?: FloorplanImageConfig | string;
+  image_mobile?: FloorplanImageConfig | string;
   stylesheet: string = "";
   debug_level?: string;
   log_level?: string;
@@ -30,6 +31,7 @@ export class FloorplanActionConfig {
   value_template?: string;
   data?: string;
   data_template?: string;
+  no_entity_id: boolean = false;
 }
 
 export class FloorplanPageConfig extends FloorplanConfigBase {
@@ -59,7 +61,8 @@ export class FloorplanRuleConfig {
   entities?: Array<string | FloorplanRuleEntityElementConfig>;
   element?: string;
   elements?: Array<string>;
-  action?: FloorplanActionConfig;
+  on_click?: FloorplanActionConfig;
+  on_long_click?: FloorplanActionConfig;
   groups?: Array<string>;
   states = new Array<FloorplanRuleStateConfig>();
 }

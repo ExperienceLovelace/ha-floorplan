@@ -8,7 +8,7 @@ import { Utils } from '../lib/utils';
 window.onload = function () {
   const projects = [
     { dir: "simple", configFile: "simple-card.yaml", statesFile: "states.yaml", },
-    //{ dir: "simple", configFile: "simple.yaml", statesFile: "states.yaml", },
+    { dir: "simple", configFile: "simple.yaml", statesFile: "states.yaml", },
     //{ dir: "home-multi", configFile: "main.yaml", statesFile: "states.yaml", },
     //{ dir: "ian", configFile: "home.yaml", statesFile: "states.yaml", },
     //{ dir: "home", configFile: "home.yaml", statesFile: "states.yaml", },
