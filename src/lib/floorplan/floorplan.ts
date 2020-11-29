@@ -18,6 +18,7 @@ export class Floorplan {
   pageInfos = new Map<string, FloorplanPageInfo>();
   entityInfos = new Map<string, any>();
   elementInfos = new Map<string, any>();
+  cssRules = new Array<any>();
   lastMotionConfig?: FloorplanLastMotionConfig;
   variables = new Map<string, any>();
   fullyKiosk?: FullyKiosk;
@@ -238,6 +239,14 @@ export class Floorplan {
     link.type = 'text/css';
     link.innerHTML = stylesheet;
     this.options.root!.appendChild(link);
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const cssRules = Utils.getArray(link.sheet?.cssRules);
+        this.cssRules = this.cssRules.concat(cssRules);
+        resolve();
+      }, 3000);
+    });
   }
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: any): Promise<SVGGraphicsElement> {
@@ -1107,6 +1116,8 @@ export class Floorplan {
   }
 
   handleElementUpdateCss(elementInfo: FloorplanElementInfo, isInitialLoad: boolean) {
+    if (!this.cssRules || !this.cssRules.length) return;
+
     for (let ruleInfo of elementInfo.ruleInfos) {
       for (let svgElementId of ruleInfo.svgElementInfos.keys()) {
         const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
@@ -1117,6 +1128,8 @@ export class Floorplan {
   }
 
   handleEntityUpdateCss(entityInfo: FloorplanEntityInfo, isInitialLoad: boolean) {
+    if (!this.cssRules || !this.cssRules.length) return;
+
     for (let ruleInfo of entityInfo.ruleInfos) {
       for (let svgElementId of ruleInfo.svgElementInfos.keys()) {
         const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
@@ -1213,7 +1226,7 @@ export class Floorplan {
   }
 
   handleEntityUpdateLastMotionCss(entityInfo: FloorplanEntityInfo): void {
-    if (!this.lastMotionConfig) return;
+    if (!this.lastMotionConfig || !this.cssRules || !this.cssRules.length) return;
 
     const entityId = entityInfo.entityId as string;
     const entityState = this.hass!.states![entityId];
