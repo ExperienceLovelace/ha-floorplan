@@ -131,21 +131,23 @@ export class FloorplanElement extends HTMLElement {
 
   getStyle(): string {
     return `
-      :host #floorplan {
+      #floorplan {
         display: flex;
         flex: 1;
+        flex-direction: column;
+        flex-flow: nowrap;
       }
 
-      :host svg, :host svg * {
+      svg, svg * {
         /* vector-effect: non-scaling-stroke !important; */
         pointer-events: all !important;
       }
      
-      :host ha-circular-progress {
+      ha-circular-progress {
         margin: auto;
       }
 
-      :host #log {
+      #log {
         min-height: 100px;
         max-height: 100px;
         overflow: auto;
@@ -154,25 +156,25 @@ export class FloorplanElement extends HTMLElement {
         padding: 10px;
       }
 
-      :host #log ul {
+      #log ul {
         list-style-type: none;
         padding-left: 0px;
         text-align: left;
       }
 
-      :host .error {
+      .error {
         color: #FF0000;
       }
 
-      :host .warning {
+      .warning {
         color: #FF851B;
       }
 
-      :host .info {
+      .info {
         color: #0000FF;
       }
 
-      :host .debug {
+      .debug {
         color: #000000;
       }
     `;

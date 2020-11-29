@@ -6,7 +6,6 @@ export class FloorplanPanel extends Polymer.Element {
       showSideBar: { type: Boolean, value: true },
       showAppHeader: { type: Boolean, value: true },
       panel: { type: Object, observer: 'panelChanged' },
-      isLoading: { type: Boolean, value: true },
     };
   }
 
@@ -17,6 +16,8 @@ export class FloorplanPanel extends Polymer.Element {
         :host .content, :host .content floorplan-element {
           display: flex;
           flex: 1;          
+          flex-direction: column;
+          flex-flow: nowrap;
         }
 
         :host(:not([narrow]), [showAppHeader]) .content {
@@ -25,10 +26,6 @@ export class FloorplanPanel extends Polymer.Element {
 
         :host(:not([narrow]), :not([showAppHeader])) .content {
           height: calc(100vh - var(--header-height));
-        }
-
-        :host .progress-wrapper {
-          margin: auto;
         }
 
         [hidden] {
@@ -46,20 +43,21 @@ export class FloorplanPanel extends Polymer.Element {
         </app-header>        
 
         <div class="content">
-          <div class="progress-wrapper" hidden="[[!isLoading]]">
-            <ha-circular-progress active></ha-circular-progress>
-          </div>
-
-          <floorplan-element hidden="[[isLoading]]" hass=[[hass]] config=[[panel.config]] is-panel></floorplan-element>
+          <floorplan-element hass=[[hass]] config=[[panel.config]] is-panel></floorplan-element>
         </div>
 
       </ha-app-layout>
 	`;
   }
 
+  connectedCallack() {
+    console.log('connectedCallack');
+ 
+    super.connectedCallack();
+  }
+
   panelChanged() {
     this.showAppHeader = !(this.panel.config.show_app_header === false);
-    this.isLoading = false;
   }
 
   hassChanged() {
