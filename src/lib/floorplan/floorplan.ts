@@ -239,14 +239,9 @@ export class Floorplan {
     link.type = 'text/css';
     link.innerHTML = stylesheet;
     this.options.root!.appendChild(link);
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const cssRules = Utils.getArray(link.sheet?.cssRules);
-        this.cssRules = this.cssRules.concat(cssRules);
-        resolve();
-      }, 3000);
-    });
+    
+    const cssRules = Utils.getArray(link.sheet?.cssRules);
+    this.cssRules = this.cssRules.concat(cssRules);
   }
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: any): Promise<SVGGraphicsElement> {
