@@ -1,4 +1,4 @@
-import { CardConfig } from './card-config';
+import { CardConfig } from '../floorplan/card-config';
 import { FloorplanElement } from './floorplan-element';
 
 export class FloorplanCard extends FloorplanElement {

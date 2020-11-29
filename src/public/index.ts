@@ -1,5 +1,5 @@
-import { FloorplanElement } from '../lib/floorplan/floorplan-element';
-import { FloorplanCard } from '../lib/floorplan/floorplan-exports';
+import { FloorplanElement } from '../lib/elements/floorplan-element';
+import { FloorplanCard } from '../lib/elements/floorplan-card';
 import { FloorplanConfig } from '../lib/floorplan/floorplan-config';
 import { CardConfig } from '../lib/floorplan/card-config';
 import { Simulator, SimulatorConfig } from '../lib/hass/simulator';

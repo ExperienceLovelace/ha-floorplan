@@ -1,5 +1,5 @@
-import { FloorplanElement as FloorplanElement } from "./floorplan-element";
-import { FloorplanCard } from "./floorplan-card";
+import { FloorplanElement as FloorplanElement } from './elements/floorplan-element';
+import { FloorplanCard } from './elements/floorplan-card';
 
 export { FloorplanElement, FloorplanCard };
 

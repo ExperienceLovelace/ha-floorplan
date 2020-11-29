@@ -10,7 +10,7 @@ import { debounce } from 'debounce';
 import * as yaml from 'js-yaml';
 import { Utils } from '../utils';
 import { Logger } from './logger';
-import '../event-target';
+const E = require('oui-dom-events').default;
 
 export class Floorplan {
   version = '1.0.0';
@@ -334,13 +334,13 @@ export class Floorplan {
         const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
 
         //if (rule.on_click) {
-          (element).addEventListener('click', this.onEntityClick.bind(context));
-          //(element).addEventListener('shortClick', this.onEntityClick.bind(context));
+        E.on(element, 'click', this.onEntityClick.bind(context));
+        //E.on(element, 'shortClick', this.onEntityClick.bind(context));
         //}
 
         if (rule.on_long_click) {
           this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-          (element).addEventListener('longClick', this.onEntityLongClick.bind(context));
+          E.on(element, 'longClick', this.onEntityLongClick.bind(context));
         }
 
         if (rule.on_click || rule.on_long_click || (rule.more_info !== false)) {
@@ -390,13 +390,13 @@ export class Floorplan {
       const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
 
       //if (rule.on_click) {
-        (element).addEventListener('click', this.onEntityClick.bind(context));
-        //(element).addEventListener('shortClick', this.onEntityClick.bind(context));
+        E.on(element, 'click', this.onEntityClick.bind(context));
+      //E.on(element, 'shortClick', this.onEntityClick.bind(context));
       //}
 
       if (rule.on_long_click) {
         this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-        (element).addEventListener('longClick', this.onEntityLongClick.bind(context));
+        E.on(element, 'longClick', this.onEntityLongClick.bind(context));
       }
 
       if (rule.on_click || rule.on_long_click || (rule.more_info !== false)) {
@@ -421,9 +421,9 @@ export class Floorplan {
     const parentElement = previousSvgElement.parentElement!;
 
     this.querySelectorAll(previousSvgElement, '*', true).forEach((element: Element) => {
-      element.removeEventListeners('click');
-      element.removeEventListeners('shortClick');
-      element.removeEventListeners('longClick');
+      E.off(element, 'click');
+      E.off(element, 'shortClick');
+      E.off(element, 'longClick');
       element.remove();
     });
     previousSvgElement.remove();
@@ -627,13 +627,13 @@ export class Floorplan {
         const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
 
         //if (rule.on_click) {
-          (element).addEventListener('click', this.onEntityClick.bind(context));
-          //(element).addEventListener('shortClick', this.onEntityClick.bind(context));
+          E.on(element, 'click', this.onEntityClick.bind(context));
+        //E.on(element, 'shortClick', this.onEntityClick.bind(context));
         //}
 
         if (ruleInfo.rule.on_long_click) {
           this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-          (element).addEventListener('longClick', this.onEntityLongClick.bind(context));
+          E.on(element, 'longClick', this.onEntityLongClick.bind(context));
         }
 
         if (ruleInfo.rule.on_click || ruleInfo.rule.on_long_click || (ruleInfo.rule.more_info !== false)) {
@@ -736,13 +736,13 @@ export class Floorplan {
           const context = { instance: this, svgElementInfo: svgElementInfo, elementId: elementId, rule: rule } as ClickEventContext;
 
           //if (rule.on_click) {
-            (element).addEventListener('click', this.onElementClick.bind(context));
-            //(element).addEventListener('shortClick', this.onElementClick.bind(context));
+            E.on(element, 'click', this.onEntityClick.bind(context));
+          //E.on(element, 'shortClick', this.onElementClick.bind(context));
           //}
 
           if (rule.on_long_click) {
             this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-            (element).addEventListener('longClick', this.onElementLongClick.bind(context));
+            E.on(element, 'longClick', this.onElementLongClick.bind(context));
           }
 
           if (ruleInfo.rule.on_click || ruleInfo.rule.on_long_click || (ruleInfo.rule.more_info !== false)) {
@@ -1696,32 +1696,32 @@ export class Floorplan {
       if (isLongClick) {
         console.log('onTapEnd: isLongClick:', isLongClick);
         evt.preventDefault();
-        evt.stopImmediatePropagation();
+        if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
       }
     };
 
     const onClick = (evt: Event) => {
       console.log('onClick: isLongClick:', isLongClick);
       evt.preventDefault();
-      evt.stopImmediatePropagation();
+      if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
     };
 
-    elem.addEventListener('mousedown', onTapStart);
-    elem.addEventListener('tapstart', onTapStart);
-    elem.addEventListener('touchstart', onTapStart);
+    E.on(elem, 'mousedown', onTapStart);
+    E.on(elem, 'tapstart', onTapStart);
+    E.on(elem, 'touchstart', onTapStart);
 
-    elem.addEventListener('click', onTapEnd);
-    elem.addEventListener('mouseup', onTapEnd);
-    elem.addEventListener('tapend', onTapEnd);
-    elem.addEventListener('touchend', onTapEnd);
+    E.on(elem, 'click', onTapEnd);
+    E.on(elem, 'mouseup', onTapEnd);
+    E.on(elem, 'tapend', onTapEnd);
+    E.on(elem, 'touchend', onTapEnd);
 
-    elem.addEventListener('tap', onTap);
-    elem.addEventListener('touch', onTap);
-    elem.addEventListener('mouseup', onTap);
-    elem.addEventListener('tapend', onTap);
-    elem.addEventListener('touchend', onTap);
+    E.on(elem, 'tap', onTap);
+    E.on(elem, 'touch', onTap);
+    E.on(elem, 'mouseup', onTap);
+    E.on(elem, 'tapend', onTap);
+    E.on(elem, 'touchend', onTap);
 
-    elem.addEventListener('click', onClick);
+    E.on(elem, 'click', onClick);
   }
 }
 

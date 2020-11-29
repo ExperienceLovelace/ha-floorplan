@@ -8,8 +8,8 @@
     "start": "npm run clean && parcel src/public/index.html",
     "build-docs": "npm run clean && parcel build src/public/index.html --public-url ./",
     "build-demo": "npm run clean && parcel build src/public/index.html --public-url ./",
-    "build-prod": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --no-source-maps --out-file floorplan",
-    "build-test": "npm run clean && parcel build src/lib/floorplan/floorplan-exports.ts --out-file floorplan --no-minify",
+    "build-prod": "npm run clean && parcel build src/lib/export-prod.ts --no-source-maps --out-file floorplan",
+    "build-test": "npm run clean && parcel build src/lib/export-demo.ts --out-file floorplan --no-minify",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "debounce": "^1.2.0",
-    "js-yaml": "^3.14.0"
+    "js-yaml": "^3.14.0",
+    "oui-dom-events": "^0.2.2"
   },
   "browserslist": [
     "last 1 Chrome version"

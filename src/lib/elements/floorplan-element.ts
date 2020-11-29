@@ -1,8 +1,8 @@
 import { HassObject } from '../hass/hass';
-import { Floorplan } from './floorplan';
-import { FloorplanOptions } from './floorplan-options';
-import { FloorplanConfig } from './floorplan-config';
-import { CardConfig } from './card-config';
+import { Floorplan } from '../floorplan/floorplan';
+import { FloorplanOptions } from '../floorplan/floorplan-options';
+import { FloorplanConfig } from '../floorplan/floorplan-config';
+import { CardConfig } from '../floorplan/card-config';
 
 export class FloorplanElement extends HTMLElement {
   _config?: FloorplanConfig | CardConfig;
@@ -87,6 +87,7 @@ export class FloorplanElement extends HTMLElement {
     const container = this.createAndAppendContainer();
 
     const spinner = document.createElement('ha-circular-progress');
+    spinner.setAttribute('active', '');
     container.appendChild(spinner);
 
     const floorplan = document.createElement('div');
@@ -124,18 +125,18 @@ export class FloorplanElement extends HTMLElement {
 
   getStyle(): string {
     return `
-      ha-card #container {
+      :host ha-card #container {
         padding: 0px 10px 10px 10px;
       }
     
-      #container {
+      :host #container {
         display: flex;
         flex: 1;
         flex-direction: column;
         align-content: center;
       }
 
-      #floorplan {
+      :host #floorplan {
         display: flex;
         flex: 1;
         flex-direction: column;
@@ -143,18 +144,21 @@ export class FloorplanElement extends HTMLElement {
         align-content: center;
       }
 
-      svg, svg * {
+      :host svg, :host svg * {
         /* vector-effect: non-scaling-stroke !important; */
         pointer-events: all !important;
       }
      
-      ha-circular-progress {
+      :host ha-circular-progress {
+        /*
         margin-top: 50px;
         margin-bottom: 50px;
         align-self: center;
+        */
+        margin: auto;
       }
 
-      #log {
+      :host #log {
         min-height: 100px;
         max-height: 100px;
         overflow: auto;
@@ -163,25 +167,25 @@ export class FloorplanElement extends HTMLElement {
         padding: 10px;
       }
 
-      #log ul {
+      :host #log ul {
         list-style-type: none;
         padding-left: 0px;
         text-align: left;
       }
 
-      .error {
+      :host .error {
         color: #FF0000;
       }
 
-      .warning {
+      :host .warning {
         color: #FF851B;
       }
 
-      .info {
+      :host .info {
         color: #0000FF;
       }
 
-      .debug {
+      :host .debug {
         color: #000000;
       }
     `;
@@ -198,15 +202,15 @@ export class FloorplanElement extends HTMLElement {
   setIsLoading(isLoading: boolean) {
     this.isLoading = isLoading;
 
-    if (this.spinner) {
-      if (this.isLoading) {
-        this.spinner.setAttribute('active', '');
-        this.spinner.style.display = 'inline-block';
-      }
-      else {
-        this.spinner.removeAttribute('active');
-        this.spinner.style.display = 'none';
-      }
+    if (!this.spinner) return;
+
+    if (this.isLoading) {
+      this.spinner.setAttribute('active', '');
+      this.spinner.style.display = 'inline-block';
+    }
+    else {
+      this.spinner.removeAttribute('active');
+      this.spinner.style.display = 'none';
     }
   }
 
