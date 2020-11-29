@@ -20,11 +20,11 @@ export class FloorplanPanel extends Polymer.Element {
         }
 
         :host(:not([narrow]), [showAppHeader]) .content {
-          height: calc(100vh - var(--header-height));
+          height: calc(100vh);
         }
 
         :host(:not([narrow]), :not([showAppHeader])) .content {
-          height: calc(100vh);
+          height: calc(100vh - var(--header-height));
         }
 
         :host .progress-wrapper {

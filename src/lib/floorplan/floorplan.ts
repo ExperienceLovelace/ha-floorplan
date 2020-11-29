@@ -327,28 +327,7 @@ export class Floorplan {
     if (svgElement.nodeName !== 'image') {
       svgElement = this.createImageElement(svgElementInfo.originalSvgElement) as SVGGraphicsElement;
 
-      this.querySelectorAll(svgElement, '*', true).forEach((element: Element) => {
-        const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-        element.appendChild(titleElem);
-
-        const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
-
-        //if (rule.on_click) {
-        E.on(element, 'click', this.onEntityClick.bind(context));
-        //E.on(element, 'shortClick', this.onEntityClick.bind(context));
-        //}
-
-        if (rule.on_long_click) {
-          this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-          E.on(element, 'longClick', this.onEntityLongClick.bind(context));
-        }
-
-        if (rule.on_click || rule.on_long_click || (rule.more_info !== false)) {
-          (element as SVGGraphicsElement).style.cursor = 'pointer';
-        }
-
-        Utils.addClass(element, 'floorplan-item');
-      });
+      this.processChildElements(svgElement, svgElementInfo, entityId, undefined, rule);
 
       svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement!, svgElement);
     }
@@ -363,7 +342,7 @@ export class Floorplan {
   }
 
   async loadSvgImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, rule: FloorplanRuleConfig): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(imageUrl, true);
+    const svgText = await Utils.fetchText(imageUrl, this.options._isDemo);
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     const svgContainer = document.createElement('div');
@@ -383,28 +362,7 @@ export class Floorplan {
     svg.setAttribute('x', svgElementInfo.originalBBox!.x.toString());
     svg.setAttribute('y', svgElementInfo.originalBBox!.y.toString());
 
-    this.querySelectorAll(svg, '*', true).forEach((element: Element) => {
-      const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-      element.appendChild(titleElem);
-
-      const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
-
-      //if (rule.on_click) {
-        E.on(element, 'click', this.onEntityClick.bind(context));
-      //E.on(element, 'shortClick', this.onEntityClick.bind(context));
-      //}
-
-      if (rule.on_long_click) {
-        this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-        E.on(element, 'longClick', this.onEntityLongClick.bind(context));
-      }
-
-      if (rule.on_click || rule.on_long_click || (rule.more_info !== false)) {
-        (element as SVGGraphicsElement).style.cursor = 'pointer';
-      }
-
-      Utils.addClass(element, 'floorplan-item');
-    });
+    this.processChildElements(svg, svgElementInfo, entityId, undefined, rule);
 
     svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement!, svg);
 
@@ -620,28 +578,7 @@ export class Floorplan {
       // Create a title element (to support hover over text)
       svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
 
-      this.querySelectorAll(svgElement, '*', true).forEach((element: Element) => {
-        const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-        element.appendChild(titleElem);
-
-        const context = { instance: this, svgElementInfo: svgElementInfo, entityId: entityId, rule: rule } as ClickEventContext;
-
-        //if (rule.on_click) {
-          E.on(element, 'click', this.onEntityClick.bind(context));
-        //E.on(element, 'shortClick', this.onEntityClick.bind(context));
-        //}
-
-        if (ruleInfo.rule.on_long_click) {
-          this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-          E.on(element, 'longClick', this.onEntityLongClick.bind(context));
-        }
-
-        if (ruleInfo.rule.on_click || ruleInfo.rule.on_long_click || (ruleInfo.rule.more_info !== false)) {
-          (element as SVGGraphicsElement).style.cursor = 'pointer';
-        }
-
-        Utils.addClass(element, 'floorplan-item');
-      });
+      this.processChildElements(svgElement, svgElementInfo, entityId, undefined, rule);
 
       /*
       if ($svgElement.is('text') && ($svgElement[0].id === elementId)) {
@@ -729,28 +666,7 @@ export class Floorplan {
 
         const svgElementInfo = this.addSvgElementToRule(svg, svgElement, ruleInfo);
 
-        this.querySelectorAll(svgElement, '*', true).forEach((element: Element) => {
-          const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-          element.appendChild(titleElem);
-
-          const context = { instance: this, svgElementInfo: svgElementInfo, elementId: elementId, rule: rule } as ClickEventContext;
-
-          //if (rule.on_click) {
-            E.on(element, 'click', this.onEntityClick.bind(context));
-          //E.on(element, 'shortClick', this.onElementClick.bind(context));
-          //}
-
-          if (rule.on_long_click) {
-            this.mayTriggerLongClicks(element as HTMLElement | SVGElement);
-            E.on(element, 'longClick', this.onElementLongClick.bind(context));
-          }
-
-          if (ruleInfo.rule.on_click || ruleInfo.rule.on_long_click || (ruleInfo.rule.more_info !== false)) {
-            (element as SVGGraphicsElement).style.cursor = 'pointer';
-          }
-
-          Utils.addClass(element, 'floorplan-item');
-        });
+        this.processChildElements(svgElement, svgElementInfo, undefined, elementId, rule);
 
         /*
         if (svgElement.nodeName === 'text') && (svgElement.id === elementId)) {
@@ -786,6 +702,35 @@ export class Floorplan {
         this.logWarning('CONFIG', `Cannot find '${elementId}' in SVG file`);
       }
     }
+  }
+
+  processChildElements(parentSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, rule: FloorplanRuleConfig) {
+    this.querySelectorAll(parentSvgElement, '*', true).forEach((element: Element) => {
+      const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      element.appendChild(titleElem);
+
+      const context = {
+        instance: this,
+        svgElementInfo: svgElementInfo,
+        entityId: entityId,
+        elementId: elementId,
+        rule: rule
+      } as ClickEventContext;
+
+      E.on(element, 'click', this.onClick.bind(context));
+      //E.on(element, 'shortClick', this.onClick.bind(context));
+
+      if (rule.on_long_click) {
+        this.observeLongClicks(element as HTMLElement | SVGElement);
+        E.on(element, 'longClick', this.onLongClick.bind(context));
+      }
+
+      if (rule.on_click || rule.on_long_click || (rule.more_info !== false)) {
+        (element as SVGGraphicsElement).style.cursor = 'pointer';
+      }
+
+      Utils.addClass(element, 'floorplan-item');
+    });
   }
 
   addBackgroundRectToText(svgElementInfo: FloorplanSvgElementInfo): void {
@@ -1372,7 +1317,7 @@ export class Floorplan {
   /* Event handlers
   /***************************************************************************************************************************/
 
-  onElementClick(e: Event): void {
+  onClick(e: Event): void {
     e.stopPropagation();
     e.preventDefault();
 
@@ -1380,23 +1325,7 @@ export class Floorplan {
     context.instance!.performAction(ClickType.ShortClick, context);
   }
 
-  onElementLongClick(e: Event): void {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const context = this as any as ClickEventContext;
-    context.instance!.performAction(ClickType.LongClick, context);
-  }
-
-  onEntityClick(e: Event): void {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const context = this as any as ClickEventContext;
-    context.instance!.performAction(ClickType.ShortClick, context);
-  }
-
-  onEntityLongClick(e: Event) {
+  onLongClick(e: Event): void {
     e.stopPropagation();
     e.preventDefault();
 
@@ -1657,7 +1586,7 @@ export class Floorplan {
   /* Long click support
   /***************************************************************************************************************************/
 
-  mayTriggerLongClicks(elem: HTMLElement | SVGElement): void {
+  observeLongClicks(elem: HTMLElement | SVGElement): void {
     const settings = {
       NS: 'jquery.longclick-',
       delay: 400

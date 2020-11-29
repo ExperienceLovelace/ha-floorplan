@@ -84,7 +84,7 @@ export class FloorplanElement extends HTMLElement {
     style.textContent = this.getStyle();
     root.appendChild(style);
 
-    const container = this.createAndAppendContainer();
+    const container = this.ensureFloorplanContainer();
 
     const spinner = document.createElement('ha-circular-progress');
     spinner.setAttribute('active', '');
@@ -115,33 +115,15 @@ export class FloorplanElement extends HTMLElement {
     this.floorplanElement = floorplan;
   }
 
-  createAndAppendContainer(): HTMLElement {
-    const container = document.createElement('div');
-    container.id = 'container';
-    this.shadowRoot!.appendChild(container);
-
-    return container;
+  ensureFloorplanContainer(): Node {
+    return this.shadowRoot!;
   }
 
   getStyle(): string {
     return `
-      :host ha-card #container {
-        padding: 0px 10px 10px 10px;
-      }
-    
-      :host #container {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        align-content: center;
-      }
-
       :host #floorplan {
         display: flex;
         flex: 1;
-        flex-direction: column;
-        flex-flow: row;
-        align-content: center;
       }
 
       :host svg, :host svg * {
@@ -150,11 +132,6 @@ export class FloorplanElement extends HTMLElement {
       }
      
       :host ha-circular-progress {
-        /*
-        margin-top: 50px;
-        margin-bottom: 50px;
-        align-self: center;
-        */
         margin: auto;
       }
 
