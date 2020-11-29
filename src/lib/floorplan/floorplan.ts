@@ -239,7 +239,7 @@ export class Floorplan {
     link.type = 'text/css';
     link.innerHTML = stylesheet;
     this.options.root!.appendChild(link);
-    
+
     const cssRules = Utils.getArray(link.sheet?.cssRules);
     this.cssRules = this.cssRules.concat(cssRules);
   }
@@ -705,31 +705,26 @@ export class Floorplan {
   }
 
   processChildElements(parentSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, rule: FloorplanRuleConfig) {
-    this.querySelectorAll(parentSvgElement, '*', true).forEach((element: Element) => {
-      const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-      element.appendChild(titleElem);
+    this.querySelectorAll(parentSvgElement, '*', true).forEach((elem: Element) => {
+      const element = elem as SVGGraphicsElement | HTMLElement;
 
-      const context = {
-        instance: this,
-        svgElementInfo: svgElementInfo,
-        entityId: entityId,
-        elementId: elementId,
-        rule: rule
-      } as ClickEventContext;
+      element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
 
-      E.on(element, 'click', this.onClick.bind(context));
-      //E.on(element, 'shortClick', this.onClick.bind(context));
+      const context = new ClickEventContext(this, svgElementInfo, entityId, elementId, rule);
 
-      if (rule.on_long_click) {
+      if (rule.on_click || (rule.more_info !== false)) {
+        E.on(element, 'click', this.onClick.bind(context));
+        //E.on(element, 'shortClick', this.onClick.bind(context));
+        if (element.style) element.style.cursor = 'pointer';
+      }
+
+      if (rule.on_click) {
         this.observeLongClicks(element as HTMLElement | SVGElement);
         E.on(element, 'longClick', this.onLongClick.bind(context));
+        if (element.style) element.style.cursor = 'pointer';
       }
 
-      if (rule.on_click || rule.on_long_click || (rule.more_info !== false)) {
-        (element as SVGGraphicsElement).style.cursor = 'pointer';
-      }
-
-      Utils.addClass(element, 'floorplan-item');
+      Utils.addClass(element, 'floorplan-item'); // mark the element as being processed by floorplan
     });
   }
 
@@ -1656,11 +1651,14 @@ export class Floorplan {
 
 
 class ClickEventContext {
-  instance?: Floorplan;
-  svgElementInfo?: FloorplanSvgElementInfo;
-  entityId?: string;
-  elementId?: string;
-  rule?: FloorplanRuleConfig;
+  constructor(
+    public instance?: Floorplan,
+    public svgElementInfo?: FloorplanSvgElementInfo,
+    public entityId?: string,
+    public elementId?: string,
+    public rule?: FloorplanRuleConfig,
+  ) {
+  }
 }
 
 enum ClickType {
