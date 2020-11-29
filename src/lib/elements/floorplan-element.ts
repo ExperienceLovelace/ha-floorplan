@@ -11,6 +11,7 @@ export class FloorplanElement extends HTMLElement {
   log?: HTMLElement;
   spinner?: HTMLElement;
   isLoading: boolean = false;
+  _hass?: HassObject; // the first HA states received
 
   _isDemo: boolean = false; // whether running in demo Web page
 
@@ -43,6 +44,10 @@ export class FloorplanElement extends HTMLElement {
   }
 
   async setConfig(config: FloorplanConfig | CardConfig) {
+    if (this._config) {
+      console.warn('WARNING: setConfig() has already been called!!!');
+      return;
+    }
     this.setIsLoading(true);
 
     this._config = JSON.parse(JSON.stringify(config)); // clone the config
@@ -53,7 +58,7 @@ export class FloorplanElement extends HTMLElement {
   }
 
   async setHass(hass: HassObject) {
-    if (!this._config || !this.isConnected) return; ``
+    this._hass = hass;
 
     if (this.floorplan) {
       await this.floorplan.hassChanged(hass);
@@ -73,6 +78,11 @@ export class FloorplanElement extends HTMLElement {
 
     this.floorplan = new Floorplan(options);
     await this.floorplan.init();
+
+    // If HA states were set before the config was, use them now to update the new floorplan!!!
+    if (this._hass) {
+      await this.floorplan.hassChanged(this._hass);
+    }
   }
 
   initDom(): void {
