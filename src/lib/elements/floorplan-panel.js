@@ -15,16 +15,14 @@ export class FloorplanPanel extends Polymer.Element {
       <style>
         :host .content, :host .content floorplan-element {
           display: flex;
-          flex: 1;          
-          flex-direction: column;
-          flex-flow: nowrap;
+          flex: 1;
         }
 
-        :host(:not([narrow]), [showAppHeader]) .content {
+        :host([showAppHeader]) .content {
           height: calc(100vh);
         }
 
-        :host(:not([narrow]), :not([showAppHeader])) .content {
+        :host(:not([showAppHeader])) .content {
           height: calc(100vh - var(--header-height));
         }
 

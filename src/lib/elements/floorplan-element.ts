@@ -134,8 +134,6 @@ export class FloorplanElement extends HTMLElement {
       #floorplan {
         display: flex;
         flex: 1;
-        flex-direction: column;
-        flex-flow: nowrap;
       }
 
       svg, svg * {

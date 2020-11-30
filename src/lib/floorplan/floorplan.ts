@@ -240,7 +240,12 @@ export class Floorplan {
     link.innerHTML = stylesheet;
     this.options.root!.appendChild(link);
 
-    const cssRules = Utils.getArray(link.sheet?.cssRules);
+    if (!link.sheet) {
+      console.warn('WARNING: link.sheet is undefined, trying to use link.styleSheet instead');
+    }
+
+    const browserCssRules = link.sheet ? link.sheet.cssRules : (link as any).styleSheet.rules;
+    const cssRules = Utils.getArray(browserCssRules);
     this.cssRules = this.cssRules.concat(cssRules);
   }
 
@@ -1648,7 +1653,6 @@ export class Floorplan {
     E.on(elem, 'click', onClick);
   }
 }
-
 
 class ClickEventContext {
   constructor(
