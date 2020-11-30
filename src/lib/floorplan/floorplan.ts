@@ -231,70 +231,42 @@ export class Floorplan {
     return pageInfo;
   }
 
-  loadStyleSheet(stylesheetUrl: string): Promise<void> {
-    console.log('WARNING: using old verson of loadStyleSheet() in floorplan :-)');
-
-    if (!stylesheetUrl) {
-      return Promise.resolve();
-    }
-
-    return this.fetchTextResource(stylesheetUrl, false)
-      .then((stylesheet: string) => {
-        const link = document.createElement("style");
-        link.type = "text/css";
-        link.innerHTML = stylesheet;
-        this.options.root!.appendChild(link);
-
-        const cssRules = Utils.getArray(link.sheet!.cssRules);
-        this.cssRules = this.cssRules.concat(cssRules);
-
-        return Promise.resolve();
-      });
-  }
-
-  fetchTextResource(resourceUrl: string, useCache: false): Promise<string> {
-    resourceUrl = Utils.cacheBuster(resourceUrl);
-    useCache = false;
-
-    return new Promise((resolve, reject) => {
-      const request = new Request(resourceUrl, {
-        cache: useCache ? "reload" : "no-cache",
-      });
-
-      fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw new Error(`Error fetching resource`);
-          }
-        })
-        .then((result) => resolve(result))
-        .catch((err) => {
-          reject(new URIError(`${resourceUrl}: ${err.message}`));
-        });
-    });
-  }
-
-  /*
   async loadStyleSheet(stylesheetUrl: string): Promise<void> {
     if (!stylesheetUrl) return;
 
     const stylesheet = await Utils.fetchText(stylesheetUrl, this.options._isDemo);
-    const link = document.createElement('style');
-    link.type = 'text/css';
-    link.innerHTML = stylesheet;
-    this.options.root!.appendChild(link);
+    const style = document.createElement('style');
 
-    if (!link.sheet) {
-      console.warn('WARNING: link.sheet is undefined, trying to use link.styleSheet instead');
+    const initializeNode = () => {
+      style.innerHTML = stylesheet;
+      this.options.root!.appendChild(style);
     }
 
-    const browserCssRules = link.sheet ? link.sheet.cssRules : (link as any).styleSheet.rules;
-    const cssRules = Utils.getArray(browserCssRules);
+    try {
+      await Utils.waitForChildNodes(style, initializeNode, 10000);
+    }
+    catch (err) {
+      console.error(err);
+      this.logError('STYLESHEET', `Error loading stylesheet`);
+    }
+
+    const cssRules = this.getCssRules(style);
+
     this.cssRules = this.cssRules.concat(cssRules);
   }
-  */
+
+  getCssRules(style: HTMLStyleElement): any {
+    let cssRules;
+
+    if (style.sheet) {
+      cssRules = style.sheet?.cssRules ?? style.sheet?.rules;
+    }
+    else if ((style as any).styleSheet) {
+      cssRules = (style as any).styleSheet?.cssRules ?? (style as any).styleSheet?.rules;
+    }
+
+    return cssRules ? Utils.getArray(cssRules) : [];
+  }
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: any): Promise<SVGGraphicsElement> {
     const svgText = await Utils.fetchText(imageUrl, this.options._isDemo);

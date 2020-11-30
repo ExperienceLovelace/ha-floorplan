@@ -24,6 +24,25 @@ export class Utils {
       element.className += ' ' + className;
   }
 
+  static waitForChildNodes(element: Node, initializeNode: () => void, timeout: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => reject('Timeout waiting for child element(s) to load'), timeout);
+
+      const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+          if ((mutation.type === 'childList') && mutation.addedNodes.length) {
+            clearTimeout(timeoutId);
+            return resolve();
+          }
+        }
+      });
+
+      observer.observe(element, { childList: true, subtree: true });
+
+      initializeNode();
+    });
+  }
+
   /***************************************************************************************************************************/
   /* General helper functions
   /***************************************************************************************************************************/
