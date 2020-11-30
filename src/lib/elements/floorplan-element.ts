@@ -6,7 +6,6 @@ import { CardConfig } from '../floorplan/card-config';
 
 export class FloorplanElement extends HTMLElement {
   _config?: FloorplanConfig | CardConfig;
-  floorplanElement?: HTMLElement;
   floorplan?: Floorplan;
   log?: HTMLElement;
   spinner?: HTMLElement;
@@ -14,6 +13,8 @@ export class FloorplanElement extends HTMLElement {
   _hass?: HassObject; // the first HA states received
 
   _isDemo: boolean = false; // whether running in demo Web page
+
+  _isDomCreated: boolean = false; // whether the floorplan DOM has been created yet
 
   constructor() {
     super();
@@ -24,6 +25,11 @@ export class FloorplanElement extends HTMLElement {
   }
 
   connectedCallback() {
+    //console.log('connectedCallback()');
+  }
+
+  disconnectedCallback() {
+    //console.log('disconnectedCallback()');
   }
 
   get properties() {
@@ -48,13 +54,10 @@ export class FloorplanElement extends HTMLElement {
       console.warn('WARNING: setConfig() has already been called!!!');
       return;
     }
-    this.setIsLoading(true);
 
     this._config = JSON.parse(JSON.stringify(config)); // clone the config
 
-    this.initDom();
-
-    await this.initFloorplan(this._config as FloorplanConfig);
+    await this.initDomIfRequired();
   }
 
   async setHass(hass: HassObject) {
@@ -63,29 +66,18 @@ export class FloorplanElement extends HTMLElement {
     if (this.floorplan) {
       await this.floorplan.hassChanged(hass);
     }
-  }
-
-  async initFloorplan(config: FloorplanConfig | CardConfig) {
-    const options = {
-      root: this.shadowRoot!,
-      element: this.floorplanElement,
-      hass: undefined, // undefined, since hass state has not been set yet by HA
-      config: ((config as CardConfig)?.config) || config,
-      openMoreInfo: this._isDemo ? this.openMoreInfoDemo.bind(this) : this.openMoreInfo.bind(this),
-      setIsLoading: this.setIsLoading.bind(this),
-      _isDemo: this._isDemo,
-    } as FloorplanOptions;
-
-    this.floorplan = new Floorplan(options);
-    await this.floorplan.init();
-
-    // If HA states were set before the config was, use them now to update the new floorplan!!!
-    if (this._hass) {
-      await this.floorplan.hassChanged(this._hass);
+    else {
+      await this.initDomIfRequired();
     }
   }
 
-  initDom(): void {
+  async initDomIfRequired(): Promise<void> {
+    if (!this._config || this._isDomCreated) return; // not ready yet, or already been done
+
+    this._isDomCreated = true;
+
+    console.log('initDom()');
+
     const root = this.shadowRoot as ShadowRoot;
 
     if (root.lastChild) root.removeChild(root.lastChild);
@@ -100,9 +92,11 @@ export class FloorplanElement extends HTMLElement {
     spinner.setAttribute('active', '');
     container.appendChild(spinner);
 
-    const floorplan = document.createElement('div');
-    floorplan.id = 'floorplan';
-    container.appendChild(floorplan);
+    this.setIsLoading(true);
+
+    const floorplanElement = document.createElement('div');
+    floorplanElement.id = 'floorplan';
+    container.appendChild(floorplanElement);
 
     const log = document.createElement('div');
     log.id = 'log';
@@ -122,7 +116,26 @@ export class FloorplanElement extends HTMLElement {
 
     this.log = log;
     this.spinner = spinner;
-    this.floorplanElement = floorplan;
+
+    // Initialize floorplan
+
+    const options = {
+      root: this.shadowRoot!,
+      element: floorplanElement,
+      hass: undefined, // undefined, since hass state has not been set yet by HA
+      config: ((this._config as CardConfig)?.config) || this._config,
+      openMoreInfo: this._isDemo ? this.openMoreInfoDemo.bind(this) : this.openMoreInfo.bind(this),
+      setIsLoading: this.setIsLoading.bind(this),
+      _isDemo: this._isDemo,
+    } as FloorplanOptions;
+
+    this.floorplan = new Floorplan(options);
+    await this.floorplan.init();
+
+    // If HA states were set before the config was, use them now to update the new floorplan!!!
+    if (this._hass) {
+      await this.floorplan.hassChanged(this._hass);
+    }
   }
 
   ensureFloorplanContainer(): Node {

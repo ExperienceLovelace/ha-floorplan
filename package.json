@@ -6,12 +6,27 @@
   "scripts": {
     "clean": "shx rm -rf dist/*",
     "start": "npm run clean && parcel src/public/index.html",
-    "build-docs": "npm run clean && parcel build src/public/index.html --public-url ./",
-    "build-demo": "npm run clean && parcel build src/public/index.html --public-url ./",
-    "build-prod": "npm run clean && parcel build src/lib/export-prod.ts --no-source-maps --out-file floorplan",
-    "build-prod-maps": "npm run clean && parcel build src/lib/export-prod.ts --no-minify --out-file floorplan",
-    "build-test": "npm run clean && parcel build src/lib/export-demo.ts --out-file floorplan --no-minify",
+    "build:dev": "cross-env NODE_ENV=dev npm run clean && parcel build src/lib/export-dev.ts --out-file floorplan --no-minify",
+    "build:prod": "cross-env NODE_ENV=prod npm run clean && parcel build src/lib/export-prod.ts --no-source-maps --out-file floorplan",
+    "build:prod:no-minify": "cross-env NODE_ENV=prod npm run clean && parcel build src/lib/export-prod.ts --no-minify --out-file floorplan",
+    "build:demo": "cross-env NODE_ENV=demo npm run clean && parcel build src/public/index.html --public-url ./",
     "deploy": "gh-pages -d dist"
+  },
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "static",
+        "env": "development"
+      },
+      {
+        "staticPath": "static",
+        "env": "dev"
+      },
+      {
+        "staticPath": "static",
+        "env": "demo"
+      }
+    ]
   },
   "keywords": [],
   "author": "",

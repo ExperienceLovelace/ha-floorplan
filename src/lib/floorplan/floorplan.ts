@@ -332,7 +332,7 @@ export class Floorplan {
     if (svgElement.nodeName !== 'image') {
       svgElement = this.createImageElement(svgElementInfo.originalSvgElement) as SVGGraphicsElement;
 
-      this.processChildElements(svgElement, svgElementInfo, entityId, undefined, rule);
+      this.processElementAndDescendents(svgElement, svgElementInfo, entityId, undefined, rule);
 
       svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement!, svgElement);
     }
@@ -367,7 +367,7 @@ export class Floorplan {
     svg.setAttribute('x', svgElementInfo.originalBBox!.x.toString());
     svg.setAttribute('y', svgElementInfo.originalBBox!.y.toString());
 
-    this.processChildElements(svg, svgElementInfo, entityId, undefined, rule);
+    this.processElementAndDescendents(svg, svgElementInfo, entityId, undefined, rule);
 
     svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement!, svg);
 
@@ -583,7 +583,7 @@ export class Floorplan {
       // Create a title element (to support hover over text)
       svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
 
-      this.processChildElements(svgElement, svgElementInfo, entityId, undefined, rule);
+      this.processElementAndDescendents(svgElement, svgElementInfo, entityId, undefined, rule);
 
       /*
       if ($svgElement.is('text') && ($svgElement[0].id === elementId)) {
@@ -671,7 +671,7 @@ export class Floorplan {
 
         const svgElementInfo = this.addSvgElementToRule(svg, svgElement, ruleInfo);
 
-        this.processChildElements(svgElement, svgElementInfo, undefined, elementId, rule);
+        this.processElementAndDescendents(svgElement, svgElementInfo, undefined, elementId, rule);
 
         /*
         if (svgElement.nodeName === 'text') && (svgElement.id === elementId)) {
@@ -709,28 +709,29 @@ export class Floorplan {
     }
   }
 
-  processChildElements(parentSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, rule: FloorplanRuleConfig) {
-    this.querySelectorAll(parentSvgElement, '*', true).forEach((elem: Element) => {
-      const element = elem as SVGGraphicsElement | HTMLElement;
+  processElementAndDescendents(targetSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, rule: FloorplanRuleConfig) {
+    this.querySelectorAll(targetSvgElement, '*', true)
+      .forEach((elem: Element) => {
+        const element = elem as SVGGraphicsElement | HTMLElement;
 
-      element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
+        element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
 
-      const context = new ClickEventContext(this, svgElementInfo, entityId, elementId, rule);
+        const context = new ClickEventContext(this, svgElementInfo, entityId, elementId, rule);
 
-      if (rule.on_click || (rule.more_info !== false)) {
-        E.on(element, 'click', this.onClick.bind(context));
-        //E.on(element, 'shortClick', this.onClick.bind(context));
-        if (element.style) element.style.cursor = 'pointer';
-      }
+        if (rule.on_click || (rule.more_info !== false)) {
+          E.on(element, 'click', this.onClick.bind(context));
+          //E.on(element, 'shortClick', this.onClick.bind(context));
+          if (element.style) element.style.cursor = 'pointer';
+        }
 
-      if (rule.on_click) {
-        this.observeLongClicks(element as HTMLElement | SVGElement);
-        E.on(element, 'longClick', this.onLongClick.bind(context));
-        if (element.style) element.style.cursor = 'pointer';
-      }
+        if (rule.on_long_click) {
+          this.observeLongClicks(element as HTMLElement | SVGElement);
+          E.on(element, 'longClick', this.onLongClick.bind(context));
+          if (element.style) element.style.cursor = 'pointer';
+        }
 
-      Utils.addClass(element, 'floorplan-item'); // mark the element as being processed by floorplan
-    });
+        Utils.addClass(element, 'floorplan-item'); // mark the element as being processed by floorplan
+      });
   }
 
   addBackgroundRectToText(svgElementInfo: FloorplanSvgElementInfo): void {
@@ -1593,7 +1594,7 @@ export class Floorplan {
     };
 
     let timer: NodeJS.Timeout;
-    let isLongClick: boolean;
+    let isLongClick = false;
 
     const onTapStart = (evt: Event) => {
       console.log('onTapStart: isLongClick:', isLongClick);
