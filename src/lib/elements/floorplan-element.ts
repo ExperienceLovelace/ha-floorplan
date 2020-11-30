@@ -25,11 +25,11 @@ export class FloorplanElement extends HTMLElement {
   }
 
   connectedCallback() {
-    //console.log('connectedCallback()');
+    console.log('connectedCallback()');
   }
 
   disconnectedCallback() {
-    //console.log('disconnectedCallback()');
+    console.log('disconnectedCallback()');
   }
 
   get properties() {

@@ -7,8 +7,10 @@
     "clean": "shx rm -rf dist/*",
     "start": "npm run clean && parcel src/public/index.html",
     "build:dev": "cross-env NODE_ENV=dev npm run clean && parcel build src/lib/export-dev.ts --out-file floorplan --no-minify",
+    "build": "npm run build:prod",
     "build:prod": "cross-env NODE_ENV=prod npm run clean && parcel build src/lib/export-prod.ts --no-source-maps --out-file floorplan",
     "build:prod:no-minify": "cross-env NODE_ENV=prod npm run clean && parcel build src/lib/export-prod.ts --no-minify --out-file floorplan",
+    "build:example": "cross-env NODE_ENV=prod npm run clean && parcel build src/lib/export-prod.ts --no-source-maps --no-minify --out-file example-panel",
     "build:demo": "cross-env NODE_ENV=demo npm run clean && parcel build src/public/index.html --public-url ./",
     "deploy": "gh-pages -d dist"
   },
@@ -47,6 +49,7 @@
   "dependencies": {
     "debounce": "^1.2.0",
     "js-yaml": "^3.14.0",
+    "lit-element": "^2.4.0",
     "oui-dom-events": "^0.2.2"
   },
   "browserslist": [

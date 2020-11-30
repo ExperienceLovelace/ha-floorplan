@@ -231,6 +231,52 @@ export class Floorplan {
     return pageInfo;
   }
 
+  loadStyleSheet(stylesheetUrl: string): Promise<void> {
+    console.log('WARNING: using old verson of loadStyleSheet() in floorplan :-)');
+
+    if (!stylesheetUrl) {
+      return Promise.resolve();
+    }
+
+    return this.fetchTextResource(stylesheetUrl, false)
+      .then((stylesheet: string) => {
+        const link = document.createElement("style");
+        link.type = "text/css";
+        link.innerHTML = stylesheet;
+        this.options.root!.appendChild(link);
+
+        const cssRules = Utils.getArray(link.sheet!.cssRules);
+        this.cssRules = this.cssRules.concat(cssRules);
+
+        return Promise.resolve();
+      });
+  }
+
+  fetchTextResource(resourceUrl: string, useCache: false): Promise<string> {
+    resourceUrl = Utils.cacheBuster(resourceUrl);
+    useCache = false;
+
+    return new Promise((resolve, reject) => {
+      const request = new Request(resourceUrl, {
+        cache: useCache ? "reload" : "no-cache",
+      });
+
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error(`Error fetching resource`);
+          }
+        })
+        .then((result) => resolve(result))
+        .catch((err) => {
+          reject(new URIError(`${resourceUrl}: ${err.message}`));
+        });
+    });
+  }
+
+  /*
   async loadStyleSheet(stylesheetUrl: string): Promise<void> {
     if (!stylesheetUrl) return;
 
@@ -248,6 +294,7 @@ export class Floorplan {
     const cssRules = Utils.getArray(browserCssRules);
     this.cssRules = this.cssRules.concat(cssRules);
   }
+  */
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: any): Promise<SVGGraphicsElement> {
     const svgText = await Utils.fetchText(imageUrl, this.options._isDemo);

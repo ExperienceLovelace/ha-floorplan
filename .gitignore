@@ -88,3 +88,5 @@ typings/
 .dynamodb/
 
 dist
+
+.parcel-cache
