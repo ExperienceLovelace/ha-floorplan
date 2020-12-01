@@ -6,10 +6,10 @@ export class Panel {
   require_admin!: boolean;
   title!: string;
   url_path!: string;
-  config!: FloorplanPanelConfig;
+  config!: PanelConfig;
 }
 
-export class FloorplanPanelConfig {
+export class PanelConfig {
   show_side_bar!: boolean;
   show_app_header!: boolean;
   config!: FloorplanConfig | string;
