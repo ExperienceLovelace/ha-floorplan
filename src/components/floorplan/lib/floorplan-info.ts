@@ -1,10 +1,10 @@
-import { HassEntityState } from '../hass/hass';
+import { HassEntityState } from '../../../lib/hass/hass';
 import { FloorplanPageConfig, FloorplanRuleConfig } from './floorplan-config';
 
 export class FloorplanPageInfo {
-  index?: number;
-  config?: FloorplanPageConfig;
-  svg?: SVGGraphicsElement;
+  index!: number;
+  config!: FloorplanPageConfig;
+  svg!: SVGGraphicsElement;
   isMaster: boolean = false;
   isDefault: boolean = false;
 }
@@ -27,7 +27,7 @@ export class FloorplanSvgElementInfo {
 
 export class FloorplanRuleInfo {
   svgElementInfos = new Map<string, FloorplanSvgElementInfo>();
-  imageUrl?: string;
+  imageUrl!: string;
   imageLoader: any;
   propagate: boolean = false;
 
@@ -36,7 +36,7 @@ export class FloorplanRuleInfo {
 }
 
 export class FloorplanEntityInfo {
-  lastState?: HassEntityState;
-  entityId?: string;
+  lastState!: HassEntityState;
+  entityId!: string;
   ruleInfos = new Array<FloorplanRuleInfo>();
 }

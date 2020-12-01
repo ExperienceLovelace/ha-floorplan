@@ -30,7 +30,7 @@ export class Simulator {
       this.hass.states![entityState.entity_id!] = entityState;
     }
 
-    this.hassChanged(this.hass);
+    this.hassChanged(this.hass.clone()); // clone the object!!!
   }
 
   callService(domain: string, service: string, data: any): void {

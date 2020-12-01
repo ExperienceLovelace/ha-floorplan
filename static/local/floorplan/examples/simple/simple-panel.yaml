@@ -1,0 +1,67 @@
+sidebar_title: Simple Floorplan
+config:
+  show_side_bar: false;
+  show_app_header: false;
+  config:
+    image: /local/floorplan/examples/simple/simple.svg
+    stylesheet: /local/floorplan/examples/simple/simple.css  
+  #  log_level: info
+
+    rules:
+      - entity: light.double_garage
+        element: light.double_garage
+        image_template: '/local/floorplan/examples/simple/light_${entity.state}.svg'
+        more_info: false
+        on_click:
+          service: homeassistant.toggle
+
+      - entity: light.double_garage
+        element: light.double_garage.background
+        class_template: 'background-${entity.state}'
+        on_click:
+          service: homeassistant.toggle
+
+      - entity: light.double_garage
+        element: light.double_garage.text
+        text_template: '${entity.state}'
+        on_click:
+          service: homeassistant.toggle
+
+      - entity: switch.living_area_fan
+        more_info: false
+        propagate: false
+        states:
+          - state: 'on'
+            class:
+              - spinning
+              - some_other_class
+
+      - class_template: 'background-${entity.state}'
+        element: switch.living_area_fan.background
+        entity: switch.living_area_fan
+  #      on_click:
+  #        service: homeassistant.toggle
+        on_long_click:
+          service: homeassistant.toggle
+  #        data:
+  #          entity_id: switch.living_area_fan
+
+      - element: switch.living_area_fan.text
+        entity: switch.living_area_fan
+        text_template: '${entity.state}'
+        on_click:
+          service: homeassistant.toggle
+
+      - entity: camera.zagreb_ban_jelacic_square
+        image_refresh_interval: 10
+        image_template: '${entity.attributes.entity_picture}'
+
+      - entities:
+          - binary_sensor.main_bedroom
+          - binary_sensor.living_area
+          - binary_sensor.double_garage
+        states:
+          - state: 'off'
+            class: binary-sensor-off
+          - state: 'on'
+            class: binary-sensor-on

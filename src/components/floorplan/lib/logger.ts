@@ -1,4 +1,4 @@
-import { Utils } from "../utils";
+import { Utils } from "../../../lib/utils";
 
 export class LoggerBase {
   logLevelGroups = {

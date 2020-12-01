@@ -1,47 +1,156 @@
-import { HassObject, HassEntityState } from '../hass/hass';
-import { FloorplanOptions } from './floorplan-options';
-import { FloorplanConfig, FloorplanConfigBase, FloorplanLastMotionConfig, FloorplanPageConfig } from './floorplan-config';
-import { FloorplanRuleConfig, FloorplanVariableConfig, FloorplanActionConfig, FloorplanRuleStateConfig } from './floorplan-config';
-import { FloorplanRuleEntityElementConfig } from './floorplan-config';
-import { FloorplanPageInfo, FloorplanRuleInfo, FloorplanSvgElementInfo } from './floorplan-info';
-import { FloorplanElementInfo, FloorplanEntityInfo } from './floorplan-info';
-import { FullyKiosk } from './fully-kiosk';
+import { HassObject, HassEntityState } from '../../lib/hass/hass';
+import { FloorplanConfig, FloorplanLastMotionConfig, FloorplanPageConfig } from './lib/floorplan-config';
+import { FloorplanRuleConfig, FloorplanVariableConfig, FloorplanActionConfig, FloorplanRuleStateConfig } from './lib/floorplan-config';
+import { FloorplanRuleEntityElementConfig } from './lib/floorplan-config';
+import { FloorplanPageInfo, FloorplanRuleInfo, FloorplanSvgElementInfo } from './lib/floorplan-info';
+import { FloorplanElementInfo, FloorplanEntityInfo } from './lib/floorplan-info';
 import { debounce } from 'debounce';
 import * as yaml from 'js-yaml';
-import { Utils } from '../utils';
-import { Logger } from './logger';
+import { Utils } from '../../lib/utils';
+import { Logger } from './lib/logger';
 const E = require('oui-dom-events').default;
+import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from 'lit-element';
 
-export class Floorplan {
+export class FloorplanElement extends LitElement {
+  @property({ attribute: false }) public hass!: HassObject;
+  @property({ attribute: false }) public _config!: string | FloorplanConfig;
+  @property({ type: Boolean }) public isDemo!: boolean;
+
   version = '1.0.0';
-  hass?: HassObject;
+  config!: FloorplanConfig;
   pageInfos = new Map<string, FloorplanPageInfo>();
   entityInfos = new Map<string, any>();
   elementInfos = new Map<string, any>();
   cssRules = new Array<any>();
-  lastMotionConfig?: FloorplanLastMotionConfig;
+  lastMotionConfig!: FloorplanLastMotionConfig;
   variables = new Map<string, any>();
-  fullyKiosk?: FullyKiosk;
-  logger?: Logger;
+  logger!: Logger;
+
+  isRulesLoaded = false;
+  svg!: SVGGraphicsElement;
 
   handleEntitiesDebounced = debounce(this.handleEntities.bind(this), 100, true);
 
-  constructor(private options: FloorplanOptions) {
+  constructor() {
+    super();
+
     window.onerror = this.handleWindowError.bind(this);
   }
 
-  async hassChanged(hass: HassObject): Promise<void> {
-    if (!this.options || !this.options.config!.svg) return; // wait for SVG to be loaded
+  render(): TemplateResult {
+    return html`
+      <div id="floorplan"></div>
+    `;
+  }
 
-    if (!this.hass) {
-      this.hass = hass;
-      this.initFloorplanRules(this.options.config!.svg!, this.options.config!)
+  static get styles(): CSSResult {
+    return css`
+      :host #floorplan {
+        display: flex;
+        flex: 1;
+      }
+
+      :host svg, :host svg * {
+        /* vector-effect: non-scaling-stroke !important; */
+        pointer-events: all !important;
+      }
+    
+      ha-circular-progress {
+        margin: auto;
+      }
+
+      #log {
+        min-height: 100px;
+        max-height: 100px;
+        overflow: auto;
+        background-color: #eee;
+        display: none;
+        padding: 10px;
+      }
+
+      #log ul {
+        list-style-type: none;
+        padding-left: 0px;
+        text-align: left;
+      }
+
+      .error {
+        color: #FF0000;
+      }
+
+      .warning {
+        color: #FF851B;
+      }
+
+      .info {
+        color: #0000FF;
+      }
+
+      .debug {
+        color: #000000;
+      }
+      `;
+  }
+
+  protected async updated(_changedProperties: PropertyValues) {
+    super.updated(_changedProperties);
+
+    if (_changedProperties.has('_config')) {
+      await this._configChanged();
+    }
+
+    if (_changedProperties.has('hass')) {
+      await this.hassChanged();
+    }
+  }
+
+  async _configChanged() {
+    if (!this._config) return;
+
+    await this.init();
+  }
+
+  async hassChanged(): Promise<void> {
+    if (!this.hass || !this.config || !this.svg) return; // wait for SVG to be loaded
+
+    if (!this.isRulesLoaded) {
+      this.isRulesLoaded = true;
+      this.initFloorplanRules(this.svg, this.config!)
       await this.handleEntities(true);
     }
     else {
-      this.hass = hass;
       this.handleEntitiesDebounced(); // use debounced wrapper
     }
+  }
+
+  private get floorplanElement(): HTMLDivElement {
+    return this.shadowRoot!.getElementById("floorplan") as HTMLDivElement;
+  }
+
+  private get logElement(): HTMLDivElement {
+    return this.shadowRoot!.getElementById("log") as HTMLDivElement;
+  }
+
+  openMoreInfo(entityId: string) {
+    this.fire('hass-more-info', { entityId: entityId });
+  }
+
+  openMoreInfoDemo(entityId: string) {
+    alert(`Displaying more info for entity: ${entityId}`);
+  }
+
+  fire(type: string, detail: any, options?: any) {
+    options = options || {};
+    detail = (detail === null || detail === undefined) ? {} : detail;
+    const event = new Event(type, {
+      bubbles: options.bubbles === undefined ? true : options.bubbles,
+      cancelable: Boolean(options.cancelable),
+      composed: options.composed === undefined ? true : options.composed
+    });
+    (event as any).detail = detail;
+    const node = options.node || this;
+    node.dispatchEvent(event);
+    return event;
   }
 
   /***************************************************************************************************************************/
@@ -50,24 +159,22 @@ export class Floorplan {
 
   async init(): Promise<void> {
     try {
-      const config = await this.loadConfig(this.options.config!);
+      const config = await this.loadConfig(this._config!);
 
-      const logElement = (this.options.root as Element)!.querySelector('#log') as HTMLElement;
-      this.logger = new Logger(logElement, config.log_level, config.debug_level);
+      this.logger = new Logger(this.logElement, config.log_level, config.debug_level);
 
       this.logInfo('VERSION', `Floorplan v${this.version}`);
 
       if (!this.validateConfig(config)) {
-        this.options.setIsLoading(false);
+        //this.options.setIsLoading(false);
         return;
       }
 
-      this.options.config = config; // set resolved config as effective config
+      this.config = config; // set resolved config as effective config
 
       //await this.loadLibraries()
-      //this.initFullyKiosk();
 
-      if (this.options.config!.pages) {
+      if (this.config.pages) {
         await this.initMultiPage();
       }
       else {
@@ -75,7 +182,7 @@ export class Floorplan {
       }
     }
     catch (err) {
-      this.options.setIsLoading(false);
+      //this.options.setIsLoading(false);
       this.handleError(err);
     }
   }
@@ -83,7 +190,7 @@ export class Floorplan {
   async initMultiPage(): Promise<void> {
     try {
       await this.loadPages();
-      this.options.setIsLoading(false);
+      //this.options.setIsLoading(false);
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
@@ -96,11 +203,11 @@ export class Floorplan {
 
   async initSinglePage(): Promise<void> {
     try {
-      await this.loadStyleSheet(this.options.config!.stylesheet)
-      const imageUrl = this.getBestImage(this.options.config!);
-      this.options.config!.svg = await await this.loadFloorplanSvg(imageUrl);;
-      //this.initFloorplanRules(svg, this.options.config!)
-      this.options.setIsLoading(false);
+      await this.loadStyleSheet(this.config.stylesheet)
+      const imageUrl = this.getBestImage(this.config!);
+      this.svg = await await this.loadFloorplanSvg(imageUrl);;
+      //this.initFloorplanRules(svg, this.config!)
+      //this.options.setIsLoading(false);
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
@@ -115,23 +222,23 @@ export class Floorplan {
   /* Loading resources
   /***************************************************************************************************************************/
 
-  async loadConfig(config: FloorplanConfig | string): Promise<FloorplanConfigBase> {
+  async loadConfig(config: FloorplanConfig | string): Promise<FloorplanConfig> {
     if (typeof config === 'string') {
-      const targetConfig = await Utils.fetchText(config, this.options._isDemo)
+      const targetConfig = await Utils.fetchText(config, this.isDemo)
       const configYaml = yaml.safeLoad(targetConfig);
-      return configYaml as FloorplanConfigBase;
+      return configYaml as FloorplanConfig;
     }
     else {
-      return config;
+      return JSON.parse(JSON.stringify(config)); // clone the config!!!
     }
   }
 
   async loadLibraries(): Promise<void> {
-    if (this.isOptionEnabled(this.options.config!.pan_zoom)) {
+    if (this.isOptionEnabled(this.config.pan_zoom)) {
       await this.loadScript('/local/floorplan/lib/svg-pan-zoom.min.js', true);
     }
 
-    if (this.isOptionEnabled(this.options.config!.fully_kiosk)) {
+    if (this.isOptionEnabled(this.config.fully_kiosk)) {
       await this.loadScript('/local/floorplan/lib/fully-kiosk.js', false);
     }
   }
@@ -147,24 +254,24 @@ export class Floorplan {
         reject(new URIError(`${(err as any).target.src}`));
       };
 
-      this.options.root!.appendChild(script);
+      this.shadowRoot!.appendChild(script);
     });
   }
 
   async loadPages(): Promise<void> {
-    for (let pageConfigUrl of this.options.config!.pages) {
-      await this.loadPageConfig(pageConfigUrl, this.options.config!.pages.indexOf(pageConfigUrl));
+    for (let pageConfigUrl of this.config.pages) {
+      await this.loadPageConfig(pageConfigUrl, this.config.pages.indexOf(pageConfigUrl));
     }
 
-    const pageInfos = Array.from(this.pageInfos.keys()).map(key => this.pageInfos.get(key));
-    pageInfos.sort((a, b) => a!.index! - b!.index!); // sort ascending
+    const pageInfos = Array.from(this.pageInfos.keys()).map(key => this.pageInfos.get(key) as FloorplanPageInfo);
+    pageInfos.sort((a, b) => a.index! - b.index!); // sort ascending
 
-    const masterPageInfo = pageInfos.find(pageInfo => (pageInfo!.config!.master_page !== undefined));
+    const masterPageInfo = pageInfos.find(pageInfo => (pageInfo.config.master_page !== undefined));
     if (masterPageInfo) {
       masterPageInfo.isMaster = true;
     }
 
-    const defaultPageInfo = pageInfos.find(pageInfo => (pageInfo!.config!.master_page === undefined));
+    const defaultPageInfo = pageInfos.find(pageInfo => (pageInfo.config.master_page === undefined));
     if (defaultPageInfo) {
       defaultPageInfo.isDefault = true;
     }
@@ -187,13 +294,13 @@ export class Floorplan {
   async loadPageFloorplanSvg(pageInfo: FloorplanPageInfo, masterPageInfo: FloorplanPageInfo): Promise<void> {
     const imageUrl = this.getBestImage(pageInfo.config!);
     const svg = await this.loadFloorplanSvg(imageUrl, pageInfo, masterPageInfo)
-    svg.id = pageInfo.config!.page_id; // give the SVG an ID so it can be styled (i.e. background color)
+    svg.id = pageInfo.config.page_id; // give the SVG an ID so it can be styled (i.e. background color)
     pageInfo.svg = svg;
-    await this.loadStyleSheet(pageInfo.config!.stylesheet)
+    await this.loadStyleSheet(pageInfo.config.stylesheet)
     this.initFloorplanRules(pageInfo.svg, pageInfo.config!);
   }
 
-  getBestImage(config: FloorplanConfigBase): string {
+  getBestImage(config: FloorplanConfig): string {
     let imageUrl = '';
 
     if (typeof config.image === "string") {
@@ -222,11 +329,11 @@ export class Floorplan {
     const pageInfo = { config: pageConfig } as FloorplanPageInfo;
 
     // Merge the page's rules with the main config's rules
-    if (pageInfo.config!.rules && this.options.config!.rules) {
-      pageInfo.config!.rules = pageInfo.config!.rules.concat(this.options.config!.rules);
+    if (pageInfo.config.rules && this.config.rules) {
+      pageInfo.config.rules = pageInfo.config.rules.concat(this.config.rules);
     }
 
-    this.pageInfos.set(pageInfo.config!.page_id, pageInfo);
+    this.pageInfos.set(pageInfo.config.page_id, pageInfo);
 
     return pageInfo;
   }
@@ -234,12 +341,12 @@ export class Floorplan {
   async loadStyleSheet(stylesheetUrl: string): Promise<void> {
     if (!stylesheetUrl) return;
 
-    const stylesheet = await Utils.fetchText(stylesheetUrl, this.options._isDemo);
+    const stylesheet = await Utils.fetchText(stylesheetUrl, this.isDemo);
     const style = document.createElement('style');
 
     const initializeNode = () => {
       style.innerHTML = stylesheet;
-      this.options.root!.appendChild(style);
+      this.shadowRoot!.appendChild(style);
     }
 
     try {
@@ -269,13 +376,13 @@ export class Floorplan {
   }
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: any): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(imageUrl, this.options._isDemo);
+    const svgText = await Utils.fetchText(imageUrl, this.isDemo);
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
     const svg = svgContainer.querySelector("svg") as SVGGraphicsElement;
 
     if (pageInfo) {
-      svg.setAttribute('id', pageInfo.config!.page_id);
+      svg.setAttribute('id', pageInfo.config.page_id);
     }
 
     svg.setAttribute('height', '100%');
@@ -288,15 +395,15 @@ export class Floorplan {
     svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
 
     if (pageInfo && masterPageInfo) {
-      const masterPageId = masterPageInfo.config!.page_id;
-      const contentElementId = masterPageInfo.config!.master_page.content_element;
+      const masterPageId = masterPageInfo.config.page_id;
+      const contentElementId = masterPageInfo.config.master_page.content_element;
 
-      if (pageInfo.config!.page_id === masterPageId) {
-        this.options.element!.appendChild(svg);
+      if (pageInfo.config.page_id === masterPageId) {
+        this.floorplanElement.appendChild(svg);
       }
       else {
-        const masterPageElement = this.options.element!.querySelector('#' + masterPageId);
-        const contentElement = this.options.element!.querySelector('#' + contentElementId);
+        const masterPageElement = this.floorplanElement.querySelector('#' + masterPageId);
+        const contentElement = this.floorplanElement.querySelector('#' + contentElementId) as Element;
 
         const height = Number.parseFloat(svg.getAttribute('height')!);
         const width = Number.parseFloat(svg.getAttribute('width')!);
@@ -305,22 +412,22 @@ export class Floorplan {
         }
 
         svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
-        svg.setAttribute('height', contentElement!.getAttribute('height')!);
-        svg.setAttribute('width', contentElement!.getAttribute('width')!);
-        svg.setAttribute('x', contentElement!.getAttribute('x')!);
-        svg.setAttribute('y', contentElement!.getAttribute('y')!);
+        svg.setAttribute('height', contentElement.getAttribute('height')!);
+        svg.setAttribute('width', contentElement.getAttribute('width')!);
+        svg.setAttribute('x', contentElement.getAttribute('x')!);
+        svg.setAttribute('y', contentElement.getAttribute('y')!);
 
-        contentElement!.parentElement!.appendChild(svg);
+        contentElement.parentElement!.appendChild(svg);
       }
     }
     else {
-      this.options.element!.appendChild(svg);
+      this.floorplanElement.appendChild(svg);
     }
 
     // TODO: Re-enable???
     // Enable pan / zoom if enabled in config
     /*
-    if (this.isOptionEnabled(this.options.config!.pan_zoom)) {
+    if (this.isOptionEnabled(this.config.pan_zoom)) {
       svgPanZoom(svg, {
         zoomEnabled: true,
         controlIconsEnabled: true,
@@ -343,7 +450,7 @@ export class Floorplan {
   }
 
   async loadBitmapImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, rule: FloorplanRuleConfig): Promise<SVGGraphicsElement> {
-    const imageData = await Utils.fetchImage(imageUrl, this.options._isDemo);
+    const imageData = await Utils.fetchImage(imageUrl, this.isDemo);
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     let svgElement = svgElementInfo.svgElement!; // assume the target element already exists
@@ -366,7 +473,7 @@ export class Floorplan {
   }
 
   async loadSvgImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, rule: FloorplanRuleConfig): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(imageUrl, this.options._isDemo);
+    const svgText = await Utils.fetchText(imageUrl, this.isDemo);
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     const svgContainer = document.createElement('div');
@@ -379,12 +486,12 @@ export class Floorplan {
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     }
 
-    svg.id = svgElementInfo.svgElement!.id;
+    svg.id = svgElementInfo.svgElement.id;
     svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
-    svg.setAttribute('height', svgElementInfo.originalBBox!.height.toString());
-    svg.setAttribute('width', svgElementInfo.originalBBox!.width.toString());
-    svg.setAttribute('x', svgElementInfo.originalBBox!.x.toString());
-    svg.setAttribute('y', svgElementInfo.originalBBox!.y.toString());
+    svg.setAttribute('height', svgElementInfo.originalBBox.height.toString());
+    svg.setAttribute('width', svgElementInfo.originalBBox.width.toString());
+    svg.setAttribute('x', svgElementInfo.originalBBox.x.toString());
+    svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
 
     this.processElementAndDescendents(svg, svgElementInfo, entityId, undefined, rule);
 
@@ -393,7 +500,7 @@ export class Floorplan {
     return svg;
   }
 
-  querySelectorAll(element: Element, selector: string, includeSelf: boolean): Array<Element> {
+  _querySelectorAll(element: Element, selector: string, includeSelf: boolean): Array<Element> {
     let elements = Array.from(element.querySelectorAll(selector).values());
     elements = includeSelf ? elements.concat(element) : elements;
     return elements;
@@ -402,7 +509,7 @@ export class Floorplan {
   replaceElement(previousSvgElement: SVGGraphicsElement, svgElement: SVGGraphicsElement): SVGGraphicsElement {
     const parentElement = previousSvgElement.parentElement!;
 
-    this.querySelectorAll(previousSvgElement, '*', true).forEach((element: Element) => {
+    this._querySelectorAll(previousSvgElement, '*', true).forEach((element: Element) => {
       E.off(element, 'click');
       E.off(element, 'shortClick');
       E.off(element, 'longClick');
@@ -420,41 +527,43 @@ export class Floorplan {
   /***************************************************************************************************************************/
 
   initFullyKiosk(): void {
-    if (this.isOptionEnabled(this.options.config!.fully_kiosk)) {
+    if (this.isOptionEnabled(this.config.fully_kiosk)) {
+      /*
       this.fullyKiosk = new FullyKiosk(this);
       this.fullyKiosk.init();
+      */
     }
   }
 
   initPageDisplay(): void {
-    if (this.options.config!.pages) {
+    if (this.config.pages) {
       for (let key of this.pageInfos.keys()) {
         const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
 
-        pageInfo.svg!.style.opacity = '1';
-        pageInfo.svg!.style.display = pageInfo.isMaster || pageInfo.isDefault ? 'initial' : 'none'; // Show the first page
+        pageInfo.svg.style.opacity = '1';
+        pageInfo.svg.style.display = pageInfo.isMaster || pageInfo.isDefault ? 'initial' : 'none'; // Show the first page
       }
     }
     else {
       // Show the SVG
-      this.options.config!.svg!.style.opacity = '1';
-      this.options.config!.svg!.style.display = 'block';
+      this.svg.style.opacity = '1';
+      this.svg.style.display = 'block';
     }
   }
 
   initVariables(): void {
-    if (this.options.config!.variables) {
-      for (let variable of this.options.config!.variables) {
+    if (this.config.variables) {
+      for (let variable of this.config.variables) {
         this.initVariable(variable);
       }
     }
 
-    if (this.options.config!.pages) {
+    if (this.config.pages) {
       for (let key of this.pageInfos.keys()) {
         const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
 
-        if (pageInfo.config!.variables) {
-          for (let variable of pageInfo.config!.variables) {
+        if (pageInfo.config.variables) {
+          for (let variable of pageInfo.config.variables) {
             this.initVariable(variable);
           }
         }
@@ -483,8 +592,8 @@ export class Floorplan {
       this.entityInfos.set(variableName, entityInfo);
     }
 
-    if (!this.hass!.states![variableName]) {
-      this.hass!.states![variableName] = {
+    if (!this.hass.states![variableName]) {
+      this.hass.states![variableName] = {
         entity_id: variableName,
         state: value,
         last_changed: new Date(),
@@ -498,16 +607,16 @@ export class Floorplan {
   initStartupActions(): void {
     let actions = new Array<FloorplanActionConfig>();
 
-    const startup = this.options.config!.startup;
+    const startup = this.config.startup;
     if (startup?.action) {
       actions = actions.concat(Array.isArray(startup.action) ? startup.action : [startup.action]);
     }
 
-    if (this.options.config!.pages) {
+    if (this.config.pages) {
       for (let key of this.pageInfos.keys()) {
-        const pageInfo = this.pageInfos.get(key);
+        const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
 
-        const startup = pageInfo!.config && pageInfo!.config.startup;
+        const startup = pageInfo.config && pageInfo.config.startup;
         if (startup?.action) {
           actions = actions.concat(Array.isArray(startup.action) ? startup.action : [startup.action]);
         }
@@ -535,16 +644,16 @@ export class Floorplan {
   /* SVG initialization
   /***************************************************************************************************************************/
 
-  initFloorplanRules(svg: SVGGraphicsElement, config: FloorplanConfigBase): void {
+  initFloorplanRules(svg: SVGGraphicsElement, config: FloorplanConfig): void {
     if (!config.rules) return;
 
-    const svgElements = this.querySelectorAll(svg, '*', true) as Array<SVGGraphicsElement>;
+    const svgElements = this._querySelectorAll(svg, '*', true) as Array<SVGGraphicsElement>;
 
     this.initLastMotion(config, svg, svgElements);
     this.initRules(config, svg, svgElements);
   }
 
-  initLastMotion(config: FloorplanConfigBase, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
+  initLastMotion(config: FloorplanConfig, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
     // Add the last motion entity if required
     if (config.last_motion?.entity && config.last_motion.class) {
       this.lastMotionConfig = config.last_motion;
@@ -554,7 +663,7 @@ export class Floorplan {
     }
   }
 
-  initRules(config: FloorplanConfigBase, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
+  initRules(config: FloorplanConfig, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
     // Apply default options to rules that don't override the options explictly
     if (config.defaults) {
       for (let rule of config.rules) {
@@ -626,9 +735,9 @@ export class Floorplan {
 
     // Split out HA entity groups into separate entities
     for (let entityId of rule.groups) {
-      const group = this.hass!.states![entityId];
+      const group = this.hass.states![entityId];
       if (group) {
-        for (let entityId of group.attributes!.entity_id!) {
+        for (let entityId of group.attributes.entity_id!) {
           this.addTargetEntity(entityId, entityId, targetEntities);
         }
       }
@@ -659,7 +768,7 @@ export class Floorplan {
   }
 
   addTargetEntity(entiyId: string, elementId: string, targetEntities: Array<{ entityId: string, elementId: string }>) {
-    const hassEntity = this.hass!.states![entiyId];
+    const hassEntity = this.hass.states![entiyId];
     const isFloorplanVariable = (entiyId.split('.')[0] === 'floorplan');
 
     if (hassEntity || isFloorplanVariable) {
@@ -729,7 +838,7 @@ export class Floorplan {
   }
 
   processElementAndDescendents(targetSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, rule: FloorplanRuleConfig) {
-    this.querySelectorAll(targetSvgElement, '*', true)
+    this._querySelectorAll(targetSvgElement, '*', true)
       .forEach((elem: Element) => {
         const element = elem as SVGGraphicsElement | HTMLElement;
 
@@ -787,7 +896,7 @@ export class Floorplan {
   }
 
   addNestedSvgElementsToRule(svgElement: SVGGraphicsElement, ruleInfo: FloorplanRuleInfo): void {
-    this.querySelectorAll(svgElement, '*', false).forEach((svgNestedElement) => {
+    this._querySelectorAll(svgElement, '*', false).forEach((svgNestedElement) => {
       const svgElementInfo = new FloorplanSvgElementInfo(
         svgElement.id,
         undefined,
@@ -833,7 +942,7 @@ export class Floorplan {
       }
 
       if (propagate || (propagate === undefined)) {
-        this.querySelectorAll(svgElement, '*', false).forEach((svgNestedElement) => {
+        this._querySelectorAll(svgElement, '*', false).forEach((svgNestedElement) => {
           if (!Utils.hasClass(svgNestedElement, 'ha-leave-me-alone')) {
             if (!Utils.hasClass(svgNestedElement, className)) {
               Utils.addClass(svgNestedElement, className);
@@ -863,7 +972,7 @@ export class Floorplan {
         */
 
         if (propagate || (propagate === undefined)) {
-          this.querySelectorAll(svgElement, '*', false).forEach((svgNestedElement) => {
+          this._querySelectorAll(svgElement, '*', false).forEach((svgNestedElement) => {
             if (Utils.hasClass(svgNestedElement, className)) {
               Utils.removeClass(svgNestedElement, className);
             }
@@ -893,7 +1002,7 @@ export class Floorplan {
   getChangedEntities(isInitialLoad: boolean): Array<string> {
     const changedEntityIds = new Array<string>();
 
-    const entityIds = Object.keys(this.hass!.states!);
+    const entityIds = Object.keys(this.hass.states!);
 
     let lastMotionEntityInfo, oldLastMotionState, newLastMotionState;
 
@@ -901,14 +1010,14 @@ export class Floorplan {
       lastMotionEntityInfo = this.entityInfos.get(this.lastMotionConfig.entity!);
       if (lastMotionEntityInfo?.lastState) {
         oldLastMotionState = lastMotionEntityInfo.lastState.state;
-        newLastMotionState = this.hass!.states![this.lastMotionConfig.entity!].state;
+        newLastMotionState = this.hass.states![this.lastMotionConfig.entity!].state;
       }
     }
 
     for (let entityId of entityIds) {
       const entityInfo = this.entityInfos.get(entityId);
       if (entityInfo) {
-        const entityState = this.hass!.states![entityId];
+        const entityState = this.hass.states![entityId];
 
         if (isInitialLoad) {
           this.logDebug('STATE', `${entityId}: ${entityState.state} (initial load)`);
@@ -937,7 +1046,7 @@ export class Floorplan {
 
           if (this.lastMotionConfig) {
             if ((newLastMotionState !== oldLastMotionState) && (entityId.indexOf('binary_sensor') >= 0)) {
-              const friendlyName = entityState.attributes!.friendly_name;
+              const friendlyName = entityState.attributes.friendly_name;
 
               if (friendlyName === newLastMotionState) {
                 this.logDebug('LAST_MOTION', `${entityId} (new)`);
@@ -961,7 +1070,7 @@ export class Floorplan {
   }
 
   async handleEntity(entityId: string, isInitialLoad: boolean): Promise<void> {
-    const entityState = this.hass!.states![entityId];
+    const entityState = this.hass.states![entityId];
     const entityInfo = this.entityInfos.get(entityId);
 
     if (!entityInfo) return;
@@ -976,7 +1085,7 @@ export class Floorplan {
 
   async handleEntityUpdateDom(entityInfo: FloorplanEntityInfo): Promise<void> {
     const entityId = entityInfo.entityId as string;
-    const entityState = this.hass!.states![entityId];
+    const entityState = this.hass.states![entityId];
 
     for (let ruleInfo of entityInfo.ruleInfos) {
       for (let svgElementId of ruleInfo.svgElementInfos.keys()) {
@@ -1030,7 +1139,7 @@ export class Floorplan {
 
   handleEntityUpdateText(entityId: string, ruleInfo: FloorplanRuleInfo, svgElementInfo: FloorplanSvgElementInfo) {
     const textElement = svgElementInfo.svgElement;
-    const state = this.hass!.states![entityId] ? this.hass!.states![entityId].state : undefined;
+    const state = this.hass.states![entityId] ? this.hass.states![entityId].state : undefined;
 
     const text = ruleInfo.rule.text_template ? this.evaluate(ruleInfo.rule.text_template, entityId, textElement) : state;
 
@@ -1097,7 +1206,7 @@ export class Floorplan {
 
   handleEntitySetHoverOver(entityInfo: FloorplanEntityInfo) {
     const entityId = entityInfo.entityId as string;
-    const entityState = this.hass!.states![entityId];
+    const entityState = this.hass.states![entityId];
 
     for (let ruleInfo of entityInfo.ruleInfos) {
       if (ruleInfo.rule.hover_over !== false) {
@@ -1115,7 +1224,7 @@ export class Floorplan {
       const lastChangedDate = Utils.formatDate(entityState.last_changed!);
       const lastUpdatedDate = Utils.formatDate(entityState.last_updated!);
 
-      let titleText = `${entityState.attributes!.friendly_name}\n`;
+      let titleText = `${entityState.attributes.friendly_name}\n`;
       titleText += `State: ${entityState.state}\n\n`;
 
       Object.keys(entityState.attributes!).map(key => {
@@ -1181,7 +1290,7 @@ export class Floorplan {
     // Get the config for the current state
     let obsoleteClasses = new Array<string>();
     if (ruleInfo.rule.states) {
-      const entityState = this.hass!.states![entityId];
+      const entityState = this.hass.states![entityId];
 
       const stateConfig = ruleInfo.rule.states.find(stateConfig => (stateConfig.state === entityState.state)) as FloorplanRuleStateConfig;
       targetClasses = this.getStateConfigClasses(stateConfig);
@@ -1244,7 +1353,7 @@ export class Floorplan {
     if (!this.lastMotionConfig || !this.cssRules || !this.cssRules.length) return;
 
     const entityId = entityInfo.entityId as string;
-    const entityState = this.hass!.states![entityId];
+    const entityState = this.hass.states![entityId];
 
     if (!entityState) return;
 
@@ -1255,8 +1364,8 @@ export class Floorplan {
 
         const stateConfigClasses = this.getStateConfigClasses(this.lastMotionConfig);
 
-        if (this.hass!.states![this.lastMotionConfig.entity!] &&
-          (entityState.attributes!.friendly_name === this.hass!.states![this.lastMotionConfig.entity!].state)) {
+        if (this.hass.states![this.lastMotionConfig.entity!] &&
+          (entityState.attributes.friendly_name === this.hass.states![this.lastMotionConfig.entity!].state)) {
           //this.logDebug(`${entityId}: Adding last motion class '${this.lastMotionConfig.class}'`);
           this.addClasses(entityId, svgElement, stateConfigClasses, ruleInfo.propagate);
         }
@@ -1277,14 +1386,14 @@ export class Floorplan {
   }
 
   isLastMotionEnabled(): boolean {
-    return (this.lastMotionConfig && this.options.config!.last_motion!.entity && this.options.config!.last_motion!.class) !== undefined;
+    return (this.lastMotionConfig && this.config.last_motion.entity && this.config.last_motion.class) !== undefined;
   }
 
   validateConfig(config: FloorplanConfig): boolean {
     let isValid = true;
 
     if (!config.pages && !config.rules) {
-      this.options.setIsLoading(false);
+      //this.options.setIsLoading(false);
       this.logWarning('CONFIG', `Cannot find 'pages' nor 'rules' in floorplan configuration`);
       //isValid = false;
     }
@@ -1320,11 +1429,11 @@ export class Floorplan {
 
   evaluate(code: string, entityId?: string, svgElement?: SVGGraphicsElement): any {
     try {
-      const entityState = entityId ? this.hass!.states![entityId] : undefined;
+      const entityState = entityId ? this.hass.states![entityId] : undefined;
       let functionBody = (code.indexOf('${') >= 0) ? `\`${code}\`;` : code;
       functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody};`;
       const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody);
-      const result = func(entityState, this.hass!.states, this.hass, this.options.config!, svgElement);
+      const result = func(entityState, this.hass.states, this.hass, this.config!, svgElement);
       return result;
     }
     catch (err) {
@@ -1342,7 +1451,7 @@ export class Floorplan {
     e.preventDefault();
 
     const context = this as any as ClickEventContext;
-    context.instance!.performAction(ClickType.ShortClick, context);
+    context.instance.performAction(ClickType.ShortClick, context);
   }
 
   onLongClick(e: Event): void {
@@ -1350,7 +1459,7 @@ export class Floorplan {
     e.preventDefault();
 
     const context = this as any as ClickEventContext;
-    setTimeout(() => { context.instance!.performAction(ClickType.LongClick, context) }, 300);
+    setTimeout(() => { context.instance.performAction(ClickType.LongClick, context) }, 300);
   }
 
   performAction(clickType: ClickType, context: ClickEventContext): void {
@@ -1361,7 +1470,7 @@ export class Floorplan {
     let action = rule ? ((clickType === ClickType.LongClick) ? rule.on_long_click : rule.on_click) : undefined;
 
     if (!action && entityId && (rule.more_info !== false)) {
-      this.options.openMoreInfo(entityId);
+      this.openMoreInfo(entityId);
       return;
     }
 
@@ -1376,7 +1485,7 @@ export class Floorplan {
       if (action.service || action.service_template) {
         const actionService = this.getActionService(action, entityId, svgElement);
 
-        if (this.options._isDemo) {
+        if (this.isDemo) {
           const actionServiceText = (typeof actionService === 'object') ? JSON.stringify(actionService) : actionService;
           alert(`Calling service: ${actionServiceText}`)
         }
@@ -1397,7 +1506,7 @@ export class Floorplan {
 
     if (!calledServiceCount) {
       if (entityId && (rule.more_info !== false)) {
-        this.options.openMoreInfo(entityId);
+        this.openMoreInfo(entityId);
       }
     }
   }
@@ -1414,7 +1523,7 @@ export class Floorplan {
           const classes = actionData.classes;
 
           for (let otherElementId of actionData.elements) {
-            const otherSvgElement = svgElementInfo!.svg!.querySelector(`[id="${otherElementId}"]`);
+            const otherSvgElement = svgElementInfo?.svg?.querySelector(`[id="${otherElementId}"]`);
             if (otherSvgElement) {
               if (Utils.hasClass(otherSvgElement, classes[0])) {
                 Utils.removeClass(otherSvgElement, classes[0]);
@@ -1440,12 +1549,12 @@ export class Floorplan {
           Array.from(this.pageInfos.keys()).map((key) => {
             const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
 
-            if (!pageInfo.isMaster && (pageInfo.svg!.style.display !== 'none')) {
-              pageInfo.svg!.style.display = 'none';
+            if (!pageInfo.isMaster && (pageInfo.svg.style.display !== 'none')) {
+              pageInfo.svg.style.display = 'none';
             }
           });
 
-          targetPageInfo.svg!.style.display = 'block';
+          targetPageInfo.svg.style.display = 'block';
         }
         break;
 
@@ -1482,16 +1591,16 @@ export class Floorplan {
   setVariable(variableName: string, value: any, attributes: any, isInitialLoad: boolean): void {
     this.variables.set(variableName, value);
 
-    if (this.hass!.states![variableName]) {
-      this.hass!.states![variableName].state = value;
+    if (this.hass.states![variableName]) {
+      this.hass.states![variableName].state = value;
 
       for (let attribute of attributes) {
-        this.hass!.states![variableName].attributes![attribute.name] = attribute.value;
+        this.hass.states![variableName].attributes![attribute.name] = attribute.value;
       }
     }
 
     for (let otherVariableName of Array.from(this.variables.keys())) {
-      const otherVariable = this.hass!.states![otherVariableName];
+      const otherVariable = this.hass.states![otherVariableName];
       if (otherVariable) {
         otherVariable.last_changed = new Date(); // mark all variables as changed
       }
@@ -1517,7 +1626,7 @@ export class Floorplan {
       actionData.entity_id = entityId;
     }
 
-    this.hass!.callService(this.getDomain(actionService), this.getService(actionService), actionData);
+    this.hass.callService(this.getDomain(actionService), this.getService(actionService), actionData);
   }
 
   getActionData(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): any {
@@ -1550,7 +1659,7 @@ export class Floorplan {
   /***************************************************************************************************************************/
 
   handleWindowError(event: Event | string, source?: string, lineno?: number, colno?: number, error?: Error): boolean {
-    this.options.setIsLoading(false);
+    //this.options.setIsLoading(false);
 
     if ((event as string).toLowerCase().indexOf("script error") >= 0) {
       this.logError('SCRIPT', 'Script error: See browser console for detail');
@@ -1583,23 +1692,23 @@ export class Floorplan {
       message = `${error.message}`;
     }
 
-    this.logger!.log('error', message);
+    this.logger.log('error', message);
   }
 
   logError(area: string, message: string): void {
-    this.logger!.log('error', `${area} ${message}`);
+    this.logger.log('error', `${area} ${message}`);
   }
 
   logWarning(area: string, message: string): void {
-    this.logger!.log('warning', `${area} ${message}`);
+    this.logger.log('warning', `${area} ${message}`);
   }
 
   logInfo(area: string, message: string): void {
-    this.logger!.log('info', `${area} ${message}`);
+    this.logger.log('info', `${area} ${message}`);
   }
 
   logDebug(area: string, message: string): void {
-    this.logger!.log('debug', `${area} ${message}`);
+    this.logger.log('debug', `${area} ${message}`);
   }
 
   /***************************************************************************************************************************/
@@ -1674,13 +1783,17 @@ export class Floorplan {
   }
 }
 
+if (!customElements.get('floorplan-element')) {
+  customElements.define('floorplan-element', FloorplanElement);
+}
+
 class ClickEventContext {
   constructor(
-    public instance?: Floorplan,
-    public svgElementInfo?: FloorplanSvgElementInfo,
-    public entityId?: string,
-    public elementId?: string,
-    public rule?: FloorplanRuleConfig,
+    public instance: FloorplanElement,
+    public svgElementInfo: FloorplanSvgElementInfo,
+    public entityId: string | undefined,
+    public elementId: string | undefined,
+    public rule: FloorplanRuleConfig,
   ) {
   }
 }
