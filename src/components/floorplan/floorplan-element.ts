@@ -1,6 +1,6 @@
-import { HomeAssistant } from '../../lib/hass/frontend-types';
-import { HASSDomEvents, ValidHassDomEvent } from '../../lib/hass/types';
-import { HassEntityBase } from '../../lib/hass/types';
+import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
+import { HassEntity, HassEntityBase, HassEntities } from '../../lib/homeassistant/core-types';
+import { fireEvent } from '../../lib/homeassistant/fire-event';
 import { FloorplanConfig, FloorplanLastMotionConfig, FloorplanPageConfig } from './lib/floorplan-config';
 import { FloorplanRuleConfig, FloorplanVariableConfig, FloorplanActionConfig, FloorplanRuleStateConfig } from './lib/floorplan-config';
 import { FloorplanRuleEntityElementConfig } from './lib/floorplan-config';
@@ -13,6 +13,15 @@ import { Logger } from './lib/logger';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const E = require('oui-dom-events').default;
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from 'lit-element';
+
+type EvaluateFunction =
+  (
+    entityState: HassEntity,
+    states: HassEntities,
+    hass: HomeAssistant,
+    config: FloorplanConfig,
+    svgElement: SVGGraphicsElement | undefined
+  ) => unknown;
 
 export class FloorplanElement extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -31,6 +40,8 @@ export class FloorplanElement extends LitElement {
 
   isRulesLoaded = false;
   svg!: SVGGraphicsElement;
+
+  evaluateFunctionCache = new Map<string, EvaluateFunction>();
 
   handleEntitiesDebounced = debounce(this.handleEntities.bind(this), 100, true);
 
@@ -135,33 +146,12 @@ export class FloorplanElement extends LitElement {
   }
 
   openMoreInfo(entityId: string): void {
-    this.fireEvent(this, 'hass-more-info', { entityId: entityId });
-  }
-
-  openMoreInfoDemo(entityId: string): void {
-    alert(`Displaying more info for entity: ${entityId}`);
-  }
-
-  fireEvent<HassEvent extends ValidHassDomEvent>(
-    node: HTMLElement | Window,
-    type: HassEvent,
-    detail?: HASSDomEvents[HassEvent] | unknown,
-    options?: {
-      bubbles?: boolean;
-      cancelable?: boolean;
-      composed?: boolean;
+    if (this.isDemo) {
+      alert(`Displaying more info for entity: ${entityId}`);
     }
-  ): Event {
-    options = options || {};
-    detail = (detail === null) || (detail === undefined) ? {} : detail;
-    const event = new Event(type, {
-      bubbles: options.bubbles === undefined ? true : options.bubbles,
-      cancelable: Boolean(options.cancelable),
-      composed: options.composed === undefined ? true : options.composed,
-    });
-    (event as unknown as Record<string, unknown>).detail = detail;
-    node.dispatchEvent(event);
-    return event;
+    else {
+      fireEvent(this, 'hass-more-info', { entityId: entityId });
+    }
   }
 
   /***************************************************************************************************************************/
@@ -1149,7 +1139,7 @@ export class FloorplanElement extends LitElement {
     const textElement = svgElementInfo.svgElement;
     const state = this.hass.states[entityId] ? this.hass.states[entityId].state : undefined;
 
-    const text = (ruleInfo.rule.text_template ? this.evaluate(ruleInfo.rule.text_template, entityId, textElement) : state)  as string;
+    const text = (ruleInfo.rule.text_template ? this.evaluate(ruleInfo.rule.text_template, entityId, textElement) : state) as string;
 
     const tspanElement = textElement.querySelector('tspan');
     if (tspanElement) {
@@ -1438,10 +1428,29 @@ export class FloorplanElement extends LitElement {
   evaluate(code: string, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     try {
       const entityState = entityId ? this.hass.states[entityId] : undefined;
+
       let functionBody = (code.indexOf('${') >= 0) ? `\`${code}\`;` : code;
-      functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody};`;
-      const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody);
-      const result = func(entityState, this.hass.states, this.hass, this.config, svgElement);
+      functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody}`;
+
+      let targetFunc: EvaluateFunction | undefined;
+
+      if (this.evaluateFunctionCache.has(functionBody)) {
+        //console.log('Getting function from cache:', functionBody);
+        targetFunc = this.evaluateFunctionCache.get(functionBody);
+      }
+      else {
+        console.log('Adding function to cache:', functionBody);
+        const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody) as EvaluateFunction;
+        this.evaluateFunctionCache.set(functionBody, func);
+        targetFunc = func;
+      }
+
+      let result: unknown;
+
+      if (targetFunc) {
+        result = targetFunc(entityState as HassEntity, this.hass.states, this.hass, this.config, svgElement);
+      }
+
       return result;
     }
     catch (err) {

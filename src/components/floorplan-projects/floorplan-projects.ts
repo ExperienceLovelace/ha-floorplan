@@ -1,4 +1,5 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { FloorplanProject } from './types';
 import './floorplan-project';
 
 export class FloorplanProjects extends LitElement {
@@ -14,15 +15,15 @@ export class FloorplanProjects extends LitElement {
   async init(): Promise<void> {
     this.projects = [
       // Panels
-      { dir: "simple", configFile: "simple-panel.yaml", statesFile: "states.yaml", },
+      { dir: "simple", configFile: "simple-panel.yaml", simulationFile: "simulations.yaml", },
       // Cards
-      { dir: "simple", configFile: "simple-card.yaml", statesFile: "states.yaml", },
-      { dir: "ring", configFile: "ring-card.yaml", statesFile: "states.yaml", },
+      { dir: "simple", configFile: "simple-card.yaml", simulationFile: "simulations.yaml", },
+      { dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
       // TODO
-      //{ dir: "simple", configFile: "simple.yaml", statesFile: "states.yaml", },
-      //{ dir: "home-multi", configFile: "main.yaml", statesFile: "states.yaml", },
-      //{ dir: "ian", configFile: "home.yaml", statesFile: "states.yaml", },
-      //{ dir: "home", configFile: "home.yaml", statesFile: "states.yaml", },
+      //{ dir: "simple", configFile: "simple.yaml", simulationFile: "simulations.yaml", },
+      //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
+      //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
+      //{ dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", },
     ] as Array<FloorplanProject>;
   }
 
@@ -41,10 +42,4 @@ export class FloorplanProjects extends LitElement {
 
 if (!customElements.get('floorplan-projects')) {
   customElements.define('floorplan-projects', FloorplanProjects);
-}
-
-export class FloorplanProject {
-  dir!: string;
-  configFile!: string;
-  statesFile!: string
 }

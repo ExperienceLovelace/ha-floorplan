@@ -1,4 +1,4 @@
-import { HassEntityState } from '../../../lib/hass/hass';
+import { HassEntity } from '../../../lib/homeassistant/core-types';
 import { FloorplanPageConfig, FloorplanRuleConfig } from './floorplan-config';
 
 export class FloorplanPageInfo {
@@ -36,7 +36,7 @@ export class FloorplanRuleInfo {
 }
 
 export class FloorplanEntityInfo {
-  lastState!: HassEntityState | undefined;
+  lastState!: HassEntity | undefined;
   entityId!: string;
   ruleInfos = new Array<FloorplanRuleInfo>();
 }

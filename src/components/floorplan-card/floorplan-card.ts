@@ -1,5 +1,5 @@
-import { HomeAssistant } from '../../lib/hass/frontend-types';
-import { FloorplanCardConfig } from '../../lib/hass/floorplan-frontend';
+import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
+import { FloorplanCardConfig } from './types';
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import '../floorplan/floorplan-element';
 

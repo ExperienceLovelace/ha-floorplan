@@ -1,8 +1,8 @@
-import { HomeAssistant, ServiceCallRequest, ServiceCallResponse } from './frontend-types';
-import { HassEntityAttributeBase, HassEntityBase } from "./types";
+import { HomeAssistant as IHomeAssistant, ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/frontend-types';
+import { HassEntityAttributeBase, HassEntityBase as IHassEntityBase } from "../../lib/homeassistant/core-types";
 
-export class HassObject implements HomeAssistant {
-  states: Record<string, HassEntityBase> = {};
+export class HomeAssistant implements IHomeAssistant {
+  states: Record<string, IHassEntityBase> = {};
   dockedSidebar!: "docked" | "always_hidden" | "auto";
 
   callService(
@@ -25,15 +25,15 @@ export class HassObject implements HomeAssistant {
     return Promise.resolve(response);
   }
 
-  clone(): HassObject {
-    const hass = new HassObject();
+  clone(): HomeAssistant {
+    const hass = new HomeAssistant();
     hass.callService = this.callService;
     hass.states = JSON.parse(JSON.stringify(this.states));
     return hass;
   }
 }
 
-export class HassEntity implements HassEntityBase {
+export class HassEntity implements IHassEntityBase {
   entity_id!: string;
   state!: string;
   last_changed!: string;

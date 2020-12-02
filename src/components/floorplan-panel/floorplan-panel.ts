@@ -1,5 +1,5 @@
-import { HomeAssistant } from '../../lib/hass/frontend-types';
-import { FloorplanPanel as Panel } from '../../lib/hass/floorplan-frontend';
+import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
+import { FloorplanPanelInfo } from './types';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import '../floorplan/floorplan-element';
 
@@ -7,7 +7,7 @@ export class FloorplanPanel extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ type: Boolean }) public narrow!: boolean;
   @property({ attribute: false }) public route!: unknown;
-  @property({ attribute: false }) public panel!: Panel;
+  @property({ attribute: false }) public panel!: FloorplanPanelInfo;
 
   @property({ type: Boolean }) public showSideBar!: boolean;
   @property({ type: Boolean }) public showAppHeader!: boolean;

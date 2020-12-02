@@ -1,28 +1,15 @@
-import { HassObject, HassEntity } from './hass';
-import { ServiceCallRequest, ServiceCallResponse } from './frontend-types';
+import { ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/frontend-types';
+import { HassSimulatorConfig, HassSimulation, TimedHassEntity } from './types';
+import { HomeAssistant, HassEntity } from './homeassistant';
 
-export class SimulatorConfig {
-  simulations = new Array<Simulation>();
-}
-
-export class Simulation {
-  entity!: HassEntity;
-  states = new Array<TimedHassEntity>();
-  enabled = true;
-}
-
-export class TimedHassEntity extends HassEntity {
-  duration = 0;
-}
-
-export class Simulator {
+export class HassSimulator {
   simulationProcessors = new Array<SimulationProcessor>();
-  hass!: HassObject;
+  hass!: HomeAssistant;
 
-  constructor(simulatorConfig: SimulatorConfig, private hassChanged: (hass: HassObject) => void) {
-    const hass = new HassObject();
-    hass.callService = this.callService.bind(this);
-  
+  constructor(simulatorConfig: HassSimulatorConfig, private hassChanged: (hass: HomeAssistant) => void) {
+    this.hass = new HomeAssistant();
+    this.hass.callService = this.callService.bind(this);
+
     for (const simulation of simulatorConfig.simulations) {
       const simulationProcessor = new SimulationProcessor(simulation, this.hass, this.onEntityStatesChanged.bind(this));
       this.simulationProcessors.push(simulationProcessor);
@@ -42,7 +29,7 @@ export class Simulator {
     service: ServiceCallRequest["service"],
     serviceData?: ServiceCallRequest["serviceData"]
   ): Promise<ServiceCallResponse> {
-    console.log('callService', domain, service, serviceData);
+    console.log('HassSimulator.callService()', domain, service, serviceData);
 
     switch (domain) {
       case 'homeassistant':
@@ -89,7 +76,7 @@ export class Simulator {
 export class SimulationProcessor {
   currentIndex = 0;
 
-  constructor(private simulation: Simulation, private hass: HassObject, private onEntityStatesChanged: (entityStates: Array<HassEntity>) => void) {
+  constructor(private simulation: HassSimulation, private hass: HomeAssistant, private onEntityStatesChanged: (entityStates: Array<HassEntity>) => void) {
     if (!this.simulation.entity) {
       console.error('Simulation must contain an entity', simulation);
     }

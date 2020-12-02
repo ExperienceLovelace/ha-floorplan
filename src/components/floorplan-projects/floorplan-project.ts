@@ -1,6 +1,8 @@
-import { HomeAssistant } from '../../lib/hass/frontend-types';
-import { Simulator, SimulatorConfig } from '../../lib/hass/simulator';
-import { FloorplanCardConfig, FloorplanPanelConfig } from '../../lib/hass/floorplan-frontend';
+import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
+import { HassSimulator } from './hass-simulator';
+import { HassSimulatorConfig, FloorplanProject } from './types';
+import { FloorplanCardConfig } from '../floorplan-card/types';
+import { FloorplanPanelConfig } from '../floorplan-panel/types';
 import { Utils } from '../../lib/utils';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import '../floorplan/floorplan-element';
@@ -12,7 +14,7 @@ export class FloorplanProjectElement extends LitElement {
   @property({ attribute: false }) public project!: FloorplanProject;
   @property({ type: Boolean }) public isDemo!: boolean;
 
-  simulator?: Simulator;
+  simulator?: HassSimulator;
 
   protected render(): TemplateResult {
     return html`
@@ -38,11 +40,11 @@ export class FloorplanProjectElement extends LitElement {
 
       this.config = Utils.parseYaml(configYamlText) as FloorplanCardConfig | FloorplanPanelConfig;
 
-      if (this.project.statesFile) {
-        const simulatorUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.statesFile}`;
+      if (this.project.simulationFile) {
+        const simulatorUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.simulationFile}`;
         const simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
-        const simulatorConfig = Utils.parseYaml(simulatorYamlText) as SimulatorConfig;
-        this.simulator = new Simulator(simulatorConfig, this.setHass.bind(this));
+        const simulatorConfig = Utils.parseYaml(simulatorYamlText) as HassSimulatorConfig;
+        this.simulator = new HassSimulator(simulatorConfig, this.setHass.bind(this));
       }
     }    
   }
@@ -54,10 +56,4 @@ export class FloorplanProjectElement extends LitElement {
 
 if (!customElements.get('floorplan-project')) {
   customElements.define('floorplan-project', FloorplanProjectElement);
-}
-
-export class FloorplanProject {
-  dir!: string;
-  configFile!: string;
-  statesFile!: string
 }

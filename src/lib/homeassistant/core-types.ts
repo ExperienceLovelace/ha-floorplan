@@ -107,21 +107,3 @@ export type HassUser = {
   is_owner: boolean;
   name: string;
 };
-
-
-
-
-
-export interface MoreInfoDialogParams {
-  entityId: string | null;
-}
-
-export interface HASSDomEvents {
-  "hass-more-info": MoreInfoDialogParams;
-}
-
-export type ValidHassDomEvent = keyof HASSDomEvents;
-
-export interface HASSDomEvent<T> extends Event {
-  detail: T;
-}

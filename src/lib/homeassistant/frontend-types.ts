@@ -1,4 +1,4 @@
-import { HassEntities } from "./types";
+import { HassEntities } from "./core-types";
 
 export type Constructor<T = unknown> = new (...args: unknown[]) => T;
 
