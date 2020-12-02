@@ -1,5 +1,6 @@
+import { EvalHelper } from './lib/eval-helper';
 import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
-import { HassEntity, HassEntityBase, HassEntities } from '../../lib/homeassistant/core-types';
+import { HassEntityBase } from '../../lib/homeassistant/core-types';
 import { fireEvent } from '../../lib/homeassistant/fire-event';
 import { FloorplanConfig, FloorplanLastMotionConfig, FloorplanPageConfig } from './lib/floorplan-config';
 import { FloorplanRuleConfig, FloorplanVariableConfig, FloorplanActionConfig, FloorplanRuleStateConfig } from './lib/floorplan-config';
@@ -10,18 +11,9 @@ import { debounce } from 'debounce';
 import * as yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
 import { Logger } from './lib/logger';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const E = require('oui-dom-events').default;
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from 'lit-element';
-
-type EvaluateFunction =
-  (
-    entityState: HassEntity,
-    states: HassEntities,
-    hass: HomeAssistant,
-    config: FloorplanConfig,
-    svgElement: SVGGraphicsElement | undefined
-  ) => unknown;
+import * as OuiDomEvents from 'oui-dom-events';
+const E = OuiDomEvents.default;
 
 export class FloorplanElement extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -40,8 +32,6 @@ export class FloorplanElement extends LitElement {
 
   isRulesLoaded = false;
   svg!: SVGGraphicsElement;
-
-  evaluateFunctionCache = new Map<string, EvaluateFunction>();
 
   handleEntitiesDebounced = debounce(this.handleEntities.bind(this), 100, true);
 
@@ -1427,36 +1417,10 @@ export class FloorplanElement extends LitElement {
 
   evaluate(code: string, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     try {
-      const entityState = entityId ? this.hass.states[entityId] : undefined;
-
-      let functionBody = (code.indexOf('${') >= 0) ? `\`${code}\`;` : code;
-      functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody}`;
-
-      let targetFunc: EvaluateFunction | undefined;
-
-      if (this.evaluateFunctionCache.has(functionBody)) {
-        //console.log('Getting function from cache:', functionBody);
-        targetFunc = this.evaluateFunctionCache.get(functionBody);
-      }
-      else {
-        console.log('Adding function to cache:', functionBody);
-        const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody) as EvaluateFunction;
-        this.evaluateFunctionCache.set(functionBody, func);
-        targetFunc = func;
-      }
-
-      let result: unknown;
-
-      if (targetFunc) {
-        result = targetFunc(entityState as HassEntity, this.hass.states, this.hass, this.config, svgElement);
-      }
-
-      return result;
+      return EvalHelper.evaluate(code, this.hass, this.config, entityId, svgElement);
     }
     catch (err) {
-      //  this.logError('ERROR', entityId);
-      this.logError('ERROR', err);
-      throw new Error(err);
+      return this.handleError(err, { code, entityId, hass: this.hass, svgElement });
     }
   }
 
@@ -1701,18 +1665,18 @@ export class FloorplanElement extends LitElement {
     return false;
   }
 
-  handleError(error: Error): void {
-    console.error(error);
+  handleError(err: Error, data?: unknown): void {
+    console.error(err, data);
 
     let message = 'Error';
-    if (typeof error === 'string') {
-      message = error;
+    if (typeof err === 'string') {
+      message = err;
     }
-    if (error.stack) {
-      message = `${error.stack}`;
+    if (err.stack) {
+      message = `${err.stack}`;
     }
-    else if (error.message) {
-      message = `${error.message}`;
+    else if (err.message) {
+      message = `${err.message}`;
     }
 
     this.logger.log('error', message);

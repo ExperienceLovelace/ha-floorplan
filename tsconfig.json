@@ -9,9 +9,13 @@
     "moduleResolution": "node",
     "target": "es2015",
     "allowJs": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "./src/**/*"
-  ]
+  ],
 }
