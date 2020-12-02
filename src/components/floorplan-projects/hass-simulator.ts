@@ -3,7 +3,7 @@ import { HassSimulatorConfig, HassSimulation, TimedHassEntity } from './types';
 import { HomeAssistant, HassEntity } from './homeassistant';
 
 export class HassSimulator {
-  simulationProcessors = new Array<SimulationProcessor>();
+  simulationProcessors: SimulationProcessor[] = [];
   hass!: HomeAssistant;
 
   constructor(simulatorConfig: HassSimulatorConfig, private hassChanged: (hass: HomeAssistant) => void) {
@@ -16,7 +16,7 @@ export class HassSimulator {
     }
   }
 
-  onEntityStatesChanged(entityStates: Array<HassEntity>): void {
+  onEntityStatesChanged(entityStates: HassEntity[]): void {
     for (const entityState of entityStates) {
       this.hass.states[entityState.entity_id] = entityState;
     }
@@ -75,9 +75,9 @@ export class HassSimulator {
 
 export class SimulationProcessor {
   currentIndex = 0;
-  entities = new Array<string | HassEntity>();
+  entities: (string | HassEntity)[] = [];
 
-  constructor(private simulation: HassSimulation, private hass: HomeAssistant, private onEntityStatesChanged: (entityStates: Array<HassEntity>) => void) {
+  constructor(private simulation: HassSimulation, private hass: HomeAssistant, private onEntityStatesChanged: (entityStates: HassEntity[]) => void) {
     if (this.simulation.entities) {
       this.entities = this.entities.concat(this.simulation.entities);
     }

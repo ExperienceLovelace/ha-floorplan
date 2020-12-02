@@ -7,7 +7,7 @@ export abstract class LoggerBase {
     warning: ['error', 'warning', 'warn'],
     info: ['error', 'warning', 'warn', 'info'],
     debug: ['error', 'warning', 'warn', 'info', 'debug'],
-  } as { [index: string]: Array<string> };
+  } as { [index: string]: string[] };
 
   constructor(public logLevel?: string) {
   }
@@ -22,7 +22,7 @@ export class Logger extends LoggerBase {
     warning: ['error', 'warning', 'warn'],
     info: ['error', 'warning', 'warn', 'info'],
     debug: ['error', 'warning', 'warn', 'info', 'debug'],
-  } as { [index: string]: Array<string> };
+  } as { [index: string]: string[] };
 
   constructor(public element: HTMLElement, public logLevel?: string, public debugLevel?: string) {
     super(logLevel);

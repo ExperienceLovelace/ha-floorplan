@@ -10,7 +10,7 @@ export class FloorplanPageInfo {
 }
 
 export class FloorplanElementInfo {
-  ruleInfos = new Array<FloorplanRuleInfo>();
+  ruleInfos!: FloorplanRuleInfo[];
 }
 
 export class FloorplanSvgElementInfo {
@@ -19,14 +19,14 @@ export class FloorplanSvgElementInfo {
     public svg: SVGGraphicsElement | undefined,
     public svgElement: SVGGraphicsElement,
     public originalSvgElement: SVGGraphicsElement,
-    public originalClasses: Array<string>,
+    public originalClasses: string[],
     public originalBBox: DOMRect,
     public originalClientRect: ClientRect | DOMRect) {
   }
 }
 
 export class FloorplanRuleInfo {
-  svgElementInfos = new Map<string, FloorplanSvgElementInfo>();
+  svgElementInfos: { [key: string]: FloorplanSvgElementInfo } = {};
   imageUrl!: string;
   imageLoader!: number | undefined;
   propagate!: boolean;
@@ -38,7 +38,7 @@ export class FloorplanRuleInfo {
 export class FloorplanEntityInfo {
   lastState!: HassEntity | undefined;
   entityId!: string;
-  ruleInfos = new Array<FloorplanRuleInfo>();
+  ruleInfos!: FloorplanRuleInfo[];
 }
 
 export class FloorplanClickContext {

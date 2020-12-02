@@ -3,7 +3,7 @@ import { HassEntity, HassEntities } from '../../../lib/homeassistant/core-types'
 import { FloorplanConfig } from './/floorplan-config';
 
 export class EvalHelper {
-  static evaluateFunctionCache = new Map<string, EvaluateFunction>();
+  static evaluateFunctionCache: { [key: string]: EvaluateFunction } = {};
 
   static evaluate(code: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     const entityState = entityId ? hass.states[entityId] : undefined;
@@ -13,14 +13,14 @@ export class EvalHelper {
 
     let targetFunc: EvaluateFunction;
 
-    if (this.evaluateFunctionCache.has(functionBody)) {
+    if (this.evaluateFunctionCache[functionBody]) {
       //console.log('Getting function from cache:', functionBody);
-      targetFunc = this.evaluateFunctionCache.get(functionBody) as EvaluateFunction;
+      targetFunc = this.evaluateFunctionCache[functionBody];
     }
     else {
-      console.log('Adding function to cache:', functionBody);
+      //console.log('Adding function to cache:', functionBody);
       const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody) as EvaluateFunction;
-      this.evaluateFunctionCache.set(functionBody, func);
+      this.evaluateFunctionCache[functionBody] = func;
       targetFunc = func;
     }
 

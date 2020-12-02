@@ -3,7 +3,7 @@ import { FloorplanProject } from './types';
 import './floorplan-project';
 
 export class FloorplanProjects extends LitElement {
-  @property({ attribute: false, type: Array }) public projects!: Array<FloorplanProject>;
+  @property({ attribute: false, type: Array }) public projects!: FloorplanProject[];
   @property({ type: Boolean }) public isDemo!: boolean;
 
   constructor() {
@@ -24,7 +24,7 @@ export class FloorplanProjects extends LitElement {
       //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
       //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
       //{ dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", },
-    ] as Array<FloorplanProject>;
+    ] as FloorplanProject[];
   }
 
   protected render(): TemplateResult {

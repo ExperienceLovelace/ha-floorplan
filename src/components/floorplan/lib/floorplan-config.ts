@@ -1,18 +1,22 @@
 
 export class FloorplanConfig {
+  // Core features
   image!: FloorplanImageConfig | string;
-  image_mobile!: FloorplanImageConfig | string;
   stylesheet!: string;
-  debug_level!: string;
   log_level!: string;
-  last_motion!: FloorplanLastMotionConfig;
-  pan_zoom: unknown;
-  pages = new Array<string>();
-  rules!: Array<FloorplanRuleConfig>;
+  debug_level!: string;
+  rules!: FloorplanRuleConfig[];
 
-  variables = new Array<FloorplanVariableConfig>();
+  // Optional features
   startup!: FloorplanStartupConfig;
   defaults!: FloorplanConfigDefaults | undefined;
+  image_mobile!: FloorplanImageConfig | string;
+  last_motion!: FloorplanLastMotionConfig;
+
+  // Experimental features
+  pages!: string[];
+  variables!: FloorplanVariableConfig[];
+  pan_zoom: unknown;
 }
 
 export class FloorplanConfigDefaults {
@@ -45,7 +49,7 @@ export class FloorplanMasterPageConfig extends FloorplanPageConfig {
 }
 
 export class FloorplanImageConfig {
-  sizes = new Array<FloorplanImageSize>();
+  sizes!: FloorplanImageSize[];
 }
 
 export class FloorplanImageSize {
@@ -63,19 +67,20 @@ export class FloorplanRuleConfig {
   more_info!: boolean;
   propagate = true;
   entity!: string;
-  entities!: Array<string | FloorplanRuleEntityElementConfig>;
+  entities!: (string | FloorplanRuleEntityElementConfig)[];
   element!: string;
-  elements!: Array<string>;
+  elements!: string[];
+  on_hover!: FloorplanActionConfig;
   on_click!: FloorplanActionConfig;
   on_long_click!: FloorplanActionConfig;
-  groups!: Array<string>;
-  states = new Array<FloorplanRuleStateConfig>();
+  groups!: string[];
+  states!: FloorplanRuleStateConfig[];
 }
 
 export class FloorplanRuleStateConfig {
   state!: string;
-  class!: string | Array<string>;
-  classes!: string | Array<string>;
+  class!: string | string[];
+  classes!: string | string[];
 }
 
 export class FloorplanRuleEntityElementConfig {

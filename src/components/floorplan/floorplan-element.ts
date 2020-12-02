@@ -24,12 +24,12 @@ export class FloorplanElement extends LitElement {
 
   version = '1.0.0';
   config!: FloorplanConfig;
-  pageInfos = new Map<string, FloorplanPageInfo>();
-  entityInfos = new Map<string, FloorplanEntityInfo>();
-  elementInfos = new Map<string, FloorplanElementInfo>();
-  cssRules = new Array<unknown>();
+  pageInfos: { [key: string]: FloorplanPageInfo } = {};
+  entityInfos: { [key: string]: FloorplanEntityInfo } = {};
+  elementInfos: { [key: string]: FloorplanElementInfo } = {};
+  cssRules: unknown[] = [];
   lastMotionConfig!: FloorplanLastMotionConfig;
-  variables = new Map<string, unknown>();
+  variables: { [key: string]: unknown } = {};
   logger!: Logger;
 
   isRulesLoaded = false;
@@ -258,7 +258,7 @@ export class FloorplanElement extends LitElement {
       await this.loadPageConfig(pageConfigUrl, this.config.pages.indexOf(pageConfigUrl));
     }
 
-    const pageInfos = Array.from(this.pageInfos.keys()).map(key => this.pageInfos.get(key) as FloorplanPageInfo);
+    const pageInfos = Array.from(Object.keys(this.pageInfos).map(key => this.pageInfos[key]));
     pageInfos.sort((a, b) => a.index - b.index); // sort ascending
 
     const masterPageInfo = pageInfos.find(pageInfo => (pageInfo.config.master_page !== undefined));
@@ -331,7 +331,7 @@ export class FloorplanElement extends LitElement {
       pageInfo.config.rules = pageInfo.config.rules.concat(this.config.rules);
     }
 
-    this.pageInfos.set(pageInfo.config.page_id, pageInfo);
+    this.pageInfos[pageInfo.config.page_id] = pageInfo;
 
     return pageInfo;
   }
@@ -360,7 +360,7 @@ export class FloorplanElement extends LitElement {
     this.cssRules = this.cssRules.concat(cssRules);
   }
 
-  getCssRules(style: HTMLStyleElement): Array<unknown> {
+  getCssRules(style: HTMLStyleElement): unknown[] {
     let cssRules;
 
     if (style.sheet) {
@@ -502,7 +502,7 @@ export class FloorplanElement extends LitElement {
     return svg;
   }
 
-  _querySelectorAll(element: Element, selector: string, includeSelf: boolean): Array<Element> {
+  _querySelectorAll(element: Element, selector: string, includeSelf: boolean): Element[] {
     let elements = Array.from(element.querySelectorAll(selector).values());
     elements = includeSelf ? elements.concat(element) : elements;
     return elements;
@@ -539,8 +539,8 @@ export class FloorplanElement extends LitElement {
 
   initPageDisplay(): void {
     if (this.config.pages) {
-      for (const key of this.pageInfos.keys()) {
-        const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
+      for (const key of Object.keys(this.pageInfos.keys)) {
+        const pageInfo = this.pageInfos[key] as FloorplanPageInfo;
 
         pageInfo.svg.style.opacity = '1';
         pageInfo.svg.style.display = pageInfo.isMaster || pageInfo.isDefault ? 'initial' : 'none'; // Show the first page
@@ -561,8 +561,8 @@ export class FloorplanElement extends LitElement {
     }
 
     if (this.config.pages) {
-      for (const key of this.pageInfos.keys()) {
-        const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
+      for (const key of Object.keys(this.pageInfos.keys)) {
+        const pageInfo = this.pageInfos[key];
 
         if (pageInfo.config.variables) {
           for (const variable of pageInfo.config.variables) {
@@ -589,9 +589,9 @@ export class FloorplanElement extends LitElement {
       }
     }
 
-    if (!this.entityInfos.has(variableName)) {
+    if (!this.entityInfos[variableName]) {
       const entityInfo = { entityId: variableName, ruleInfos: [], lastState: undefined } as FloorplanEntityInfo;
-      this.entityInfos.set(variableName, entityInfo);
+      this.entityInfos[variableName] = entityInfo;
     }
 
     if (!this.hass.states[variableName]) {
@@ -609,7 +609,7 @@ export class FloorplanElement extends LitElement {
   }
 
   initStartupActions(): void {
-    let actions = new Array<FloorplanActionConfig>();
+    let actions: FloorplanActionConfig[] = [];
 
     const startup = this.config.startup;
     if (startup?.action) {
@@ -617,8 +617,8 @@ export class FloorplanElement extends LitElement {
     }
 
     if (this.config.pages) {
-      for (const key of this.pageInfos.keys()) {
-        const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
+      for (const key of Object.keys(this.pageInfos)) {
+        const pageInfo = this.pageInfos[key];
 
         const startup = pageInfo.config && pageInfo.config.startup;
         if (startup?.action) {
@@ -651,7 +651,7 @@ export class FloorplanElement extends LitElement {
   initFloorplanRules(svg: SVGGraphicsElement, config: FloorplanConfig): void {
     if (!config.rules) return;
 
-    const svgElements = this._querySelectorAll(svg, '*', true) as Array<SVGGraphicsElement>;
+    const svgElements = this._querySelectorAll(svg, '*', true) as SVGGraphicsElement[];
 
     this.initLastMotion(config);
     this.initRules(config, svg, svgElements);
@@ -663,11 +663,11 @@ export class FloorplanElement extends LitElement {
       this.lastMotionConfig = config.last_motion;
 
       const entityInfo = { entityId: config.last_motion.entity, ruleInfos: [], lastState: undefined };
-      this.entityInfos.set(config.last_motion.entity, entityInfo);
+      this.entityInfos[config.last_motion.entity] = entityInfo;
     }
   }
 
-  initRules(config: FloorplanConfig, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
+  initRules(config: FloorplanConfig, svg: SVGGraphicsElement, svgElements: SVGGraphicsElement[]): void {
     // Apply default options to rules that don't override the options explictly
     if (config.defaults) {
       for (const rule of config.rules) {
@@ -687,16 +687,16 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  initEntityRule(rule: FloorplanRuleConfig, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
+  initEntityRule(rule: FloorplanRuleConfig, svg: SVGGraphicsElement, svgElements: SVGGraphicsElement[]): void {
     const entities = this.initGetEntityRuleEntities(rule);
     for (const entity of entities) {
       const entityId = entity.entityId;
       const elementId = entity.elementId;
 
-      let entityInfo = this.entityInfos.get(entityId);
+      let entityInfo = this.entityInfos[entityId];
       if (!entityInfo) {
         entityInfo = { entityId: entityId, ruleInfos: [], lastState: undefined };
-        this.entityInfos.set(entityId, entityInfo);
+        this.entityInfos[entityId] = entityInfo;
       }
 
       const ruleInfo = new FloorplanRuleInfo(rule);
@@ -732,17 +732,17 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  initGetEntityRuleEntities(rule: FloorplanRuleConfig): Array<{ entityId: string, elementId: string }> {
-    const targetEntities = new Array<{ entityId: string, elementId: string }>();
+  initGetEntityRuleEntities(rule: FloorplanRuleConfig): { entityId: string, elementId: string }[] {
+    const targetEntities: { entityId: string, elementId: string }[] = [];
 
-    rule.groups = rule.groups ? rule.groups : new Array<string>();
+    rule.groups = rule.groups ? rule.groups : [];
 
     // Split out HA entity groups into separate entities
     for (const entityId of rule.groups) {
       const group = this.hass.states[entityId];
       // TODO: check groups
       if (group) {
-        for (const entityId of ((group.attributes as Record<string, unknown>).entity_id as Array<string>)) {
+        for (const entityId of ((group.attributes as Record<string, unknown>).entity_id as string[])) {
           this.addTargetEntity(entityId, entityId, targetEntities);
         }
       }
@@ -752,11 +752,11 @@ export class FloorplanElement extends LitElement {
     }
 
     // Combine single entity and list of entities into combined list
-    rule.entities = rule.entities ? rule.entities : new Array<string>();
+    rule.entities = rule.entities ? rule.entities : [];
     rule.entities = rule.entity ? rule.entities.concat(rule.entity) : rule.entities;
 
     // Entities as a list of strings
-    const entityIds = rule.entities.filter(x => (typeof x === 'string')) as Array<string>;
+    const entityIds = rule.entities.filter(x => (typeof x === 'string')) as string[];
     for (const entityId of entityIds) {
       const elementId = rule.element ? rule.element : entityId;
       this.addTargetEntity(entityId, elementId, targetEntities);
@@ -772,7 +772,7 @@ export class FloorplanElement extends LitElement {
     return targetEntities;
   }
 
-  addTargetEntity(entiyId: string, elementId: string, targetEntities: Array<{ entityId: string, elementId: string }>): void {
+  addTargetEntity(entiyId: string, elementId: string, targetEntities: { entityId: string, elementId: string }[]): void {
     const hassEntity = this.hass.states[entiyId];
     const isFloorplanVariable = (entiyId.split('.')[0] === 'floorplan');
 
@@ -784,19 +784,19 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  initElementRule(rule: FloorplanRuleConfig, svg: SVGGraphicsElement, svgElements: Array<SVGGraphicsElement>): void {
+  initElementRule(rule: FloorplanRuleConfig, svg: SVGGraphicsElement, svgElements: SVGGraphicsElement[]): void {
     if (!rule.element && !rule.elements) return;
 
-    rule.elements = rule.elements ? rule.elements : new Array<string>();
+    rule.elements = rule.elements ? rule.elements : [];
     rule.elements = rule.element ? rule.elements.concat(rule.element) : rule.elements;
 
     for (const elementId of rule.elements) {
       const svgElement = svgElements.find(svgElement => svgElement.id === elementId);
       if (svgElement) {
-        let elementInfo = this.elementInfos.get(elementId);
+        let elementInfo = this.elementInfos[elementId];
         if (!elementInfo) {
           elementInfo = { ruleInfos: [], lastState: undefined } as FloorplanElementInfo;
-          this.elementInfos.set(elementId, elementInfo);
+          this.elementInfos[elementId] = elementInfo;
         }
 
         const ruleInfo = new FloorplanRuleInfo(rule);
@@ -893,7 +893,7 @@ export class FloorplanElement extends LitElement {
       svgElement.getBBox(),
       svgElement.getBoundingClientRect()
     );
-    ruleInfo.svgElementInfos.set(svgElement.id, svgElementInfo);
+    ruleInfo.svgElementInfos[svgElement.id] = svgElementInfo;
 
     //this.addNestedSvgElementsToRule(svgElement, ruleInfo);
 
@@ -911,7 +911,7 @@ export class FloorplanElement extends LitElement {
         (svgNestedElement as SVGGraphicsElement).getBBox(),
         svgNestedElement.getBoundingClientRect()
       );
-      ruleInfo.svgElementInfos.set(svgElement.id, svgElementInfo);
+      ruleInfo.svgElementInfos[svgElement.id] = svgElementInfo;
     });
   }
 
@@ -925,7 +925,7 @@ export class FloorplanElement extends LitElement {
     return image;
   }
 
-  addClasses(entityId: string, svgElement: SVGGraphicsElement, classes: Array<string>, propagate: boolean): void {
+  addClasses(entityId: string, svgElement: SVGGraphicsElement, classes: string[], propagate: boolean): void {
     if (!classes || !classes.length) return;
 
     for (const className of classes) {
@@ -958,7 +958,7 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  removeClasses(entityId: string, svgElement: SVGGraphicsElement, classes: Array<string>, propagate: boolean): void {
+  removeClasses(entityId: string, svgElement: SVGGraphicsElement, classes: string[], propagate: boolean): void {
     if (!classes || !classes.length) return;
 
     for (const className of classes) {
@@ -995,7 +995,7 @@ export class FloorplanElement extends LitElement {
     this.handleElements();
 
     let changedEntityIds = this.getChangedEntities(isInitialLoad);
-    changedEntityIds = changedEntityIds.concat(Array.from(this.variables.keys())); // always assume variables need updating
+    changedEntityIds = changedEntityIds.concat(Array.from(Object.keys(this.variables))); // always assume variables need updating
 
     if (changedEntityIds?.length) {
       for (const entityId of changedEntityIds) {
@@ -1004,15 +1004,15 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  getChangedEntities(isInitialLoad: boolean): Array<string> {
-    const changedEntityIds = new Array<string>();
+  getChangedEntities(isInitialLoad: boolean): string[] {
+    const changedEntityIds = [];
 
     const entityIds = Object.keys(this.hass.states);
 
     let lastMotionEntityInfo, oldLastMotionState, newLastMotionState;
 
     if (this.lastMotionConfig) {
-      lastMotionEntityInfo = this.entityInfos.get(this.lastMotionConfig.entity);
+      lastMotionEntityInfo = this.entityInfos[this.lastMotionConfig.entity];
       if (lastMotionEntityInfo?.lastState) {
         oldLastMotionState = lastMotionEntityInfo.lastState.state;
         newLastMotionState = this.hass.states[this.lastMotionConfig.entity].state;
@@ -1020,7 +1020,7 @@ export class FloorplanElement extends LitElement {
     }
 
     for (const entityId of entityIds) {
-      const entityInfo = this.entityInfos.get(entityId);
+      const entityInfo = this.entityInfos[entityId];
       if (entityInfo) {
         const entityState = this.hass.states[entityId];
 
@@ -1075,7 +1075,7 @@ export class FloorplanElement extends LitElement {
 
   async handleEntity(entityId: string): Promise<void> {
     const entityState = this.hass.states[entityId];
-    const entityInfo = this.entityInfos.get(entityId);
+    const entityInfo = this.entityInfos[entityId];
 
     if (!entityInfo) return;
 
@@ -1091,8 +1091,8 @@ export class FloorplanElement extends LitElement {
     const entityId = entityInfo.entityId as string;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      for (const svgElementId of ruleInfo.svgElementInfos.keys()) {
-        const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
+      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
+        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
 
         if (svgElementInfo.svgElement.nodeName === 'text') {
           this.handleEntityUpdateText(entityId, ruleInfo, svgElementInfo);
@@ -1105,8 +1105,8 @@ export class FloorplanElement extends LitElement {
   }
 
   async handleElements(): Promise<void> {
-    for (const key of this.elementInfos.keys()) {
-      const elementInfo = this.elementInfos.get(key) as FloorplanElementInfo;
+    for (const key of Object.keys(this.elementInfos)) {
+      const elementInfo = this.elementInfos[key] as FloorplanElementInfo;
       await this.handleElementUpdateDom(elementInfo)
       this.handleElementUpdateCss(elementInfo);
     }
@@ -1114,8 +1114,8 @@ export class FloorplanElement extends LitElement {
 
   async handleElementUpdateDom(elementInfo: FloorplanElementInfo): Promise<void> {
     for (const ruleInfo of elementInfo.ruleInfos) {
-      for (const svgElementId of ruleInfo.svgElementInfos.keys()) {
-        const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
+      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
+        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
 
         if (svgElementInfo.svgElement.nodeName === 'text') {
           this.handleEntityUpdateText(svgElementId, ruleInfo, svgElementInfo);
@@ -1200,8 +1200,8 @@ export class FloorplanElement extends LitElement {
 
     for (const ruleInfo of entityInfo.ruleInfos) {
       if (ruleInfo.rule.hover_over !== false) {
-        for (const svgElementId of ruleInfo.svgElementInfos.keys()) {
-          const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
+        for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
+          const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
 
           this.handlEntitySetHoverOverText(svgElementInfo.svgElement, entityState);
         }
@@ -1233,8 +1233,8 @@ export class FloorplanElement extends LitElement {
     if (!this.cssRules || !this.cssRules.length) return;
 
     for (const ruleInfo of elementInfo.ruleInfos) {
-      for (const svgElementId of ruleInfo.svgElementInfos.keys()) {
-        const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
+      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
+        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
 
         this.handleUpdateElementCss(svgElementInfo, ruleInfo);
       }
@@ -1245,8 +1245,8 @@ export class FloorplanElement extends LitElement {
     if (!this.cssRules || !this.cssRules.length) return;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      for (const svgElementId of ruleInfo.svgElementInfos.keys()) {
-        const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
+      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
+        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
 
         if (svgElementInfo.svgElement) { // images may not have been updated yet
           this.handleUpdateCss(entityInfo, svgElementInfo, ruleInfo);
@@ -1255,8 +1255,8 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  getStateConfigClasses(stateConfig: FloorplanRuleStateConfig): Array<string> { // support class: or classes:
-    let classes = new Array<string>();
+  getStateConfigClasses(stateConfig: FloorplanRuleStateConfig): string[] { // support class: or classes:
+    let classes: string[] = [];
 
     if (!stateConfig) return [];
     else if (Array.isArray(stateConfig.class)) classes = stateConfig.class;
@@ -1271,14 +1271,14 @@ export class FloorplanElement extends LitElement {
     const entityId = entityInfo.entityId as string;
     const svgElement = svgElementInfo.svgElement;
 
-    let targetClasses = new Array<string>();
+    let targetClasses: string[] = [];
     if (ruleInfo.rule.class_template) {
       const targetClasslist = this.evaluate(ruleInfo.rule.class_template, entityId, svgElement) as string;
       targetClasses = targetClasslist ? targetClasslist.split(" ") : [];
     }
 
     // Get the config for the current state
-    const obsoleteClasses = new Array<string>();
+    const obsoleteClasses: string[] = [];
     if (ruleInfo.rule.states) {
       const entityState = this.hass.states[entityId];
 
@@ -1319,13 +1319,13 @@ export class FloorplanElement extends LitElement {
     const entityId = svgElementInfo.entityId;
     const svgElement = svgElementInfo.svgElement;
 
-    let targetClasses = new Array<string>();
+    let targetClasses: string[] = [];
     if (ruleInfo.rule.class_template) {
       const targetClassList = this.evaluate(ruleInfo.rule.class_template, entityId, svgElement) as string;
       targetClasses = targetClassList ? targetClassList.split(" ") : [];
     }
 
-    const obsoleteClasses = new Array<string>();
+    const obsoleteClasses: string[] = [];
     for (const otherClass of Utils.getArray<string>(svgElement.classList)) {
       if ((targetClasses.indexOf(otherClass) < 0) && (otherClass !== 'floorplan-item') && Utils.hasClass(svgElement, otherClass) && (svgElementInfo.originalClasses.indexOf(otherClass) < 0)) {
         obsoleteClasses.push(otherClass);
@@ -1348,8 +1348,8 @@ export class FloorplanElement extends LitElement {
     if (!entityState) return;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      for (const svgElementId of ruleInfo.svgElementInfos.keys()) {
-        const svgElementInfo = ruleInfo.svgElementInfos.get(svgElementId) as FloorplanSvgElementInfo;
+      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
+        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
         const svgElement = svgElementInfo.svgElement;
 
         const stateConfigClasses = this.getStateConfigClasses(this.lastMotionConfig);
@@ -1507,9 +1507,9 @@ export class FloorplanElement extends LitElement {
     switch (this.getService(actionService)) {
       case 'class_toggle':
         if (actionData) {
-          const classes = actionData.classes as Array<string>;
+          const classes = actionData.classes as string[];
 
-          for (const otherElementId of (actionData.elements as Array<string>)) {
+          for (const otherElementId of (actionData.elements as string[])) {
             const otherSvgElement = svgElementInfo?.svg?.querySelector(`[id="${otherElementId}"]`);
             if (otherSvgElement) {
               if (Utils.hasClass(otherSvgElement, classes[0])) {
@@ -1530,11 +1530,11 @@ export class FloorplanElement extends LitElement {
 
       case 'page_navigate':
         page_id = actionData.page_id as string;
-        targetPageInfo = page_id ? this.pageInfos.get(page_id) : undefined;
+        targetPageInfo = page_id ? this.pageInfos[page_id] : undefined;
 
         if (targetPageInfo) {
-          Array.from(this.pageInfos.keys()).map((key) => {
-            const pageInfo = this.pageInfos.get(key) as FloorplanPageInfo;
+          Array.from(Object.keys(this.pageInfos)).map((key) => {
+            const pageInfo = this.pageInfos[key] as FloorplanPageInfo;
 
             if (!pageInfo.isMaster && (pageInfo.svg.style.display !== 'none')) {
               pageInfo.svg.style.display = 'none';
@@ -1578,7 +1578,7 @@ export class FloorplanElement extends LitElement {
   }
 
   setVariable(variableName: string, value: unknown, attributes: Record<string, unknown>, isInitialLoad: boolean): void {
-    this.variables.set(variableName, value);
+    this.variables[variableName] = value;
 
     if (this.hass.states[variableName]) {
       this.hass.states[variableName].state = (value as Record<string, unknown>).toString();
@@ -1588,7 +1588,7 @@ export class FloorplanElement extends LitElement {
       }
     }
 
-    for (const otherVariableName of Array.from(this.variables.keys())) {
+    for (const otherVariableName of Array.from(Object.keys(this.variables))) {
       const otherVariable = this.hass.states[otherVariableName];
       if (otherVariable) {
         otherVariable.last_changed = new Date().toString(); // mark all variables as changed
