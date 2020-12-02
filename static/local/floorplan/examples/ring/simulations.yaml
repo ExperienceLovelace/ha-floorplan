@@ -15,6 +15,8 @@ simulations:
 
   - entity: sensor.ring_salon_battery
     states:
+      - state: 75.9
+        duration: 1
       - state: 75.8
         duration: 1
       - state: 75.7
@@ -30,4 +32,6 @@ simulations:
       - state: 75.6
         duration: 1
       - state: 75.7
+        duration: 1
+      - state: 75.8
         duration: 1

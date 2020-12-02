@@ -24,11 +24,9 @@ simulations:
       - state: off
         duration: 2
 
-  - entity: light.garage
-    states:
-      - state: on
-
-  - entity: switch.living_area_fan
+  - entities:
+      - light.garage
+      - switch.living_area_fan
     states:
       - state: on
 

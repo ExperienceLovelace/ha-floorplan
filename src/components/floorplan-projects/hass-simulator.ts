@@ -75,10 +75,19 @@ export class HassSimulator {
 
 export class SimulationProcessor {
   currentIndex = 0;
+  entities = new Array<string | HassEntity>();
 
   constructor(private simulation: HassSimulation, private hass: HomeAssistant, private onEntityStatesChanged: (entityStates: Array<HassEntity>) => void) {
-    if (!this.simulation.entity) {
-      console.error('Simulation must contain an entity', simulation);
+    if (this.simulation.entities) {
+      this.entities = this.entities.concat(this.simulation.entities);
+    }
+
+    if (this.simulation.entity) {
+      this.entities = this.entities.concat(this.simulation.entity);
+    }
+
+    if (!this.entities.length) {
+      console.error('Simulation must contain at least one entity', simulation);
     }
 
     if (!this.simulation.states.length) {
@@ -90,7 +99,9 @@ export class SimulationProcessor {
 
   triggerState(currentState: TimedHassEntity): void {
     if (this.simulation.enabled || (this.simulation.enabled === undefined)) {
-      this.updateEntityState(this.simulation.entity, currentState);
+      for (const entity of this.entities) {
+        this.updateEntityState(entity, currentState);
+      }
     }
 
     const currentIndex = this.simulation.states.indexOf(currentState);

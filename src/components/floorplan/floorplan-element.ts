@@ -1,12 +1,14 @@
-import { EvalHelper } from './lib/eval-helper';
 import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
 import { HassEntityBase } from '../../lib/homeassistant/core-types';
 import { fireEvent } from '../../lib/homeassistant/fire-event';
 import { FloorplanConfig, FloorplanLastMotionConfig, FloorplanPageConfig } from './lib/floorplan-config';
 import { FloorplanRuleConfig, FloorplanVariableConfig, FloorplanActionConfig, FloorplanRuleStateConfig } from './lib/floorplan-config';
 import { FloorplanRuleEntityElementConfig } from './lib/floorplan-config';
-import { FloorplanPageInfo, FloorplanRuleInfo, FloorplanSvgElementInfo } from './lib/floorplan-info';
+import { FloorplanClickContext, FloorplanPageInfo, FloorplanRuleInfo, FloorplanSvgElementInfo } from './lib/floorplan-info';
 import { FloorplanElementInfo, FloorplanEntityInfo } from './lib/floorplan-info';
+import { ClickType } from './lib/types';
+import { LongClicks } from './lib/long-clicks';
+import { EvalHelper } from './lib/eval-helper';
 import { debounce } from 'debounce';
 import * as yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
@@ -847,7 +849,7 @@ export class FloorplanElement extends LitElement {
 
         element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
 
-        const context = new ClickEventContext(this, svgElementInfo, entityId, elementId, rule);
+        const context = new FloorplanClickContext(this, svgElementInfo, entityId, elementId, rule);
 
         if (rule.on_click || (rule.more_info !== false)) {
           E.on(element, 'click', this.onClick.bind(context));
@@ -856,7 +858,7 @@ export class FloorplanElement extends LitElement {
         }
 
         if (rule.on_long_click) {
-          this.observeLongClicks(element as HTMLElement | SVGElement);
+          LongClicks.observe(element as HTMLElement | SVGElement);
           E.on(element, 'longClick', this.onLongClick.bind(context));
           if (element.style) element.style.cursor = 'pointer';
         }
@@ -1432,19 +1434,19 @@ export class FloorplanElement extends LitElement {
     e.stopPropagation();
     e.preventDefault();
 
-    const context = this as unknown as ClickEventContext;
-    context.instance.performAction(ClickType.ShortClick, context);
+    const context = this as unknown as FloorplanClickContext;
+    (context.instance as FloorplanElement).performAction(ClickType.ShortClick, context);
   }
 
   onLongClick(e: Event): void {
     e.stopPropagation();
     e.preventDefault();
 
-    const context = this as unknown as ClickEventContext;
-    setTimeout(() => { context.instance.performAction(ClickType.LongClick, context) }, 300);
+    const context = this as unknown as FloorplanClickContext;
+    setTimeout(() => { (context.instance as FloorplanElement).performAction(ClickType.LongClick, context) }, 300);
   }
 
-  performAction(clickType: ClickType, context: ClickEventContext): void {
+  performAction(clickType: ClickType, context: FloorplanClickContext): void {
     const entityId = context.entityId;
     const svgElementInfo = context.svgElementInfo;
     const rule = context.rule;
@@ -1697,92 +1699,8 @@ export class FloorplanElement extends LitElement {
   logDebug(area: string, message: string): void {
     this.logger.log('debug', `${area} ${message}`);
   }
-
-  /***************************************************************************************************************************/
-  /* Long click support
-  /***************************************************************************************************************************/
-
-  observeLongClicks(elem: HTMLElement | SVGElement): void {
-    const longClickDuration = 400;
-
-    let timer: NodeJS.Timeout;
-    let isLongClick = false;
-
-    const onTapStart = () => {
-      console.log('onTapStart: isLongClick:', isLongClick);
-
-      isLongClick = false;
-
-      timer = setTimeout(() => {
-        isLongClick = true;
-        console.log('onTapStart: isLongClick:', isLongClick);
-        console.log('onTapStart: dispatching event:', 'longClick');
-        elem.dispatchEvent(new Event("longClick"));
-      }, longClickDuration);
-    };
-
-    const onTapEnd = (evt: Event) => {
-      clearTimeout(timer);
-
-      if (isLongClick) {
-        console.log('onTapEnd: isLongClick:', isLongClick);
-        // have already triggered long click
-      } else {
-        // trigger shortClick, shortMouseup etc
-        console.log('onTapStart: dispatching event:', 'short' + evt.type[0].toUpperCase() + evt.type.slice(1));
-        elem.dispatchEvent(new Event('short' + evt.type[0].toUpperCase() + evt.type.slice(1)));
-      }
-    };
-
-    const onTap = (evt: Event) => {
-      if (isLongClick) {
-        console.log('onTapEnd: isLongClick:', isLongClick);
-        evt.preventDefault();
-        if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
-      }
-    };
-
-    const onClick = (evt: Event) => {
-      console.log('onClick: isLongClick:', isLongClick);
-      evt.preventDefault();
-      if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
-    };
-
-    E.on(elem, 'mousedown', onTapStart.bind(this));
-    E.on(elem, 'tapstart', onTapStart.bind(this));
-    E.on(elem, 'touchstart', onTapStart.bind(this));
-
-    E.on(elem, 'click', onTapEnd.bind(this));
-    E.on(elem, 'mouseup', onTapEnd.bind(this));
-    E.on(elem, 'tapend', onTapEnd.bind(this));
-    E.on(elem, 'touchend', onTapEnd.bind(this));
-
-    E.on(elem, 'tap', onTap.bind(this));
-    E.on(elem, 'touch', onTap.bind(this));
-    E.on(elem, 'mouseup', onTap.bind(this));
-    E.on(elem, 'tapend', onTap.bind(this));
-    E.on(elem, 'touchend', onTap.bind(this));
-
-    E.on(elem, 'click', onClick.bind(this));
-  }
 }
 
 if (!customElements.get('floorplan-element')) {
   customElements.define('floorplan-element', FloorplanElement);
-}
-
-class ClickEventContext {
-  constructor(
-    public instance: FloorplanElement,
-    public svgElementInfo: FloorplanSvgElementInfo,
-    public entityId: string | undefined,
-    public elementId: string | undefined,
-    public rule: FloorplanRuleConfig,
-  ) {
-  }
-}
-
-enum ClickType {
-  ShortClick,
-  LongClick
 }

@@ -11,7 +11,8 @@ export interface HassSimulatorConfig {
 }
 
 export interface HassSimulation {
-  entity: HassEntity;
+  entity: string;
+  entities: string[];
   states: TimedHassEntity[];
   enabled: boolean;
 }

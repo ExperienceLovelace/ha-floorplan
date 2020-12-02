@@ -40,3 +40,14 @@ export class FloorplanEntityInfo {
   entityId!: string;
   ruleInfos = new Array<FloorplanRuleInfo>();
 }
+
+export class FloorplanClickContext {
+  constructor(
+    public instance: HTMLElement,
+    public svgElementInfo: FloorplanSvgElementInfo,
+    public entityId: string | undefined,
+    public elementId: string | undefined,
+    public rule: FloorplanRuleConfig,
+  ) {
+  }
+}
