@@ -1,12 +1,12 @@
-import { HassObject } from '../../lib/hass/hass';
-import { Panel } from '../../lib/hass/panel-config';
+import { HomeAssistant } from '../../lib/hass/frontend-types';
+import { FloorplanPanel as Panel } from '../../lib/hass/floorplan-frontend';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import '../floorplan/floorplan-element';
 
 export class FloorplanPanel extends LitElement {
-  @property({ attribute: false }) public hass!: HassObject;
+  @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ type: Boolean }) public narrow!: boolean;
-  @property({ attribute: false }) public route!: any;
+  @property({ attribute: false }) public route!: unknown;
   @property({ attribute: false }) public panel!: Panel;
 
   @property({ type: Boolean }) public showSideBar!: boolean;
@@ -54,7 +54,7 @@ export class FloorplanPanel extends LitElement {
     `;
   }
 
-  update(changedProperties: PropertyValues) {
+  update(changedProperties: PropertyValues): void {
     super.update(changedProperties);
 
     if (changedProperties.has('panel')) {

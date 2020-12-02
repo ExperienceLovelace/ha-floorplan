@@ -3,21 +3,21 @@ stylesheet: /local/floorplan/examples/simple/simple.css
 #  log_level: info
 
 rules:
-  - entity: light.double_garage
-    element: light.double_garage
+  - entity: light.garage
+    element: light.garage
     image_template: '/local/floorplan/examples/simple/light_${entity.state}.svg'
     more_info: false
     on_click:
       service: homeassistant.toggle
 
-  - entity: light.double_garage
-    element: light.double_garage.background
+  - entity: light.garage
+    element: light.garage.background
     class_template: 'background-${entity.state}'
     on_click:
       service: homeassistant.toggle
 
-  - entity: light.double_garage
-    element: light.double_garage.text
+  - entity: light.garage
+    element: light.garage.text
     text_template: '${entity.state}'
     on_click:
       service: homeassistant.toggle
@@ -54,7 +54,7 @@ rules:
   - entities:
       - binary_sensor.main_bedroom
       - binary_sensor.living_area
-      - binary_sensor.double_garage
+      - binary_sensor.garage
     states:
       - state: 'off'
         class: binary-sensor-off

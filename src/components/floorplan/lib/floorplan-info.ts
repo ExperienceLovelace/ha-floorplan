@@ -5,8 +5,8 @@ export class FloorplanPageInfo {
   index!: number;
   config!: FloorplanPageConfig;
   svg!: SVGGraphicsElement;
-  isMaster: boolean = false;
-  isDefault: boolean = false;
+  isMaster!: boolean;
+  isDefault!: boolean;
 }
 
 export class FloorplanElementInfo {
@@ -28,15 +28,15 @@ export class FloorplanSvgElementInfo {
 export class FloorplanRuleInfo {
   svgElementInfos = new Map<string, FloorplanSvgElementInfo>();
   imageUrl!: string;
-  imageLoader: any;
-  propagate: boolean = false;
+  imageLoader!: number | undefined;
+  propagate!: boolean;
 
   constructor(public rule: FloorplanRuleConfig) {
   }
 }
 
 export class FloorplanEntityInfo {
-  lastState!: HassEntityState;
+  lastState!: HassEntityState | undefined;
   entityId!: string;
   ruleInfos = new Array<FloorplanRuleInfo>();
 }

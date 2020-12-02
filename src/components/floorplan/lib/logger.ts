@@ -1,6 +1,6 @@
 import { Utils } from "../../../lib/utils";
 
-export class LoggerBase {
+export abstract class LoggerBase {
   logLevelGroups = {
     error: ['error'],
     warn: ['error', 'warning', 'warn'],
@@ -12,8 +12,7 @@ export class LoggerBase {
   constructor(public logLevel?: string) {
   }
 
-  log(level: string, message: string, force: boolean = false): void {
-  }
+  abstract log(level: string, message: string, force: boolean): void;
 }
 
 export class Logger extends LoggerBase {
@@ -29,18 +28,18 @@ export class Logger extends LoggerBase {
     super(logLevel);
   }
 
-  log(level: string, message: string, force: boolean = false): void {
+  log(level: string, message: string, force = false): void {
     const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
 
-    let targetLogLevels = this.logLevel && this.logLevelGroups[this.logLevel.toLowerCase()];
-    let shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
+    const targetLogLevels = this.logLevel && this.logLevelGroups[this.logLevel.toLowerCase()];
+    const shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
 
     if (force || shouldLog) {
       if (this.element) {
         const listItemElement = document.createElement('li');
         Utils.addClass(listItemElement, level);
         listItemElement.textContent = text;
-        this.element.querySelector('ul')!.prepend(listItemElement);
+        this.element.querySelector('ul')?.prepend(listItemElement);
         this.element.style.display = 'block';
       }
     }
@@ -48,7 +47,7 @@ export class Logger extends LoggerBase {
     this.consoleLog(level, message);
   }
 
-  consoleLog(level: string, message: string, force: boolean = false): void {
+  consoleLog(level: string, message: string, force = false): void {
     const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
 
     const targetLogLevels = this.debugLevel && this.logLevelGroups[this.debugLevel.toLowerCase()];
@@ -65,7 +64,7 @@ export class Logger extends LoggerBase {
           console.warn(text);
           break;
 
-        case 'error':
+        case 'info':
           console.info(text);
           break;
 

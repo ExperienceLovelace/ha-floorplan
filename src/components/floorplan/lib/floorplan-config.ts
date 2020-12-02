@@ -2,18 +2,23 @@
 export class FloorplanConfig {
   image!: FloorplanImageConfig | string;
   image_mobile!: FloorplanImageConfig | string;
-  stylesheet: string = "";
+  stylesheet!: string;
   debug_level!: string;
   log_level!: string;
   last_motion!: FloorplanLastMotionConfig;
-  pan_zoom: any;
-  fully_kiosk: any;
-  pages = new Array<any>();
+  pan_zoom: unknown;
+  pages = new Array<string>();
   rules!: Array<FloorplanRuleConfig>;
 
-  variables = new Array<any>();
+  variables = new Array<FloorplanVariableConfig>();
   startup!: FloorplanStartupConfig;
-  defaults: any;
+  defaults!: FloorplanConfigDefaults | undefined;
+}
+
+export class FloorplanConfigDefaults {
+  hover_over!: boolean;
+  more_info!: boolean;
+  propagate = true;
 }
 
 export class FloorplanStartupConfig {
@@ -23,16 +28,20 @@ export class FloorplanStartupConfig {
 export class FloorplanActionConfig {
   service!: string;
   service_template!: string;
-  value: any;
+  value: unknown;
   value_template!: string;
   data!: string;
   data_template!: string;
-  no_entity_id: boolean = false;
+  no_entity_id = false;
 }
 
 export class FloorplanPageConfig extends FloorplanConfig {
-  page_id: string = "";
-  master_page!: string;
+  page_id!: string;
+  master_page!: FloorplanMasterPageConfig;
+}
+
+export class FloorplanMasterPageConfig extends FloorplanPageConfig {
+  content_element!: string;
 }
 
 export class FloorplanImageConfig {
@@ -41,7 +50,7 @@ export class FloorplanImageConfig {
 
 export class FloorplanImageSize {
   min_width = 0;
-  location: string = "";
+  location!: string;
 }
 
 export class FloorplanRuleConfig {
@@ -50,9 +59,9 @@ export class FloorplanRuleConfig {
   image_refresh_interval!: string;
   text_template!: string;
   class_template!: string;
-  hover_over: boolean = false;
-  more_info: boolean = false;
-  propagate: boolean = true;
+  hover_over!: boolean;
+  more_info!: boolean;
+  propagate = true;
   entity!: string;
   entities!: Array<string | FloorplanRuleEntityElementConfig>;
   element!: string;
@@ -80,6 +89,6 @@ export class FloorplanLastMotionConfig extends FloorplanRuleStateConfig {
 
 export class FloorplanVariableConfig {
   name!: string;
-  value!: any;
+  value!: unknown;
   value_template!: string;
 }

@@ -17,14 +17,14 @@ simulations:
       - state: off
         duration: 3
 
-  - entity: binary_sensor.double_garage
+  - entity: binary_sensor.garage
     states:
       - state: on
         duration: 4
       - state: off
         duration: 2
 
-  - entity: light.double_garage
+  - entity: light.garage
     states:
       - state: on
 

@@ -579,12 +579,12 @@ v -7.355001 z"
      inkscape:connector-curvature="0" />
   <rect
      style="fill:#c8c8c8;fill-opacity:1;stroke:#076196;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="binary_sensor.double_garage"
+     id="binary_sensor.garage"
      width="79.56012"
      height="87.086044"
      x="3.2775245"
      y="113.59852"
-     inkscape:label="binary_sensor.double_garage" />
+     inkscape:label="binary_sensor.garage" />
   <rect
      style="fill:#c8c8c8;fill-opacity:1;stroke:#076196;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="rect1611-1-5"
@@ -1749,8 +1749,8 @@ z"
        id="path120" />
   </g>
   <g
-     id="light.double_garage"
-     inkscape:label="light.double_garage">
+     id="light.garage"
+     inkscape:label="light.garage">
     <path
        transform="matrix(0.10946544,0,0,0.10946544,52.401348,140.07825)"
        inkscape:connector-curvature="0"
@@ -1917,19 +1917,19 @@ z"
        style="font-size:7.55913687px;stroke-width:0.94489211">OFF</tspan></text>
   <rect
      style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="light.double_garage.background"
+     id="light.garage.background"
      width="29.517944"
      height="16.836082"
      x="232.23018"
      y="102.51582"
-     inkscape:label="light.double_garage.background" />
+     inkscape:label="light.garage.background" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
      x="233.8326"
      y="116.06322"
-     id="light.double_garage.text"
-     inkscape:label="light.double_garage.text"
+     id="light.garage.text"
+     inkscape:label="light.garage.text"
      transform="scale(1.0242454,0.97632852)"><tspan
        sodipodi:role="line"
        id="tspan5095-4-6"

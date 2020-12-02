@@ -11,7 +11,7 @@ export class FloorplanProjects extends LitElement {
     this.init();
   }
 
-  async init() {
+  async init(): Promise<void> {
     this.projects = [
       // Panels
       { dir: "simple", configFile: "simple-panel.yaml", statesFile: "states.yaml", },

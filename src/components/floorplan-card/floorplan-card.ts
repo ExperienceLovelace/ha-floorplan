@@ -1,11 +1,11 @@
-import { HassObject } from '../../lib/hass/hass';
-import { CardConfig } from '../../lib/hass/card-config';
-import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
+import { HomeAssistant } from '../../lib/hass/frontend-types';
+import { FloorplanCardConfig } from '../../lib/hass/floorplan-frontend';
+import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import '../floorplan/floorplan-element';
 
 export class FloorplanCard extends LitElement {
-  @property({ attribute: false }) public hass!: HassObject;
-  @property({ attribute: false }) public config!: CardConfig;
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property({ attribute: false }) public config!: FloorplanCardConfig;
 
   @property({ type: Boolean }) public isDemo!: boolean;
 
@@ -32,7 +32,7 @@ export class FloorplanCard extends LitElement {
     `;
   }
 
-  setConfig(config: CardConfig) {
+  setConfig(config: FloorplanCardConfig): void {
     this.config = config;
   }
 

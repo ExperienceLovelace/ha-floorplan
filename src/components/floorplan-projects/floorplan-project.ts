@@ -1,14 +1,13 @@
+import { HomeAssistant } from '../../lib/hass/frontend-types';
 import { Simulator, SimulatorConfig } from '../../lib/hass/simulator';
-import { HassObject } from '../../lib/hass/hass';
-import { CardConfig } from '../../lib/hass/card-config';
-import { PanelConfig } from '../../lib/hass/panel-config';
+import { FloorplanCardConfig, FloorplanPanelConfig } from '../../lib/hass/floorplan-frontend';
 import { Utils } from '../../lib/utils';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import '../floorplan/floorplan-element';
 
 export class FloorplanProjectElement extends LitElement {
-  @property({ attribute: false }) public hass!: HassObject;
-  @property({ attribute: false }) public config!: CardConfig | PanelConfig;
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property({ attribute: false }) public config!: FloorplanCardConfig | FloorplanPanelConfig;
 
   @property({ attribute: false }) public project!: FloorplanProject;
   @property({ type: Boolean }) public isDemo!: boolean;
@@ -28,27 +27,27 @@ export class FloorplanProjectElement extends LitElement {
     `;
   }
 
-  async update(changedProperties: PropertyValues) {
+  async update(changedProperties: PropertyValues): Promise<void> {
     super.update(changedProperties);
 
     if (changedProperties.has('project') && this.project) {
       this.isDemo = true; // running in demo Web page
 
       const configUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.configFile}`;
-      let configYamlText = await Utils.fetchText(configUrl, true);
+      const configYamlText = await Utils.fetchText(configUrl, true);
 
-      this.config = Utils.parseYaml(configYamlText) as CardConfig | PanelConfig;;
+      this.config = Utils.parseYaml(configYamlText) as FloorplanCardConfig | FloorplanPanelConfig;
 
       if (this.project.statesFile) {
         const simulatorUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.statesFile}`;
-        let simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
+        const simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
         const simulatorConfig = Utils.parseYaml(simulatorYamlText) as SimulatorConfig;
         this.simulator = new Simulator(simulatorConfig, this.setHass.bind(this));
       }
     }    
   }
 
-  setHass(hass: HassObject) {
+  setHass(hass: HomeAssistant): void {
     this.hass = hass;
   }
 }
