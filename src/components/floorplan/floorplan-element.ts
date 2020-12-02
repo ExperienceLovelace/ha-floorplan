@@ -258,7 +258,7 @@ export class FloorplanElement extends LitElement {
       await this.loadPageConfig(pageConfigUrl, this.config.pages.indexOf(pageConfigUrl));
     }
 
-    const pageInfos = Array.from(Object.keys(this.pageInfos).map(key => this.pageInfos[key]));
+    const pageInfos = Object.keys(this.pageInfos).map(key => this.pageInfos[key]);
     pageInfos.sort((a, b) => a.index - b.index); // sort ascending
 
     const masterPageInfo = pageInfos.find(pageInfo => (pageInfo.config.master_page !== undefined));
@@ -539,9 +539,7 @@ export class FloorplanElement extends LitElement {
 
   initPageDisplay(): void {
     if (this.config.pages) {
-      for (const key of Object.keys(this.pageInfos.keys)) {
-        const pageInfo = this.pageInfos[key] as FloorplanPageInfo;
-
+      for (const pageInfo of Object.values(this.pageInfos)) {
         pageInfo.svg.style.opacity = '1';
         pageInfo.svg.style.display = pageInfo.isMaster || pageInfo.isDefault ? 'initial' : 'none'; // Show the first page
       }
@@ -561,9 +559,7 @@ export class FloorplanElement extends LitElement {
     }
 
     if (this.config.pages) {
-      for (const key of Object.keys(this.pageInfos.keys)) {
-        const pageInfo = this.pageInfos[key];
-
+      for (const pageInfo of Object.values(this.pageInfos)) {
         if (pageInfo.config.variables) {
           for (const variable of pageInfo.config.variables) {
             this.initVariable(variable);
@@ -617,11 +613,8 @@ export class FloorplanElement extends LitElement {
     }
 
     if (this.config.pages) {
-      for (const key of Object.keys(this.pageInfos)) {
-        const pageInfo = this.pageInfos[key];
-
-        const startup = pageInfo.config && pageInfo.config.startup;
-        if (startup?.action) {
+      for (const pageInfo of Object.values(this.pageInfos)) {
+        if (pageInfo.config?.startup?.action) {
           actions = actions.concat(Array.isArray(startup.action) ? startup.action : [startup.action]);
         }
       }
@@ -995,7 +988,7 @@ export class FloorplanElement extends LitElement {
     this.handleElements();
 
     let changedEntityIds = this.getChangedEntities(isInitialLoad);
-    changedEntityIds = changedEntityIds.concat(Array.from(Object.keys(this.variables))); // always assume variables need updating
+    changedEntityIds = changedEntityIds.concat(Object.keys(this.variables)); // always assume variables need updating
 
     if (changedEntityIds?.length) {
       for (const entityId of changedEntityIds) {
@@ -1091,9 +1084,7 @@ export class FloorplanElement extends LitElement {
     const entityId = entityInfo.entityId as string;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
-        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
-
+      for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
         if (svgElementInfo.svgElement.nodeName === 'text') {
           this.handleEntityUpdateText(entityId, ruleInfo, svgElementInfo);
         }
@@ -1105,8 +1096,7 @@ export class FloorplanElement extends LitElement {
   }
 
   async handleElements(): Promise<void> {
-    for (const key of Object.keys(this.elementInfos)) {
-      const elementInfo = this.elementInfos[key] as FloorplanElementInfo;
+    for (const elementInfo of Object.values(this.elementInfos)) {
       await this.handleElementUpdateDom(elementInfo)
       this.handleElementUpdateCss(elementInfo);
     }
@@ -1200,9 +1190,7 @@ export class FloorplanElement extends LitElement {
 
     for (const ruleInfo of entityInfo.ruleInfos) {
       if (ruleInfo.rule.hover_over !== false) {
-        for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
-          const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
-
+        for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
           this.handlEntitySetHoverOverText(svgElementInfo.svgElement, entityState);
         }
       }
@@ -1233,9 +1221,7 @@ export class FloorplanElement extends LitElement {
     if (!this.cssRules || !this.cssRules.length) return;
 
     for (const ruleInfo of elementInfo.ruleInfos) {
-      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
-        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
-
+      for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
         this.handleUpdateElementCss(svgElementInfo, ruleInfo);
       }
     }
@@ -1245,9 +1231,7 @@ export class FloorplanElement extends LitElement {
     if (!this.cssRules || !this.cssRules.length) return;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      for (const svgElementId of Object.keys(ruleInfo.svgElementInfos)) {
-        const svgElementInfo = ruleInfo.svgElementInfos[svgElementId];
-
+      for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
         if (svgElementInfo.svgElement) { // images may not have been updated yet
           this.handleUpdateCss(entityInfo, svgElementInfo, ruleInfo);
         }
@@ -1533,7 +1517,7 @@ export class FloorplanElement extends LitElement {
         targetPageInfo = page_id ? this.pageInfos[page_id] : undefined;
 
         if (targetPageInfo) {
-          Array.from(Object.keys(this.pageInfos)).map((key) => {
+          Object.keys(this.pageInfos).map((key) => {
             const pageInfo = this.pageInfos[key] as FloorplanPageInfo;
 
             if (!pageInfo.isMaster && (pageInfo.svg.style.display !== 'none')) {
@@ -1588,7 +1572,7 @@ export class FloorplanElement extends LitElement {
       }
     }
 
-    for (const otherVariableName of Array.from(Object.keys(this.variables))) {
+    for (const otherVariableName of Object.keys(this.variables)) {
       const otherVariable = this.hass.states[otherVariableName];
       if (otherVariable) {
         otherVariable.last_changed = new Date().toString(); // mark all variables as changed

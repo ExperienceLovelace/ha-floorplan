@@ -123,7 +123,7 @@ export class Utils {
     }
     else {
       const listObj = list as Record<string, unknown>;
-      return Object.keys(listObj).map(key => listObj[key]) as Array<T>;
+      return Object.values(listObj) as Array<T>;
     }
   }
 
