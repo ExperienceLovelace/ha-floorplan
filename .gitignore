@@ -89,4 +89,8 @@ typings/
 
 dist
 
+# Parcel
 .parcel-cache
+
+# Jekyll
+_site/
