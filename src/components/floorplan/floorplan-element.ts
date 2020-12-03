@@ -103,6 +103,7 @@ export class FloorplanElement extends LitElement {
 
     if (_changedProperties.has('_config')) {
       await this._configChanged();
+      await this.hassChanged(); // call hassChanged(), since hass may have been while _configChanged() was executing
     }
 
     if (_changedProperties.has('hass')) {
