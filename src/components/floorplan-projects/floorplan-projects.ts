@@ -9,6 +9,12 @@ export class FloorplanProjects extends LitElement {
   constructor() {
     super();
 
+    this.isDemo = true; // running in demo Web page
+
+    console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+    console.log("process.env.ROOT_URL", process.env.ROOT_URL);
+    console.log("process.env.FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
+
     this.init();
   }
 

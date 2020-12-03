@@ -9,11 +9,11 @@
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "build:dev": "cross-env NODE_ENV=dev npm run clean && parcel build src/index.ts --out-file floorplan --no-minify",
     "build": "npm run build:prod",
-    "build:prod": "cross-env NODE_ENV=prod npm run clean && parcel build src/index.ts --no-source-maps --out-file floorplan",
+    "build:prod": "cross-env NODE_ENV=prod npm run clean && parcel build src/index.ts --no-content-hash --no-source-maps --out-file floorplan",
     "build:prod:no-minify": "cross-env NODE_ENV=prod npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file floorplan",
-    "build:example": "cross-env NODE_ENV=prod npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file example-panel",
-    "build:demo": "cross-env NODE_ENV=demo npm run clean && parcel build src/public/index.html --public-url ./",
-    "deploy": "gh-pages -d dist"
+    "copy-static-files": "copyfiles --up 1 --soft \"./static/**/*\" ./dist",
+    "build:docs": "cross-env NODE_ENV=prod npm run clean && parcel build src/components/floorplan-projects/floorplan-projects.ts --no-content-hash --no-source-maps --out-file floorplan-projects --public-url ./ && npm run copy-static-files",
+    "deploy:docs": "gh-pages -d dist"
   },
   "staticFiles": {
     "staticPath": [
@@ -41,6 +41,7 @@
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
     "babel-core": "^6.26.3",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.2",
     "eslint": "^7.14.0",
     "gh-pages": "^3.1.0",

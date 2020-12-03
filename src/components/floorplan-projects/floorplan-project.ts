@@ -5,7 +5,8 @@ import { FloorplanCardConfig } from '../floorplan-card/types';
 import { FloorplanPanelConfig } from '../floorplan-panel/types';
 import { Utils } from '../../lib/utils';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
-import '../floorplan/floorplan-element';
+import '../floorplan-card/floorplan-card';
+import '../floorplan-panel/floorplan-panel';
 
 export class FloorplanProjectElement extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -33,20 +34,18 @@ export class FloorplanProjectElement extends LitElement {
     super.update(changedProperties);
 
     if (changedProperties.has('project') && this.project) {
-      this.isDemo = true; // running in demo Web page
-
-      const configUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.configFile}`;
+      const configUrl = `${process.env.ROOT_URL}${process.env.FLOORPLAN_PATH}/${this.project.dir}/${this.project.configFile}`;
       const configYamlText = await Utils.fetchText(configUrl, true);
 
       this.config = Utils.parseYaml(configYamlText) as FloorplanCardConfig | FloorplanPanelConfig;
 
       if (this.project.simulationFile) {
-        const simulatorUrl = `${process.env.EXAMPLES_DIR}/${this.project.dir}/${this.project.simulationFile}`;
+        const simulatorUrl = `${process.env.ROOT_URL}${process.env.FLOORPLAN_PATH}/${this.project.dir}/${this.project.simulationFile}`;
         const simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
         const simulatorConfig = Utils.parseYaml(simulatorYamlText) as HassSimulatorConfig;
         this.simulator = new HassSimulator(simulatorConfig, this.setHass.bind(this));
       }
-    }    
+    }
   }
 
   setHass(hass: HomeAssistant): void {

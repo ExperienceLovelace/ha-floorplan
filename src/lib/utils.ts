@@ -60,7 +60,7 @@ export class Utils {
 
   static async fetchText(resourceUrl: string, isDemo: boolean, useCache = false): Promise<string> {
     if (isDemo) {
-      resourceUrl = resourceUrl.replace(/^\/local\//g, "./local/");
+      resourceUrl = resourceUrl.replace(/^\/local\//g, `${process.env.ROOT_URL}/`);
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
@@ -87,7 +87,7 @@ export class Utils {
 
   static async fetchImage(resourceUrl: string, isDemo: boolean, useCache = false): Promise<string> {
     if (isDemo) {
-      resourceUrl = resourceUrl.replace(/^\/local\//g, "./local/");
+      resourceUrl = resourceUrl.replace(/^\/local\//g, `${process.env.ROOT_URL}/`);
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
