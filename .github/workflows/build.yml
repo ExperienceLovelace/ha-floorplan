@@ -32,7 +32,7 @@ jobs:
         git add -f dist/floorplan.js
     - name: Commit changes
       id: can_commit
-    - run: |-
+      run: |-
        commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
        echo "::set-output name=commit_result::$commit_result"
     - name: Nothing to commit
