@@ -18,20 +18,29 @@ jobs:
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Build files with Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build
     - run: npm run build:docs
-    - name: Commit files
+    - name: Add files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add -f dist/floorplan.js
-        git commit -m "Add changes to dist and docs" -a
+    - name: Commit changes
+      id: can_commit
+    - run: |-
+       commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
+       echo "::set-output name=commit_result::$commit_result"
+    - name: Nothing to commit
+      id: nothing_committed
+      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
+      run: echo "No changes found (for both main code and docs). Skipping push."
     - name: Push changes
+      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
