@@ -40,7 +40,7 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
          alt="GitHub Releases - Total download">
          </a>
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/releases" target="_blank">
-    <img src="https://img.shields.io/github/v/release/ExperienceLovelace/ha-floorplan/total.svg?style=flat-square&logo=github&logoColor=white"
+    <img src="https://img.shields.io/github/v/release/ExperienceLovelace/ha-floorplan.svg?style=flat-square&logo=github&logoColor=white"
          alt="Current version">
          </a>
 </p>
