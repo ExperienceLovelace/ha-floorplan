@@ -5,30 +5,23 @@
   "main": "index.js",
   "scripts": {
     "clean": "shx rm -rf dist/*",
-    "start": "npm run clean && parcel src/public/index.html",
+    "start": "npm run clean && parcel docs/examples/debug.html",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "build:dev": "cross-env NODE_ENV=development npm run clean && parcel build src/index.ts --out-file floorplan --no-minify",
     "build": "npm run build:prod",
     "build:prod": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-content-hash --no-source-maps --out-file floorplan",
     "build:prod:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file floorplan",
-    "copy-static-files": "copyfiles --up 1 --soft \"./static/**/*\" ./dist",
-    "build:docs": "cross-env NODE_ENV=production npm run clean && parcel build src/components/floorplan-projects/floorplan-projects.ts --no-content-hash --no-source-maps --no-minify --out-file floorplan-projects --public-url ./ && npm run copy-static-files",
+    "copy-static-files-obsolete": "copyfiles --up 1 --soft \"./static/**/*\" ./dist",
+    "build:docs-obsolete": "cross-env NODE_ENV=production npm run clean && parcel build src/components/floorplan-projects/floorplan-projects.ts --no-content-hash --no-source-maps --out-file floorplan-projects --public-url ./ && npm run copy-static-files",
+    "build:docs": "cross-env NODE_ENV=production npm run clean && parcel build src/components/floorplan-projects/floorplan-projects.ts --no-content-hash --no-source-maps --out-file floorplan-projects --public-url ./",
     "deploy:docs": "gh-pages -d dist",
     "serve:docs": "docker run -it --rm --volume=%cd%/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental"
   },
   "staticFiles": {
     "staticPath": [
       {
-        "staticPath": "static",
+        "staticPath": "docs/examples",
         "env": "development"
-      },
-      {
-        "staticPath": "static",
-        "env": "dev"
-      },
-      {
-        "staticPath": "static",
-        "env": "demo"
       }
     ]
   },

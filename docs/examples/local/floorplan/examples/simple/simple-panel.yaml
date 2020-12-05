@@ -4,31 +4,37 @@ config:
   show_app_header: false;
   config:
     image: /local/floorplan/examples/simple/simple.svg
-    stylesheet: /local/floorplan/examples/simple/simple.css  
-  #  log_level: info
+    stylesheet: /local/floorplan/examples/simple/simple.css
+    log_level: info
+    console_log_level: info
+
+    defaults:
+      on_hover: floorplan.hover_info
+      on_click: homeassistant.more_info
 
     rules:
       - entity: light.garage
         element: light.garage
-        image_template: '/local/floorplan/examples/simple/light_${entity.state}.svg'
-        more_info: false
-        on_click:
-          service: homeassistant.toggle
+        image: /local/floorplan/examples/simple/light_${entity.state}.svg
+        on_click: homeassistant.toggle
 
       - entity: light.garage
         element: light.garage.background
-        class_template: 'background-${entity.state}'
+        class: background-${entity.state}
         on_click:
           service: homeassistant.toggle
+          data:
+            entity_id: ${entity.entity_id}
+            foo: "This is some extra stuff showing ${entity.entity_id}"
 
       - entity: light.garage
         element: light.garage.text
-        text_template: '${entity.state}'
+        text: '${entity.state}'
         on_click:
           service: homeassistant.toggle
 
       - entity: switch.living_area_fan
-        more_info: false
+        on_click: false
         propagate: false
         states:
           - state: 'on'
@@ -36,30 +42,30 @@ config:
               - spinning
               - some_other_class
 
-      - class_template: 'background-${entity.state}'
+      - entity: switch.living_area_fan
         element: switch.living_area_fan.background
-        entity: switch.living_area_fan
-  #      on_click:
-  #        service: homeassistant.toggle
+        class: 'background-${entity.state}'
+        on_click: false
         on_long_click:
           service: homeassistant.toggle
-  #        data:
-  #          entity_id: switch.living_area_fan
+          data:
+            entity_id: switch.living_area_fan
 
-      - element: switch.living_area_fan.text
-        entity: switch.living_area_fan
-        text_template: '${entity.state}'
+      - entity: switch.living_area_fan
+        element: switch.living_area_fan.text
+        text: '${entity.state}'
         on_click:
           service: homeassistant.toggle
 
       - entity: camera.zagreb_ban_jelacic_square
+        image: '${entity.attributes.entity_picture}'
         image_refresh_interval: 10
-        image_template: '${entity.attributes.entity_picture}'
 
       - entities:
           - binary_sensor.main_bedroom
           - binary_sensor.living_area
           - binary_sensor.garage
+        on_hover: false
         states:
           - state: 'off'
             class: binary-sensor-off

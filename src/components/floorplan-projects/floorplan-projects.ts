@@ -23,7 +23,6 @@ export class FloorplanProjects extends LitElement {
       // Panels
       { dir: "simple", configFile: "simple-panel.yaml", simulationFile: "simulations.yaml", },
       // Cards
-      { dir: "simple", configFile: "simple-card.yaml", simulationFile: "simulations.yaml", },
       { dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
       // TODO
       //{ dir: "simple", configFile: "simple.yaml", simulationFile: "simulations.yaml", },

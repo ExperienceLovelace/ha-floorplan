@@ -4,12 +4,12 @@ export class FloorplanConfig {
   image!: FloorplanImageConfig | string;
   stylesheet!: string;
   log_level!: string;
-  debug_level!: string;
+  console_log_level!: string;
   rules!: FloorplanRuleConfig[];
 
   // Optional features
   startup!: FloorplanStartupConfig;
-  defaults!: FloorplanConfigDefaults | undefined;
+  defaults!: FloorplanRuleConfig;
   image_mobile!: FloorplanImageConfig | string;
   last_motion!: FloorplanLastMotionConfig;
 
@@ -19,23 +19,14 @@ export class FloorplanConfig {
   pan_zoom: unknown;
 }
 
-export class FloorplanConfigDefaults {
-  hover_over!: boolean;
-  more_info!: boolean;
-  propagate = true;
-}
-
 export class FloorplanStartupConfig {
   action!: FloorplanActionConfig;
 }
 
 export class FloorplanActionConfig {
   service!: string;
-  service_template!: string;
   value: unknown;
-  value_template!: string;
-  data!: string;
-  data_template!: string;
+  data!: Record<string, unknown>;
   no_entity_id = false;
 }
 
@@ -59,20 +50,17 @@ export class FloorplanImageSize {
 
 export class FloorplanRuleConfig {
   image!: string;
-  image_template!: string;
   image_refresh_interval!: string;
-  text_template!: string;
-  class_template!: string;
-  hover_over!: boolean;
-  more_info!: boolean;
+  text!: string;
+  class!: string;
   propagate = true;
   entity!: string;
   entities!: (string | FloorplanRuleEntityElementConfig)[];
   element!: string;
   elements!: string[];
-  on_hover!: FloorplanActionConfig;
-  on_click!: FloorplanActionConfig;
-  on_long_click!: FloorplanActionConfig;
+  on_hover!: FloorplanActionConfig| false;
+  on_click!: FloorplanActionConfig | false;
+  on_long_click!: FloorplanActionConfig| false;
   groups!: string[];
   states!: FloorplanRuleStateConfig[];
 }
@@ -95,5 +83,4 @@ export class FloorplanLastMotionConfig extends FloorplanRuleStateConfig {
 export class FloorplanVariableConfig {
   name!: string;
   value!: unknown;
-  value_template!: string;
 }

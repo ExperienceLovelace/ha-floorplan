@@ -21,6 +21,7 @@ export class FloorplanElement extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ attribute: false }) public _config!: string | FloorplanConfig;
   @property({ type: Boolean }) public isDemo!: boolean;
+  @property({ type: Boolean }) public isShowLog!: boolean;
 
   version = '1.0.0';
   config!: FloorplanConfig;
@@ -45,15 +46,43 @@ export class FloorplanElement extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <div id="floorplan"></div>
+      <div id="floorplan-container">
+        <div id="floorplan"></div>
+        
+        <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
+          <a href="#" onclick="return false;" @click=${this.clearLog}>Clear log<a/>
+          <ul></ul>
+        </div>
+      </div>
     `;
   }
 
   static get styles(): CSSResult {
     return css`
+      :host #floorplan-container {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+      }
+
       :host #floorplan {
         display: flex;
         flex: 1;
+      }
+
+      :host #log {
+        display: flex;
+        flex: 1;
+        max-height: 150px;
+        overflow: auto;
+        background-color: #eee;
+        padding: 10px;
+      }
+
+      :host #log ul {
+        list-style-type: none;
+        padding-left: 0px;
+        text-align: left;
       }
 
       :host svg, :host svg * {
@@ -96,6 +125,11 @@ export class FloorplanElement extends LitElement {
         color: #000000;
       }
       `;
+  }
+
+  clearLog(): void {
+    const list = this.logElement.querySelector('#log ul') as HTMLUListElement;
+    list.innerHTML = '';
   }
 
   protected async updated(_changedProperties: PropertyValues): Promise<void> {
@@ -155,12 +189,13 @@ export class FloorplanElement extends LitElement {
     try {
       const config = await this.loadConfig(this._config);
 
-      this.logger = new Logger(this.logElement, config.log_level, config.debug_level);
+      this.isShowLog = (config.log_level !== undefined);
+
+      this.logger = new Logger(this.logElement, config.log_level, config.console_log_level);
 
       this.logInfo('VERSION', `Floorplan v${this.version}`);
 
       if (!this.validateConfig(config)) {
-        //this.options.setIsLoading(false);
         return;
       }
 
@@ -176,7 +211,6 @@ export class FloorplanElement extends LitElement {
       }
     }
     catch (err) {
-      //this.options.setIsLoading(false);
       this.handleError(err);
     }
   }
@@ -184,7 +218,6 @@ export class FloorplanElement extends LitElement {
   async initMultiPage(): Promise<void> {
     try {
       await this.loadPages();
-      //this.options.setIsLoading(false);
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
@@ -201,7 +234,6 @@ export class FloorplanElement extends LitElement {
       const imageUrl = this.getBestImage(this.config);
       this.svg = await await this.loadFloorplanSvg(imageUrl);
       //this.initFloorplanRules(svg, this.config!)
-      //this.options.setIsLoading(false);
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
@@ -581,8 +613,8 @@ export class FloorplanElement extends LitElement {
       variableName = variable.name;
 
       value = variable.value;
-      if (variable.value_template) {
-        value = this.evaluate(variable.value_template, variableName, undefined);
+      if (variable.value) {
+        value = this.evaluate(variable.value, variableName, undefined);
       }
     }
 
@@ -622,16 +654,16 @@ export class FloorplanElement extends LitElement {
     }
 
     for (const action of actions) {
-      if (action.service || action.service_template) {
-        const actionService = this.getActionService(action, undefined, undefined) as string;
+      if (action.service || action.service) {
+        const serviceContext = this.getServiceContext(action, undefined, undefined);
 
-        switch (this.getDomain(actionService)) {
+        switch (serviceContext.domain) {
           case 'floorplan':
-            this.callFloorplanService(action, undefined, undefined);
+            this.callFloorplanService(serviceContext, undefined, undefined);
             break;
 
           default:
-            this.callHomeAssistantService(action, undefined, undefined);
+            this.callHomeAssistantService(serviceContext);
             break;
         }
       }
@@ -664,10 +696,13 @@ export class FloorplanElement extends LitElement {
   initRules(config: FloorplanConfig, svg: SVGGraphicsElement, svgElements: SVGGraphicsElement[]): void {
     // Apply default options to rules that don't override the options explictly
     if (config.defaults) {
+      const defaultRule = config.defaults;
+
       for (const rule of config.rules) {
-        rule.hover_over = (rule.hover_over === undefined) ? config.defaults.hover_over : rule.hover_over;
-        rule.more_info = (rule.more_info === undefined) ? config.defaults.more_info : rule.more_info;
-        rule.propagate = (rule.propagate === undefined) ? config.defaults.propagate : rule.propagate;
+        rule.on_hover = (rule.on_hover === undefined) ? defaultRule.on_hover : rule.on_hover;
+        rule.on_click = (rule.on_click === undefined) ? defaultRule.on_click : rule.on_click;
+        rule.on_long_click = (rule.on_long_click === undefined) ? defaultRule.on_long_click : rule.on_long_click;
+        rule.propagate = (rule.propagate === undefined) ? defaultRule.propagate : rule.propagate;
       }
     }
 
@@ -845,7 +880,7 @@ export class FloorplanElement extends LitElement {
 
         const context = new FloorplanClickContext(this, svgElementInfo, entityId, elementId, rule);
 
-        if (rule.on_click || (rule.more_info !== false)) {
+        if (rule.on_click) {
           E.on(element, 'click', this.onClick.bind(context));
           //E.on(element, 'shortClick', this.onClick.bind(context));
           if (element.style) element.style.cursor = 'pointer';
@@ -1089,7 +1124,7 @@ export class FloorplanElement extends LitElement {
         if (svgElementInfo.svgElement.nodeName === 'text') {
           this.handleEntityUpdateText(entityId, ruleInfo, svgElementInfo);
         }
-        else if (ruleInfo.rule.image || ruleInfo.rule.image_template) {
+        else if (ruleInfo.rule.image) {
           await this.handleEntityUpdateImage(entityId, ruleInfo, svgElementInfo);
         }
       }
@@ -1111,7 +1146,7 @@ export class FloorplanElement extends LitElement {
         if (svgElementInfo.svgElement.nodeName === 'text') {
           this.handleEntityUpdateText(svgElementId, ruleInfo, svgElementInfo);
         }
-        else if (ruleInfo.rule.image || ruleInfo.rule.image_template) {
+        else if (ruleInfo.rule.image) {
           await this.handleEntityUpdateImage(svgElementId, ruleInfo, svgElementInfo);
         }
       }
@@ -1122,7 +1157,7 @@ export class FloorplanElement extends LitElement {
     const textElement = svgElementInfo.svgElement;
     const state = this.hass.states[entityId] ? this.hass.states[entityId].state : undefined;
 
-    const text = (ruleInfo.rule.text_template ? this.evaluate(ruleInfo.rule.text_template, entityId, textElement) : state) as string;
+    const text = (ruleInfo.rule.text ? this.evaluate(ruleInfo.rule.text, entityId, textElement) : state) as string;
 
     const tspanElement = textElement.querySelector('tspan');
     if (tspanElement) {
@@ -1161,7 +1196,7 @@ export class FloorplanElement extends LitElement {
   async handleEntityUpdateImage(entityId: string, ruleInfo: FloorplanRuleInfo, svgElementInfo: FloorplanSvgElementInfo): Promise<void> {
     const svgElement = svgElementInfo.svgElement;
 
-    const imageUrl = (ruleInfo.rule.image ? ruleInfo.rule.image : this.evaluate(ruleInfo.rule.image_template, entityId, svgElement)) as string;
+    const imageUrl = ruleInfo.rule.image ? this.evaluate(ruleInfo.rule.image, entityId, svgElement) as string : undefined;
 
     if (imageUrl && (ruleInfo.imageUrl !== imageUrl)) {
       ruleInfo.imageUrl = imageUrl;
@@ -1190,9 +1225,11 @@ export class FloorplanElement extends LitElement {
     const entityState = this.hass.states[entityId];
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      if (ruleInfo.rule.hover_over !== false) {
-        for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
-          this.handlEntitySetHoverOverText(svgElementInfo.svgElement, entityState);
+      if (ruleInfo.rule.on_hover) {
+        if ((typeof ruleInfo.rule.on_hover === 'string') && (ruleInfo.rule.on_hover === 'floorplan.hover_info')) {
+          for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
+            this.handlEntitySetHoverOverText(svgElementInfo.svgElement, entityState);
+          }
         }
       }
     }
@@ -1257,8 +1294,8 @@ export class FloorplanElement extends LitElement {
     const svgElement = svgElementInfo.svgElement;
 
     let targetClasses: string[] = [];
-    if (ruleInfo.rule.class_template) {
-      const targetClasslist = this.evaluate(ruleInfo.rule.class_template, entityId, svgElement) as string;
+    if (ruleInfo.rule.class) {
+      const targetClasslist = this.evaluate(ruleInfo.rule.class, entityId, svgElement) as string;
       targetClasses = targetClasslist ? targetClasslist.split(" ") : [];
     }
 
@@ -1305,8 +1342,8 @@ export class FloorplanElement extends LitElement {
     const svgElement = svgElementInfo.svgElement;
 
     let targetClasses: string[] = [];
-    if (ruleInfo.rule.class_template) {
-      const targetClassList = this.evaluate(ruleInfo.rule.class_template, entityId, svgElement) as string;
+    if (ruleInfo.rule.class) {
+      const targetClassList = this.evaluate(ruleInfo.rule.class, entityId, svgElement) as string;
       targetClasses = targetClassList ? targetClassList.split(" ") : [];
     }
 
@@ -1368,7 +1405,6 @@ export class FloorplanElement extends LitElement {
     let isValid = true;
 
     if (!config.pages && !config.rules) {
-      //this.options.setIsLoading(false);
       this.logWarning('CONFIG', `Cannot find 'pages' nor 'rules' in floorplan configuration`);
       //isValid = false;
     }
@@ -1402,12 +1438,21 @@ export class FloorplanElement extends LitElement {
     return isValid;
   }
 
-  evaluate(code: string, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
-    try {
-      return EvalHelper.evaluate(code, this.hass, this.config, entityId, svgElement);
+  isTemplate(expression: string): boolean {
+    return ((expression.indexOf("${") >= 0) && (expression.indexOf("}") >= 0));
+  }
+
+  evaluate(expression: string | unknown, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
+    if ((typeof expression === 'string') && this.isTemplate(expression)) {
+      try {
+        return EvalHelper.evaluate(expression, this.hass, this.config, entityId, svgElement);
+      }
+      catch (err) {
+        return this.handleError(err, { expression, entityId, hass: this.hass, svgElement });
+      }
     }
-    catch (err) {
-      return this.handleError(err, { code, entityId, hass: this.hass, svgElement });
+    else {
+      return expression;
     }
   }
 
@@ -1438,63 +1483,58 @@ export class FloorplanElement extends LitElement {
 
     const action = rule ? ((clickType === ClickType.LongClick) ? rule.on_long_click : rule.on_click) : undefined;
 
-    if (!action && entityId && (rule.more_info !== false)) {
-      this.openMoreInfo(entityId);
-      return;
-    }
-
     if (!action) return;
 
-    let calledServiceCount = 0;
+    //let calledServiceCount = 0;
 
     const svgElement = svgElementInfo.svgElement;
 
     const actions = Array.isArray(action) ? action : [action];
     for (const action of actions) {
-      if (action.service || action.service_template) {
-        const actionService = this.getActionService(action, entityId, svgElement) as string;
+      const targetAction = ((typeof action === 'string') ? { service: action } : action) as FloorplanActionConfig;
 
-        if (this.isDemo) {
-          const actionServiceText = (typeof actionService === 'object') ? JSON.stringify(actionService) : actionService;
-          alert(`Calling service: ${actionServiceText}`)
-        }
+      if (targetAction.service) {
+        const serviceContext = this.getServiceContext(targetAction, entityId, svgElement);
 
-        switch (this.getDomain(actionService)) {
+        switch (serviceContext.domain) {
           case 'floorplan':
-            this.callFloorplanService(action, entityId, svgElementInfo);
+            this.callFloorplanService(serviceContext, entityId, svgElementInfo);
             break;
 
           default:
-            this.callHomeAssistantService(action, entityId, svgElementInfo);
+            this.callHomeAssistantService(serviceContext);
             break;
         }
 
-        calledServiceCount++;
+        //calledServiceCount++;
       }
     }
 
+    /*
     if (!calledServiceCount) {
       if (entityId && (rule.more_info !== false)) {
         this.openMoreInfo(entityId);
       }
     }
+    */
   }
 
-  callFloorplanService(action: FloorplanActionConfig, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo): void {
+  callFloorplanService(serviceContext: ServiceContext, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo): void {
     const svgElement = (svgElementInfo ? svgElementInfo.svgElement : undefined) as SVGGraphicsElement;
-
-    const actionService = this.getActionService(action, entityId, svgElement) as string;
-    const actionData = this.getActionData(action, entityId, svgElement) as Record<string, unknown>;
 
     let page_id: string;
     let targetPageInfo: FloorplanPageInfo | undefined;
 
-    switch (this.getService(actionService)) {
-      case 'class_toggle':
-        if (actionData) {
-          const classes = actionData.classes as string[];
+    if (this.isDemo) {
+      alert(`Calling Floorplan service: ${serviceContext.domain}.${serviceContext.service}`)
+    }
 
-          for (const otherElementId of (actionData.elements as string[])) {
+    switch (serviceContext.service) {
+      case 'class_toggle':
+        if (serviceContext.data && Array.isArray(serviceContext.data.classes)) {
+          const classes = serviceContext.data.classes as string[];
+
+          for (const otherElementId of (serviceContext.data.elements as string[])) {
             const otherSvgElement = svgElementInfo?.svg?.querySelector(`[id="${otherElementId}"]`);
             if (otherSvgElement) {
               if (Utils.hasClass(otherSvgElement, classes[0])) {
@@ -1506,7 +1546,7 @@ export class FloorplanElement extends LitElement {
                 Utils.addClass(otherSvgElement, classes[0]);
               }
               else {
-                Utils.addClass(otherSvgElement, actionData.default_class as string);
+                Utils.addClass(otherSvgElement, serviceContext.data.default_class as string);
               }
             }
           }
@@ -1514,7 +1554,7 @@ export class FloorplanElement extends LitElement {
         break;
 
       case 'page_navigate':
-        page_id = actionData.page_id as string;
+        page_id = serviceContext.data.page_id as string;
         targetPageInfo = page_id ? this.pageInfos[page_id] : undefined;
 
         if (targetPageInfo) {
@@ -1531,20 +1571,20 @@ export class FloorplanElement extends LitElement {
         break;
 
       case 'variable_set':
-        if (actionData.variable) {
+        if (serviceContext.data.variable) {
           const attributes = {} as Record<string, unknown>;
 
-          if (actionData.attributes) {
-            const actionDataAttributes = actionData.attributes as Record<string, FloorplanActionConfig>;
+          if (serviceContext.data.attributes) {
+            const actionDataAttributes = serviceContext.data.attributes as Record<string, FloorplanActionConfig>;
 
             for (const key of Object.keys(actionDataAttributes)) {
               attributes[key] = this.getActionValue(actionDataAttributes[key], entityId, svgElement);
             }
           }
 
-          const variableActionData = actionData as unknown as FloorplanActionConfig;
+          const variableActionData = serviceContext.data as unknown as FloorplanActionConfig;
           const value = this.getActionValue(variableActionData, entityId, svgElement);
-          this.setVariable(actionData.variable as string, value, attributes, false);
+          this.setVariable(serviceContext.data.variable as string, value, attributes, false);
         }
         break;
 
@@ -1556,8 +1596,8 @@ export class FloorplanElement extends LitElement {
 
   getActionValue(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     let value = action.value;
-    if (action.value_template) {
-      value = this.evaluate(action.value_template, entityId, svgElement);
+    if (action.value) {
+      value = this.evaluate(action.value, entityId, svgElement);
     }
     return value;
   }
@@ -1590,42 +1630,52 @@ export class FloorplanElement extends LitElement {
   /* Home Assisant helper functions
   /***************************************************************************************************************************/
 
-  callHomeAssistantService(action: FloorplanActionConfig, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo): void {
-    const svgElement = svgElementInfo ? svgElementInfo.svgElement : undefined;
-
-    const actionService = this.getActionService(action, entityId, svgElement) as string;
-    const actionData = this.getActionData(action, entityId, svgElement) as Record<string, unknown>;
-
-    if (!actionData.entity_id && entityId && !action.no_entity_id) {
-      actionData.entity_id = entityId;
+  callHomeAssistantService(serviceContext: ServiceContext): void {
+    if (serviceContext.service?.toLocaleLowerCase() === 'more_info') {
+      if (serviceContext.data.entity_id) {
+        this.openMoreInfo(serviceContext.data.entity_id as string);
+      }
     }
+    else {
+      if (this.isDemo) {
+        alert(`Calling Home Assistant service: ${serviceContext.domain}.${serviceContext.service}`)
+      }
 
-    this.hass.callService(this.getDomain(actionService), this.getService(actionService), actionData);
+      this.hass.callService(serviceContext.domain, serviceContext.service, serviceContext.data);
+    }
   }
 
-  getActionData(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
-    let data = action.data ? action.data : {};
-    if (action.data_template) {
-      const result = this.evaluate(action.data_template, entityId, svgElement);
+
+  getServiceContext(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): ServiceContext {
+    let fullServiceName = action.service;
+    if (action.service) {
+      fullServiceName = this.evaluate(action.service, entityId, svgElement) as string;
+    }
+
+    let data = {} as Record<string, unknown>;
+
+    if (typeof action.data === 'object') {
+      data = JSON.parse(this.evaluate(JSON.stringify(action.data), entityId, svgElement) as string);
+    }
+    else if (typeof action.data === 'string') {
+      const result = this.evaluate(action.data, entityId, svgElement);
       data = (typeof result === 'string') ? JSON.parse(result) : result;
     }
-    return data;
-  }
-
-  getActionService(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
-    let service = action.service;
-    if (action.service_template) {
-      service = this.evaluate(action.service_template, entityId, svgElement) as string;
+    else if (action.data !== undefined) {
+      data = action.data;
     }
-    return service;
-  }
 
-  getDomain(actionService: string): string {
-    return actionService.split(".")[0];
-  }
+    if (!(action.data?.entity_id) && entityId && !action.no_entity_id) {
+      data.entity_id = entityId;
+    }
 
-  getService(actionService: string): string {
-    return actionService.split(".")[1];
+    const serviceContext = {
+      domain: fullServiceName.split(".")[0],
+      service: fullServiceName.split(".")[1],
+      data: data,
+    } as ServiceContext;
+
+    return serviceContext;
   }
 
   /***************************************************************************************************************************/
@@ -1633,8 +1683,6 @@ export class FloorplanElement extends LitElement {
   /***************************************************************************************************************************/
 
   handleWindowError(event: Event | string, source?: string, lineno?: number, colno?: number, error?: Error): boolean {
-    //this.options.setIsLoading(false);
-
     if ((event as string).toLowerCase().indexOf("script error") >= 0) {
       this.logError('SCRIPT', 'Script error: See browser console for detail');
     }
@@ -1688,4 +1736,12 @@ export class FloorplanElement extends LitElement {
 
 if (!customElements.get('floorplan-element')) {
   customElements.define('floorplan-element', FloorplanElement);
+}
+
+
+export class ServiceContext {
+  domain!: string;
+  service!: string;
+  excludeEntity!: boolean;
+  data!: Record<string, unknown>;
 }

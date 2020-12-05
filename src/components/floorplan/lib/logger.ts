@@ -1,6 +1,6 @@
 import { Utils } from "../../../lib/utils";
 
-export abstract class LoggerBase {
+export class Logger {
   logLevelGroups = {
     error: ['error'],
     warn: ['error', 'warning', 'warn'],
@@ -9,23 +9,7 @@ export abstract class LoggerBase {
     debug: ['error', 'warning', 'warn', 'info', 'debug'],
   } as { [index: string]: string[] };
 
-  constructor(public logLevel?: string) {
-  }
-
-  abstract log(level: string, message: string, force: boolean): void;
-}
-
-export class Logger extends LoggerBase {
-  logLevelGroups = {
-    error: ['error'],
-    warn: ['error', 'warning', 'warn'],
-    warning: ['error', 'warning', 'warn'],
-    info: ['error', 'warning', 'warn', 'info'],
-    debug: ['error', 'warning', 'warn', 'info', 'debug'],
-  } as { [index: string]: string[] };
-
-  constructor(public element: HTMLElement, public logLevel?: string, public debugLevel?: string) {
-    super(logLevel);
+  constructor(public element: HTMLElement, public logLevel?: string, public consoleLogLevel?: string) {
   }
 
   log(level: string, message: string, force = false): void {
@@ -44,13 +28,13 @@ export class Logger extends LoggerBase {
       }
     }
 
-    this.consoleLog(level, message);
+    this.consoleLog(level, message, force);
   }
 
   consoleLog(level: string, message: string, force = false): void {
     const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
 
-    const targetLogLevels = this.debugLevel && this.logLevelGroups[this.debugLevel.toLowerCase()];
+    const targetLogLevels = this.consoleLogLevel && this.logLevelGroups[this.consoleLogLevel.toLowerCase()];
     const shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
 
     if (force || shouldLog) {
