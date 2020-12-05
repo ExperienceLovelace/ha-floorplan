@@ -23,7 +23,7 @@ export class FloorplanElement extends LitElement {
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Boolean }) public isShowLog!: boolean;
 
-  version = '1.0.0';
+  version = '1.0.1';
   config!: FloorplanConfig;
   pageInfos: { [key: string]: FloorplanPageInfo } = {};
   entityInfos: { [key: string]: FloorplanEntityInfo } = {};
