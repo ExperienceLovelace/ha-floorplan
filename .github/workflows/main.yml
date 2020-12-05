@@ -23,13 +23,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run build
     - run: npm run build:docs
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -m "Add changes" -a
+        git add -f dist/floorplan.js
+        git commit -m "Add changes to dist and docs" -a
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
