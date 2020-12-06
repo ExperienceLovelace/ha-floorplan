@@ -8,8 +8,8 @@ header:
     - label: "<i class='fas fa-download'></i> Start today"
       url: "/getting-started/"
 excerpt: >
-  Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.<br />
-  <small><a href="https://github.com/mmistakes/minimal-mistakes/releases/tag/4.21.0">Latest release v4.21.0</a></small>
+  Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
+  <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
 feature_row:
   - image_path: /assets/images/mm-customizable-feature.png
     alt: "getting started"
