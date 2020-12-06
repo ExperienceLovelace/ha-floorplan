@@ -1,4 +1,4 @@
 <div class="floorplan-container" style="padding:50px;">
     <floorplan-projects></floorplan-projects>
-    <script src="./floorplan-projects.js"></script>
+    <script src="../assets/js/floorplan-projects.js"></script>
 </div>
