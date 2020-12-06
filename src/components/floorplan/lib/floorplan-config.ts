@@ -53,16 +53,17 @@ export class FloorplanRuleConfig {
   image_refresh_interval!: string;
   text!: string;
   class!: string;
+  style!: string;
   propagate = true;
   entity!: string;
   entities!: (string | FloorplanRuleEntityElementConfig)[];
   element!: string;
   elements!: string[];
+  on_state!: FloorplanRuleStateConfig[] | FloorplanActionConfig;
   on_hover!: FloorplanActionConfig| false;
   on_click!: FloorplanActionConfig | false;
   on_long_click!: FloorplanActionConfig| false;
   groups!: string[];
-  states!: FloorplanRuleStateConfig[];
 }
 
 export class FloorplanRuleStateConfig {

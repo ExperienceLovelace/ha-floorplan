@@ -13,11 +13,11 @@ config:
 
     - entities:
         - binary_sensor.ring_salon_motion
-      states:
+      on_state:
         - state: 'on'
           class: 'ring-motion'
 
     - entity: binary_sensor.ring_salon_ding
-      states:
+      on_state:
         - state: 'on'
           class: 'ring-ding'

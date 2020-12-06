@@ -24,6 +24,48 @@ export class Utils {
       element.className += ' ' + className;
   }
 
+  static setClass(element: Element, className: string): void {
+    element.className = className;
+  }
+
+  static setStyle(element: SVGGraphicsElement, style: string): void {
+    const existingStyleAttr = element.getAttribute('style') ?? '';
+    const existingStyles = existingStyleAttr
+      .split(';')
+      .map(x => x?.trim())
+      .filter(x => x.length)
+      .map(x => {
+        const items = x.split(':');
+        const result = { name: items[0].trim(), value: items[1].trim() };
+        return result;
+      });
+
+    const targetStyleAttr = style ?? '';
+    const targetStyles = targetStyleAttr
+      .split(';')
+      .map(x => x?.trim())
+      .filter(x => x.length)
+      .map(x => {
+        const items = x.split(':');
+        const result = { name: items[0].trim(), value: `${items[1].trim()} !important` };
+        return result;
+      });
+
+    for (const targetStyle of targetStyles) {
+      const existingStyle = existingStyles.find(x => x.name === targetStyle.name);
+      if (existingStyle) {
+        existingStyle.value = targetStyle.value;
+      }
+      else {
+        existingStyles.push(targetStyle)
+      }
+    }
+
+    const finalStyleAttr = existingStyles.map(x => `${x.name}: ${x.value}`).join('; ');
+
+    element.setAttribute('style', finalStyleAttr);
+  }
+
   static waitForChildNodes(element: Node, initializeNode: () => void, timeout: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => reject('Timeout waiting for child element(s) to load'), timeout);

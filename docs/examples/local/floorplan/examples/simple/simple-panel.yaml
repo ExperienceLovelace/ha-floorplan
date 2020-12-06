@@ -23,9 +23,6 @@ config:
         class: background-${entity.state}
         on_click:
           service: homeassistant.toggle
-          data:
-            entity_id: ${entity.entity_id}
-            foo: "This is some extra stuff showing ${entity.entity_id}"
 
       - entity: light.garage
         element: light.garage.text
@@ -66,8 +63,14 @@ config:
           - binary_sensor.living_area
           - binary_sensor.garage
         on_hover: false
-        states:
-          - state: 'off'
-            class: binary-sensor-off
-          - state: 'on'
-            class: binary-sensor-on
+        on_state:
+#          service: floorplan.set_class
+#          data:
+#            class: binary-sensor-${entity.state}
+          service: floorplan.set_style
+          data:
+            style: '
+              fill: ${ entity.state === "on" ? "#F9D27C" : "#7CB1F9" };
+              transition: fill 5s ease;
+            '
+

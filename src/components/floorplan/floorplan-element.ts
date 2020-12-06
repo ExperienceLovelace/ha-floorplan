@@ -193,11 +193,9 @@ export class FloorplanElement extends LitElement {
 
       this.logger = new Logger(this.logElement, config.log_level, config.console_log_level);
 
-      this.logInfo('VERSION', `Floorplan v${this.version}`);
+      this.logInfo('INFO', `Floorplan initialized`);
 
-      if (!this.validateConfig(config)) {
-        return;
-      }
+      if (!this.validateConfig(config)) return;
 
       this.config = config; // set resolved config as effective config
 
@@ -655,17 +653,8 @@ export class FloorplanElement extends LitElement {
 
     for (const action of actions) {
       if (action.service || action.service) {
-        const serviceContext = this.getServiceContext(action, undefined, undefined);
-
-        switch (serviceContext.domain) {
-          case 'floorplan':
-            this.callFloorplanService(serviceContext, undefined, undefined);
-            break;
-
-          default:
-            this.callHomeAssistantService(serviceContext);
-            break;
-        }
+        const serviceContext = this.createServiceContext(action, undefined, undefined);
+        this.callService(serviceContext, undefined, undefined);
       }
     }
   }
@@ -1271,7 +1260,7 @@ export class FloorplanElement extends LitElement {
     for (const ruleInfo of entityInfo.ruleInfos) {
       for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
         if (svgElementInfo.svgElement) { // images may not have been updated yet
-          this.handleUpdateCss(entityInfo, svgElementInfo, ruleInfo);
+          this.handleUpdateEntityCss(entityInfo, svgElementInfo, ruleInfo);
         }
       }
     }
@@ -1289,38 +1278,55 @@ export class FloorplanElement extends LitElement {
     return classes;
   }
 
-  handleUpdateCss(entityInfo: FloorplanEntityInfo, svgElementInfo: FloorplanSvgElementInfo, ruleInfo: FloorplanRuleInfo): void {
+  handleUpdateEntityCss(entityInfo: FloorplanEntityInfo, svgElementInfo: FloorplanSvgElementInfo, ruleInfo: FloorplanRuleInfo): void {
     const entityId = entityInfo.entityId as string;
     const svgElement = svgElementInfo.svgElement;
 
     let targetClasses: string[] = [];
+    let targetStyles: string[] = [];
+
     if (ruleInfo.rule.class) {
       const targetClasslist = this.evaluate(ruleInfo.rule.class, entityId, svgElement) as string;
       targetClasses = targetClasslist ? targetClasslist.split(" ") : [];
     }
+    else if (ruleInfo.rule.style) {
+      const targetStylelist = this.evaluate(ruleInfo.rule.style, entityId, svgElement) as string;
+      targetStyles = targetStylelist ? targetStylelist.split(" ") : [];
+    }
+
+    const isStateConfigArray = Array.isArray(ruleInfo.rule.on_state);
 
     // Get the config for the current state
     const obsoleteClasses: string[] = [];
-    if (ruleInfo.rule.states) {
+    if (ruleInfo.rule.on_state) {
       const entityState = this.hass.states[entityId];
 
-      const stateConfig = ruleInfo.rule.states.find(stateConfig => (stateConfig.state === entityState.state)) as FloorplanRuleStateConfig;
-      targetClasses = this.getStateConfigClasses(stateConfig);
+      if (isStateConfigArray) {
+        const stateConfigs = ruleInfo.rule.on_state as Array<FloorplanRuleStateConfig>;
 
-      // Remove any other previously-added state classes
-      for (const otherStateConfig of ruleInfo.rule.states) {
-        if (!stateConfig || (otherStateConfig.state !== stateConfig.state)) {
-          const otherStateClasses = this.getStateConfigClasses(otherStateConfig);
-          for (const otherStateClass of otherStateClasses) {
-            if (otherStateClass && (targetClasses.indexOf(otherStateClass) < 0) && (otherStateClass !== 'floorplan-item') && Utils.hasClass(svgElement, otherStateClass) && (svgElementInfo.originalClasses.indexOf(otherStateClass) < 0)) {
-              obsoleteClasses.push(otherStateClass);
+        const stateConfig = stateConfigs.find(stateConfig => (stateConfig.state === entityState.state)) as FloorplanRuleStateConfig;
+        targetClasses = this.getStateConfigClasses(stateConfig);
+
+        // Remove any other previously-added state classes
+        for (const otherStateConfig of stateConfigs) {
+          if (!stateConfig || (otherStateConfig.state !== stateConfig.state)) {
+            const otherStateClasses = this.getStateConfigClasses(otherStateConfig);
+            for (const otherStateClass of otherStateClasses) {
+              if (otherStateClass && (targetClasses.indexOf(otherStateClass) < 0) && (otherStateClass !== 'floorplan-item') && Utils.hasClass(svgElement, otherStateClass) && (svgElementInfo.originalClasses.indexOf(otherStateClass) < 0)) {
+                obsoleteClasses.push(otherStateClass);
+              }
             }
           }
         }
       }
+      else {
+        const actionConfig = ruleInfo.rule.on_state as FloorplanActionConfig;
+        const serviceContext = this.createServiceContext(actionConfig, entityId, svgElement);
+        this.callService(serviceContext, entityId, svgElementInfo);
+      }
     }
     else {
-      if (svgElement.classList) {
+      if (isStateConfigArray && svgElement.classList) {
         for (const otherClass of Utils.getArray<string>(svgElement.classList)) {
           if ((targetClasses.indexOf(otherClass) < 0) && (otherClass !== 'floorplan-item') && Utils.hasClass(svgElement, otherClass) && (svgElementInfo.originalClasses.indexOf(otherClass) < 0)) {
             obsoleteClasses.push(otherClass);
@@ -1342,9 +1348,15 @@ export class FloorplanElement extends LitElement {
     const svgElement = svgElementInfo.svgElement;
 
     let targetClasses: string[] = [];
+    let targetStyles: string[] = [];
+
     if (ruleInfo.rule.class) {
       const targetClassList = this.evaluate(ruleInfo.rule.class, entityId, svgElement) as string;
       targetClasses = targetClassList ? targetClassList.split(" ") : [];
+    }
+    else if (ruleInfo.rule.style) {
+      const targetStyleList = this.evaluate(ruleInfo.rule.style, entityId, svgElement) as string;
+      targetStyles = targetStyleList ? targetStyleList.split(" ") : [];
     }
 
     const obsoleteClasses: string[] = [];
@@ -1494,18 +1506,8 @@ export class FloorplanElement extends LitElement {
       const targetAction = ((typeof action === 'string') ? { service: action } : action) as FloorplanActionConfig;
 
       if (targetAction.service) {
-        const serviceContext = this.getServiceContext(targetAction, entityId, svgElement);
-
-        switch (serviceContext.domain) {
-          case 'floorplan':
-            this.callFloorplanService(serviceContext, entityId, svgElementInfo);
-            break;
-
-          default:
-            this.callHomeAssistantService(serviceContext);
-            break;
-        }
-
+        const serviceContext = this.createServiceContext(targetAction, entityId, svgElement);
+        this.callService(serviceContext, entityId, svgElementInfo);
         //calledServiceCount++;
       }
     }
@@ -1519,17 +1521,37 @@ export class FloorplanElement extends LitElement {
     */
   }
 
+  callService(serviceContext: ServiceContext, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo): void {
+    switch (serviceContext.domain) {
+      case 'floorplan':
+        this.callFloorplanService(serviceContext, entityId, svgElementInfo);
+        break;
+
+      default:
+        this.callHomeAssistantService(serviceContext);
+        break;
+    }
+  }
+
   callFloorplanService(serviceContext: ServiceContext, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo): void {
     const svgElement = (svgElementInfo ? svgElementInfo.svgElement : undefined) as SVGGraphicsElement;
 
     let page_id: string;
     let targetPageInfo: FloorplanPageInfo | undefined;
-
-    if (this.isDemo) {
-      alert(`Calling Floorplan service: ${serviceContext.domain}.${serviceContext.service}`)
-    }
+    let className: string;
+    let style: string;
 
     switch (serviceContext.service) {
+      case 'set_class':
+        className = serviceContext.data.class as string;
+        Utils.addClass((svgElementInfo as FloorplanSvgElementInfo).svgElement, className);
+        break;
+
+      case 'set_style':
+        style = serviceContext.data.style as string;
+        Utils.setStyle((svgElementInfo as FloorplanSvgElementInfo).svgElement, style);
+        break;
+
       case 'class_toggle':
         if (serviceContext.data && Array.isArray(serviceContext.data.classes)) {
           const classes = serviceContext.data.classes as string[];
@@ -1590,6 +1612,10 @@ export class FloorplanElement extends LitElement {
 
       default:
         // Unknown floorplan service
+        if (this.isDemo) {
+          alert(`Calling unknown Floorplan service: ${serviceContext.domain}.${serviceContext.service}`)
+        }
+
         break;
     }
   }
@@ -1646,7 +1672,7 @@ export class FloorplanElement extends LitElement {
   }
 
 
-  getServiceContext(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): ServiceContext {
+  createServiceContext(action: FloorplanActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): ServiceContext {
     let fullServiceName = action.service;
     if (action.service) {
       fullServiceName = this.evaluate(action.service, entityId, svgElement) as string;

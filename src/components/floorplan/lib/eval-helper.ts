@@ -5,11 +5,24 @@ import { FloorplanConfig } from './/floorplan-config';
 export class EvalHelper {
   static evaluateFunctionCache: { [key: string]: EvaluateFunction } = {};
 
-  static evaluate(code: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
+  static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     const entityState = entityId ? hass.states[entityId] : undefined;
 
-    let functionBody = (code.indexOf('${') >= 0) ? `\`${code}\`;` : code;
-    functionBody = (functionBody.indexOf('return') >= 0) ? functionBody : `return ${functionBody}`;
+    let functionBody = expression.trim();
+
+    if (functionBody.indexOf('${') >= 0) {
+      if (functionBody.startsWith('"') && functionBody.endsWith('"')) {
+        functionBody = functionBody.slice(1, functionBody.length - 2); // remove leading and trailing quotes
+      }
+
+      functionBody = functionBody.replace(/\\"/g, '"'); // change escaped quotes to just quotes
+
+      functionBody = `\`${functionBody}\`;`;
+    }
+
+    if (functionBody.indexOf('return') < 0)  {
+      functionBody = `return ${functionBody}`;
+    }
 
     let targetFunc: EvaluateFunction;
 
