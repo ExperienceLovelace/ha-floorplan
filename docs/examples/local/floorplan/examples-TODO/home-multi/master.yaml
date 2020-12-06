@@ -1,0 +1,27 @@
+page_id: master
+#image: /local/floorplan/examples/home-multi/master.svg
+stylesheet: /local/floorplan/examples/home-multi/master.css
+
+master_page:
+  content_element: content
+
+image:
+  sizes:
+    - min_width: 0
+      location: /local/floorplan/examples/home-multi/master.svg
+
+rules:
+
+# Page navigation
+
+  - element: floorplan.button_home
+    action:
+      service: floorplan.page_navigate
+      data:
+        page_id: home
+
+  - element: floorplan.button_squeezebox
+    action:
+      service: floorplan.page_navigate
+      data:
+        page_id: squeezebox
