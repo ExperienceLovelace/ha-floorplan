@@ -18,6 +18,8 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
+remote_theme: "mmistakes/minimal-mistakes@4.21.0"
+
 title: Floorplan for Home Assistant
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
@@ -30,7 +32,6 @@ twitter_username: jekyllrb
 github_username:  jekyll
 
 # Build settings
-remote_theme: "remote_theme: "mmistakes/minimal-mistakes@4.21.0"
 plugins:
   - jekyll-feed
 
