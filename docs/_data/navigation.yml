@@ -9,5 +9,7 @@ main:
     url: /tags/
   - title: "Options"
     url: /options/
-  - title: "External Link"
-    url: https://google.com
+  - title: "About"
+    url: /about/
+  # - title: "External Link"
+  #   url: https://google.com

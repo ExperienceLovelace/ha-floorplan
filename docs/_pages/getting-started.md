@@ -1,8 +1,7 @@
 ---
-layout: page
-title: Geting Started
-toc: true
 permalink: /getting-started/
+title: "Getting started"
+toc: true
 ---
 
 Put the getting started guide here...
