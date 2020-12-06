@@ -1,3 +1,6 @@
+remote_theme: "mmistakes/minimal-mistakes@4.21.0"
+minimal_mistakes_skin: "air"
+
 #
 # Relevant information
 #
@@ -32,14 +35,26 @@ show_date: true
 search: true
 search_full_content: true
 
+footer:
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/ExperienceLovelace/ha-floorplan"
+
 #
 # Build settings
 #
 
-remote_theme: "mmistakes/minimal-mistakes@4.21.0"
-minimal_mistakes_skin: "air"
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
   - jekyll-include-cache
   - jekyll-archives
+
+whitelist:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
+  - jekyll-include-cache
