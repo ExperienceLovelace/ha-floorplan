@@ -8,31 +8,48 @@ header:
     - label: "<i class='fas fa-download'></i> Install now"
       url: "/docs/quick-start-guide/"
 excerpt: >
-  A flexible two-column Jekyll theme. Perfect for building personal sites, blogs, and portfolios.<br />
-  <small><a href="https://github.com/mmistakes/minimal-mistakes/releases/tag/4.21.0">Latest release v4.21.0</a></small>
+  Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.<br />
+  <!--<small><a href="https://github.com/mmistakes/minimal-mistakes/releases/tag/4.21.0">Latest release v4.21.0</a></small>-->
 feature_row:
   - image_path: /assets/images/mm-customizable-feature.png
-    alt: "customizable"
-    title: "Super customizable"
-    excerpt: "Everything from the menus, sidebars, comments, and more can be configured or set with YAML Front Matter."
-    url: "/docs/configuration/"
+    alt: "getting started"
+    title: "Getting started"
+    excerpt: "Are you ready to begin? Check our Getting started guide right now!"
+    url: "/getting-started/"
     btn_class: "btn--primary"
     btn_label: "Learn more"
   - image_path: /assets/images/mm-responsive-feature.png
     alt: "fully responsive"
-    title: "Responsive layouts"
-    excerpt: "Built with HTML5 + CSS3. All layouts are fully responsive with helpers to augment your content."
-    url: "/docs/layouts/"
+    title: "Examples"
+    excerpt: "It's always easier to start, with a good amount of examples. So, go get them!"
+    url: "/examples/"
     btn_class: "btn--primary"
     btn_label: "Learn more"
   - image_path: /assets/images/mm-free-feature.png
-    alt: "100% free"
-    title: "100% free"
-    excerpt: "Free to use however you want under the MIT License. Clone it, fork it, customize it... whatever!"
-    url: "/docs/license/"
+    alt: "Options"
+    title: "Options"
+    excerpt: "Are single clicks not for you? Well, try our long click. Read more for details about other options, too."
+    url: "/options/"
     btn_class: "btn--primary"
     btn_label: "Learn more"      
 ---
 
-{% include feature_row %}https://experiencelovelace.github.io/
+Floorplan can bring new life to Home Assistant. By mapping entities to SVG-objects, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.
+
+And remember: We're focusing on the floorplan experince, but you can use HA Floorplan for anyting. A Music Box? No problem? A Ring doorbell illustration? Bring it on. A remote control for your legacy TV with IR-control? Yep, that can be done, too.
+
+{% include feature_row %}
+
+Please join our community-thread at [Home Assistant's Community](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489). Kindly us it for general usage-questions, too. Do you have a good idéa for HA Floorplan, or have you faced a issue with the current solution? Create a issue, and remember to provide as much details as possible. We'll do our best to help you out.
+
+## First steps
+
+First of all, you'll need to visit over [Getting Started](./getting-started/)-page. Here it's possible to get an idéa of what HA Floorplan can do, and how use it with a basic setup.
+
+If you'd like to see other examples, move forward to our [Examples](./examples/)-page.
+
+Are you searching for a specific option? Please take a look at the [Options](./options/)-page. Here's details about how to use default actions, long_click and other things. We'll do our best to keep it up to date.
+
+## Feedback
+HA Floorplan are created for you, but we can't make everyone happy at once. If you have feedback for HA Floorplan, please create a issue, or contact us in the thread in the [Home Assistant's Community](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489). I'll try and listen as much as possible. 
 
