@@ -5,3 +5,5 @@ toc: true
 ---
 
 Examples goes here... Or it will, in the future...
+
+:-)
