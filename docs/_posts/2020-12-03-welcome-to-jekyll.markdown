@@ -1,9 +1,12 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "Floorplan - Welcome to Jekyll! (Needs to be changed)"
 date:   2020-12-03 14:25:31 -0600
 categories: jekyll update
 ---
+
+First post goes here... We need to update that, soon!
+
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
 Jekyll requires blog post files to be named according to the following format:

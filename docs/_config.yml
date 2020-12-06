@@ -1,39 +1,45 @@
+#
 # Relevant information
+#
+
 title: Floorplan for Home Assistant
-email: your-email@example.com
+subtitle: your imagination (almost) defines the limits
+email: til@exeti.co
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: "ha-floorplan" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+  Documentation for HA Floorplan, which are used in Home Assistant.
+  Turn a dumb SVG-file into your new floorplan, and control devices,
+  visualize states and much more. We're always doing our best to 
+  support whatever you'd like to do. So, get started now - and please
+  share your feedback!
+baseurl: "/ha-floorplan"
+url: "https://experiencelovelace.github.io" 
 twitter_username: jekyllrb
 github_username:  jekyll
+repository: ExperienceLovelace/ha-floorplan
 
+# Add head scripts with:
+#head_scripts:
+#  - https://code.jquery.com/jquery-3.2.1.min.js
+#  - /assets/js/your-custom-head-script.js
+
+# Add logo
+#logo: "/assets/images/88x88.png"
+
+permalink: /:categories/:title/
+breadcrumbs: true  # disabled by default
+
+show_date: true
+search: true
+search_full_content: true
+
+#
 # Build settings
+#
+
 remote_theme: "mmistakes/minimal-mistakes@4.21.0"
 minimal_mistakes_skin: "air"
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
   - jekyll-include-cache
-
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+  - jekyll-archives
