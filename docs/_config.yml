@@ -26,10 +26,10 @@ github_username: ExperienceLovelace
 minimal_mistakes_skin: air
 search: true
 search_full_content: true
-repository: ExperienceLovelace/ha-floorplan
+#repository: ExperienceLovelace/ha-floorplan
 
-baseurl: "/ha-floorplan"
-url: "https://experiencelovelace.github.io" 
+baseurl: "ha-floorplan"
+url: "" 
 
 # Build settings
 markdown: kramdown
