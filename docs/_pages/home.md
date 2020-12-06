@@ -5,11 +5,11 @@ header:
   overlay_color: "#5e616c"
   overlay_image: /assets/images/mm-home-page-feature.jpg
   actions:
-    - label: "<i class='fas fa-download'></i> Install now"
-      url: "/docs/quick-start-guide/"
+    - label: "<i class='fas fa-download'></i> Start today"
+      url: "/getting-started/"
 excerpt: >
   Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.<br />
-  <!--<small><a href="https://github.com/mmistakes/minimal-mistakes/releases/tag/4.21.0">Latest release v4.21.0</a></small>-->
+  <small><a href="https://github.com/mmistakes/minimal-mistakes/releases/tag/4.21.0">Latest release v4.21.0</a></small>
 feature_row:
   - image_path: /assets/images/mm-customizable-feature.png
     alt: "getting started"
@@ -19,7 +19,7 @@ feature_row:
     btn_class: "btn--primary"
     btn_label: "Learn more"
   - image_path: /assets/images/mm-responsive-feature.png
-    alt: "fully responsive"
+    alt: "check our examples"
     title: "Examples"
     excerpt: "It's always easier to start, with a good amount of examples. So, go get them!"
     url: "/examples/"
@@ -37,6 +37,8 @@ feature_row:
 Floorplan can bring new life to Home Assistant. By mapping entities to SVG-objects, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.
 
 And remember: We're focusing on the floorplan experince, but you can use HA Floorplan for anyting. A Music Box? No problem? A Ring doorbell illustration? Bring it on. A remote control for your legacy TV with IR-control? Yep, that can be done, too.
+
+<br>
 
 {% include feature_row %}
 
