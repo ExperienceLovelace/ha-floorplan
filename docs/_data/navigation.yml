@@ -1,9 +1,13 @@
 main:
+  - title: "Getting Started"
+    url: /getting-started/
   - title: "Posts"
-    url: /posts/
+    url: /year-archive/
   - title: "Categories"
     url: /categories/
   - title: "Tags"
     url: /tags/
-  - title: "About"
-    url: /about/
+  - title: "Options"
+    url: /options/
+  - title: "External Link"
+    url: https://google.com
