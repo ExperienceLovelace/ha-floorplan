@@ -20,7 +20,7 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
 </h1>
 
 
-<h4 align="center">Floorplan for Home Assistant - your imagination are almost defining the limit of your floorplan. </h4>
+<h4 align="center">Floorplan for Home Assistant - your imagination (almost) defines the limits </h4>
 
 <p align="center">
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/commits/master" target="_blank">
