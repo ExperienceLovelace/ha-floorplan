@@ -6,4 +6,4 @@ toc: true
 
 Examples goes here... Or it will, in the future...
 
-:-)
+{% include floorplan_main %}
