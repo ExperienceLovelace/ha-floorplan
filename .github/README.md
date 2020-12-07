@@ -15,6 +15,8 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
 <hr>
 
 <h1 align="center">
+	<img src="/docs/assets/images/logo-200x200.png">
+	<br>
   <br>
   HA Floorplan
 </h1>
