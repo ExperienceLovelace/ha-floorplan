@@ -1,6 +1,8 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { FloorplanProject } from './types';
 import './floorplan-project';
+import '../lit-toast/lit-toast';
+import { LitToast } from '../lit-toast/lit-toast';
 
 export class FloorplanProjects extends LitElement {
   @property({ attribute: false, type: Array }) public projects!: FloorplanProject[];
@@ -35,13 +37,24 @@ export class FloorplanProjects extends LitElement {
   protected render(): TemplateResult {
     return html`
       ${this.projects?.map(project =>
-      html` <floorplan-project .project=${project} .isDemo=${this.isDemo}></floorplan-project>`)
-      }`;
+        html` <floorplan-project .project=${project} .isDemo=${this.isDemo} .notify=${this.notify.bind(this)}></floorplan-project>`)
+      }
+
+      <lit-toast></lit-toast>
+    `;
   }
 
   static get styles(): CSSResult {
     return css`
     `;
+  }
+
+  get litToast(): LitToast {
+    return this.shadowRoot?.querySelector('lit-toast') as LitToast;
+  }
+
+  notify(message: string): void {
+    this.litToast.show(message);
   }
 }
 

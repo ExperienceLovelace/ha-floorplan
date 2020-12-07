@@ -13,6 +13,7 @@ export class FloorplanPanel extends LitElement {
   @property({ type: Boolean }) public showAppHeader!: boolean;
 
   @property({ type: Boolean }) public isDemo!: boolean;
+  @property({ type: Function }) public notify!: (message: string) => void;
 
   protected render(): TemplateResult {
     return html`
@@ -26,7 +27,7 @@ export class FloorplanPanel extends LitElement {
         </app-header>        
 
         <div class="content ${this.showAppHeader ? 'regular-height ' : 'full-height'}">
-          <floorplan-element .hass=${this.hass} ._config=${this.panel?.config?.config} .isDemo=${this.isDemo}></floorplan-element>
+          <floorplan-element .hass=${this.hass} ._config=${this.panel?.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
         </div>
 
       </ha-app-layout>

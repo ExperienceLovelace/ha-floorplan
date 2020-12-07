@@ -8,6 +8,7 @@ export class FloorplanCard extends LitElement {
   @property({ attribute: false }) public config!: FloorplanCardConfig;
 
   @property({ type: Boolean }) public isDemo!: boolean;
+  @property({ type: Function }) public notify!: (message: string) => void;
 
   protected render(): TemplateResult {
     if (!this.config) {
@@ -18,7 +19,7 @@ export class FloorplanCard extends LitElement {
       <ha-card>
         <h1 class="card-header">${this.config?.title}</h1>
 
-        <floorplan-element .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo}></floorplan-element>
+        <floorplan-element .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
       </ha-card>
     `;
   }

@@ -14,14 +14,15 @@ export class FloorplanProjectElement extends LitElement {
 
   @property({ attribute: false }) public project!: FloorplanProject;
   @property({ type: Boolean }) public isDemo!: boolean;
+  @property({ type: Function }) public notify!: (message: string) => void;
 
   simulator?: HassSimulator;
 
   protected render(): TemplateResult {
     return html`
       ${this.project.configFile.endsWith('card.yaml') ?
-        html`<floorplan-card .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo}></floorplan-card>` :
-        html` <floorplan-panel .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo}></floorplan-panel>`
+        html`<floorplan-card .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>` :
+        html` <floorplan-panel .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`
       }`;
   }
 

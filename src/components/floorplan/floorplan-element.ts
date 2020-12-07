@@ -21,6 +21,7 @@ export class FloorplanElement extends LitElement {
   @property({ attribute: false }) public _config!: string | FloorplanConfig;
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Boolean }) public isShowLog!: boolean;
+  @property({ type: Function }) public notify!: (message: string) => void;
 
   version = '1.0.1';
   config!: FloorplanConfig;
@@ -167,15 +168,6 @@ export class FloorplanElement extends LitElement {
 
   private get logElement(): HTMLDivElement {
     return this.shadowRoot?.getElementById("log") as HTMLDivElement;
-  }
-
-  openMoreInfo(entityId: string): void {
-    if (this.isDemo) {
-      alert(`Displaying more info for entity: ${entityId}`);
-    }
-    else {
-      fireEvent(this, 'hass-more-info', { entityId: entityId });
-    }
   }
 
   /***************************************************************************************************************************/
@@ -1253,11 +1245,11 @@ export class FloorplanElement extends LitElement {
 
       default:
         // Unknown floorplan service
-        if (this.isDemo) {
-          alert(`Calling unknown Floorplan service: ${serviceContext.domain}.${serviceContext.service}`)
-        }
-
         break;
+    }
+
+    if (this.isDemo) {
+      //this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service}`)
     }
   }
 
@@ -1299,16 +1291,14 @@ export class FloorplanElement extends LitElement {
 
   callHomeAssistantService(serviceContext: ServiceContext): void {
     if (serviceContext.service?.toLocaleLowerCase() === 'more_info') {
-      if (serviceContext.data.entity_id) {
-        this.openMoreInfo(serviceContext.data.entity_id as string);
-      }
+      fireEvent(this, 'hass-more-info', { entityId: serviceContext.data.entity_id });
     }
     else {
-      if (this.isDemo) {
-        alert(`Calling Home Assistant service: ${serviceContext.domain}.${serviceContext.service}`);
-      }
-
       this.hass.callService(serviceContext.domain, serviceContext.service, serviceContext.data);
+    }
+
+    if (this.isDemo) {
+      this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service} (${serviceContext.data.entity_id})`);
     }
   }
 
