@@ -8,7 +8,7 @@ export class FloorplanConfig {
   rules!: FloorplanRuleConfig[];
 
   // Optional features
-  startup!: FloorplanStartupConfig;
+  on_startup!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
   defaults!: FloorplanRuleConfig;
   image_mobile!: FloorplanImageConfig | string;
   last_motion!: FloorplanLastMotionConfig;
@@ -17,10 +17,6 @@ export class FloorplanConfig {
   pages!: string[];
   variables!: FloorplanVariableConfig[];
   pan_zoom: unknown;
-}
-
-export class FloorplanStartupConfig {
-  action!: FloorplanActionConfig;
 }
 
 export class FloorplanActionConfig {
@@ -55,10 +51,10 @@ export class FloorplanRuleConfig {
   element!: string;
   elements!: string[];
   propagate = true;
-  on_state!: FloorplanActionConfig | false;
-  on_hover!: FloorplanActionConfig | false;
-  on_click!: FloorplanActionConfig | false;
-  on_long_click!: FloorplanActionConfig | false;
+  on_state!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
+  on_hover!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
+  on_click!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
+  on_long_click!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
 }
 
 export class FloorplanRuleEntityElementConfig {

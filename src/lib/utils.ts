@@ -145,8 +145,23 @@ export class Utils {
   /* Utility functions
   /***************************************************************************************************************************/
 
-  static getArray<T>(list: unknown[] | Record<string, unknown> | unknown): T[] {
-    if (Array.isArray(list)) {
+  static singleToArray<T>(list: unknown[] | Record<string, unknown> | unknown | T): T[] {
+    if ((list === undefined) || (list === null)) {
+      return [];
+    }
+    else if (Array.isArray(list)) {
+      return list;
+    }
+    else {
+      return [(list as unknown as T)] as Array<T>;
+    }
+  }
+
+  static getArray<T>(list: unknown[] | Record<string, unknown> | unknown | T): T[] {
+    if ((list === undefined) || (list === null)) {
+      return [];
+    }
+    else if (Array.isArray(list)) {
       return list;
     }
     else {

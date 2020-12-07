@@ -27,7 +27,7 @@ config:
           data: 'background-${entity.state}'
         on_click:
           service: homeassistant.toggle
-
+          
       - entity: light.garage
         element: light.garage.text
         text: '${entity.state}'

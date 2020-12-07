@@ -1,5 +1,5 @@
 import { HassEntity } from '../../../lib/homeassistant/core-types';
-import { FloorplanPageConfig, FloorplanRuleConfig } from './floorplan-config';
+import { FloorplanPageConfig, FloorplanRuleConfig, FloorplanActionConfig } from './floorplan-config';
 
 export class FloorplanPageInfo {
   index!: number;
@@ -48,6 +48,7 @@ export class FloorplanClickContext {
     public elementId: string | undefined,
     public svgElementInfo: FloorplanSvgElementInfo,
     public ruleInfo: FloorplanRuleInfo,
+    public actions?: Array<FloorplanActionConfig>,
   ) {
   }
 }
