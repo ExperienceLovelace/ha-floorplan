@@ -16,10 +16,10 @@ export class FloorplanElementInfo {
 export class FloorplanSvgElementInfo {
   constructor(
     public entityId: string,
-    public svg: SVGGraphicsElement | undefined,
     public svgElement: SVGGraphicsElement,
     public originalSvgElement: SVGGraphicsElement,
-    public originalClasses: string[],
+    public originalClasses: Set<string>,
+    public originalStyles: Record<string, unknown>,
     public originalBBox: DOMRect,
     public originalClientRect: ClientRect | DOMRect) {
   }
@@ -44,10 +44,10 @@ export class FloorplanEntityInfo {
 export class FloorplanClickContext {
   constructor(
     public instance: HTMLElement,
-    public svgElementInfo: FloorplanSvgElementInfo,
     public entityId: string | undefined,
     public elementId: string | undefined,
-    public rule: FloorplanRuleConfig,
+    public svgElementInfo: FloorplanSvgElementInfo,
+    public ruleInfo: FloorplanRuleInfo,
   ) {
   }
 }

@@ -25,45 +25,31 @@ export class Utils {
   }
 
   static setClass(element: Element, className: string): void {
-    element.className = className;
+    element.setAttribute('class', className);
   }
 
-  static setStyle(element: SVGGraphicsElement, style: string): void {
-    const existingStyleAttr = element.getAttribute('style') ?? '';
-    const existingStyles = existingStyleAttr
-      .split(';')
-      .map(x => x?.trim())
-      .filter(x => x.length)
-      .map(x => {
-        const items = x.split(':');
-        const result = { name: items[0].trim(), value: items[1].trim() };
-        return result;
-      });
+  static getStyles(element: HTMLElement | SVGGraphicsElement): Record<string, unknown> {
+    const styles: Record<string, unknown> = {};
 
-    const targetStyleAttr = style ?? '';
-    const targetStyles = targetStyleAttr
-      .split(';')
-      .map(x => x?.trim())
-      .filter(x => x.length)
-      .map(x => {
-        const items = x.split(':');
-        const result = { name: items[0].trim(), value: `${items[1].trim()} !important` };
-        return result;
-      });
+    let styleName: string;
 
-    for (const targetStyle of targetStyles) {
-      const existingStyle = existingStyles.find(x => x.name === targetStyle.name);
-      if (existingStyle) {
-        existingStyle.value = targetStyle.value;
-      }
-      else {
-        existingStyles.push(targetStyle)
-      }
+    for (let i = 0; i < element.style.length; i++) {
+      styleName = element.style.item(i);
+      styles[styleName] = element.style.getPropertyValue(styleName);
+      //element.style.removeProperty(styleName);
+      //element.style.setProperty(styleName, styleValue);
     }
 
-    const finalStyleAttr = existingStyles.map(x => `${x.name}: ${x.value}`).join('; ');
+    return styles;
+  }
 
-    element.setAttribute('style', finalStyleAttr);
+  static setStyle(element: HTMLElement | SVGGraphicsElement, style: string): void {
+    const styles = (style ?? []).split(';').map(x => x.trim()).filter(x => x.length);
+
+    for (let i = 0; i < styles.length; i++) {
+      const parts = styles[i].split(':').map(x => x.trim());
+      element.style.setProperty(parts[0], parts[1]);
+    }
   }
 
   static waitForChildNodes(element: Node, initializeNode: () => void, timeout: number): Promise<void> {
@@ -166,6 +152,16 @@ export class Utils {
     else {
       const listObj = list as Record<string, unknown>;
       return Object.values(listObj) as Array<T>;
+    }
+  }
+
+  static getSet<T>(list: unknown[] | Record<string, unknown> | unknown): Set<T> {
+    if (Array.isArray(list)) {
+      return new Set<T>(list);
+    }
+    else {
+      const listObj = list as Record<string, unknown>;
+      return new Set<T>(Object.values(listObj) as Array<T>);
     }
   }
 

@@ -15,12 +15,16 @@ config:
     rules:
       - entity: light.garage
         element: light.garage
-        image: /local/floorplan/examples/simple/light_${entity.state}.svg
+        on_state:
+          service: floorplan.image_set
+          data: /local/floorplan/examples/simple/light_${entity.state}.svg
         on_click: homeassistant.toggle
 
       - entity: light.garage
         element: light.garage.background
-        class: background-${entity.state}
+        on_state:
+          service: floorplan.class_set
+          data: 'background-${entity.state}'
         on_click:
           service: homeassistant.toggle
 
@@ -33,15 +37,16 @@ config:
       - entity: switch.living_area_fan
         on_click: false
         propagate: false
-        states:
-          - state: 'on'
-            class:
-              - spinning
-              - some_other_class
+        on_state:
+          service: floorplan.class_set
+          data:
+            class: '${(entity.state === "on") ? "spinning" : ""}'
 
       - entity: switch.living_area_fan
         element: switch.living_area_fan.background
-        class: 'background-${entity.state}'
+        on_state:
+          service: floorplan.class_set
+          data: background-${entity.state}
         on_click: false
         on_long_click:
           service: homeassistant.toggle
@@ -55,8 +60,11 @@ config:
           service: homeassistant.toggle
 
       - entity: camera.zagreb_ban_jelacic_square
-        image: '${entity.attributes.entity_picture}'
-        image_refresh_interval: 10
+        on_state:
+          service: floorplan.image_set
+          data:
+            image: '${entity.attributes.entity_picture}'
+            image_refresh_interval: 10
 
       - entities:
           - binary_sensor.main_bedroom
@@ -64,10 +72,10 @@ config:
           - binary_sensor.garage
         on_hover: false
         on_state:
-#          service: floorplan.set_class
+#          service: floorplan.class_set
 #          data:
 #            class: binary-sensor-${entity.state}
-          service: floorplan.set_style
+          service: floorplan.style_set
           data:
             style: '
               fill: ${ entity.state === "on" ? "#F9D27C" : "#7CB1F9" };

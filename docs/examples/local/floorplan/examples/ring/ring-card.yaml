@@ -9,15 +9,28 @@ config:
 
   rules:
     - entity: sensor.ring_salon_battery
-      text: '${entity.state ? entity.state + "%" : "unknown"}'
+      on_state:
+        service: floorplan.text_set
+        data: '${entity.state ? entity.state + "%" : "unknown"}'
 
     - entities:
         - binary_sensor.ring_salon_motion
       on_state:
-        - state: 'on'
-          class: 'ring-motion'
+        service: floorplan.class_set
+        data:
+          class: '${(entity.state === "on") ? "ring-motion" : ""}'
 
     - entity: binary_sensor.ring_salon_ding
       on_state:
-        - state: 'on'
-          class: 'ring-ding'
+        service: floorplan.class_set
+#        data: '${(entity.state === "on") ? "ring-ding" : ""}'
+        data:
+          class: '>
+            if (entity.state === "on") {
+              return "ring-ding";
+            }
+            else {
+              return "";
+            }
+            '
+            

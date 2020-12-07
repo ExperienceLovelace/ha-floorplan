@@ -10,6 +10,10 @@ export class EvalHelper {
 
     let functionBody = expression.trim();
 
+    if (functionBody.indexOf('>') >= 0) {
+      functionBody = functionBody.slice(1).trim(); // expression beginning with > is real JavaScript code
+    }
+
     if (functionBody.indexOf('${') >= 0) {
       if (functionBody.startsWith('"') && functionBody.endsWith('"')) {
         functionBody = functionBody.slice(1, functionBody.length - 2); // remove leading and trailing quotes

@@ -26,8 +26,8 @@ export class FloorplanStartupConfig {
 export class FloorplanActionConfig {
   service!: string;
   value: unknown;
-  data!: Record<string, unknown>;
-  no_entity_id = false;
+  data!: string | Record<string, unknown>;
+  no_entity_id!: boolean;
 }
 
 export class FloorplanPageConfig extends FloorplanConfig {
@@ -49,27 +49,16 @@ export class FloorplanImageSize {
 }
 
 export class FloorplanRuleConfig {
-  image!: string;
-  image_refresh_interval!: string;
-  text!: string;
-  class!: string;
-  style!: string;
-  propagate = true;
   entity!: string;
   entities!: (string | FloorplanRuleEntityElementConfig)[];
+  groups!: string[];
   element!: string;
   elements!: string[];
-  on_state!: FloorplanRuleStateConfig[] | FloorplanActionConfig;
-  on_hover!: FloorplanActionConfig| false;
+  propagate = true;
+  on_state!: FloorplanActionConfig | false;
+  on_hover!: FloorplanActionConfig | false;
   on_click!: FloorplanActionConfig | false;
-  on_long_click!: FloorplanActionConfig| false;
-  groups!: string[];
-}
-
-export class FloorplanRuleStateConfig {
-  state!: string;
-  class!: string | string[];
-  classes!: string | string[];
+  on_long_click!: FloorplanActionConfig | false;
 }
 
 export class FloorplanRuleEntityElementConfig {
@@ -77,7 +66,7 @@ export class FloorplanRuleEntityElementConfig {
   element!: string;
 }
 
-export class FloorplanLastMotionConfig extends FloorplanRuleStateConfig {
+export class FloorplanLastMotionConfig extends FloorplanActionConfig {
   entity!: string;
 }
 
