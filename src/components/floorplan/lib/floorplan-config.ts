@@ -50,7 +50,6 @@ export class FloorplanRuleConfig {
   groups!: string[];
   element!: string;
   elements!: string[];
-  propagate = true;
   on_state!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
   on_hover!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
   on_click!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;

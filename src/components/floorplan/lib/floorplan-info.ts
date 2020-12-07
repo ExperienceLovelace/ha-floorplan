@@ -29,7 +29,6 @@ export class FloorplanRuleInfo {
   svgElementInfos: { [key: string]: FloorplanSvgElementInfo } = {};
   imageUrl!: string;
   imageLoader!: number | undefined;
-  propagate!: boolean;
 
   constructor(public rule: FloorplanRuleConfig) {
   }

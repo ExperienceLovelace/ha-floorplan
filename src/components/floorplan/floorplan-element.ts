@@ -488,7 +488,7 @@ export class FloorplanElement extends LitElement {
     if (svgElement.nodeName !== 'image') {
       svgElement = this.createImageElement(svgElementInfo.originalSvgElement) as SVGGraphicsElement;
 
-      this.processElementAndDescendents(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
+      this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
 
       svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement, svgElement);
     }
@@ -523,7 +523,7 @@ export class FloorplanElement extends LitElement {
     svg.setAttribute('x', svgElementInfo.originalBBox.x.toString());
     svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
 
-    this.processElementAndDescendents(svg, svgElementInfo, entityId, undefined, ruleInfo);
+    this.attachClickHandlers(svg, svgElementInfo, entityId, undefined, ruleInfo);
 
     svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement, svg);
 
@@ -683,7 +683,6 @@ export class FloorplanElement extends LitElement {
         rule.on_hover = (rule.on_hover === undefined) ? defaultRule.on_hover : rule.on_hover;
         rule.on_click = (rule.on_click === undefined) ? defaultRule.on_click : rule.on_click;
         rule.on_long_click = (rule.on_long_click === undefined) ? defaultRule.on_long_click : rule.on_long_click;
-        rule.propagate = (rule.propagate === undefined) ? defaultRule.propagate : rule.propagate;
       }
     }
 
@@ -725,7 +724,7 @@ export class FloorplanElement extends LitElement {
       // Create a title element (to support hover over text)
       svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
 
-      this.processElementAndDescendents(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
+      this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
     }
   }
 
@@ -801,7 +800,7 @@ export class FloorplanElement extends LitElement {
 
         const svgElementInfo = this.addSvgElementToRule(svg, svgElement, ruleInfo);
 
-        this.processElementAndDescendents(svgElement, svgElementInfo, undefined, elementId, ruleInfo);
+        this.attachClickHandlers(svgElement, svgElementInfo, undefined, elementId, ruleInfo);
       }
       else {
         this.logWarning('CONFIG', `Cannot find '${elementId}' in SVG file`);
@@ -809,31 +808,30 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  processElementAndDescendents(targetSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, ruleInfo: FloorplanRuleInfo): void {
-    this._querySelectorAll(targetSvgElement, '*', true)
-      .forEach((elem: Element) => {
-        const element = elem as SVGGraphicsElement | HTMLElement;
+  attachClickHandlers(targetSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, ruleInfo: FloorplanRuleInfo): void {
+    this._querySelectorAll(targetSvgElement, '*', true).forEach((elem: Element) => {
+      const element = elem as SVGGraphicsElement | HTMLElement;
 
-        element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
+      element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
 
-        const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo);
+      const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo);
 
-        if (ruleInfo.rule.on_click) {
-          context.actions = this.getActionConfigs(ruleInfo.rule.on_click);
-          E.on(element, 'click', this.onClick.bind(context));
-          //E.on(element, 'shortClick', this.onClick.bind(context));
-          if (element.style) element.style.cursor = 'pointer';
-        }
+      if (ruleInfo.rule.on_click) {
+        context.actions = this.getActionConfigs(ruleInfo.rule.on_click);
+        E.on(element, 'click', this.onClick.bind(context));
+        //E.on(element, 'shortClick', this.onClick.bind(context));
+        if (element.style) element.style.cursor = 'pointer';
+      }
 
-        if (ruleInfo.rule.on_long_click) {
-          context.actions = this.getActionConfigs(ruleInfo.rule.on_long_click);
-          LongClicks.observe(element as HTMLElement | SVGElement);
-          E.on(element, 'longClick', this.onLongClick.bind(context));
-          if (element.style) element.style.cursor = 'pointer';
-        }
+      if (ruleInfo.rule.on_long_click) {
+        context.actions = this.getActionConfigs(ruleInfo.rule.on_long_click);
+        LongClicks.observe(element as HTMLElement | SVGElement);
+        E.on(element, 'longClick', this.onLongClick.bind(context));
+        if (element.style) element.style.cursor = 'pointer';
+      }
 
-        Utils.addClass(element, 'floorplan-item'); // mark the element as being processed by floorplan
-      });
+      Utils.addClass(element, 'floorplan-item'); // mark the element as being processed by floorplan
+    });
   }
 
   addSvgElementToRule(svg: SVGGraphicsElement, svgElement: SVGGraphicsElement, ruleInfo: FloorplanRuleInfo): FloorplanSvgElementInfo {
@@ -1174,9 +1172,9 @@ export class FloorplanElement extends LitElement {
     switch (serviceContext.service) {
       case 'class_set':
         className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
-        classes = new Set((svgElementInfo as FloorplanSvgElementInfo).originalClasses);
+        classes = new Set(svgElementInfo.originalClasses);
         classes.add(className);
-        Utils.setClass((svgElementInfo as FloorplanSvgElementInfo).svgElement, className);
+        Utils.setClass(svgElement, className);
         break;
 
       case 'style_set':
