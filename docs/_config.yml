@@ -27,6 +27,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   visualize states and much more. We're always doing our best to 
   support whatever you'd like to do. So, get started now - and please
   share your feedback!
+logo: /assets/images/logo-88x88.png
 repository: ExperienceLovelace/ha-floorplan
 baseurl: "ha-floorplan" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
