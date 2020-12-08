@@ -17,7 +17,10 @@ export class FloorplanCard extends LitElement {
 
     return html`
       <ha-card>
-        <h1 class="card-header">${this.config?.title}</h1>
+        ${this.isDemo ? '' :
+        html`
+          <h1 class="card-header">${this.config?.title}</h1>
+        `}
 
         <floorplan-element .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
       </ha-card>

@@ -1,4 +1,4 @@
 <div class="floorplan-container" style="padding:50px;">
-  <floorplan-examples></floorplan-examples>
+  <floorplan-examples data-include="ring"></floorplan-examples>
   <script src="../examples/floorplan-examples.js"></script>
 </div>

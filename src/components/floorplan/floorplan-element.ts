@@ -1167,8 +1167,15 @@ export class FloorplanElement extends LitElement {
     let textElement: HTMLElement | SVGGraphicsElement;
     let tspanElement: SVGTSpanElement | null;
     let text: string;
+    let url: string;
 
     switch (serviceContext.service) {
+      case 'window_navigate':
+        url = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.url as string;
+        window.location.href = url;
+        //window.location.replace(url);
+        break;
+
       case 'class_set':
         className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
         classes = new Set(svgElementInfo.originalClasses);

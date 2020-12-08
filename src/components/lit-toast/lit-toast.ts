@@ -114,4 +114,6 @@ export class LitToast extends LitElement {
   }
 }
 
-customElements.define('lit-toast', LitToast);
+if (!customElements.get('lit-toast')) {
+  customElements.define('lit-toast', LitToast);
+}
