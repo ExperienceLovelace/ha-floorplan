@@ -1,6 +1,6 @@
 import { HassEntity } from './homeassistant';
 
-export interface FloorplanProject {
+export interface FloorplanExanple {
   dir: string;
   configFile: string;
   simulationFile: string

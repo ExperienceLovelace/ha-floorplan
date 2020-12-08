@@ -1,11 +1,11 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
-import { FloorplanProject } from './types';
-import './floorplan-project';
+import { FloorplanExanple } from './types';
+import './floorplan-example';
 import '../lit-toast/lit-toast';
 import { LitToast } from '../lit-toast/lit-toast';
 
-export class FloorplanProjects extends LitElement {
-  @property({ attribute: false, type: Array }) public projects!: FloorplanProject[];
+export class FloorplanExamples extends LitElement {
+  @property({ attribute: false, type: Array }) public examples!: FloorplanExanple[];
   @property({ type: Boolean }) public isDemo!: boolean;
 
   constructor() {
@@ -21,23 +21,24 @@ export class FloorplanProjects extends LitElement {
   }
 
   async init(): Promise<void> {
-    this.projects = [
+    this.examples = [
+      // Cards
+      { dir: "light", configFile: "light-card.yaml", simulationFile: "simulations.yaml", },
+      { dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
       // Panels
       { dir: "simple", configFile: "simple-panel.yaml", simulationFile: "simulations.yaml", },
-      // Cards
-      { dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
       // TODO
       //{ dir: "simple", configFile: "simple.yaml", simulationFile: "simulations.yaml", },
       //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
       //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
       //{ dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", },
-    ] as FloorplanProject[];
+    ] as FloorplanExanple[];
   }
 
   protected render(): TemplateResult {
     return html`
-      ${this.projects?.map(project =>
-        html` <floorplan-project .project=${project} .isDemo=${this.isDemo} .notify=${this.notify.bind(this)}></floorplan-project>`)
+      ${this.examples?.map(example =>
+      html` <floorplan-example .example=${example} .isDemo=${this.isDemo} .notify=${this.notify.bind(this)}></floorplan-example>`)
       }
 
       <lit-toast></lit-toast>
@@ -58,6 +59,6 @@ export class FloorplanProjects extends LitElement {
   }
 }
 
-if (!customElements.get('floorplan-projects')) {
-  customElements.define('floorplan-projects', FloorplanProjects);
+if (!customElements.get('floorplan-examples')) {
+  customElements.define('floorplan-examples', FloorplanExamples);
 }
