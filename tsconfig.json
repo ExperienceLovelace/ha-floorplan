@@ -10,6 +10,7 @@
     "target": "es2015",
     "allowJs": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "typeRoots": [
       "./types",
       "./node_modules/@types"

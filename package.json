@@ -1,7 +1,7 @@
 {
   "name": "ha-floorplan",
   "version": "1.0.0",
-  "description": "",
+  "description": "Floorplan for Home Assistant",
   "main": "index.js",
   "scripts": {
     "clean": "shx rm -rf dist/*",
