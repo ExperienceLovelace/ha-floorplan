@@ -87,7 +87,7 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-dist
+dist/
 
 # Parcel
 .parcel-cache

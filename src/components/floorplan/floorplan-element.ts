@@ -31,7 +31,6 @@ export class FloorplanElement extends LitElement {
   @property({ type: Boolean }) public isShowLog!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
-  version = '1.0.1';
   config!: FloorplanConfig;
   pageInfos: { [key: string]: FloorplanPageInfo } = {};
   entityInfos: { [key: string]: FloorplanEntityInfo } = {};
