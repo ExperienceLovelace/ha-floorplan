@@ -1,4 +1,4 @@
-import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import { FloorplanExanple } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';
@@ -8,6 +8,19 @@ export class FloorplanExamples extends LitElement {
   @property({ attribute: false, type: Array }) public examples!: FloorplanExanple[];
   @property({ type: Boolean }) public isDemo!: boolean;
 
+  floorplanExamples = [
+    // Cards
+    { name: 'light', dir: "light", configFile: "light-card.yaml", simulationFile: "simulations.yaml", },
+    { name: 'ring', dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
+    // Panels
+    { name: 'simple', dir: "simple", configFile: "simple-panel.yaml", simulationFile: "simulations.yaml", },
+    // TODO
+    //{ dir: "simple", configFile: "simple.yaml", simulationFile: "simulations.yaml", },
+    //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
+    //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
+    //{ dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", },
+  ] as FloorplanExanple[];
+
   constructor() {
     super();
 
@@ -16,23 +29,6 @@ export class FloorplanExamples extends LitElement {
     console.log("process.env.NODE_ENV", process.env.NODE_ENV);
     console.log("process.env.ROOT_URL", process.env.ROOT_URL);
     console.log("process.env.FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
-
-    this.init();
-  }
-
-  async init(): Promise<void> {
-    this.examples = [
-      // Cards
-      { dir: "light", configFile: "light-card.yaml", simulationFile: "simulations.yaml", },
-      { dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
-      // Panels
-      { dir: "simple", configFile: "simple-panel.yaml", simulationFile: "simulations.yaml", },
-      // TODO
-      //{ dir: "simple", configFile: "simple.yaml", simulationFile: "simulations.yaml", },
-      //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
-      //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
-      //{ dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", },
-    ] as FloorplanExanple[];
   }
 
   protected render(): TemplateResult {
@@ -48,6 +44,15 @@ export class FloorplanExamples extends LitElement {
   static get styles(): CSSResult {
     return css`
     `;
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+
+    if (this.dataset.include && !this.examples) {
+      const exampleNames = this.dataset.include.split(',').map(x => x.trim());
+      this.examples = this.floorplanExamples.filter(x => exampleNames.includes(x.name.toLocaleLowerCase()));
+    }
   }
 
   get litToast(): LitToast {
