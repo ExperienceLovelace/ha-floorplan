@@ -1,4 +1,4 @@
-import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
+import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { FloorplanExanple } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';
@@ -26,9 +26,11 @@ export class FloorplanExamples extends LitElement {
 
     this.isDemo = true; // running in demo Web page
 
-    console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-    console.log("process.env.ROOT_URL", process.env.ROOT_URL);
-    console.log("process.env.FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
+    if (this.isDemo) {
+      console.log("NODE_ENV", process.env.NODE_ENV);
+      console.log("ROOT_URL", process.env.ROOT_URL);
+      console.log("FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
+    }
   }
 
   protected render(): TemplateResult {
