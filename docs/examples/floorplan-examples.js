@@ -766,7 +766,7 @@ var e=require("./core");e.registerLanguage("1c",require("./languages/1c")),e.reg
         width: 50%;
       }
 
-      code-block pre code {
+      pre code {
         font-size: 14px;
       }
     `}update(o){const l=Object.create(null,{update:{get:()=>super.update}});return i(this,void 0,void 0,function*(){if(l.update.call(this,o),o.has("example")&&this.example){const o=`./local/floorplan/examples/${this.example.dir}/${this.example.configFile}`,l=yield t.Utils.fetchText(o,!0);if(this.config=t.Utils.parseYaml(l),this.configYaml=l,this.example.simulationFile){const o=`./local/floorplan/examples/${this.example.dir}/${this.example.simulationFile}`,l=yield t.Utils.fetchText(o,!0),i=t.Utils.parseYaml(l);this.simulator=new e.HassSimulator(i,this.setHass.bind(this))}}})}setHass(e){this.hass=e}}exports.FloorplanExanpleElement=r,l([(0,o.property)({attribute:!1})],r.prototype,"hass",void 0),l([(0,o.property)({attribute:!1})],r.prototype,"config",void 0),l([(0,o.property)({type:String})],r.prototype,"configYaml",void 0),l([(0,o.property)({attribute:!1})],r.prototype,"example",void 0),l([(0,o.property)({type:Boolean})],r.prototype,"isDemo",void 0),l([(0,o.property)({type:Function})],r.prototype,"notify",void 0),customElements.get("floorplan-example")||customElements.define("floorplan-example",r);
