@@ -60,7 +60,7 @@ export class FloorplanExanpleElement extends LitElement {
         width: 50%;
       }
 
-      code-block pre code {
+      pre code {
         font-size: 14px;
       }
     `;
