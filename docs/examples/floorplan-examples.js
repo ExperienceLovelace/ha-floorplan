@@ -735,17 +735,17 @@ var e=require("./core");e.registerLanguage("1c",require("./languages/1c")),e.reg
       }
     `}}s([(0,e.property)({type:String})],n.prototype,"lang",void 0),s([(0,e.property)({type:String})],n.prototype,"code",void 0),customElements.get("code-block")||customElements.define("code-block",n);
 },{"lit-element":"IgDJ","lit-html/directives/unsafe-html.js":"QXBw","highlight.js":"e5j4"}],"bpiO":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.FloorplanExanpleElement=void 0;var e=require("./hass-simulator"),t=require("../../lib/utils"),l=require("lit-element");require("../floorplan-card/floorplan-card"),require("../floorplan-panel/floorplan-panel"),require("./code-block");var o=function(e,t,l,o){var i,r=arguments.length,a=r<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,l):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(e,t,l,o);else for(var n=e.length-1;n>=0;n--)(i=e[n])&&(a=(r<3?i(a):r>3?i(t,l,a):i(t,l))||a);return r>3&&a&&Object.defineProperty(t,l,a),a},i=function(e,t,l,o){return new(l||(l=Promise))(function(i,r){function a(e){try{s(o.next(e))}catch(t){r(t)}}function n(e){try{s(o.throw(e))}catch(t){r(t)}}function s(e){var t;e.done?i(e.value):(t=e.value,t instanceof l?t:new l(function(e){e(t)})).then(a,n)}s((o=o.apply(e,t||[])).next())})};class r extends l.LitElement{render(){return l.html`
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.FloorplanExanpleElement=void 0;var e=require("./hass-simulator"),t=require("../../lib/utils"),o=require("lit-element");require("../floorplan-card/floorplan-card"),require("../floorplan-panel/floorplan-panel"),require("./code-block");var l=function(e,t,o,l){var i,r=arguments.length,a=r<3?t:null===l?l=Object.getOwnPropertyDescriptor(t,o):l;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(e,t,o,l);else for(var n=e.length-1;n>=0;n--)(i=e[n])&&(a=(r<3?i(a):r>3?i(t,o,a):i(t,o))||a);return r>3&&a&&Object.defineProperty(t,o,a),a},i=function(e,t,o,l){return new(o||(o=Promise))(function(i,r){function a(e){try{s(l.next(e))}catch(t){r(t)}}function n(e){try{s(l.throw(e))}catch(t){r(t)}}function s(e){var t;e.done?i(e.value):(t=e.value,t instanceof o?t:new o(function(e){e(t)})).then(a,n)}s((l=l.apply(e,t||[])).next())})};class r extends o.LitElement{render(){return o.html`
       <div class="d-flex flex-row flex-1">
         <div class="flex-1 width-half">
-          ${this.example.configFile.endsWith("card.yaml")?l.html`<floorplan-card .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>`:l.html` <floorplan-panel .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`}
+          ${this.example.configFile.endsWith("card.yaml")?o.html`<floorplan-card .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>`:o.html` <floorplan-panel .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`}
         </div>
 
         <div class="flex-1 width-half">
           <code-block lang="yaml" code=${this.configYaml}></code-block>
         </div>
       </div>
-      `}static get styles(){return l.css`
+      `}static get styles(){return o.css`
       .d-flex {
         display: flex;
       }
@@ -765,7 +765,11 @@ var e=require("./core");e.registerLanguage("1c",require("./languages/1c")),e.reg
       .width-half {
         width: 50%;
       }
-    `}update(l){const o=Object.create(null,{update:{get:()=>super.update}});return i(this,void 0,void 0,function*(){if(o.update.call(this,l),l.has("example")&&this.example){const l=`./local/floorplan/examples/${this.example.dir}/${this.example.configFile}`,o=yield t.Utils.fetchText(l,!0);if(this.config=t.Utils.parseYaml(o),this.configYaml=o,this.example.simulationFile){const l=`./local/floorplan/examples/${this.example.dir}/${this.example.simulationFile}`,o=yield t.Utils.fetchText(l,!0),i=t.Utils.parseYaml(o);this.simulator=new e.HassSimulator(i,this.setHass.bind(this))}}})}setHass(e){this.hass=e}}exports.FloorplanExanpleElement=r,o([(0,l.property)({attribute:!1})],r.prototype,"hass",void 0),o([(0,l.property)({attribute:!1})],r.prototype,"config",void 0),o([(0,l.property)({type:String})],r.prototype,"configYaml",void 0),o([(0,l.property)({attribute:!1})],r.prototype,"example",void 0),o([(0,l.property)({type:Boolean})],r.prototype,"isDemo",void 0),o([(0,l.property)({type:Function})],r.prototype,"notify",void 0),customElements.get("floorplan-example")||customElements.define("floorplan-example",r);
+
+      code-block pre code {
+        font-size: 14px;
+      }
+    `}update(o){const l=Object.create(null,{update:{get:()=>super.update}});return i(this,void 0,void 0,function*(){if(l.update.call(this,o),o.has("example")&&this.example){const o=`./local/floorplan/examples/${this.example.dir}/${this.example.configFile}`,l=yield t.Utils.fetchText(o,!0);if(this.config=t.Utils.parseYaml(l),this.configYaml=l,this.example.simulationFile){const o=`./local/floorplan/examples/${this.example.dir}/${this.example.simulationFile}`,l=yield t.Utils.fetchText(o,!0),i=t.Utils.parseYaml(l);this.simulator=new e.HassSimulator(i,this.setHass.bind(this))}}})}setHass(e){this.hass=e}}exports.FloorplanExanpleElement=r,l([(0,o.property)({attribute:!1})],r.prototype,"hass",void 0),l([(0,o.property)({attribute:!1})],r.prototype,"config",void 0),l([(0,o.property)({type:String})],r.prototype,"configYaml",void 0),l([(0,o.property)({attribute:!1})],r.prototype,"example",void 0),l([(0,o.property)({type:Boolean})],r.prototype,"isDemo",void 0),l([(0,o.property)({type:Function})],r.prototype,"notify",void 0),customElements.get("floorplan-example")||customElements.define("floorplan-example",r);
 },{"./hass-simulator":"KlYy","../../lib/utils":"edeP","lit-element":"IgDJ","../floorplan-card/floorplan-card":"wK02","../floorplan-panel/floorplan-panel":"UFEY","./code-block":"GETh"}],"PBzl":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.LitToast=void 0;var t=require("lit-element"),e=function(t,e,o,i){var r,s=arguments.length,a=s<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(t,e,o,i);else for(var l=t.length-1;l>=0;l--)(r=t[l])&&(a=(s<3?r(a):s>3?r(e,o,a):r(e,o))||a);return s>3&&a&&Object.defineProperty(e,o,a),a};class o extends t.LitElement{constructor(){super(),this._toastText=""}render(){return t.html`
       <div role="alert">
