@@ -16,12 +16,6 @@ class CodeBlockElement extends LitElement {
 
   static get styles(): CSSResult {
     return css`
-      /*
-
-      Original highlight.js style (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
-      
-      */
-      
       .hljs {
         display: block;
         overflow-x: auto;
