@@ -6,7 +6,6 @@ import { LitToast } from '../lit-toast/lit-toast';
 
 export class FloorplanExamples extends LitElement {
   @property({ attribute: false, type: Array }) public examples!: FloorplanExanple[];
-  @property({ type: Boolean }) public isDemo!: boolean;
 
   floorplanExamples = [
     // Cards
@@ -24,19 +23,15 @@ export class FloorplanExamples extends LitElement {
   constructor() {
     super();
 
-    this.isDemo = true; // running in demo Web page
-
-    if (this.isDemo) {
-      console.log("NODE_ENV", process.env.NODE_ENV);
-      console.log("ROOT_URL", process.env.ROOT_URL);
-      console.log("FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
-    }
+    console.log("NODE_ENV", process.env.NODE_ENV);
+    console.log("ROOT_URL", process.env.ROOT_URL);
+    console.log("FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
   }
 
   protected render(): TemplateResult {
     return html`
       ${this.examples?.map(example =>
-      html` <floorplan-example .example=${example} .isDemo=${this.isDemo} .notify=${this.notify.bind(this)}></floorplan-example>`)
+      html` <floorplan-example .example=${example} .isDemo="${true}" .notify=${this.notify.bind(this)}></floorplan-example>`)
       }
 
       <lit-toast></lit-toast>

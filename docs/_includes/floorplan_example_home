@@ -1,4 +1,4 @@
-<div class="floorplan-container" style="padding:50px;">
+<div class="floorplan-container">
   <floorplan-examples data-include="simple"></floorplan-examples>
   <script src="../examples/floorplan-examples.js"></script>
 </div>
