@@ -1,4 +1,0 @@
-<div class="floorplan-container">
-  <floorplan-examples data-include="ring"></floorplan-examples>
-  <script src="../examples/floorplan-examples.js"></script>
-</div>

@@ -1171,9 +1171,13 @@ export class FloorplanElement extends LitElement {
 
     switch (serviceContext.service) {
       case 'window_navigate':
-        url = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.url as string;
-        window.location.href = url;
-        //window.location.replace(url);
+        if (this.isDemo) {
+          this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service}`)
+        }
+        else {
+          url = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.url as string;
+          window.location.href = url;
+        }
         break;
 
       case 'class_set':
@@ -1260,10 +1264,6 @@ export class FloorplanElement extends LitElement {
       default:
         // Unknown floorplan service
         break;
-    }
-
-    if (this.isDemo) {
-      //this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service}`)
     }
   }
 

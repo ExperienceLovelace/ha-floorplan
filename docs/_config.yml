@@ -68,7 +68,7 @@ plugins:
   - jemoji
   - jekyll-include-cache
   - jekyll-remote-theme
-
+  
 # author:
 #   name   : "First Lastname"
 #   avatar : "/assets/images/bio-photo.jpg"

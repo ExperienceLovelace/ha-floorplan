@@ -1,0 +1,24 @@
+<script src="../_pages/examples/floorplan-examples.js"></script>
+{% include tabs.html %}
+
+<div class="tab">
+  <button class="tablinks active" onclick="showTab(event, 'ring-floorplan')">Floorplan</button>
+  <button class="tablinks" onclick="showTab(event, 'ring-yaml')">YAML</button>
+  <button class="tablinks" onclick="showTab(event, 'ring-css')">CSS</button>
+</div>
+
+<div id="ring-floorplan" class="tabcontent active">
+  <floorplan-examples data-include="ring"></floorplan-examples>
+</div>
+
+<div id="ring-yaml" class="tabcontent">
+{% highlight ruby %}
+{% include_relative examples/floorplan/examples/ring/ring-card.yaml %}
+{% endhighlight %}  
+</div>
+
+<div id="ring-css" class="tabcontent">
+{% highlight ruby %}
+{% include_relative examples/floorplan/examples/ring/ring.css %}
+{% endhighlight %}  
+</div>
