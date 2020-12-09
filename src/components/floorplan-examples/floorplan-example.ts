@@ -59,6 +59,10 @@ export class FloorplanExanpleElement extends LitElement {
       .width-half {
         width: 50%;
       }
+
+      code-block pre code {
+        font-size: 14px;
+      }
     `;
   }
 
