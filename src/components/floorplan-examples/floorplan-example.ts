@@ -23,14 +23,14 @@ export class FloorplanExanpleElement extends LitElement {
   protected render(): TemplateResult {
     return html`
       <div class="d-flex flex-row flex-1">
-        <div class="flex-1">
+        <div class="flex-1 width-half">
           ${this.example.configFile.endsWith('card.yaml') ?
             html`<floorplan-card .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>` :
             html` <floorplan-panel .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`
           }
         </div>
 
-        <div class="flex-1">
+        <div class="flex-1 width-half">
           <code-block lang="yaml" code=${this.configYaml}></code-block>
         </div>
       </div>
@@ -54,6 +54,10 @@ export class FloorplanExanpleElement extends LitElement {
 
       .flex-1 {
         flex: 1;
+      }
+
+      .width-half {
+        width: 50%;
       }
     `;
   }
