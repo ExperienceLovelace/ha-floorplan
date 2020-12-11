@@ -16,7 +16,7 @@
 
     <div class="feature__item{% if include.type %}--{{ include.type }}{% endif %}">
       <div class="archive__item">
-        {% unless f_url == blank %}<a class="linkwrapper" href="{{ f_url }}">{% endunless %}
+        {% unless f_url == blank %}<a class="linkwrapper" href="{{ f_url }}" style="text-decoration: none;">{% endunless %}
           {% if f.image_path %}
             <div class="archive__item-teaser">
               <img src=
