@@ -11,27 +11,42 @@ excerpt: >
   Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
   <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
 feature_row:
-  - image_path: /assets/images/mm-customizable-feature.png
+  - fa_icon: "graduation-cap"
+    fa_bg: "#30e3ca"
+    fa_color: "white"
+    fa_size: "3x"
+    fa_margin: "20px"
     alt: "getting started"
     title: "Getting started"
     excerpt: "Are you ready to begin? Check our Getting started guide right now!"
     url: "/getting-started/"
+    btn_label: "Getting started"
     btn_class: "btn--primary"
-    btn_label: "Learn more"
-  - image_path: /assets/images/mm-responsive-feature.png
-    alt: "check our examples"
-    title: "Examples"
+
+  - fa_icon: "graduation-cap"
+    fa_bg: "#30e3ca"
+    fa_color: "white"
+    fa_size: "3x"
+    fa_margin: "20px"
+    alt: "Check our examples"
+    title: Check our examples"
     excerpt: "It's always easier to start, with a good amount of examples. So, go get them!"
     url: "/examples/"
+    btn_label: "Examples"
     btn_class: "btn--primary"
-    btn_label: "Learn more"
-  - image_path: /assets/images/mm-free-feature.png
+
+  - fa_icon: "graduation-cap"
+    fa_bg: "#30e3ca"
+    fa_color: "white"
+    fa_size: "3x"
+    fa_margin: "20px"
     alt: "Options"
     title: "Options"
     excerpt: "Are single clicks not for you? Well, try our long click. Read more for details about other options, too."
     url: "/options/"
+    btn_label: "Gå til introduktionen"
     btn_class: "btn--primary"
-    btn_label: "Learn more"      
+
 ---
 
 Floorplan can bring new life to Home Assistant. By mapping entities to SVG-objects, you're able to control devices, show states, calling services - and much more. Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.
