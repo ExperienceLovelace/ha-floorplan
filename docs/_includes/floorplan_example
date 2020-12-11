@@ -1,3 +1,5 @@
+{% assign floorplan_example = page.floorplan_example %}
+
 {% for e in floorplan_example %}
   {% if e.example_name %}
     <script src="../floorplan/floorplan-examples.js"></script>
