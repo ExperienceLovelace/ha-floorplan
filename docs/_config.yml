@@ -119,3 +119,10 @@ category_archive:
 tag_archive:
   type: liquid
   path: /tags/
+
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
