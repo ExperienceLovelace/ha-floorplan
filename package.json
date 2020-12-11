@@ -9,7 +9,7 @@
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-content-hash --no-source-maps --out-file floorplan",
     "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file floorplan",
-    "build:docs": "cross-env NODE_ENV=production parcel build src/components/floorplan-examples/floorplan-examples.ts --no-content-hash --no-source-maps --out-dir docs/_pages/floorplan --out-file floorplan-examples --public-url ./",
+    "build:docs": "cross-env NODE_ENV=production parcel build src/components/floorplan-examples/floorplan-examples.ts --no-content-hash --no-source-maps --out-dir docs/_docs/floorplan --out-file floorplan-examples --public-url ./",
     "serve:docs": "docker run -it --rm --volume=%cd%/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental"
   },
   "staticFiles": {
