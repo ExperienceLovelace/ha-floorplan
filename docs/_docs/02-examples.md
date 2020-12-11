@@ -1,5 +1,5 @@
 ---
-permalink: /examples/
+permalink: /docs/examples/
 title: "Examples"
 toc: true
 ---
