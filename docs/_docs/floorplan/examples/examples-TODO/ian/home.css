@@ -1,0 +1,30 @@
+/* SVG elements */
+
+svg * {
+  vector-effect: non-scaling-stroke !important;
+}
+
+.boiler-on {
+  fill: #ffa500 !important;
+  animation: rotation 2s infinite linear;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.blinking {
+  animation: blink 0.6s linear infinite;
+  fill: #FF0000 !important;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
