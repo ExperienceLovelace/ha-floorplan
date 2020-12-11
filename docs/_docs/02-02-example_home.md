@@ -8,6 +8,6 @@ floorplan_example:
 
 # Example
 
-Test of "Home".
+Test of "Home". I don't think it's 100% working.. But let's see.
 
 {% include floorplan_example %}
