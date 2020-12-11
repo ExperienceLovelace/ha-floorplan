@@ -1,12 +1,12 @@
 main:
   - title: "About"
     url: /about/
-  - title: "Getting Started"
-    url: /getting-started/
+  - title: "Quick-Start Guide"
+    url: /docs/quick-start-guide/
   - title: "Options"
-    url: /options/
+    url: /docs/options/
   - title: "Examples"
-    url: /examples/
+    url: /docs/examples/
   - title: "Posts"
     url: /posts/
   # - title: "Categories"
@@ -15,3 +15,14 @@ main:
     url: /tags/
   # - title: "External Link"
   #   url: https://google.com
+
+# Documentation Sidebar
+docs:
+  - title: Getting Started
+    children:
+      - title: "Quick-Start Guide"
+        url: /docs/quick-start-guide/
+      - title: "Examples"
+        url: /docs/examples/
+  - title: Options
+    url: /docs/options/
