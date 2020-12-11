@@ -12,7 +12,7 @@ excerpt: >
   <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
 feature_row:
   - fa_icon: "graduation-cap"
-    fa_bg: "#30e3ca"
+    fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
     fa_margin: "20px"
@@ -24,19 +24,19 @@ feature_row:
     btn_class: "btn--primary"
 
   - fa_icon: "graduation-cap"
-    fa_bg: "#30e3ca"
+    fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
     fa_margin: "20px"
     alt: "Check our examples"
-    title: Check our examples"
+    title: Check our examples
     excerpt: "It's always easier to start, with a good amount of examples. So, go get them!"
     url: "/examples/"
     btn_label: "Examples"
     btn_class: "btn--primary"
 
   - fa_icon: "graduation-cap"
-    fa_bg: "#30e3ca"
+    fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
     fa_margin: "20px"
