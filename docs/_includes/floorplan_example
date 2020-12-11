@@ -1,0 +1,32 @@
+{% for e in floorplan_example %}
+  {% if e.example_name %}
+    <script src="../floorplan/floorplan-examples.js"></script>
+    {% include tabs.html %}
+
+    <div class="tab">
+      <button class="tablinks active" onclick="showTab(event, '{{ e.example_name }}-floorplan')">Floorplan</button>
+      <button class="tablinks" onclick="showTab(event, '{{ e.example_name }}-yaml')">YAML</button>
+      <button class="tablinks" onclick="showTab(event, '{{ e.example_name }}-css')">CSS</button>
+    </div>
+
+    <div class="tabcontent-container size-xl">
+
+    <div data-tab="{{ e.example_name }}-floorplan" class="tabcontent active">
+      <floorplan-examples data-include="{{ e.example_name }}"></floorplan-examples>
+    </div>
+
+    <div data-tab="{{ e.example_name }}-yaml" class="tabcontent">
+    {% highlight ruby %}
+    {% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}-panel.yaml %}
+    {% endhighlight %}
+    </div>
+
+    <div data-tab="{{ e.example_name }}-css" class="tabcontent">
+    {% highlight ruby %}
+    {% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
+    {% endhighlight %}
+    </div>
+
+    </div>
+  {% endif %}
+{% endfor %}
