@@ -24,5 +24,8 @@ docs:
         url: /docs/quick-start-guide/
       - title: "Examples"
         url: /docs/examples/
+        children:
+          - title: "Home"
+            url: /docs/example-home/
   - title: Options
     url: /docs/options/
