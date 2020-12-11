@@ -1,5 +1,5 @@
 ---
-permalink: /getting-started/
+permalink: /docs/getting-started/
 title: "Getting started"
 toc: true
 ---
