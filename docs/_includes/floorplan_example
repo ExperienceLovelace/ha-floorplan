@@ -1,7 +1,11 @@
 {% assign floorplan_example = page.floorplan_example %}
 
+<div class="example_wrapper">
+
 {% for e in floorplan_example %}
+
   {% if e.example_name %}
+
     <script src="../floorplan/floorplan-examples.js"></script>
     <script src="../../assets/js/tabs.js"></script>
     <link rel="stylesheet" href="../../assets/css/tabs.css">
@@ -18,18 +22,12 @@
       <floorplan-examples data-include="{{ e.example_name }}"></floorplan-examples>
     </div>
 
-    <div data-tab="{{ e.example_name }}-yaml" class="tabcontent">
-    {% highlight ruby %}
-    {% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}-panel.yaml %}
-    {% endhighlight %}
-    </div>
 
-    <div data-tab="{{ e.example_name }}-css" class="tabcontent">
-    {% highlight ruby %}
-    {% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
-    {% endhighlight %}
-    </div>
 
     </div>
-  {% endif %}
+
+{% endif %}
+
 {% endfor %}
+
+</div>
