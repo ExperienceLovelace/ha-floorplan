@@ -1,5 +1,5 @@
 ---
-permalink: /options/
+permalink: /docs/options/
 title: "Options"
 toc: true
 ---
