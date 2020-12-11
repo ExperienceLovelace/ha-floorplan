@@ -11,7 +11,7 @@ excerpt: >
   Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
   <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
 feature_row:
-  - fa_icon: "graduation-cap"
+  - fa_icon: "flag-checkered"
     fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
@@ -20,10 +20,10 @@ feature_row:
     title: "Getting started"
     excerpt: "Are you ready to begin? Check our Getting started guide right now!"
     url: "/getting-started/"
-    btn_label: "Getting started"
+    btn_label: "Let's start!"
     btn_class: "btn--primary"
 
-  - fa_icon: "graduation-cap"
+  - fa_icon: "lightbulb"
     fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
@@ -32,10 +32,10 @@ feature_row:
     title: Check our examples
     excerpt: "It's always easier to start, with a good amount of examples. So, go get them!"
     url: "/examples/"
-    btn_label: "Examples"
+    btn_label: "Let's get inspired?"
     btn_class: "btn--primary"
 
-  - fa_icon: "graduation-cap"
+  - fa_icon: "tools"
     fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
@@ -44,7 +44,7 @@ feature_row:
     title: "Options"
     excerpt: "Are single clicks not for you? Well, try our long click. Read more for details about other options, too."
     url: "/options/"
-    btn_label: "Gå til introduktionen"
+    btn_label: "Let's be technical"
     btn_class: "btn--primary"
 
 ---
