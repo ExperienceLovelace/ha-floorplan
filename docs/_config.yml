@@ -138,3 +138,6 @@ collections:
   docs:
     output: true
     permalink: /:collection/:path/
+    
+# Breadcrumbs
+breadcrumbs: true
