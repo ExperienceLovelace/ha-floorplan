@@ -5,7 +5,7 @@ header:
   overlay_color: "#5e616c"
   overlay_image: /assets/images/header-frontpage.png
   actions:
-    - label: "<i class='fas fa-download'></i> Start today"
+    - label: "<i class='fas fa-flag-checkered'></i> I'm ready - how do I begin?"
       url: "/getting-started/"
 excerpt: >
   Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
