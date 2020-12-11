@@ -6,7 +6,7 @@ header:
   overlay_image: /assets/images/header-frontpage.png
   actions:
     - label: "I'm ready - how do I begin? <i class='fas fa-laugh-beam'></i>"
-      url: "/getting-started/"
+      url: "/docs/quick-start-guide/"
 excerpt: >
   Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
   <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
@@ -16,10 +16,10 @@ feature_row:
     fa_color: "white"
     fa_size: "3x"
     fa_margin: "20px"
-    alt: "getting started"
-    title: "Getting started"
-    excerpt: "Are you ready to begin? Check our Getting started guide right now!"
-    url: "/getting-started/"
+    alt: "quick start guide"
+    title: "Quick-Start Guide"
+    excerpt: "Are you ready to begin? Check our quick start guide now!"
+    url: "/docs/quick-start-guide/"
     btn_label: "Let's start!"
     btn_class: "btn--primary"
 
@@ -31,7 +31,7 @@ feature_row:
     alt: "Check our examples"
     title: Check our examples
     excerpt: "It's always easier to start, with a good amount of examples. So, go get them!"
-    url: "/examples/"
+    url: "/docs/examples/"
     btn_label: "Let's get inspired?"
     btn_class: "btn--primary"
 
@@ -43,7 +43,7 @@ feature_row:
     alt: "Options"
     title: "Options"
     excerpt: "There's plenty of options, including long-click, so what are you waiting for?"
-    url: "/options/"
+    url: "/docs/options/"
     btn_label: "Let's deep dive!"
     btn_class: "btn--primary"
 
