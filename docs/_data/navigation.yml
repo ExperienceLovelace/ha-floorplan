@@ -18,14 +18,14 @@ main:
 
 # Documentation Sidebar
 docs:
-  - title: Getting Started
+  - title: "Getting Started"
     children:
       - title: "Quick-Start Guide"
         url: /docs/quick-start-guide/
-      - title: "Examples"
-        url: /docs/examples/
-        children:
-          - title: "Home"
-            url: /docs/example-home/
+  - title: "Examples"
+    url: /docs/examples/
+    children:
+      - title: "Home"
+        url: /docs/example-home/
   - title: Options
     url: /docs/options/
