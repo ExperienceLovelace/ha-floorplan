@@ -34,7 +34,6 @@
   border-top: none;
 
   overflow: auto;
-  height: 400px;
 }
 
 .tabcontent.active {
@@ -43,4 +42,24 @@
 
 .tabcontent:not(.active) {
   display: none;
+}
+
+.tabcontent-container.size-sm .tabcontent {
+  height: 300px;
+}
+
+.tabcontent-container.size-md .tabcontent {
+  height: 400px;
+}
+
+.tabcontent-container.size-lg .tabcontent {
+  height: 500px;
+}
+
+.tabcontent-container.size-xl .tabcontent {
+  height: 600px;
+}
+
+.tabcontent-container figure.highlight {
+  margin: 0px;
 }

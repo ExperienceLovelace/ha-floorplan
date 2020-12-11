@@ -6,12 +6,12 @@ toc: true
 
 ## Light
 
-{% include floorplan_example_light.html %}
+{% include floorplan-example-light.html %}
 
 ## Ring
 
-{% include floorplan_example_ring.html %}
+{% include floorplan-example-ring.html %}
 
 ## Home
 
-{% include floorplan_example_home.html %}
+{% include floorplan-example-home.html %}

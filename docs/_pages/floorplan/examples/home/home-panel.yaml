@@ -1,10 +1,10 @@
-sidebar_title: Simple Floorplan
+sidebar_title: Home
 config:
   show_side_bar: false;
   show_app_header: false;
   config:
-    image: /local/floorplan/examples/simple/simple.svg
-    stylesheet: /local/floorplan/examples/simple/simple.css
+    image: /local/floorplan/examples/home/home.svg
+    stylesheet: /local/floorplan/examples/home/home.css
     log_level: info
     console_log_level: info
 
@@ -17,7 +17,7 @@ config:
         element: light.garage
         on_state:
           service: floorplan.image_set
-          data: /local/floorplan/examples/simple/light_${entity.state}.svg
+          data: /local/floorplan/examples/home/light_${entity.state}.svg
         on_click: homeassistant.toggle
 
       - entity: light.garage
@@ -67,7 +67,6 @@ config:
       - entities:
           - binary_sensor.main_bedroom
           - binary_sensor.living_area
-          - binary_sensor.garage
         on_hover: false
         on_state:
 #          service: floorplan.class_set

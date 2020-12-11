@@ -12,12 +12,10 @@ export class FloorplanExamples extends LitElement {
     { name: 'light', dir: "light", configFile: "light-card.yaml", simulationFile: "simulations.yaml", },
     { name: 'ring', dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
     // Panels
-    { name: 'simple', dir: "simple", configFile: "simple-panel.yaml", simulationFile: "simulations.yaml", },
+    { name: 'home', dir: "home", configFile: "home-panel.yaml", simulationFile: "simulations.yaml", },
     // TODO
-    //{ dir: "simple", configFile: "simple.yaml", simulationFile: "simulations.yaml", },
     //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
     //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
-    //{ dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", },
   ] as FloorplanExanple[];
 
   constructor() {

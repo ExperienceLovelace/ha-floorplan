@@ -1,4 +1,4 @@
-<script src="../_pages/examples/floorplan-examples.js"></script>
+<script src="../_pages/floorplan/floorplan-examples.js"></script>
 {% include tabs.html %}
 
 <div class="tab">
@@ -6,12 +6,16 @@
   <button class="tablinks" onclick="showTab(event, 'light-yaml')">YAML</button>
 </div>
 
-<div id="light-floorplan" class="tabcontent active">
+<div class="tabcontent-container size-sm">
+
+<div data-tab="light-floorplan" class="tabcontent active">
   <floorplan-examples data-include="light"></floorplan-examples>
 </div>
 
-<div id="light-yaml" class="tabcontent">
+<div data-tab="light-yaml" class="tabcontent">
 {% highlight ruby %}
-{% include_relative examples/floorplan/examples/light/light-card.yaml %}
-{% endhighlight %}  
+{% include_relative floorplan/examples/light/light-card.yaml %}
+{% endhighlight %}
+</div>
+
 </div>

@@ -1,0 +1,28 @@
+<script src="../_pages/floorplan/floorplan-examples.js"></script>
+{% include tabs.html %}
+
+<div class="tab">
+  <button class="tablinks active" onclick="showTab(event, 'home-floorplan')">Floorplan</button>
+  <button class="tablinks" onclick="showTab(event, 'home-yaml')">YAML</button>
+  <button class="tablinks" onclick="showTab(event, 'home-css')">CSS</button>
+</div>
+
+<div class="tabcontent-container size-xl">
+
+<div data-tab="home-floorplan" class="tabcontent active">
+  <floorplan-examples data-include="home"></floorplan-examples>
+</div>
+
+<div data-tab="home-yaml" class="tabcontent">
+{% highlight ruby %}
+{% include_relative floorplan/examples/home/home-panel.yaml %}
+{% endhighlight %}
+</div>
+
+<div data-tab="home-css" class="tabcontent">
+{% highlight ruby %}
+{% include_relative floorplan/examples/home/home.css %}
+{% endhighlight %}
+</div>
+
+</div>
