@@ -61,11 +61,11 @@ Please join our community-thread at [Home Assistant's Community](https://communi
 
 ## First steps
 
-First of all, you'll need to visit over [Getting Started](./getting-started/)-page. Here it's possible to get an idéa of what HA Floorplan can do, and how use it with a basic setup.
+First of all, you'll need to visit over [Getting Started](./docs/getting-started/)-page. Here it's possible to get an idéa of what HA Floorplan can do, and how use it with a basic setup.
 
-If you'd like to see other examples, move forward to our [Examples](./examples/)-page.
+If you'd like to see other examples, move forward to our [Examples](./docs/examples/)-page.
 
-Are you searching for a specific option? Please take a look at the [Options](./options/)-page. Here's details about how to use default actions, long_click and other things. We'll do our best to keep it up to date.
+Are you searching for a specific option? Please take a look at the [Options](./docs/options/)-page. Here's details about how to use default actions, long_click and other things. We'll do our best to keep it up to date.
 
 ## Feedback
 HA Floorplan are created for you, but we can't make everyone happy at once. If you have feedback for HA Floorplan, please create a issue, or contact us in the thread in the [Home Assistant's Community](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489). I'll try and listen as much as possible. 
