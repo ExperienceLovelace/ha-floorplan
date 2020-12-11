@@ -6,8 +6,10 @@ floorplan_example:
   - example_name: "home"
 ---
 
-## Example with template, instead of static files
+## Example
 
-Test of "Home". I don't think it's 100% working.. But let's see.
+**Template used, instead of static files**
+
+Test of "Home".
 
 {% include floorplan_example %}
