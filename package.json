@@ -1,6 +1,6 @@
 {
   "name": "ha-floorplan",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Floorplan for Home Assistant",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "staticFiles": {
     "staticPath": [
       {
-        "staticPath": "docs/examples",
+        "staticPath": "docs/_pages/floorplan",
         "env": "development"
       }
     ]

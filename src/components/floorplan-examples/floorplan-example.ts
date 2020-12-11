@@ -47,14 +47,14 @@ export class FloorplanExanpleElement extends LitElement {
     super.update(changedProperties);
 
     if (changedProperties.has('example') && this.example) {
-      const configUrl = `${process.env.ROOT_URL}${process.env.FLOORPLAN_PATH}/${this.example.dir}/${this.example.configFile}`;
+      const configUrl = `${process.env.FLOORPLAN_EXAMPLES_PATH}/${this.example.dir}/${this.example.configFile}`;
       const configYamlText = await Utils.fetchText(configUrl, true);
 
       this.config = Utils.parseYaml(configYamlText) as FloorplanCardConfig | FloorplanPanelConfig;
       this.configYaml = configYamlText;
 
       if (this.example.simulationFile) {
-        const simulatorUrl = `${process.env.ROOT_URL}${process.env.FLOORPLAN_PATH}/${this.example.dir}/${this.example.simulationFile}`;
+        const simulatorUrl = `${process.env.FLOORPLAN_EXAMPLES_PATH}/${this.example.dir}/${this.example.simulationFile}`;
         const simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
         const simulatorConfig = Utils.parseYaml(simulatorYamlText) as HassSimulatorConfig;
         this.simulator = new HassSimulator(simulatorConfig, this.setHass.bind(this));

@@ -22,8 +22,7 @@ export class FloorplanExamples extends LitElement {
     super();
 
     console.log("NODE_ENV", process.env.NODE_ENV);
-    console.log("ROOT_URL", process.env.ROOT_URL);
-    console.log("FLOORPLAN_PATH", process.env.FLOORPLAN_PATH);
+    console.log("FLOORPLAN_EXAMPLES_PATH", process.env.FLOORPLAN_EXAMPLES_PATH);
   }
 
   protected render(): TemplateResult {
