@@ -5,13 +5,13 @@ header:
   overlay_color: "#5e616c"
   overlay_image: /assets/images/header-frontpage.png
   actions:
-    - label: "<i class='fas fa-flag-checkered'></i> I'm ready - how do I begin?"
+    - label: "I'm ready - how do I begin? <i class='fas fa-laugh-beam'></i>"
       url: "/getting-started/"
 excerpt: >
   Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
   <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
 feature_row:
-  - fa_icon: "flag-checkered"
+  - fa_icon: "laugh-beam"
     fa_bg: "#6892ae"
     fa_color: "white"
     fa_size: "3x"
@@ -42,9 +42,9 @@ feature_row:
     fa_margin: "20px"
     alt: "Options"
     title: "Options"
-    excerpt: "Are single clicks not for you? Well, try our long click. Read more for details about other options, too."
+    excerpt: "There's plenty of options, including long-click, so what are you waiting for?"
     url: "/options/"
-    btn_label: "Let's be technical"
+    btn_label: "Let's deep dive!"
     btn_class: "btn--primary"
 
 ---
