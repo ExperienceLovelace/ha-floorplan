@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "shx rm -rf dist/*",
-    "start": "npm run clean && parcel docs/_pages/floorplan/demo.html",
+    "start": "npm run clean && parcel docs/_docs/floorplan/demo.html",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-content-hash --no-source-maps --out-file floorplan",
     "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file floorplan",
@@ -15,7 +15,7 @@
   "staticFiles": {
     "staticPath": [
       {
-        "staticPath": "docs/_pages/floorplan",
+        "staticPath": "docs/_docs/floorplan",
         "env": "development"
       }
     ]
