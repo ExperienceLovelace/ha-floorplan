@@ -13,9 +13,9 @@ import * as yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
 import { Logger } from './lib/logger';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from 'lit-element';
+import * as packageInfo from '../../../package.json';
 import * as OuiDomEvents from 'oui-dom-events';
 const E = OuiDomEvents.default;
-import * as packageInfo from '../../../package.json';
 
 // Display version in console
 console.info(
