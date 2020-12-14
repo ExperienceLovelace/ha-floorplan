@@ -818,18 +818,17 @@ export class FloorplanElement extends LitElement {
 
       element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
 
-      const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo, []);
-
       if (ruleInfo.rule.on_click) {
-        context.actions = this.getActionConfigs(ruleInfo.rule.on_click);
+        const actions = this.getActionConfigs(ruleInfo.rule.on_click);
+        const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo, actions);
         E.on(element, 'click', this.onClick.bind(context));
         if (element.style) element.style.cursor = 'pointer';
         Utils.addClass(element, `floorplan-click${isParent ? '' : '-child'}`); // mark the element as being processed by floorplan
       }
 
       if (ruleInfo.rule.on_long_click) {
-        context.actions = this.getActionConfigs(ruleInfo.rule.on_long_click);
-        console.log('LongClicks', element);
+        const actions = this.getActionConfigs(ruleInfo.rule.on_long_click);
+        const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo, actions);
         LongClicks.observe(element as HTMLElement | SVGElement);
         E.on(element, 'longClick', this.onLongClick.bind(context));
         if (element.style) element.style.cursor = 'pointer';
