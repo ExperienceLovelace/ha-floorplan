@@ -4,14 +4,14 @@ import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyVal
 import '../floorplan/floorplan-element';
 
 export class FloorplanPanel extends LitElement {
-  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property({ type: Object }) public hass!: HomeAssistant;
   @property({ type: Boolean }) public narrow!: boolean;
-  @property({ attribute: false }) public route!: unknown;
-  @property({ attribute: false }) public panel!: FloorplanPanelInfo;
+  @property({ type: Object}) public panel!: FloorplanPanelInfo;
 
   @property({ type: Boolean }) public showSideBar!: boolean;
   @property({ type: Boolean }) public showAppHeader!: boolean;
 
+  @property({ type: String }) public examplespath!: string;
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
@@ -27,7 +27,7 @@ export class FloorplanPanel extends LitElement {
         </app-header>        
 
         <div class="content ${this.showAppHeader ? 'regular-height ' : 'full-height'}">
-          <floorplan-element .hass=${this.hass} ._config=${this.panel?.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
+          <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.panel?.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
         </div>
 
       </ha-app-layout>

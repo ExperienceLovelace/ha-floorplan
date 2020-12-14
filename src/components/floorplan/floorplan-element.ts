@@ -25,8 +25,9 @@ console.info(
 );
 
 export class FloorplanElement extends LitElement {
-  @property({ attribute: false }) public hass!: HomeAssistant;
-  @property({ attribute: false }) public _config!: string | FloorplanConfig;
+  @property({ type: String }) public examplespath!: string;
+  @property({ type: Object }) public hass!: HomeAssistant;
+  @property({ type: (String || Object) }) public _config!: string | FloorplanConfig;
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Boolean }) public isShowLog!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
@@ -137,15 +138,15 @@ export class FloorplanElement extends LitElement {
     (this.logElement.querySelector('#log ul') as HTMLUListElement).innerHTML = '';
   }
 
-  protected async updated(_changedProperties: PropertyValues): Promise<void> {
-    super.updated(_changedProperties);
+  protected async updated(changedProperties: PropertyValues): Promise<void> {
+    super.updated(changedProperties);
 
-    if (_changedProperties.has('_config')) {
+    if (changedProperties.has('_config')) {
       await this._configChanged();
       await this.hassChanged(); // call hassChanged(), since hass may have been while _configChanged() was executing
     }
 
-    if (_changedProperties.has('hass')) {
+    if (changedProperties.has('hass')) {
       await this.hassChanged();
     }
   }
@@ -244,7 +245,7 @@ export class FloorplanElement extends LitElement {
 
   async loadConfig(config: FloorplanConfig | string): Promise<FloorplanConfig> {
     if (typeof config === 'string') {
-      const targetConfig = await Utils.fetchText(config, this.isDemo)
+      const targetConfig = await Utils.fetchText(config, this.isDemo, this.examplespath)
       const configYaml = yaml.safeLoad(targetConfig);
       return configYaml as FloorplanConfig;
     }
@@ -253,17 +254,17 @@ export class FloorplanElement extends LitElement {
     }
   }
 
+  /*
   async loadLibraries(): Promise<void> {
     if (this.isOptionEnabled(this.config.pan_zoom)) {
       await this.loadScript('/local/floorplan/lib/svg-pan-zoom.min.js', true);
     }
 
-    /*
     if (this.isOptionEnabled(this.config.fully_kiosk)) {
       await this.loadScript('/local/floorplan/lib/fully-kiosk.js', false);
     }
-    */
   }
+  */
 
   loadScript(scriptUrl: string, useCache: boolean): Promise<void> {
     if (!scriptUrl) return Promise.resolve();
@@ -366,7 +367,7 @@ export class FloorplanElement extends LitElement {
   async loadStyleSheet(stylesheetUrl: string): Promise<void> {
     if (!stylesheetUrl) return;
 
-    const stylesheet = await Utils.fetchText(stylesheetUrl, this.isDemo);
+    const stylesheet = await Utils.fetchText(stylesheetUrl, this.isDemo, this.examplespath);
     const style = document.createElement('style');
 
     const initializeNode = () => {
@@ -405,7 +406,7 @@ export class FloorplanElement extends LitElement {
   }
 
   async loadFloorplanSvg(imageUrl: string, pageInfo?: FloorplanPageInfo, masterPageInfo?: FloorplanPageInfo): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(imageUrl, this.isDemo);
+    const svgText = await Utils.fetchText(imageUrl, this.isDemo, this.examplespath);
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
     const svg = svgContainer.querySelector("svg") as SVGGraphicsElement;
@@ -479,7 +480,7 @@ export class FloorplanElement extends LitElement {
   }
 
   async loadBitmapImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, ruleInfo: FloorplanRuleInfo): Promise<SVGGraphicsElement> {
-    const imageData = await Utils.fetchImage(imageUrl, this.isDemo);
+    const imageData = await Utils.fetchImage(imageUrl, this.isDemo, this.examplespath);
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     let svgElement = svgElementInfo.svgElement; // assume the target element already exists
@@ -487,9 +488,10 @@ export class FloorplanElement extends LitElement {
     if (svgElement.nodeName !== 'image') {
       svgElement = this.createImageElement(svgElementInfo.originalSvgElement) as SVGGraphicsElement;
 
-      this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
-
       svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement, svgElement);
+
+      this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
+      this.handleEntityIdSetHoverOver(entityId);
     }
 
     const existingHref = svgElement.getAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href');
@@ -502,7 +504,7 @@ export class FloorplanElement extends LitElement {
   }
 
   async loadSvgImage(imageUrl: string, svgElementInfo: FloorplanSvgElementInfo, entityId: string, ruleInfo: FloorplanRuleInfo): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(imageUrl, this.isDemo);
+    const svgText = await Utils.fetchText(imageUrl, this.isDemo, this.examplespath);
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     const svgContainer = document.createElement('div');
@@ -522,16 +524,17 @@ export class FloorplanElement extends LitElement {
     svg.setAttribute('x', svgElementInfo.originalBBox.x.toString());
     svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
 
-    this.attachClickHandlers(svg, svgElementInfo, entityId, undefined, ruleInfo);
-
     svgElementInfo.svgElement = this.replaceElement(svgElementInfo.svgElement, svg);
+
+    this.attachClickHandlers(svg, svgElementInfo, entityId, undefined, ruleInfo);
+    this.handleEntityIdSetHoverOver(entityId);
 
     return svg;
   }
 
-  _querySelectorAll(element: Element, selector: string, includeSelf: boolean): Element[] {
-    let elements = Array.from(element.querySelectorAll(selector).values());
-    elements = includeSelf ? elements.concat(element) : elements;
+  _querySelectorAll(element: Element, selector: string | undefined = undefined, includeSelf: boolean): Element[] {
+    let elements = selector ? Array.from(element.querySelectorAll(selector).values()) : [];
+    elements = includeSelf ? [element].concat(elements) : elements;
     return elements;
   }
 
@@ -540,7 +543,6 @@ export class FloorplanElement extends LitElement {
 
     this._querySelectorAll(previousSvgElement, '*', true).forEach((element: Element) => {
       E.off(element, 'click');
-      E.off(element, 'shortClick');
       E.off(element, 'longClick');
       element.remove();
     });
@@ -631,7 +633,7 @@ export class FloorplanElement extends LitElement {
     this.setVariable(variableName, value, {}, true);
   }
 
-  getActionConfigs(actionConfig: FloorplanActionConfig[] | FloorplanActionConfig | string | false): Array<FloorplanActionConfig> {
+  getActionConfigs(actionConfig: FloorplanActionConfig[] | FloorplanActionConfig | string | false): FloorplanActionConfig[] {
     if ((actionConfig === undefined) || (actionConfig === null)) {
       return [];
     }
@@ -808,28 +810,31 @@ export class FloorplanElement extends LitElement {
   }
 
   attachClickHandlers(targetSvgElement: SVGGraphicsElement, svgElementInfo: FloorplanSvgElementInfo, entityId: string | undefined, elementId: string | undefined, ruleInfo: FloorplanRuleInfo): void {
-    this._querySelectorAll(targetSvgElement, '*', true).forEach((elem: Element) => {
+    const propagate = false;
+
+    this._querySelectorAll(targetSvgElement, propagate ? '*' : undefined, true).forEach((elem: Element) => {
       const element = elem as SVGGraphicsElement | HTMLElement;
+      const isParent = (elem === targetSvgElement);
 
       element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
 
-      const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo);
+      const context = new FloorplanClickContext(this, entityId, elementId, svgElementInfo, ruleInfo, []);
 
       if (ruleInfo.rule.on_click) {
         context.actions = this.getActionConfigs(ruleInfo.rule.on_click);
         E.on(element, 'click', this.onClick.bind(context));
-        //E.on(element, 'shortClick', this.onClick.bind(context));
         if (element.style) element.style.cursor = 'pointer';
+        Utils.addClass(element, `floorplan-click${isParent ? '' : '-child'}`); // mark the element as being processed by floorplan
       }
 
       if (ruleInfo.rule.on_long_click) {
         context.actions = this.getActionConfigs(ruleInfo.rule.on_long_click);
+        console.log('LongClicks', element);
         LongClicks.observe(element as HTMLElement | SVGElement);
         E.on(element, 'longClick', this.onLongClick.bind(context));
         if (element.style) element.style.cursor = 'pointer';
+        Utils.addClass(element, `floorplan-long-click${isParent ? '' : '-child'}`); // mark the element as being processed by floorplan
       }
-
-      Utils.addClass(element, 'floorplan-item'); // mark the element as being processed by floorplan
     });
   }
 
@@ -947,6 +952,11 @@ export class FloorplanElement extends LitElement {
     }
   }
 
+  handleEntityIdSetHoverOver(entityId: string): void {
+    const entityInfo = this.entityInfos[entityId];
+    if (entityInfo) this.handleEntitySetHoverOver(entityInfo);
+  }
+
   handleEntitySetHoverOver(entityInfo: FloorplanEntityInfo): void {
     const entityId = entityInfo.entityId as string;
     const entityState = this.hass.states[entityId];
@@ -955,6 +965,10 @@ export class FloorplanElement extends LitElement {
       if (ruleInfo.rule.on_hover) {
         if ((typeof ruleInfo.rule.on_hover === 'string') && (ruleInfo.rule.on_hover === 'floorplan.hover_info')) {
           for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
+            Utils.addClass(svgElementInfo.svgElement, 'floorplan-hover'); // mark the element as being processed by floorplan
+
+            svgElementInfo.svgElement.style.cursor = 'pointer';
+
             svgElementInfo.svgElement.querySelectorAll('title').forEach((titleElement) => {
               const lastChangedDate = Utils.formatDate(entityState.last_changed);
               const lastUpdatedDate = Utils.formatDate(entityState.last_updated);

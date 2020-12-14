@@ -47,7 +47,7 @@ export class FloorplanClickContext {
     public elementId: string | undefined,
     public svgElementInfo: FloorplanSvgElementInfo,
     public ruleInfo: FloorplanRuleInfo,
-    public actions?: Array<FloorplanActionConfig>,
+    public actions: Array<FloorplanActionConfig>,
   ) {
   }
 }

@@ -1,9 +1,9 @@
 ---
-permalink: /docs/example-home/
-title: "Home Example"
+permalink: /docs/example-light/
+title: "Light Example"
 toc: true
 floorplan_example:
-  - example_name: "home"
+  - example_name: "light"
 ---
 
 ## Example

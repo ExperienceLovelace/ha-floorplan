@@ -4,9 +4,10 @@ import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-
 import '../floorplan/floorplan-element';
 
 export class FloorplanCard extends LitElement {
-  @property({ attribute: false }) public hass!: HomeAssistant;
-  @property({ attribute: false }) public config!: FloorplanCardConfig;
+  @property({ type: Object }) public hass!: HomeAssistant;
+  @property({ type: Object }) public config!: FloorplanCardConfig;
 
+  @property({ type: String }) public examplespath!: string;
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
@@ -22,7 +23,7 @@ export class FloorplanCard extends LitElement {
           <h1 class="card-header">${this.config?.title}</h1>
         `}
 
-        <floorplan-element .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
+        <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
       </ha-card>
     `;
   }

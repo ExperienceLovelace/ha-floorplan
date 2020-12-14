@@ -10,11 +10,12 @@ import '../floorplan-panel/floorplan-panel';
 import './code-block';
 
 export class FloorplanExanpleElement extends LitElement {
-  @property({ attribute: false }) public hass!: HomeAssistant;
-  @property({ attribute: false }) public config!: FloorplanCardConfig | FloorplanPanelConfig;
+  @property({ type: Object }) public hass!: HomeAssistant;
+  @property({ type: Object }) public config!: FloorplanCardConfig | FloorplanPanelConfig;
   @property({ type: String }) public configYaml!: string;
 
-  @property({ attribute: false }) public example!: FloorplanExanple;
+  @property({ type: String }) public examplespath!: string;
+  @property({ type: Object }) public example!: FloorplanExanple;
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
@@ -24,9 +25,9 @@ export class FloorplanExanpleElement extends LitElement {
     return html`
       <div>
         <div>
-          ${this.example.configFile.endsWith('card.yaml') ?
-            html`<floorplan-card .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>` :
-            html` <floorplan-panel .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`
+          ${this.example.isCard ?
+            html`<floorplan-card .examplespath=${this.examplespath} .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>` :
+            html` <floorplan-panel .examplespath=${this.examplespath} .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`
           }
         </div>
 
@@ -46,16 +47,16 @@ export class FloorplanExanpleElement extends LitElement {
   async update(changedProperties: PropertyValues): Promise<void> {
     super.update(changedProperties);
 
-    if (changedProperties.has('example') && this.example) {
-      const configUrl = `${process.env.FLOORPLAN_EXAMPLES_PATH}/${this.example.dir}/${this.example.configFile}`;
-      const configYamlText = await Utils.fetchText(configUrl, true);
+    if ((changedProperties.has('example') || changedProperties.has('examplespath')) && this.example && this.examplespath) {
+      const configUrl = `${this.examplespath}/${this.example.dir}/${this.example.configFile}`;
+      const configYamlText = await Utils.fetchText(configUrl, true, this.examplespath);
 
       this.config = Utils.parseYaml(configYamlText) as FloorplanCardConfig | FloorplanPanelConfig;
       this.configYaml = configYamlText;
 
       if (this.example.simulationFile) {
-        const simulatorUrl = `${process.env.FLOORPLAN_EXAMPLES_PATH}/${this.example.dir}/${this.example.simulationFile}`;
-        const simulatorYamlText = await Utils.fetchText(simulatorUrl, true);
+        const simulatorUrl = `${this.examplespath}/${this.example.dir}/${this.example.simulationFile}`;
+        const simulatorYamlText = await Utils.fetchText(simulatorUrl, true, this.examplespath);
         const simulatorConfig = Utils.parseYaml(simulatorYamlText) as HassSimulatorConfig;
         this.simulator = new HassSimulator(simulatorConfig, this.setHass.bind(this));
       }

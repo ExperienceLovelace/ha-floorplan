@@ -1894,48 +1894,48 @@ z"
        x="175.70084"
        y="114.23422"
        style="font-size:7.55913687px;stroke-width:0.94489211">Garage light</tspan></text>
-  <rect
-     style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="switch.living_area_fan.background"
-     width="29.517944"
-     height="16.836082"
-     x="232.23018"
-     y="78.893394"
-     inkscape:label="switch.living_area_fan.background" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
-     x="233.83253"
-     y="91.86805"
-     id="switch.living_area_fan.text"
-     inkscape:label="switch.living_area_fan.text"
-     transform="scale(1.0242453,0.97632861)"><tspan
-       sodipodi:role="line"
-       id="tspan5095-4"
-       x="233.83253"
-       y="91.86805"
-       style="font-size:7.55913687px;stroke-width:0.94489211">OFF</tspan></text>
-  <rect
-     style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="light.garage.background"
-     width="29.517944"
-     height="16.836082"
-     x="232.23018"
-     y="102.51582"
-     inkscape:label="light.garage.background" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
-     x="233.8326"
-     y="116.06322"
-     id="light.garage.text"
-     inkscape:label="light.garage.text"
-     transform="scale(1.0242454,0.97632852)"><tspan
-       sodipodi:role="line"
-       id="tspan5095-4-6"
-       x="233.8326"
-       y="116.06322"
-       style="font-size:7.55913687px;stroke-width:0.94489211">OFF</tspan></text>
+  <g id="switch.living_area_fan.button">
+   <rect
+      style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+      width="29.517944"
+      height="16.836082"
+      x="232.23018"
+      y="78.893394" />
+   <text
+      xml:space="preserve"
+      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
+      x="233.83253"
+      y="91.86805"
+      id="switch.living_area_fan.text"
+      inkscape:label="switch.living_area_fan.text"
+      transform="scale(1.0242453,0.97632861)"><tspan
+         sodipodi:role="line"
+         id="tspan5095-4"
+         x="233.83253"
+         y="91.86805"
+         style="font-size:7.55913687px;stroke-width:0.94489211">OFF</tspan></text>
+   </g>
+   <g id="light.garage.button">
+      <rect
+         style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         width="29.517944"
+         height="16.836082"
+         x="232.23018"
+         y="102.51582" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
+         x="233.8326"
+         y="116.06322"
+         id="light.garage.text"
+         inkscape:label="light.garage.text"
+         transform="scale(1.0242454,0.97632852)"><tspan
+            sodipodi:role="line"
+            id="tspan5095-4-6"
+            x="233.8326"
+            y="116.06322"
+            style="font-size:7.55913687px;stroke-width:0.94489211">OFF</tspan></text>
+   <g>
   <rect
      style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="camera.zagreb_ban_jelacic_square"

@@ -5,14 +5,15 @@ import '../lit-toast/lit-toast';
 import { LitToast } from '../lit-toast/lit-toast';
 
 export class FloorplanExamples extends LitElement {
-  @property({ attribute: false, type: Array }) public examples!: FloorplanExanple[];
+  @property({ type: String }) public examplespath!: string;
+  @property({ type: Array }) public examples!: FloorplanExanple[];
 
   floorplanExamples = [
     // Cards
-    { name: 'light', dir: "light", configFile: "light-card.yaml", simulationFile: "simulations.yaml", },
-    { name: 'ring', dir: "ring", configFile: "ring-card.yaml", simulationFile: "simulations.yaml", },
+    { name: 'light', dir: "light", configFile: "light.yaml", simulationFile: "simulations.yaml", isCard: true },
+    { name: 'ring', dir: "ring", configFile: "ring.yaml", simulationFile: "simulations.yaml", isCard: true },
     // Panels
-    { name: 'home', dir: "home", configFile: "home-panel.yaml", simulationFile: "simulations.yaml", },
+    { name: 'home', dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", isCard: false },
     // TODO
     //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
     //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
@@ -21,14 +22,13 @@ export class FloorplanExamples extends LitElement {
   constructor() {
     super();
 
-    console.log("NODE_ENV", process.env.NODE_ENV);
-    console.log("FLOORPLAN_EXAMPLES_PATH", process.env.FLOORPLAN_EXAMPLES_PATH);
+    //console.log("NODE_ENV", process.env.NODE_ENV);
   }
 
   protected render(): TemplateResult {
     return html`
       ${this.examples?.map(example =>
-      html` <floorplan-example .example=${example} .isDemo="${true}" .notify=${this.notify.bind(this)}></floorplan-example>`)
+      html` <floorplan-example .examplespath=${this.examplespath} .example=${example} .isDemo="${true}" .notify=${this.notify.bind(this)}></floorplan-example>`)
       }
 
       <lit-toast></lit-toast>

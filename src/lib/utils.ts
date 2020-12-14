@@ -86,9 +86,9 @@ export class Utils {
     return yaml.safeLoad(yamlText);
   }
 
-  static async fetchText(resourceUrl: string, isDemo: boolean, useCache = false): Promise<string> {
-    if (isDemo) {
-      resourceUrl = resourceUrl.replace(/^\/local\/floorplan\/examples\//g, `${process.env.FLOORPLAN_EXAMPLES_PATH as string}/`);
+  static async fetchText(resourceUrl: string, isDemo: boolean, examplesPath: string, useCache = false): Promise<string> {
+    if (examplesPath) {
+      resourceUrl = resourceUrl.replace(/^\/local\/floorplan\/examples\//g, `${examplesPath}/`);
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
@@ -113,9 +113,9 @@ export class Utils {
     }
   }
 
-  static async fetchImage(resourceUrl: string, isDemo: boolean, useCache = false): Promise<string> {
+  static async fetchImage(resourceUrl: string, isDemo: boolean, examplesPath: string, useCache = false): Promise<string> {
     if (isDemo) {
-      resourceUrl = resourceUrl.replace(/^\/local\/floorplan\/examples\//g, `${process.env.FLOORPLAN_EXAMPLES_PATH as string}/`);
+      resourceUrl = resourceUrl.replace(/^\/local\/floorplan\/examples\//g, `${examplesPath}/`);
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);

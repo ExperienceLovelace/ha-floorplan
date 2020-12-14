@@ -1,18 +1,25 @@
 main:
   - title: "About"
     url: /about/
+
   - title: "Quick-Start Guide"
     url: /docs/quick-start-guide/
+
   - title: "Options"
     url: /docs/options/
+
   - title: "Examples"
     url: /docs/examples/
+
   - title: "Posts"
     url: /posts/
+
   # - title: "Categories"
   #   url: /categories/
+
   - title: "Tags"
     url: /tags/
+
   # - title: "External Link"
   #   url: https://google.com
 
@@ -20,12 +27,18 @@ main:
 docs:
   - title: "Getting Started"
     children:
-      - title: "Quick-Start Guide"
-        url: /docs/quick-start-guide/
+      - title: "Quick Start"
+        url: /docs/quick-start/
+
   - title: "Examples"
     url: /docs/examples/
     children:
       - title: "Home"
         url: /docs/example-home/
+      - title: "Ring"
+        url: /docs/example-ring/
+      - title: "Light"
+        url: /docs/example-light/
+        
   - title: Options
     url: /docs/options/

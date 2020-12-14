@@ -4,13 +4,11 @@ title: "Quick-Start Guide"
 toc: true
 ---
 
-
 Put the getting started guide here...
 
 ## HACS
 
 **Missing...**
-
 
 ## Manual
 

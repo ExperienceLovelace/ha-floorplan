@@ -4,14 +4,28 @@
   padding: 10px;
 }
 
+#floorplan > svg {
+  max-width: 700px;
+}
+
 /* SVG elements */
 
 svg * {
   vector-effect: non-scaling-stroke !important;
 }
 
-svg tspan {
-  fill: var(--primary-text-color);
+/* Hover over */
+
+.floorplan-shape:hover,
+g.floorplan-hover > :not(text):hover,
+g.floorplan-click > :not(text):hover,
+g.floorplan-long-click > :not(text):hover,
+:not(text).floorplan-hover:hover,
+:not(text).floorplan-click:hover, 
+:not(text).floorplan-long-click:hover {
+  stroke: #03A9F4 !important;
+  stroke-width: 1px !important;
+  stroke-opacity: 1 !important;
 }
 
 /* Animation */
@@ -34,14 +48,6 @@ svg tspan {
   }
 }
 
-/* Hover over */
-
-.floorplan-item:hover {
-  stroke: #03A9F4 !important;
-  stroke-width: 1px !important;
-  stroke-opacity: 1 !important;
-}
-
 /* Binary sensors */
 
 .binary-sensor-on {
@@ -55,14 +61,15 @@ svg tspan {
 
 /* Buttons */
 
-.background-on {
+.button-on rect {
   fill: #1ABA92 !important;
 }
 
-.background-off {
+.button-off rect {
   fill: #d32f2f !important;
 }
 
-.background-on tspan {
+.button-on tspan,
+.button-off tspan {
   fill: white !important;
 }

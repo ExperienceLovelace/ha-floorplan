@@ -4,7 +4,8 @@ export interface FloorplanExanple {
   name: string;
   dir: string;
   configFile: string;
-  simulationFile: string
+  simulationFile: string;
+  isCard: boolean;
 }
 
 export interface HassSimulatorConfig {

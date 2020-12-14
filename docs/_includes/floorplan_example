@@ -19,13 +19,13 @@
     <div class="tabcontent-container size-xl">
 
     <div data-tab="{{ e.example_name }}-floorplan" class="tabcontent active">
-      <floorplan-examples data-include="{{ e.example_name }}"></floorplan-examples>
+      <floorplan-examples examplespath="../floorplan/examples" data-include="{{ e.example_name }}"></floorplan-examples>
     </div>
 
     <div data-tab="{{ e.example_name }}-yaml" class="tabcontent">
     
 {% highlight ruby %}
-{% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}-panel.yaml %}
+{% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
 {% endhighlight %}
 
     </div>
