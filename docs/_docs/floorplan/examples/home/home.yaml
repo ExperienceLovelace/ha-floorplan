@@ -33,6 +33,7 @@ config:
         on_state:
           service: floorplan.text_set
           data:  ${entity.state}
+        on_click: false
 
       - entity: switch.living_area_fan
         on_click: false
@@ -46,7 +47,6 @@ config:
         on_state:
           service: floorplan.class_set
           data: button-${entity.state}
-        #on_click: false
         on_long_click:
           service: homeassistant.toggle
           data:
@@ -57,6 +57,7 @@ config:
         on_state:
           service: floorplan.text_set
           data:  ${entity.state}
+        on_click: false
 
       - entity: camera.zagreb_ban_jelacic_square
         on_state:
