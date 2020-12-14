@@ -16,7 +16,6 @@
       <button class="tablinks" onclick="showTab(event, '{{ e.example_name }}-css')">CSS</button>
     </div>
 
-  {% if e.example_name %}
     <div class="tabcontent-container {% if e.example_classes %}{{ e.example_classes }}{%endif%}">
 
     <div data-tab="{{ e.example_name }}-floorplan" class="tabcontent active">
