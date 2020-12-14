@@ -2,8 +2,8 @@ main:
   - title: "About"
     url: /about/
 
-  - title: "Quick-Start Guide"
-    url: /docs/quick-start-guide/
+  - title: "Quick Start"
+    url: /docs/quick-start/
 
   - title: "Options"
     url: /docs/options/
