@@ -8,8 +8,9 @@ header:
     - label: "I'm ready - how do I begin? <i class='fas fa-laugh-beam'></i>"
       url: "/docs/quick-start/"
 excerpt: >
-  Bring new life to Home Assistant. By mapping entities to a SVG-object, you're able to control devices, show states, calling services - and much more.<br />
-  <small>Add custom styling on top, to visualize whatever you can think of. Your imagination just become the new limit.</small>
+  Bring new life to Home Assistant with Floorplan. By mapping entities to SVG images, you’re able to show states, control devices, call services - and much more.
+  
+  <small>Use your own custom styles to visualize whatever you can think of. Your imagination becomes the new limit.</small>
 feature_row:
   - fa_icon: "laugh-beam"
     fa_bg: "#6892ae"
