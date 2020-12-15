@@ -70,16 +70,17 @@ export class FloorplanElement extends LitElement {
         display: flex;
         flex-flow: column;
         flex: 1;
+        min-height: 0;
       }
 
       :host #floorplan {
         display: flex;
+        flex-flow: column;
         flex: 1;
+        min-height: 0;
       }
 
       :host #log {
-        display: flex;
-        flex: 1;
         max-height: 150px;
         overflow: auto;
         background-color: #eee;
