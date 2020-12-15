@@ -35,10 +35,10 @@ docs:
     children:
       - title: "Home"
         url: /docs/example-home/
-      - title: "Ring"
-        url: /docs/example-ring/
       - title: "Light"
         url: /docs/example-light/
+      - title: "Ring"
+        url: /docs/example-ring/
         
   - title: Options
     url: /docs/options/
