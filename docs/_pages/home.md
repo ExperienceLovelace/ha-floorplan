@@ -68,6 +68,8 @@ If you'd like to see interactive examples, head on over to the [Examples](./docs
 
 Are you searching for a specific feature? Please take a look at the [Usage](./usage/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
 
+![Example of SVG Floorplan-file - Background created with Floorplanner](./assets/images/home/floorplan-background_with_floorplanner.png)
+
 ## Feedback
 
 Floorplan has been created for you, but we can't make everyone happy at once. If you have feedback for Floorplan, please create an issue, or contact us via the discussion at [Home Assistant's Community](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489). We'll do our best to assist. 
