@@ -50,7 +50,7 @@ feature_row:
 
 ---
 
-Bring new life to Home Assistant with Floorplan. By mapping entities to SVG images, you're able to show states, control devices, call services - and much more. Use your own custom styles to visualize whatever you can think of. Your imagination becomes the new limit.
+Bring new life to [Home Assistant](https://www.home-assistant.io/) with Floorplan. By mapping entities to SVG images, you're able to show states, control devices, call services - and much more. Use your own custom styles to visualize whatever you can think of. Your imagination becomes the new limit.
 
 And remember: Although it's typically used to represent the floorplan of your home, you can use Floorplan for anything. A music box? No problem. A Ring doorbell? Bring it on. A remote control for your legacy TV with IR control? Yep, that can be done, too.
 
