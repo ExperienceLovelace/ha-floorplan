@@ -4,7 +4,7 @@ title: "Light Example"
 toc: true
 floorplan_example:
   - example_name: "light"
-    example_classes: "size-sm"
+    example_classes: "size-auto"
 ---
 
 ## Example

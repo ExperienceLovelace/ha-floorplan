@@ -4,7 +4,7 @@ title: "Home Example"
 toc: true
 floorplan_example:
   - example_name: "home"
-    example_classes: "size-xl"
+    example_classes: "size-auto"
 ---
 
 ## Example

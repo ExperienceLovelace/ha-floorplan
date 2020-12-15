@@ -60,6 +60,10 @@
   height: 600px;
 }
 
+.tabcontent-container.size-auto .tabcontent {
+  height: auto;
+}
+
 .tabcontent-container figure.highlight {
   margin: 0px;
 }
