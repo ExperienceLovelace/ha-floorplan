@@ -29,6 +29,12 @@ docs:
     children:
       - title: "Quick Start"
         url: /docs/quick-start/
+      - title: "Creating your first SVG-file"
+        url: /docs/create-svg-file/
+      - title: "Create good-looking floorplans"
+        url: /docs/create-goodlooking-floorplan/
+      - title: "How to handle the size"
+        url: /docs/how-to-handle-the-size/
 
   - title: "Examples"
     url: /docs/examples/
