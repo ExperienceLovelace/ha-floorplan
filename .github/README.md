@@ -63,6 +63,13 @@ If you're searching for __getting started__ information, good __examples__, and 
 👉 **[documentation](https://experiencelovelace.github.io/ha-floorplan/)** 👈, hosted on [GitHub Page](https://experiencelovelace.github.io/ha-floorplan/).
 
 <br>
+
+
+<span align="center">
+	<img src="/docs/assets/images/home/floorplan-background_with_floorplanner.png">
+</span>
+
+
 <hr>
 <br>
 
