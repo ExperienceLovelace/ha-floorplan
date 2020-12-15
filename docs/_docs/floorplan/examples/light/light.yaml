@@ -11,7 +11,7 @@ config:
     - entity: light.office
       on_click:
         service: floorplan.window_navigate
-        data: /lovelace/music
+        data: /lovelace/lights
       on_state:
         service: floorplan.style_set
         data: 'fill: rgb(${entity.attributes.rgb_color[0]},

@@ -38,7 +38,9 @@ export class FloorplanPanel extends LitElement {
     return css`
       :host .content, :host .content floorplan-element {
         display: flex;
+        flex-flow: column;
         flex: 1;
+        min-height: 0;
       }
 
       :host .content.regular-height {
