@@ -10,8 +10,17 @@ config:
   rules:
     - entity: sensor.ring_salon_battery
       on_state:
-        service: floorplan.text_set
-        data: '${entity.state ? entity.state + "%" : "unknown"}'
+        - service: floorplan.text_set
+          data: '${entity.state ? entity.state + "%" : "unknown"}'
+        - service: floorplan.style_set
+          data: |
+            >
+            var max = [195, 232, 141];
+            var min = [240, 113, 120];
+            var r = Math.floor(min[0] + ((max[0] - min[0]) * (entity.state / 100)));
+            var g = Math.floor(min[1] + ((max[1] - min[1]) * (entity.state / 100)));
+            var b = Math.floor(min[2] + ((max[2] - min[2]) * (entity.state / 100)));
+            return `fill: rgb(${r}, ${g}, ${b})`;          
 
     - entities:
         - binary_sensor.ring_salon_motion
@@ -23,14 +32,12 @@ config:
     - entity: binary_sensor.ring_salon_ding
       on_state:
         service: floorplan.class_set
-#        data: '${(entity.state === "on") ? "ring-ding" : ""}'
         data:
-          class: '>
+          class: |
+            <<code>>
             if (entity.state === "on") {
               return "ring-ding";
             }
             else {
               return "";
             }
-            '
-            

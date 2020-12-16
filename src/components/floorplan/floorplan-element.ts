@@ -1038,8 +1038,8 @@ export class FloorplanElement extends LitElement {
   }
 
   isTemplate(expression: string): boolean {
-    if ((expression.indexOf("${") >= 0) && (expression.indexOf("}") >= 0)) return true;
     if (expression.trim().startsWith(">")) return true;
+    if ((expression.indexOf("${") >= 0) && (expression.indexOf("}") >= 0)) return true;
     return false;
   }
 
