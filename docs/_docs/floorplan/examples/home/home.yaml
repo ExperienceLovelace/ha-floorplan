@@ -72,7 +72,6 @@ config:
         on_state:
           service: floorplan.style_set
           data:
-            style: '
+            style: |
               fill: ${ entity.state === "on" ? "#F9D27C" : "#7CB1F9" };
               transition: ${ entity.state === "off" ? "fill 5s ease" : "" };
-            '

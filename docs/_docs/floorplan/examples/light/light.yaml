@@ -14,8 +14,8 @@ config:
         data: /lovelace/lights
       on_state:
         service: floorplan.style_set
-        data: 'fill: rgb(${entity.attributes.rgb_color[0]},
-                         ${entity.attributes.rgb_color[1]},
-                         ${entity.attributes.rgb_color[2]}
-                        );
-              '
+        data: |
+          fill: rgb(${entity.attributes.rgb_color[0]},
+                    ${entity.attributes.rgb_color[1]},
+                    ${entity.attributes.rgb_color[2]}
+                   );

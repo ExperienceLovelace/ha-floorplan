@@ -34,7 +34,7 @@ config:
         service: floorplan.class_set
         data:
           class: |
-            <<code>>
+            >
             if (entity.state === "on") {
               return "ring-ding";
             }
