@@ -94,3 +94,6 @@ dist/
 
 # Jekyll
 _site/
+
+dist/
+dist/**/*

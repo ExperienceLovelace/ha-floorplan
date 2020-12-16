@@ -1182,6 +1182,7 @@ export class FloorplanElement extends LitElement {
     let tspanElement: SVGTSpanElement | null;
     let text: string;
     let url: string;
+    let targetSvgElementIds: string[] = [];
 
     switch (serviceContext.service) {
       case 'window_navigate':
@@ -1198,12 +1199,49 @@ export class FloorplanElement extends LitElement {
         className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
         classes = new Set(svgElementInfo.originalClasses);
         classes.add(className);
-        Utils.setClass(svgElement, className);
+
+        if (Array.isArray(serviceContext.data?.elements)) {
+          targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
+        }
+        if (typeof serviceContext.data?.element === 'string') {
+          targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
+        }
+
+        if (targetSvgElementIds.length) {
+          for (const targetSvgElementId of targetSvgElementIds) {
+            const targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
+            for (const targetSvgElement of targetSvgElements) {
+              Utils.setClass(targetSvgElement, className);
+            }
+          }
+        }
+        else {
+          Utils.setClass(svgElement, className);
+        }
         break;
 
       case 'style_set':
         styleName = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.style as string;
-        Utils.setStyle((svgElementInfo as FloorplanSvgElementInfo).svgElement, styleName);
+
+        if (Array.isArray(serviceContext.data?.elements)) {
+          targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
+        }
+        if (typeof serviceContext.data?.element === 'string') {
+          targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
+        }
+
+        if (targetSvgElementIds.length) {
+          for (const targetSvgElementId of targetSvgElementIds) {
+            const targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
+            for (const targetSvgElement of targetSvgElements) {
+              Utils.setStyle(targetSvgElement, styleName);
+            }
+          }
+        }
+        else {
+          Utils.setStyle((svgElementInfo as FloorplanSvgElementInfo).svgElement, styleName);
+        }
+
         break;
 
       case 'text_set':
