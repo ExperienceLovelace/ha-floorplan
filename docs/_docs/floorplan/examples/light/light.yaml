@@ -8,14 +8,29 @@ config:
     on_click: homeassistant.more_info
 
   rules:
-    - entity: light.office
+    - entities:
+        - light.office
       on_click:
         service: floorplan.window_navigate
         data: /lovelace/lights
       on_state:
         service: floorplan.style_set
         data: |
-          fill: rgb(${entity.attributes.rgb_color[0]},
-                    ${entity.attributes.rgb_color[1]},
-                    ${entity.attributes.rgb_color[2]}
-                   );
+          >
+          var style = 'fill: black;'
+          
+          if (entity.state === 'on') {
+            if (entity.attributes.color_temp) {
+              var rgb = util.color.miredToRGB(entity.attributes.color_temp);
+              style = `fill: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});`;
+            }
+            else if (entity.attributes.rgb_color) {
+              var rgb = entity.attributes.rgb_color;
+              style = `fill: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});`;
+            }
+            else {
+              style = 'fill: white;';
+            }
+          }
+
+          return style;

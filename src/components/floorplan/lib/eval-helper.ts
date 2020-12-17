@@ -1,6 +1,7 @@
 import { HomeAssistant } from '../../../lib/homeassistant/frontend-types';
 import { HassEntity, HassEntities } from '../../../lib/homeassistant/core-types';
 import { FloorplanConfig } from './/floorplan-config';
+import { ColorUtil } from './color-util';
 
 export class EvalHelper {
   static evaluateFunctionCache: { [key: string]: EvaluateFunction } = {};
@@ -35,12 +36,16 @@ export class EvalHelper {
     }
     else {
       //console.log('Adding function to cache:', functionBody);
-      const func = new Function('entity', 'entities', 'hass', 'config', 'element', functionBody) as EvaluateFunction;
+      const func = new Function('entity', 'entities', 'hass', 'config', 'element', 'util', functionBody) as EvaluateFunction;
       this.evaluateFunctionCache[functionBody] = func;
       targetFunc = func;
     }
 
-    const result = targetFunc(entityState as HassEntity, hass.states, hass, config, svgElement);
+    const util = {
+      color: ColorUtil,
+    };
+
+    const result = targetFunc(entityState as HassEntity, hass.states, hass, config, svgElement, util);
 
     return result;
   }
@@ -52,5 +57,6 @@ type EvaluateFunction =
     states: HassEntities,
     hass: HomeAssistant,
     config: FloorplanConfig,
-    svgElement: SVGGraphicsElement | undefined
+    svgElement: SVGGraphicsElement | undefined,
+    util: { color: ColorUtil },
   ) => unknown;
