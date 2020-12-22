@@ -26,7 +26,7 @@ export class FloorplanPanel extends LitElement {
           </app-toolbar>
         </app-header>        
 
-        <div class="content ${this.showAppHeader ? 'regular-height ' : 'full-height'}">
+        <div class="content ${this.showAppHeader ? 'regular-height' : 'full-height'}">
           <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.panel?.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
         </div>
 
@@ -44,11 +44,11 @@ export class FloorplanPanel extends LitElement {
       }
 
       :host .content.regular-height {
-        height: calc(100vh - var(--header-height) - 0px);
+        height: calc(100vh - var(--header-height) - 10px);
       }
 
-      :host  .content.full-height {
-        height: calc(100vh - 0px);
+      :host .content.full-height {
+        height: calc(100vh - 10px);
       }
 
       [hidden] {

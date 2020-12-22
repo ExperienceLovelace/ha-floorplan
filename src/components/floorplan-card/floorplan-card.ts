@@ -1,11 +1,14 @@
 import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
-import { FloorplanCardConfig } from './types';
+// import { FloorplanCardConfig } from './types';
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import '../floorplan/floorplan-element';
 
-export class FloorplanCard extends LitElement {
+export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Object }) public hass!: HomeAssistant;
-  @property({ type: Object }) public config!: FloorplanCardConfig;
+  @property({ type: Boolean }) public isPanel!: boolean;
+  @property({ type: Boolean }) public editMode!: boolean;
+
+  @property({ type: Object }) public config!: LovelaceCardConfig;
 
   @property({ type: String }) public examplespath!: string;
   @property({ type: Boolean }) public isDemo!: boolean;
@@ -23,7 +26,10 @@ export class FloorplanCard extends LitElement {
           <h1 class="card-header">${this.config?.title}</h1>
         `}
 
-        <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
+        <div class="content ${this.isPanel ? ((this.config?.title as string)?.trim().length ? 'with-title-panel-height' : 'without-title-panel-height') : ''}">
+          <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
+        </div>
+
       </ha-card>
     `;
   }
@@ -36,18 +42,44 @@ export class FloorplanCard extends LitElement {
         flex: 1;
         min-height: 0;
       }
+
+      :host .content.with-title-panel-height {
+        height: calc(100vh - var(--header-height) - 78px);
+      }
+
+      :host .content.without-title-panel-height {
+        height: calc(100vh - 86px);
+      }      
     `;
   }
 
-  setConfig(config: FloorplanCardConfig): void {
-    this.config = config;
+  getCardSize(): number | Promise<number> {
+    return 1;
   }
 
-  getCardSize(): number {
-    return 1;
+  setConfig(config: LovelaceCardConfig): void {
+    this.config = config;
   }
 }
 
 if (!customElements.get('floorplan-card')) {
   customElements.define('floorplan-card', FloorplanCard);
+}
+
+
+
+export interface LovelaceCardConfig {
+  index?: number;
+  view_index?: number;
+  layout?: Record<string, unknown>;
+  type: string;
+  [key: string]: unknown;
+}
+
+export interface LovelaceCard extends HTMLElement {
+  hass?: HomeAssistant;
+  isPanel?: boolean;
+  editMode?: boolean;
+  getCardSize(): number | Promise<number>;
+  setConfig(config: LovelaceCardConfig): void;
 }
