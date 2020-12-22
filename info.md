@@ -14,7 +14,7 @@
 
 <br>
 
-### 📚 Read the [documentation](https://experiencelovelace.github.io/ha-floorplan/) 📚
+### 📚 Read the <a href="https://experiencelovelace.github.io/ha-floorplan/" target="_blank">documentation</a> 📚
 
 You'll find information about:
 - Installation
