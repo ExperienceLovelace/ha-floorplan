@@ -12,3 +12,5 @@ floorplan_example:
 **Template used, instead of static files**
 
 {% include floorplan_example %}
+
+{% include assets_ref %}
