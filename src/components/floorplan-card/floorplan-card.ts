@@ -27,7 +27,7 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
           <h1 class="card-header">${this.config?.title}</h1>
         `}
 
-        <div class="content ${this.isPanel ? ((this.config?.title as string)?.trim().length ? 'with-title-panel-height' : 'without-title-panel-height') : ''}">
+        <div class="content ${this.isPanel || this.config?.full_height ? ((this.config?.title as string)?.trim().length ? 'with-title-panel-height' : 'without-title-panel-height') : ''}">
           <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
         </div>
 

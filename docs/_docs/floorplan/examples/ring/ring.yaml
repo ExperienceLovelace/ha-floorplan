@@ -32,12 +32,4 @@ config:
     - entity: binary_sensor.ring_salon_ding
       state_action:
         service: floorplan.class_set
-        service_data:
-          class: |
-            >
-            if (entity.state === "on") {
-              return "ring-ding";
-            }
-            else {
-              return "";
-            }
+        service_data: '(entity.state === "on") ? "ring-ding" : ""'
