@@ -4,8 +4,9 @@ config:
   stylesheet: /local/floorplan/examples/ring/ring.css
 
   defaults:
-    hover_action: floorplan.hover_info
-    tap_action: homeassistant.more_info
+      hover_action:
+        action: hover-info
+      tap_action: more-info
 
   rules:
     - entity: sensor.ring_salon_battery

@@ -1,7 +1,8 @@
-import { HomeAssistant } from '../../lib/homeassistant/types';
-import { NavigateActionConfig } from '../../lib/homeassistant/lovelace/types';
+import { HomeAssistant, CurrentUser } from '../../lib/homeassistant/types';
+import { ActionConfig } from '../../lib/homeassistant/lovelace/types';
 import { HassEntityBase } from 'home-assistant-js-websocket';
 import { fireEvent } from '../../lib/homeassistant/common/dom/fire_event';
+import { navigate } from '../../lib/homeassistant/common/navigate';
 import { MoreInfoDialogParams } from '../../lib/homeassistant/dialogs/more-info/ha-more-info-dialog';
 import { FloorplanConfig, FloorplanPageConfig, FloorplanActionConfig, FloorplanCallServiceActionConfig } from './lib/floorplan-config';
 import { FloorplanRuleConfig, FloorplanVariableConfig } from './lib/floorplan-config';
@@ -25,6 +26,12 @@ console.info(
   "color: orange; font-weight: bold; background: black",
   "color: white; font-weight: bold; background: rgb(71, 170, 238)"
 );
+
+declare global {
+  interface HASSDomEvents {
+    "ll-custom": ActionConfig;
+  }
+}
 
 export class FloorplanElement extends LitElement {
   @property({ type: String }) public examplespath!: string;
@@ -641,15 +648,31 @@ export class FloorplanElement extends LitElement {
       return [];
     }
     else if (Array.isArray(actionConfig)) {
+      for (const config of actionConfig as FloorplanActionConfig[]) {
+        config.action = config.action ?? 'call-service';
+      }
+
       return actionConfig;
     }
     else if (typeof actionConfig === 'object') {
-      return [actionConfig];
+      actionConfig.action = actionConfig.action ?? 'call-service';
+
+      return [
+        actionConfig
+      ];
     }
     else if (typeof actionConfig === 'string') {
-      return [{
-        service: actionConfig
-      }] as FloorplanActionConfig[];
+      if (actionConfig.indexOf('.') >= 0) {
+        return [{
+          action: 'call-service',
+          service: actionConfig
+        }] as FloorplanActionConfig[];
+      }
+      else {
+        return [{
+          action: actionConfig
+        }] as FloorplanActionConfig[];
+      }
     }
     else {
       return [];
@@ -657,11 +680,11 @@ export class FloorplanElement extends LitElement {
   }
 
   initStartupActions(): void {
-    this.performActions(this.config.on_startup, undefined, undefined, undefined);
+    this.handleActions(this.config.startup_action, undefined, undefined, undefined);
 
     if (this.config.pages) {
       for (const pageInfo of Object.values(this.pageInfos)) {
-        this.performActions(pageInfo.config.on_startup, undefined, undefined, undefined);
+        this.handleActions(pageInfo.config.startup_action, undefined, undefined, undefined);
       }
     }
   }
@@ -936,7 +959,7 @@ export class FloorplanElement extends LitElement {
     for (const ruleInfo of entityInfo.ruleInfos) {
       for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
         if (svgElementInfo.svgElement) { // images may not have been updated yet
-          this.performActions(ruleInfo.rule.state_action, entityInfo.entityId, svgElementInfo, ruleInfo);
+          this.handleActions(ruleInfo.rule.state_action, entityInfo.entityId, svgElementInfo, ruleInfo);
         }
       }
     }
@@ -948,7 +971,7 @@ export class FloorplanElement extends LitElement {
     for (const elementInfo of Object.values(this.elementInfos)) {
       for (const ruleInfo of elementInfo.ruleInfos) {
         for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
-          this.performActions(ruleInfo.rule.state_action, undefined, svgElementInfo, ruleInfo);
+          this.handleActions(ruleInfo.rule.state_action, undefined, svgElementInfo, ruleInfo);
         }
       }
     }
@@ -965,7 +988,11 @@ export class FloorplanElement extends LitElement {
 
     for (const ruleInfo of entityInfo.ruleInfos) {
       if (ruleInfo.rule.hover_action) {
-        if ((typeof ruleInfo.rule.hover_action === 'string') && (ruleInfo.rule.hover_action === 'floorplan.hover_info')) {
+        let isHoverInfo = (typeof ruleInfo.rule.hover_action === 'string') && (ruleInfo.rule.hover_action === 'hover-info');
+        isHoverInfo = isHoverInfo || (typeof ruleInfo.rule.hover_action === 'object') && ((ruleInfo.rule.hover_action as FloorplanActionConfig).action === 'hover-info');
+        isHoverInfo = isHoverInfo || (Array.isArray(ruleInfo.rule.hover_action) && (ruleInfo.rule.hover_action as FloorplanActionConfig[]).some(x => x.action === 'hover-info'));
+
+        if (isHoverInfo) {
           for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
             Utils.addClass(svgElementInfo.svgElement, 'floorplan-hover'); // mark the element as being processed by floorplan
 
@@ -1070,7 +1097,7 @@ export class FloorplanElement extends LitElement {
     const context = this as unknown as FloorplanClickContext;
     const floorplan = (context.instance as FloorplanElement);
 
-    floorplan.performActions(context.actions, context.entityId, context.svgElementInfo, context.ruleInfo);
+    floorplan.handleActions(context.actions, context.entityId, context.svgElementInfo, context.ruleInfo);
   }
 
   onLongClick(e: Event): void {
@@ -1081,54 +1108,97 @@ export class FloorplanElement extends LitElement {
     const floorplan = (context.instance as FloorplanElement);
 
     setTimeout(() => {
-      floorplan.performActions(context.actions, context.entityId, context.svgElementInfo, context.ruleInfo);
+      floorplan.handleActions(context.actions, context.entityId, context.svgElementInfo, context.ruleInfo);
     }, 300);
   }
 
-  performActions(actionConfigs: FloorplanActionConfig[] | FloorplanActionConfig | string | false, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo, ruleInfo?: FloorplanRuleInfo): void {
-    const targetActionConfigs = this.getActionConfigs(actionConfigs);
+  handleActions(actionConfigs: FloorplanActionConfig[] | FloorplanActionConfig | string | false, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo, ruleInfo?: FloorplanRuleInfo): void {
+    const allActionConfigs = this.getActionConfigs(actionConfigs);
 
-    for (const targetActionConfig of targetActionConfigs) {
-      switch (targetActionConfig.action) {
-        case 'call-service':
-          this.callService(targetActionConfig as FloorplanCallServiceActionConfig, entityId, svgElementInfo, ruleInfo);
-          break;
+    for (const actionConfig of allActionConfigs) {
+      if (
+        actionConfig.confirmation &&
+        (!actionConfig.confirmation.exemptions ||
+          !actionConfig.confirmation.exemptions.some(
+            (e) => e.user === (this.hass.user as CurrentUser).id
+          ))
+      ) {
+        // forwardHaptic("warning");
 
-        case 'toggle':
-          console.log('performActions', targetActionConfig.action);
-          break;
-
-        case 'more-info':
-          console.log('performActions', targetActionConfig.action);
-          break;
-
-        case 'fire-dom-event':
-          console.log('performActions', targetActionConfig.action);
-          break;
-
-        case 'navigate':
-          this.performActionNavigate(targetActionConfig as NavigateActionConfig);
-          break;
-
-        case 'url':
-          console.log('performActions', targetActionConfig.action);
-          break;
-
-        case 'none':
-          break;
-
-        default:
-          this.callService((targetActionConfig as FloorplanCallServiceActionConfig), entityId, svgElementInfo, ruleInfo);
+        if (
+          !confirm(
+            actionConfig.confirmation.text ||
+            `Are you sure you want to ${actionConfig.action}?`
+          )
+        ) {
+          return;
+        }
       }
-    }
-  }
 
-  performActionNavigate(actionConfig: NavigateActionConfig): void {
-    if (this.isDemo) {
-      this.notify(`Performing action: ${actionConfig.action} ${actionConfig.navigation_path}`)
-    }
-    else {
-      window.location.href = actionConfig.navigation_path;
+      switch (actionConfig.action) {
+        case "more-info": {
+          if (this.isDemo) {
+            this.notify(`Performing action: ${actionConfig.action} ${entityId}`)
+          }
+          else {
+            fireEvent(this, 'hass-more-info', { entityId: entityId } as MoreInfoDialogParams);
+          }
+          break;
+        }
+
+        case "navigate":
+          if (this.isDemo) {
+            this.notify(`Performing action: ${actionConfig.action} ${actionConfig.navigation_path}`)
+          }
+          else {
+            navigate(this, actionConfig.navigation_path);
+          }
+          break;
+
+        case "url": {
+          if (this.isDemo) {
+            this.notify(`Performing action: ${actionConfig.action} ${actionConfig.url_path}`)
+          }
+          else {
+            navigate(this, actionConfig.url_path);
+          }
+          break;
+        }
+
+        case "toggle": {
+          if (entityId) {
+            const toggleActionConfig = {
+              action: 'call-service',
+              service: 'homeassistant.toggle',
+              service_data: {
+                entity_id: entityId
+              }
+            } as FloorplanCallServiceActionConfig;
+
+            // toggleEntity(hass, config.entity!);
+            this.callService(toggleActionConfig, entityId, svgElementInfo, ruleInfo);
+
+            // forwardHaptic("light");
+          }
+          break;
+        }
+
+        case "call-service": {
+          if (!actionConfig.service) {
+            // forwardHaptic("failure");
+            return;
+          }
+          // const [domain, service] = actionConfig.service.split(".", 2);
+          // this.hass.callService(domain, service, actionConfig.service_data);
+          this.callService((actionConfig as FloorplanCallServiceActionConfig), entityId, svgElementInfo, ruleInfo);
+          // forwardHaptic("light");
+          break;
+        }
+
+        case "fire-dom-event": {
+          fireEvent(this, "ll-custom", actionConfig);
+        }
+      }
     }
   }
 
@@ -1150,8 +1220,7 @@ export class FloorplanElement extends LitElement {
       data = actionConfig.service_data;
     }
 
-    const domain = fullServiceName.split(".")[0];
-    const serviceName = fullServiceName.split(".")[1];
+    const [domain, service] = fullServiceName.split(".", 2);
 
     if (domain !== 'floorplan') {
       if (typeof data === 'object') {
@@ -1167,7 +1236,7 @@ export class FloorplanElement extends LitElement {
 
     const serviceContext = {
       domain: domain,
-      service: serviceName,
+      service: service,
       data: data,
       entityId: entityId as string,
       svgElementInfo: svgElementInfo,
@@ -1203,10 +1272,10 @@ export class FloorplanElement extends LitElement {
     let textElement: HTMLElement | SVGGraphicsElement;
     let tspanElement: SVGTSpanElement | null;
     let text: string;
-    let url: string;
     let targetSvgElementIds: string[] = [];
 
     switch (serviceContext.service) {
+      /*
       case 'window_navigate':
         if (this.isDemo) {
           this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service}`)
@@ -1216,6 +1285,7 @@ export class FloorplanElement extends LitElement {
           window.location.href = url;
         }
         break;
+      */
 
       case 'class_set':
         className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
@@ -1378,12 +1448,7 @@ export class FloorplanElement extends LitElement {
   /***************************************************************************************************************************/
 
   callHomeAssistantService(serviceContext: ServiceContext): void {
-    if (serviceContext.service?.toLocaleLowerCase() === 'more_info') {
-      fireEvent(this, 'hass-more-info', { entityId: serviceContext.data.entity_id } as MoreInfoDialogParams);
-    }
-    else {
-      this.hass.callService(serviceContext.domain, serviceContext.service, serviceContext.data);
-    }
+    this.hass.callService(serviceContext.domain, serviceContext.service, serviceContext.data);
 
     if (this.isDemo) {
       this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service} (${serviceContext.data.entity_id})`);

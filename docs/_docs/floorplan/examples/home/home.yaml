@@ -9,8 +9,8 @@ config:
     console_log_level: info
 
     defaults:
-      hover_action: floorplan.hover_info
-      tap_action: homeassistant.more_info
+      hover_action: hover-info
+      tap_action: more-info
 
     rules:
       - entity: light.garage
@@ -19,7 +19,7 @@ config:
           action: call-service
           service: floorplan.image_set
           service_data: /local/floorplan/examples/home/light_${entity.state}.svg
-        tap_action: homeassistant.toggle
+        tap_action: toggle
 
       - entity: light.garage
         element: light.garage.button
