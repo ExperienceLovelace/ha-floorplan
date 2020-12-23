@@ -1,6 +1,6 @@
 {
   "name": "ha-floorplan",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Floorplan for Home Assistant",
   "main": "index.js",
   "scripts": {
@@ -42,9 +42,11 @@
   "dependencies": {
     "debounce": "^1.2.0",
     "highlight.js": "^10.4.1",
+    "home-assistant-js-websocket": "^5.7.0",
     "js-yaml": "^3.14.0",
     "lit-element": "^2.4.0",
-    "oui-dom-events": "^0.2.2"
+    "oui-dom-events": "^0.2.2",
+    "superstruct": "^0.13.1"
   },
   "browserslist": [
     "last 1 Chrome version"

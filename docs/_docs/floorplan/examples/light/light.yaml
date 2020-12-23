@@ -4,18 +4,19 @@ config:
   stylesheet: /local/floorplan/examples/light/light.css
 
   defaults:
-    on_hover: floorplan.hover_info
-    on_click: homeassistant.more_info
+    hover_action: floorplan.hover_info
+    tap_action: homeassistant.more_info
 
   rules:
     - entities:
         - light.office
-      on_click:
-        service: floorplan.window_navigate
-        data: /lovelace/lights
-      on_state:
+      tap_action:
+        action: navigate
+        navigation_path: /lovelace/lights
+      state_action:
+        action: call-service
         service: floorplan.style_set
-        data: |
+        service_data: |
           >
           var style = 'fill: black;'
           

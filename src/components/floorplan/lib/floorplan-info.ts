@@ -1,4 +1,4 @@
-import { HassEntity } from '../../../lib/homeassistant/core-types';
+import { HassEntity } from 'home-assistant-js-websocket';
 import { FloorplanPageConfig, FloorplanRuleConfig, FloorplanActionConfig } from './floorplan-config';
 
 export class FloorplanPageInfo {

@@ -1,5 +1,5 @@
-import { HomeAssistant } from '../../../lib/homeassistant/frontend-types';
-import { HassEntity, HassEntities } from '../../../lib/homeassistant/core-types';
+import { HomeAssistant } from '../../../lib/homeassistant/types';
+import { HassEntity, HassEntities } from 'home-assistant-js-websocket';
 import { FloorplanConfig } from './/floorplan-config';
 import { ColorUtil } from './color-util';
 

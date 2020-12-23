@@ -1,5 +1,6 @@
-import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
-// import { FloorplanCardConfig } from './types';
+import { HomeAssistant } from '../../lib/homeassistant/types';
+import { LovelaceCard } from '../../lib/homeassistant/panels/lovelace/types';
+import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import '../floorplan/floorplan-element';
 
@@ -64,22 +65,4 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
 
 if (!customElements.get('floorplan-card')) {
   customElements.define('floorplan-card', FloorplanCard);
-}
-
-
-
-export interface LovelaceCardConfig {
-  index?: number;
-  view_index?: number;
-  layout?: Record<string, unknown>;
-  type: string;
-  [key: string]: unknown;
-}
-
-export interface LovelaceCard extends HTMLElement {
-  hass?: HomeAssistant;
-  isPanel?: boolean;
-  editMode?: boolean;
-  getCardSize(): number | Promise<number>;
-  setConfig(config: LovelaceCardConfig): void;
 }

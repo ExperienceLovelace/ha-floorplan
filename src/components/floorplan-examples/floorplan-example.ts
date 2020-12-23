@@ -1,8 +1,8 @@
-import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
+import { HomeAssistant } from '../../lib/homeassistant/types';
 import { HassSimulator } from './hass-simulator';
 import { HassSimulatorConfig, FloorplanExanple } from './types';
-import { FloorplanCardConfig } from '../floorplan-card/types';
 import { FloorplanPanelConfig } from '../floorplan-panel/types';
+import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import { Utils } from '../../lib/utils';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import '../floorplan-card/floorplan-card';
@@ -11,7 +11,7 @@ import './code-block';
 
 export class FloorplanExanpleElement extends LitElement {
   @property({ type: Object }) public hass!: HomeAssistant;
-  @property({ type: Object }) public config!: FloorplanCardConfig | FloorplanPanelConfig;
+  @property({ type: Object }) public config!: LovelaceCardConfig | FloorplanPanelConfig;
   @property({ type: String }) public configYaml!: string;
 
   @property({ type: String }) public examplespath!: string;
@@ -51,7 +51,7 @@ export class FloorplanExanpleElement extends LitElement {
       const configUrl = `${this.examplespath}/${this.example.dir}/${this.example.configFile}`;
       const configYamlText = await Utils.fetchText(configUrl, true, this.examplespath);
 
-      this.config = Utils.parseYaml(configYamlText) as FloorplanCardConfig | FloorplanPanelConfig;
+      this.config = Utils.parseYaml(configYamlText) as LovelaceCardConfig | FloorplanPanelConfig;
       this.configYaml = configYamlText;
 
       if (this.example.simulationFile) {

@@ -9,69 +9,79 @@ config:
     console_log_level: info
 
     defaults:
-      on_hover: floorplan.hover_info
-      on_click: homeassistant.more_info
+      hover_action: floorplan.hover_info
+      tap_action: homeassistant.more_info
 
     rules:
       - entity: light.garage
         element: light.garage
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.image_set
-          data: /local/floorplan/examples/home/light_${entity.state}.svg
-        on_click: homeassistant.toggle
+          service_data: /local/floorplan/examples/home/light_${entity.state}.svg
+        tap_action: homeassistant.toggle
 
       - entity: light.garage
         element: light.garage.button
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.class_set
-          data: 'button-${entity.state}'
-        on_click:
+          service_data: 'button-${entity.state}'
+        tap_action:
+          action: call-service
           service: homeassistant.toggle
 
       - entity: light.garage
         element: light.garage.text
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.text_set
-          data:  ${entity.state}
-        on_click: false
+          service_data:  ${entity.state}
+        tap_action: false
 
       - entity: switch.living_area_fan
-        on_click: false
-        on_state:
+        tap_action: false
+        state_action:
+          action: call-service
           service: floorplan.class_set
-          data:
+          service_data:
             class: '${(entity.state === "on") ? "spinning" : ""}'
 
       - entity: switch.living_area_fan
         element: switch.living_area_fan.button
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.class_set
-          data: button-${entity.state}
-        on_long_click:
+          service_data: button-${entity.state}
+        hold_action:
+          action: call-service
           service: homeassistant.toggle
-          data:
+          service_data:
             entity_id: switch.living_area_fan
 
       - entity: switch.living_area_fan
         element: switch.living_area_fan.text
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.text_set
-          data:  ${entity.state}
-        on_click: false
+          service_data:  ${entity.state}
+        tap_action: false
 
       - entity: camera.zagreb_ban_jelacic_square
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.image_set
-          data:
+          service_data:
             image: '${entity.attributes.entity_picture}'
             image_refresh_interval: 10
 
       - entities:
           - binary_sensor.main_bedroom
           - binary_sensor.living_area
-        on_state:
+        state_action:
+          action: call-service
           service: floorplan.style_set
-          data:
+          service_data:
             style: |
               fill: ${ entity.state === "on" ? "#F9D27C" : "#7CB1F9" };
               transition: ${ entity.state === "off" ? "fill 5s ease" : "" };

@@ -1,4 +1,4 @@
-import { HomeAssistant } from '../../lib/homeassistant/frontend-types';
+import { HomeAssistant } from '../../lib/homeassistant/types';
 import { FloorplanPanelInfo } from './types';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
 import '../floorplan/floorplan-element';

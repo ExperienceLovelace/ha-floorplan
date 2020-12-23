@@ -4,16 +4,16 @@ config:
   stylesheet: /local/floorplan/examples/ring/ring.css
 
   defaults:
-    on_hover: floorplan.hover_info
-    on_click: homeassistant.more_info
+    hover_action: floorplan.hover_info
+    tap_action: homeassistant.more_info
 
   rules:
     - entity: sensor.ring_salon_battery
-      on_state:
+      state_action:
         - service: floorplan.text_set
-          data: '${entity.state ? entity.state + "%" : "unknown"}'
+          service_data: '${entity.state ? entity.state + "%" : "unknown"}'
         - service: floorplan.style_set
-          data: |
+          service_data: |
             >
             var max = [195, 232, 141];
             var min = [240, 113, 120];
@@ -24,15 +24,15 @@ config:
 
     - entities:
         - binary_sensor.ring_salon_motion
-      on_state:
+      state_action:
         service: floorplan.class_set
-        data:
+        service_data:
           class: '${(entity.state === "on") ? "ring-motion" : ""}'
 
     - entity: binary_sensor.ring_salon_ding
-      on_state:
+      state_action:
         service: floorplan.class_set
-        data:
+        service_data:
           class: |
             >
             if (entity.state === "on") {

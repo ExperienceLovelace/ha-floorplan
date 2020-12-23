@@ -1,12 +1,63 @@
-import { HassEntities } from "./core-types";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  // Auth,
+  // Connection,
+  // HassConfig,
+  HassEntities,
+  // HassServices,
+  MessageBase,
+} from "home-assistant-js-websocket";
+// import { LocalizeFunc } from "./common/translations/localize";
+// import { CoreFrontendUserData } from "./data/frontend";
+// import { getHassTranslations } from "./data/translation";
+// import { Themes } from "./data/ws-themes";
+// import { ExternalMessaging } from "./external_app/external_messaging";
 
-export type Constructor<T = unknown> = new (...args: unknown[]) => T;
+declare global {
+  /* eslint-disable no-var, no-redeclare */
+  var __DEV__: boolean;
+  var __DEMO__: boolean;
+  var __BUILD__: "latest" | "es5";
+  var __VERSION__: string;
+  var __STATIC_PATH__: string;
+  var __BACKWARDS_COMPAT__: boolean;
+  /* eslint-enable no-var, no-redeclare */
+
+  interface Window {
+    // Custom panel entry point url
+    customPanelJS: string;
+    ShadyCSS: {
+      nativeCss: boolean;
+      nativeShadow: boolean;/*
+      prepareTemplate(templateElement, elementName, elementExtension);
+      styleElement(element);
+      styleSubtree(element, overrideProperties);
+      styleDocument(overrideProperties);
+      getComputedStyleValue(element, propertyName);
+      */
+    };
+  }
+  // for fire event
+  interface HASSDomEvents {
+    "value-changed": {
+      value: unknown;
+    };
+    change: undefined;
+  }
+
+  // For loading workers in webpack
+  interface ImportMeta {
+    url: string;
+  }
+}
+
+export type Constructor<T = any> = new (...args: any[]) => T;
 
 export interface ClassElement {
   kind: "field" | "method";
   key: PropertyKey;
   placement: "static" | "prototype" | "own";
-  initializer?: (...args: unknown[]) => unknown;
+  initializer?: (...args: any) => unknown;
   extras?: ClassElement[];
   finisher?: <T>(cls: Constructor<T>) => undefined | Constructor<T>;
   descriptor?: PropertyDescriptor;
@@ -39,7 +90,7 @@ export interface ThemeSettings {
   accentColor?: string;
 }
 
-export interface PanelInfo<T = Record<string, unknown> | null> {
+export interface PanelInfo<T = Record<string, any> | null> {
   component_name: string;
   config: T;
   icon: string | null;
@@ -59,7 +110,7 @@ export interface CalendarEvent {
   backgroundColor?: string;
   borderColor?: string;
   calendar: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface CalendarViewChanged {
@@ -128,23 +179,20 @@ export interface ServiceCallResponse {
 export interface ServiceCallRequest {
   domain: string;
   service: string;
-  serviceData?: Record<string, unknown>;
+  serviceData?: Record<string, any>;
 }
 
 export interface HomeAssistant {
-  /*
-  auth: Auth & { external?: ExternalMessaging };
-  connection: Connection;
-  connected: boolean;
-  */
+  // auth: Auth & { external?: ExternalMessaging };
+  // connection: Connection;
+  // connected: boolean;
   states: HassEntities;
-  /*
-  services: HassServices;
-  config: HassConfig;
-  themes: Themes;
-  selectedTheme?: ThemeSettings | null;
-  panels: Panels;
-  panelUrl: string;
+  // services: HassServices;
+  // config: HassConfig;
+  // themes: Themes;
+  // selectedTheme?: ThemeSettings | null;
+  // panels: Panels;
+  // panelUrl: string;
 
   // i18n
   // current effective language, in that order:
@@ -152,24 +200,21 @@ export interface HomeAssistant {
   //   - language in local appstorage
   //   - browser language
   //   - english (en)
-  language: string;
+  // language: string;
   // local stored language, keep that name for backward compability
-  selectedLanguage: string | null;
-  resources: Resources;
-  localize: LocalizeFunc;
-  translationMetadata: TranslationMetadata;
-  suspendWhenHidden: boolean;
-  enableShortcuts: boolean;
-  vibrate: boolean;
-  */
-  dockedSidebar: "docked" | "always_hidden" | "auto";
-  /*
-  defaultPanel: string;
-  moreInfoEntityId: string | null;
+  // selectedLanguage: string | null;
+  // resources: Resources;
+  // localize: LocalizeFunc;
+  // translationMetadata: TranslationMetadata;
+  // suspendWhenHidden: boolean;
+  // enableShortcuts: boolean;
+  // vibrate: boolean;
+  // dockedSidebar: "docked" | "always_hidden" | "auto";
+  // defaultPanel: string;
+  // moreInfoEntityId: string | null;
   user?: CurrentUser;
-  userData?: CoreFrontendUserData | null;
-  hassUrl(path?): string;
-  */
+  // userData?: CoreFrontendUserData | null;
+  // hassUrl(path?: any): string;
   callService(
     domain: ServiceCallRequest["domain"],
     service: ServiceCallRequest["service"],
@@ -179,12 +224,14 @@ export interface HomeAssistant {
   callApi<T>(
     method: "GET" | "POST" | "PUT" | "DELETE",
     path: string,
-    parameters?: Record<string, unknown>,
+    parameters?: Record<string, any>,
     headers?: Record<string, string>
   ): Promise<T>;
-  fetchWithAuth(path: string, init?: Record<string, unknown>): Promise<Response>;
-  sendWS(msg: MessageBase): void;
+  */
+  // fetchWithAuth(path: string, init?: Record<string, any>): Promise<Response>;
+  // sendWS(msg: MessageBase): void;
   callWS<T>(msg: MessageBase): Promise<T>;
+  /*
   loadBackendTranslation(
     category: Parameters<typeof getHassTranslations>[2],
     integration?: Parameters<typeof getHassTranslations>[3],
@@ -207,5 +254,5 @@ export interface PanelElement extends HTMLElement {
 
 export interface LocalizeMixin {
   hass?: HomeAssistant;
-  //localize: LocalizeFunc;
+  // localize: LocalizeFunc;
 }

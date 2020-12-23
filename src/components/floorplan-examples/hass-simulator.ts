@@ -1,4 +1,4 @@
-import { ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/frontend-types';
+import { ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/types';
 import { HassSimulatorConfig, HassSimulation, TimedHassEntity } from './types';
 import { HomeAssistant, HassEntity } from './homeassistant';
 

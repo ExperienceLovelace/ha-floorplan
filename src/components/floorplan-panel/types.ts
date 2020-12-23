@@ -1,12 +1,7 @@
-import { PanelInfo } from '../../lib/homeassistant/frontend-types';
+import { PanelInfo } from '../../lib/homeassistant/types';
 import { FloorplanConfig } from '../floorplan/lib/floorplan-config';
 
 export interface FloorplanPanelInfo extends PanelInfo<FloorplanPanelConfig> {
-  component_name: string;
-  icon: string;
-  require_admin: boolean;
-  title: string;
-  url_path: string;
   config: FloorplanPanelConfig;
 }
 

@@ -1,9 +1,16 @@
-import { HomeAssistant as IHomeAssistant, ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/frontend-types';
-import { HassEntityAttributeBase, HassEntityBase as IHassEntityBase } from "../../lib/homeassistant/core-types";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { MessageBase } from 'home-assistant-js-websocket';
+import { HomeAssistant as IHomeAssistant, ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/types';
+import { HassEntityAttributeBase, HassEntityBase as IHassEntityBase } from 'home-assistant-js-websocket';
 
 export class HomeAssistant implements IHomeAssistant {
   states: Record<string, IHassEntityBase> = {};
   dockedSidebar!: "docked" | "always_hidden" | "auto";
+
+  callWS<T>(msg: MessageBase): Promise<T> {
+    console.log(msg);
+    return Promise.resolve<T>(null as any);
+  }
 
   callService(
     domain: ServiceCallRequest["domain"],

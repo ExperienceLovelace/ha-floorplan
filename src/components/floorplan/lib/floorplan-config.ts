@@ -1,3 +1,12 @@
+import {
+  ToggleActionConfig,
+  CallServiceActionConfig,
+  NavigateActionConfig,
+  UrlActionConfig,
+  MoreInfoActionConfig,
+  NoActionConfig,
+  CustomActionConfig
+} from '../../../lib/homeassistant/lovelace/types';
 
 export class FloorplanConfig {
   // Core features
@@ -11,7 +20,6 @@ export class FloorplanConfig {
   on_startup!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
   defaults!: FloorplanRuleConfig;
   image_mobile!: FloorplanImageConfig | string;
-  last_motion!: FloorplanLastMotionConfig;
 
   // Experimental features
   pages!: string[];
@@ -19,12 +27,18 @@ export class FloorplanConfig {
   pan_zoom: unknown;
 }
 
-export class FloorplanActionConfig {
-  service!: string;
+export interface FloorplanCallServiceActionConfig extends CallServiceActionConfig {
   value: unknown;
-  data!: string | Record<string, unknown>;
-  no_entity_id!: boolean;
 }
+
+export type FloorplanActionConfig =
+  | ToggleActionConfig
+  | FloorplanCallServiceActionConfig
+  | NavigateActionConfig
+  | UrlActionConfig
+  | MoreInfoActionConfig
+  | NoActionConfig
+  | CustomActionConfig;
 
 export class FloorplanPageConfig extends FloorplanConfig {
   page_id!: string;
@@ -50,19 +64,21 @@ export class FloorplanRuleConfig {
   groups!: string[];
   element!: string;
   elements!: string[];
-  on_state!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
-  on_hover!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
-  on_click!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
-  on_long_click!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
+
+  // action_name?: string;
+  service?: string;
+  service_data?: Record<string, unknown>;
+  // url?: string;
+  state_action!: FloorplanActionConfig[] | FloorplanActionConfig[] | string | false;
+  tap_action!: FloorplanActionConfig[] | FloorplanActionConfig[] | string | false;
+  hold_action!: FloorplanActionConfig[] | FloorplanActionConfig[] | string | false;
+  double_tap_action!: FloorplanActionConfig[] | FloorplanActionConfig[] | string | false;
+  hover_action!: FloorplanActionConfig[] | FloorplanActionConfig[] | string | false;
 }
 
 export class FloorplanRuleEntityElementConfig {
   entity!: string;
   element!: string;
-}
-
-export class FloorplanLastMotionConfig extends FloorplanActionConfig {
-  entity!: string;
 }
 
 export class FloorplanVariableConfig {
