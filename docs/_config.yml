@@ -92,6 +92,9 @@ footer:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/ExperienceLovelace/ha-floorplan"
+    - label: "Community"
+      icon: "fas fa-users"
+      url: "https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489"
 
 defaults:
   # _posts
