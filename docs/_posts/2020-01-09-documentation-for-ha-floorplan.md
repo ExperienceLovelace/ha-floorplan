@@ -1,5 +1,5 @@
 ---
-title: "Our new documentation for ha-floorplan"
+title: "Documentation for ha-floorplan!"
 date: 2020-01-09T18:10:30+01:00
 last_modified_at: 2020-01-09T18:25:10+01:00
 categories:
@@ -10,7 +10,7 @@ tags:
   - Releases
 ---
 
-Welcome to the official documentation for ha-floorplan. We hope you'll find it usefull, while playing around with our custom module for Home Assistant.
+Wuhuu!🥳 Welcome to the official documentation for ha-floorplan. We hope you'll find it usefull, while playing around with our custom module for Home Assistant.
 
 Please keep in mind that we're still working on the docs. Many pages has a very limited about of content, but it will get better down the line - we promise!
 
