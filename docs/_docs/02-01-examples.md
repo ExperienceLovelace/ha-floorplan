@@ -4,7 +4,11 @@ title: "Examples"
 toc: true
 ---
 
-**In progress**....
+## Your help is on the way
 
-This should be splitted out to multiple pages, and links added in menu, too :-) Please use the same build-up, as for the "Home" example (on the dedicated page).
+Yay! Examples are created for you to get a good idéa, of how to use [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) as best as possible.
 
+Not sure where to start? Give the "[Home"](./docs/example-home/)"-example a try.
+
+
+{% include assets_ref %}
