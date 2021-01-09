@@ -6,7 +6,7 @@ toc: true
 
 
 {% capture workinprogress-notice-1 %}
-#### Work in progres..
+#### Work in progress...
 
 The "Quick Start guide are **NOT READY**, but there's a few tips, which can help you on the way...
 
@@ -14,7 +14,7 @@ We'll refine this part, but fell free to use it "as is". If you have any suggest
 
 {% endcapture %}
 
-<div class="notice">{{ workinprogress-notice-1 | markdownify }}</div>
+<div class="notice--warning">{{ workinprogress-notice-1 | markdownify }}</div>
 
 
 
