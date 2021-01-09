@@ -2,6 +2,13 @@
 permalink: /docs/quick-start/
 title: "Quick Start"
 toc: true
+hacs_images_gallery:
+  - url: /assets/images/docs/quick-start/hacs-setup-1.png
+    image_path: /assets/images/docs/quick-start/hacs-setup-1.png
+    alt: "HACS - Find Ha Floorplan"
+  - url: /assets/images/docs/quick-start/hacs-setup-2.png
+    image_path: /assets/images/docs/quick-start/hacs-setup-2.png
+    alt: "HACS - Install and remember to add ressources"
 ---
 
 
@@ -35,8 +42,7 @@ The **H**ome **A**ssistant **C**ommunity **S**tore (HACS) are one of the best ou
  **6)** Follow [this step by step guide](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico), to add your first Floorplan. There's plenty of ways of doing this, but this is the best "beginner"-way. If you're always use to YAML and HA in general, you'd like to move on to the "examples" pages.
  
  
- ![HACS Setup 1](./assets/images/docs/quick-start/hacs-setup-1.png)
- ![HACS Setup 2](./assets/images/docs/quick-start/hacs-setup-2.png)
+{% include gallery id="hacs_images_gallery" caption="Here's a few images from the installation of ha-floorplan with [HACS](https://hacs.xyz/)." %}
 
                 
 ## Manual
