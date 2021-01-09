@@ -3,7 +3,7 @@ title: "Welcome to our docs for ha-floorplan"
 date: 2020-01-09T18:10:30+01:00
 last_modified_at: 2020-01-09T18:25:10+01:00
 categories:
-  - blog
+  - meta
 tags:
   - ha-floorplan
   - update
