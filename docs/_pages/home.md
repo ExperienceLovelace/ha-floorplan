@@ -58,7 +58,10 @@ And remember: Although it's typically used to represent the floorplan of your ho
 
 {% include feature_row %}
 
-Please join our discussion at [Home Assistant's Community](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489). Kindly use it for general usage questions, too. Do you have a good idea for Floorplan, or have you faced an issue with the current solution? Create an issue, and remember to provide as much detail as possible. We'll do our best to help you out.
+Please join our [Discussion](https://github.com/ExperienceLovelace/ha-floorplan/discussions) area, if you need any help, feedback or any kind of other support, too. We're also on the [Home Assistant's Community](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489) - but it's way better to join the discussion on GitHub.
+
+Kindly use it for general usage questions, too. Do you have a good idea for Floorplan, or have you faced an issue with the current solution? Create an issue, and remember to provide as much detail as possible. We'll do our best to help you out.
+
 
 ## First steps
 
@@ -69,6 +72,20 @@ If you'd like to see interactive examples, head on over to the [Examples](./docs
 Are you searching for a specific feature? Please take a look at the [Options](./docs/options/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
 
 ![Example of SVG Floorplan-file - Background created with Floorplanner](./assets/images/home/floorplan-background_with_floorplanner.png)
+
+
+## Posts
+
+Here's the latest posts about ha-floorplan, shared here in our documentation.
+
+<div class="grid__wrapper">
+  {% for post in site.posts limit:4 %}
+    {% include archive-single.html type="grid" %}
+  {% endfor %}
+</div>
+
+_We won't create posts that often, but it's already nice to see thats created in the past. Right?_
+
 
 ## Feedback
 
