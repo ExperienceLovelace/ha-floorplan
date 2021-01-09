@@ -86,7 +86,7 @@ Here's the latest posts about ha-floorplan, shared here in our documentation.
 
 <div style="clear:both"><!-- the frid_wrapper will break the layout, if not cleared --></div>
 
-_We won't create posts that often, but it's already nice to see thats created in the past. Right?_
+_We won't post that often, but sometime it's fine to see things created in the past. Right?_
 
 
 ## Feedback
