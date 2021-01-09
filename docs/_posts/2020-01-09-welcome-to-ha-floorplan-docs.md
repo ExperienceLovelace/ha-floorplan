@@ -3,11 +3,11 @@ title: "Welcome to our docs for ha-floorplan"
 date: 2020-01-09T18:10:30+01:00
 last_modified_at: 2020-01-09T18:25:10+01:00
 categories:
-  - meta
+  - Meta
 tags:
-  - ha-floorplan
-  - update
-  - releases
+  - Ha-floorplan
+  - Update
+  - Releases
 ---
 
 Welcome to the docs of ha-floorplan. We hope you'll find it usefull, while playing around with our custom module for Home Assistant.
