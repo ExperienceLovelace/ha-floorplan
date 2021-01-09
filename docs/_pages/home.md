@@ -62,11 +62,11 @@ Please join our discussion at [Home Assistant's Community](https://community.hom
 
 ## First steps
 
-First of all, check out the [Getting Started](./docs/getting-started/) guide. You'll get an idea of what Floorplan can do, and how to use it with a basic setup.
+First of all, check out the [Quick Start guide](./docs/quick-start/) guide. You'll get an idea of what Floorplan can do, and how to use it with a basic setup.
 
 If you'd like to see interactive examples, head on over to the [Examples](./docs/examples/) page.
 
-Are you searching for a specific feature? Please take a look at the [Usage](./usage/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
+Are you searching for a specific feature? Please take a look at the [Options](./docs/options/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
 
 ![Example of SVG Floorplan-file - Background created with Floorplanner](./assets/images/home/floorplan-background_with_floorplanner.png)
 
