@@ -1,3 +1,7 @@
+<!--
+Please remove the disclaimer - cause it's not work-in-progrss anymore
+-->
+<!--
 <table align="center">
 <tr>
 <td>
@@ -10,9 +14,9 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
 </td>
 </tr>
 </table>
-
 <br><br>
 <hr>
+-->
 
 <h1 align="center">
 	<img src="/docs/assets/images/logo-200x200.png">
