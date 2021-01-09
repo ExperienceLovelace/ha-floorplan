@@ -50,7 +50,7 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
 <p align="center">
 	•
   <a href="https://experiencelovelace.github.io/ha-floorplan/" target="_blank">Floorplan Documentation</a> •
-  <a href="https://github.com/ExperienceLovelace/ha-floorplan/discussions" target="_blank">Discussion-area</a> •
+  <a href="https://github.com/ExperienceLovelace/ha-floorplan/discussions" target="_blank">Discussion (Ask for help, feedback & support)</a> •
   <a href="https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489" target="_blank">Home Assistant Community</a> •
 </p>
 
