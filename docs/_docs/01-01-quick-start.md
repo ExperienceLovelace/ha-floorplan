@@ -22,17 +22,21 @@ We'll refine this part, but fell free to use it "as is". If you have any suggest
 The **H**ome **A**ssistant **C**ommunity **S**tore (HACS) are one of the best out there, and ha-floorplan has fully support for it. Therefore, we kindy ask you to install our integration through this. And, why wouldn't you use [HACS](https://hacs.xyz/)? It's one of the best things out there.
 
 
- 1) Secure that [HACS are installed](https://hacs.xyz/docs/installation/installation).
+ **1)** Secure that [HACS are installed](https://hacs.xyz/docs/installation/installation).
  
- 2) Go to HACS > Integrations > Frontend.
+ **2)** Go to HACS > Integrations > Frontend.
  
- 3) Select "Explore & Add Repositories".
+ **3)** Select "Explore & Add Repositories".
  
- 4) Find "Ha Floorplan" and install it.
+ **4)** Find "Ha Floorplan" and install it.
  
- 5) Remember to add the `/hacsfiles/ha-floorplan/floorplan.js` as a module to your resource file, like you'll do with other modules.
+ **5)** Remember to add the `/hacsfiles/ha-floorplan/floorplan.js` as a module to your resource file, like you'll do with other modules.
  
- 6) Follow [this step by step guide](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico), to add your first Floorplan. There's plenty of ways of doing this, but this is the best "beginner"-way. If you're always use to YAML and HA in general, you'd like to move on to the "examples" pages.
+ **6)** Follow [this step by step guide](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico), to add your first Floorplan. There's plenty of ways of doing this, but this is the best "beginner"-way. If you're always use to YAML and HA in general, you'd like to move on to the "examples" pages.
+ 
+ 
+ ![HACS Setup 1](./assets/images/docs/quick-start/hacs-setup-1.png)
+ ![HACS Setup 2](./assets/images/docs/quick-start/hacs-setup-2.png)
 
                 
 ## Manual
@@ -42,10 +46,10 @@ We don't wan't to make you frustrated, but it's better to go the HACS way.
 If you still think it's better to do it manually, fell free to grap the latest version from the [/dist](https://github.com/ExperienceLovelace/ha-floorplan/tree/master/dist) directory. (Almost) stable releases can be found [here](https://github.com/ExperienceLovelace/ha-floorplan/releases).
 
 
- 1) Download the required resources.
+ **1)** Download the required resources.
  
- 2) Add references to the new module you just added.
+ **2)** Add references to the new module you just added.
  
- 3) Use ha-lovelace in a card. Move ahead to our examples, if you need inspiration.
+ **3)** Use ha-lovelace in a card. Move ahead to our examples, if you need inspiration.
 
 
