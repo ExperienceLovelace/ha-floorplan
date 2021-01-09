@@ -1,5 +1,6 @@
 ---
 title: "Get the latest version of ha-floorplan"
+date: 2020-01-09T18:31:20+01:00
 categories:
   - Blog
 tags:
