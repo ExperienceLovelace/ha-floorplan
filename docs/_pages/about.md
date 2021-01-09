@@ -3,6 +3,17 @@ permalink: /about/
 title: "About"
 ---
 
-Tempor velit sint sunt ipsum tempor enim ad qui ullamco. Est dolore anim ad velit duis dolore minim sunt aliquip amet commodo labore. Ut eu pariatur aute ea aute excepteur laborum. Esse ea esse excepteur minim mollit qui cillum excepteur ex dolore magna. Labore deserunt fugiat incididunt incididunt sint ea. Consequat dolore aute laboris quis proident quis non et est consectetur ex eiusmod sit culpa.
+## Story
 
-Cupidatat ea do et in excepteur in. Ad nostrud ut est esse eu duis ea sunt eiusmod. Aliquip tempor veniam sint elit fugiat. Velit incididunt laboris amet incididunt labore dolore irure velit excepteur commodo deserunt laborum. Consectetur eu fugiat veniam veniam Lorem labore magna eiusmod. Ea occaecat reprehenderit pariatur consectetur minim labore ut aliquip.
+[Petar Kožul](https://github.com/orgs/ExperienceLovelace/people/pkozul) started the first version of ha-floorplan. With Lovelace, Petar turned [ha-floorplan](https://github.com/pkozul/ha-floorplan) into a supported module for lovelace, too. The old lovelace-version was called [lovelace-floorplan](https://github.com/ExperienceLovelace/lovelace-floorplan). [Tobias Nordahl Kristensen](https://github.com/orgs/ExperienceLovelace/people/exetico) joined the ha-floorplan project in a period, where nothing really changed in the repo. After a huge pull-request, lovelace-floorplan finally supported HACS. What Tobias didn't know, was that Petar had working on a brand new base-code, which was much more modern - and improved both options, performance and general usage, too.
+
+We moved the lovelace-floorplan to the new team called [ExperinceLovelace](https://github.com/ExperienceLovelace). After a few weeks of testing and improvements to the new codebase, we finally released the first version of the new [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) (Yep, that's the current one).
+
+## Your imagination (almost) defines the limits
+With [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) we finally have a module which allow you to create tons of things. Create a SVG, and map one or many entities to it. 
+
+The primary usage is floorplans, but you're able to create whatever you need. You're able to import a normal image to a SVG-file, so it's possible to do many things with it. Therefore, kindly head over to our examplesarea, if you're ready to see [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) in action.
+
+## Get help on the way
+
+If you're struggling to get started,  please check our examples, quick-start guide and more. After reading the docs, we'd like to introduce you to our [discussion-area](https://github.com/ExperienceLovelace/ha-floorplan/discussions) on GitHub. Here you're more than welcome to ask for help. If you like to contribute to the project, fell free to create pull-reqeusts and issues in the main repo. If you like the Home Assistant Community, [come join us](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489), too.
