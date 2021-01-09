@@ -9,8 +9,8 @@ toc: true
 
 We're still working on the **Create your first SVG-file** guide.
 
+While waiting, where's actually a good guide called [Creating your own custom floorplan-file from scratch](https://github.com/pkozul/ha-floorplan/blob/master/own-floorplan-svg-file-tutorial.md) in our old repo. Please note that the YAML-code mentioned in that guide are for the **old** version. Therefore, please use our [examples](./docs/examples/), if you need any inspiration in where to start with the YAML-code.
+
 {% endcapture %}
 
 <div class="notice--warning">{{ workinprogress-notice-1 | markdownify }}</div>
-
-_While waiting, where's actually a good guide called [Creating your own custom floorplan-file from scratch](https://github.com/pkozul/ha-floorplan/blob/master/own-floorplan-svg-file-tutorial.md) in our old repo. Please note that the YAML-code mentioned in that guide are for the **old** version. Therefore, please use our [examples](./docs/examples/), if you need any inspiration in where to start with the YAML-code.
