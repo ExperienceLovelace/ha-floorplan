@@ -1,20 +1,29 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report, if you've found an issue. Please use the "Discussions"-section,
+  if you're looking for general help and usage-support. Visit our documentation, too.
+  There's plenty to read! Thanks :-)
 title: "[BUG]"
 labels: waiting on review
 assignees: ''
 
 ---
 
-Hi there
+<!--
 
-Are you 100% sure that you're facing a bug right now? If not, please consider to use our "Discussions"-section here on GitHub - just use the link in the top-bar - or go to this URL:
+Hi there!
+
+Are you 100% sure that you're facing a bug right now?
+
+If not, please consider to use our "Discussions"-section here on GitHub - just use the link in the top-bar - or go to this URL:
 https://github.com/ExperienceLovelace/ha-floorplan/discussions
+
+You'll also find a good amount of documentation here:
+https://experiencelovelace.github.io/ha-floorplan/
 
 Thanks :-)!
 
---------
+-->
 
 **Describe the bug**
 A clear and concise description of what the bug is.
