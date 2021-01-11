@@ -49,6 +49,10 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
     <img src="https://img.shields.io/github/v/release/ExperienceLovelace/ha-floorplan.svg?style=flat-square&logo=github&logoColor=white"
          alt="Current version">
          </a>
+    <a href="https://github.com/custom-components/hacs" target="_blank">
+    <img src="https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square&logoColor=white"
+         alt="HACS Default repository">
+         </a>
 </p>
 
 <p align="center">
