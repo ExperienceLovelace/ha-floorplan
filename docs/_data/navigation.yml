@@ -33,8 +33,8 @@ docs:
         url: /docs/create-svg-file/
       - title: "Good-looking floorplans"
         url: /docs/create-goodlooking-floorplan/
-      - title: "Handle the size"
-        url: /docs/how-to-handle-the-size/
+      - title: "Handle size and expand floorplan"
+        url: /docs/how-to-handle-size-and-expand-floorplan/
 
   - title: "Examples"
     url: /docs/examples/
