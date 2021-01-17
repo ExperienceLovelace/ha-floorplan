@@ -2,6 +2,16 @@
 permalink: /docs/how-to-handle-size-and-expand-floorplan/
 title: "How to handle size and expand floorplan"
 toc: true
+panel_mode_gallery:
+  - url: /assets/images/docs/quick-start/view-panelmode-1.png
+    image_path: /assets/images/docs/quick-start/view-panelmode-1.png
+    alt: "Before enabling Panel-mode"
+  - url: /assets/images/docs/quick-start/view-panelmode-2.png
+    image_path: /assets/images/docs/quick-start/view-panelmode-2.png
+    alt: "Here's how to enable Panel-mode"
+  - url: /assets/images/docs/quick-start/view-panelmode-3.png
+    image_path: /assets/images/docs/quick-start/view-panelmode-3.png
+    alt: "After Panel-mode are enabled"
 ---
 
 [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) comes with a build-in way to handle the render size of your floorplan. It's defined as the `full_height`-option, to prevent vertical scollbars. By combining the `full_height`-option with Home Assistant's [panel mode](https://www.home-assistant.io/lovelace/dashboards-and-views/#panel) for views, you're all set.
@@ -35,6 +45,9 @@ Most people joining Home Assistant today, will start using lovelace-cards right 
 2. Select your page
 3. Click the pencil to the right of the page title
 4. Select ‘Panel Mode’
+
+
+{% include gallery id="panel_mode_gallery" caption="Here's how the view are rendered before and after panel-mode are enabled including the required steps." %}
 
 After that's done, try and see if everything are working as expected. Else, please add `full_height: true` to your YAML-code, and see if that makes any different.
 
