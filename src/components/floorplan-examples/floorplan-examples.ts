@@ -12,6 +12,7 @@ export class FloorplanExamples extends LitElement {
     // Cards
     { name: 'light', dir: "light", configFile: "light.yaml", simulationFile: "simulations.yaml", isCard: true },
     { name: 'ring', dir: "ring", configFile: "ring.yaml", simulationFile: "simulations.yaml", isCard: true },
+    { name: 'rinnai', dir: "rinnai", configFile: "rinnai.yaml", simulationFile: "simulations.yaml", isCard: true },
     // Panels
     { name: 'home', dir: "home", configFile: "home.yaml", simulationFile: "simulations.yaml", isCard: false },
     // TODO

@@ -1,4 +1,4 @@
-import { BaseActionConfig } from '../../../lib/homeassistant/lovelace/types';
+import { ActionConfig, BaseActionConfig } from '../../../lib/homeassistant/lovelace/types';
 
 import {
   ToggleActionConfig,
@@ -27,6 +27,12 @@ export class FloorplanConfig {
   pages!: string[];
   variables!: FloorplanVariableConfig[];
   pan_zoom: unknown;
+}
+
+declare global {
+  interface HASSDomEvents {
+    "ll-custom": ActionConfig;
+  }
 }
 
 export interface FloorplanCallServiceActionConfig extends CallServiceActionConfig {

@@ -62,6 +62,7 @@ export class HassSimulator {
       switch (entityType) {
         case 'switch':
         case 'light':
+        case 'binary_sensor':
           newState = (state === 'on') ? 'off' : 'on';
 
           for (const simulationProcessor of this.simulationProcessors) {
@@ -90,30 +91,32 @@ export class SimulationProcessor {
       console.error('Simulation must contain at least one entity', simulation);
     }
 
-    if (!this.simulation.states.length) {
+    if (!(this.simulation.states?.length) && !this.simulation.state) {
       console.error('Simulation must contain at least one state', simulation);
     }
 
-    this.triggerState(this.simulation.states[0]);
+    this.triggerState(this.simulation.state ?? this.simulation.states[0]);
   }
 
-  triggerState(currentState: TimedHassEntity): void {
+  triggerState(currentState: HassEntity | TimedHassEntity): void {
     if (this.simulation.enabled || (this.simulation.enabled === undefined)) {
       for (const entity of this.entities) {
         this.updateEntityState(entity, currentState);
       }
     }
 
-    const currentIndex = this.simulation.states.indexOf(currentState);
-    const nextIndex = (currentIndex + 1) % this.simulation.states.length;
-    const nextState = this.simulation.states[nextIndex];
-
-    if (nextState.duration) {
-      setTimeout(this.triggerState.bind(this), currentState.duration * 1000, nextState);
+    if (this.simulation.states) {
+      const currentIndex = this.simulation.states.indexOf(currentState);
+      const nextIndex = (currentIndex + 1) % this.simulation.states.length;
+      const nextState = this.simulation.states[nextIndex];
+  
+      if ((nextState as TimedHassEntity)?.duration) {
+        setTimeout(this.triggerState.bind(this), (currentState as TimedHassEntity).duration * 1000, nextState);
+      }
     }
   }
 
-  updateEntityState(entity: string | HassEntity, state: string | TimedHassEntity): void {
+  updateEntityState(entity: string | HassEntity, state: string | HassEntity): void {
     const entityId = (typeof entity === 'string') ? entity : (entity as HassEntity).entity_id;
 
     const existingHassState = this.hass.states[entityId];
@@ -133,13 +136,13 @@ export class SimulationProcessor {
 
     // Assign the new state
     if (typeof state === 'string') {
-      newHassState.state = (typeof state === 'string' ? state : (state as TimedHassEntity).state);
+      newHassState.state = (typeof state === 'string' ? state : (state as HassEntity).state);
     }
     else if (typeof state === 'object') {
-      newHassState.state = (state as TimedHassEntity).state;
+      newHassState.state = (state as HassEntity).state;
 
-      if ((state as TimedHassEntity).attributes) {
-        newHassState.attributes = Object.assign({}, newHassState.attributes, (state as TimedHassEntity).attributes);
+      if ((state as HassEntity).attributes) {
+        newHassState.attributes = Object.assign({}, newHassState.attributes, (state as HassEntity).attributes);
       }
     }
 

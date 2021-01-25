@@ -1,0 +1,51 @@
+title: Rinnai
+config:
+  image: /local/floorplan/examples/rinnai/rinnai.svg
+  stylesheet: /local/floorplan/examples/rinnai/rinnai.css
+
+  defaults:
+      hover_action: hover-info
+      tap_action: more-info
+
+  rules:
+    - entities:
+        - entity: binary_sensor.hvac_on_off_sensor
+          element: button_power
+        - entity: binary_sensor.hvac_heat_mode_sensor
+          element: button_heat
+        - entity: binary_sensor.hvac_cool_mode_sensor
+          element: button_cool
+        - entity: binary_sensor.hvac_fan_mode_sensor
+          element: button_fan
+        - entity: binary_sensor.hvac_zone_a_sensor
+          element: button_zone_a
+        - entity: binary_sensor.hvac_zone_b_sensor
+          element: button_zone_b
+        - entity: binary_sensor.hvac_zone_c_sensor
+          element: button_zone_c
+      tap_action: toggle
+      state_action:
+        service: floorplan.class_set
+        service_data: '${(entity.state === "on") ? "button-on" : "button-off"}'
+
+    - entities:
+        - entity: binary_sensor.hvac_heat_mode_sensor
+          element: image_heat
+        - entity: binary_sensor.hvac_cool_mode_sensor
+          element: image_cool
+        - entity: binary_sensor.hvac_fan_mode_sensor
+          element: image_fan
+        - entity: binary_sensor.hvac_zone_a_sensor
+          element: image_zone_a
+        - entity: binary_sensor.hvac_zone_b_sensor
+          element: image_zone_b
+        - entity: binary_sensor.hvac_zone_c_sensor
+          element: image_zone_c
+      state_action:
+        service: floorplan.style_set
+        service_data: 'display: ${(entity.state === "on") ? "block" : "none"}'
+
+    - entities:
+#        - sensor.hvac_current_temperature
+        - sensor.hvac_set_temperature
+      state_action: floorplan.text_set

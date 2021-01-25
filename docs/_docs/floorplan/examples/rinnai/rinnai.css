@@ -1,0 +1,64 @@
+/* SVG size */
+
+#floorplan {
+  margin: 0px 10px 10px 10px;
+}
+
+#floorplan > svg {
+/*  max-width: 200px; */
+}
+
+/* SVG elements */
+
+svg * {
+  vector-effect: non-scaling-stroke !important;
+}
+
+/* Hover over */
+
+.floorplan-shape:hover,
+g.floorplan-hover > :not(text):hover,
+g.floorplan-click > :not(text):hover,
+g.floorplan-long-click > :not(text):hover,
+:not(text).floorplan-hover:hover,
+:not(text).floorplan-click:hover, 
+:not(text).floorplan-long-click:hover {
+  stroke: #03A9F4 !important;
+  stroke-width: 1px !important;
+  stroke-opacity: 1 !important;
+}
+
+/* Button on */
+
+.button-on .button-background {
+  fill: #accee9 !important;
+}
+
+.button-on .button-icon,
+.button-on .button-icon tspan,
+.button-on .button-text tspan {
+  fill: #060c31 !important;
+}
+
+/* Button off */
+
+.button-off .button-background {
+  fill: #1e3b6c !important;
+}
+
+.button-off .button-icon,
+.button-off .button-icon tspan,
+.button-off .button-text tspan {
+  fill: #accee9 !important;
+}
+
+/* Button disabled */
+
+.button-disabled .button-background {
+  fill: #112550 !important;
+}
+
+.button-disabled .button-icon,
+.button-disabled .button-text tspan {
+  fill: #3e557f !important;
+}

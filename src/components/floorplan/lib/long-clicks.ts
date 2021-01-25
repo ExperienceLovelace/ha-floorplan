@@ -15,8 +15,8 @@ export class LongClicks {
 
       timer = setTimeout(() => {
         isLongClick = true;
-        console.log('onTapStart: isLongClick:', isLongClick);
-        console.log('onTapStart: dispatching event:', 'longClick');
+        console.log('timer timed out: isLongClick:', isLongClick);
+        console.log('timer timed out: dispatching event:', 'longClick');
         elem.dispatchEvent(new Event("longClick"));
       }, longClickDuration);
     };
@@ -29,14 +29,14 @@ export class LongClicks {
         // have already triggered long click
       } else {
         // trigger shortClick, shortMouseup etc
-        console.log('onTapStart: dispatching event:', 'short' + evt.type[0].toUpperCase() + evt.type.slice(1));
+        console.log('onTapEnd: dispatching event:', 'short' + evt.type[0].toUpperCase() + evt.type.slice(1));
         elem.dispatchEvent(new Event('short' + evt.type[0].toUpperCase() + evt.type.slice(1)));
       }
     };
 
     const onTap = (evt: Event) => {
       if (isLongClick) {
-        console.log('onTapEnd: isLongClick:', isLongClick);
+        console.log('onTap: isLongClick:', isLongClick);
         evt.preventDefault();
         if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
       }
@@ -49,6 +49,7 @@ export class LongClicks {
     };
 
     E.on(elem, 'mousedown', onTapStart.bind(this));
+    E.on(elem, 'touchstart', onTapStart.bind(this));
     E.on(elem, 'tapstart', onTapStart.bind(this));
     // [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event.
     // Consider marking event handler as 'passive' to make the page more responsive.

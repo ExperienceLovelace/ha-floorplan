@@ -1,5 +1,4 @@
 import { HomeAssistant, CurrentUser } from '../../lib/homeassistant/types';
-import { ActionConfig } from '../../lib/homeassistant/lovelace/types';
 import { HassEntityBase } from 'home-assistant-js-websocket';
 import { fireEvent } from '../../lib/homeassistant/common/dom/fire_event';
 import { navigate } from '../../lib/homeassistant/common/navigate';
@@ -26,12 +25,6 @@ console.info(
   "color: orange; font-weight: bold; background: black",
   "color: white; font-weight: bold; background: rgb(71, 170, 238)"
 );
-
-declare global {
-  interface HASSDomEvents {
-    "ll-custom": ActionConfig;
-  }
-}
 
 export class FloorplanElement extends LitElement {
   @property({ type: String }) public examplespath!: string;
