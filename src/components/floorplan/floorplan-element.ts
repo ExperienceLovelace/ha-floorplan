@@ -720,7 +720,6 @@ export class FloorplanElement extends LitElement {
     const entities = this.initGetEntityRuleEntities(rule);
     for (const entity of entities) {
       const entityId = entity.entityId;
-      const elementId = entity.elementId;
 
       let entityInfo = this.entityInfos[entityId];
       if (!entityInfo) {
@@ -731,25 +730,27 @@ export class FloorplanElement extends LitElement {
       const ruleInfo = new FloorplanRuleInfo(rule);
       entityInfo.ruleInfos.push(ruleInfo);
 
-      const svgElement = svgElements.find(svgElement => svgElement.id === elementId);
-      if (!svgElement) {
-        this.logWarning('CONFIG', `Cannot find element '${elementId}' in SVG file`);
-        continue;
+      for (const elementId of entity.elementIds) {
+        const svgElement = svgElements.find(svgElement => svgElement.id === elementId);
+        if (!svgElement) {
+          this.logWarning('CONFIG', `Cannot find element '${elementId}' in SVG file`);
+          continue;
+        }
+
+        const svgElementInfo = this.addSvgElementToRule(svg, svgElement, ruleInfo);
+
+        svgElementInfo.svgElement = svgElement;
+
+        // Create a title element (to support hover over text)
+        svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
+
+        this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
       }
-
-      const svgElementInfo = this.addSvgElementToRule(svg, svgElement, ruleInfo);
-
-      svgElementInfo.svgElement = svgElement;
-
-      // Create a title element (to support hover over text)
-      svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
-
-      this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
     }
   }
 
-  initGetEntityRuleEntities(rule: FloorplanRuleConfig): { entityId: string, elementId: string }[] {
-    const targetEntities: { entityId: string, elementId: string }[] = [];
+  initGetEntityRuleEntities(rule: FloorplanRuleConfig): { entityId: string, elementIds: string[] }[] {
+    const targetEntities: { entityId: string, elementIds: string[] }[] = [];
 
     rule.groups = rule.groups ? rule.groups : [];
 
@@ -759,7 +760,7 @@ export class FloorplanElement extends LitElement {
       // TODO: check groups
       if (group) {
         for (const entityId of ((group.attributes as Record<string, unknown>).entity_id as string[])) {
-          this.addTargetEntity(entityId, entityId, targetEntities);
+          this.addTargetEntity(entityId, [entityId], targetEntities);
         }
       }
       else {
@@ -774,29 +775,29 @@ export class FloorplanElement extends LitElement {
     // Entities as a list of strings
     const entityIds = rule.entities.filter(x => (typeof x === 'string')) as string[];
     for (const entityId of entityIds) {
-      const elementId = rule.element ? rule.element : entityId;
-      this.addTargetEntity(entityId, elementId, targetEntities);
+      const elementIds = rule.elements ? rule.elements : (rule.element ? [rule.element] : [entityId]);
+      this.addTargetEntity(entityId, elementIds, targetEntities);
     }
 
     // Entities as a list of objects
     const entityObjects = rule.entities.filter(x => (typeof x !== 'string'));
     for (const entityObject of entityObjects) {
       const ruleEntityElement = entityObject as FloorplanRuleEntityElementConfig;
-      this.addTargetEntity(ruleEntityElement.entity, ruleEntityElement.element, targetEntities);
+      this.addTargetEntity(ruleEntityElement.entity, [ruleEntityElement.element], targetEntities);
     }
 
     return targetEntities;
   }
 
-  addTargetEntity(entiyId: string, elementId: string, targetEntities: { entityId: string, elementId: string }[]): void {
-    const hassEntity = this.hass.states[entiyId];
-    const isFloorplanVariable = (entiyId.split('.')[0] === 'floorplan');
+  addTargetEntity(entityId: string, elementIds: string[], targetEntities: { entityId: string, elementIds: string[] }[]): void {
+    const hassEntity = this.hass.states[entityId];
+    const isFloorplanVariable = (entityId.split('.')[0] === 'floorplan');
 
     if (hassEntity || isFloorplanVariable) {
-      targetEntities.push({ entityId: entiyId, elementId: elementId });
+      targetEntities.push({ entityId: entityId, elementIds: elementIds });
     }
     else {
-      this.logWarning('CONFIG', `Cannot find '${entiyId}' in Home Assistant entities`);
+      this.logWarning('CONFIG', `Cannot find '${entityId}' in Home Assistant entities`);
     }
   }
 
