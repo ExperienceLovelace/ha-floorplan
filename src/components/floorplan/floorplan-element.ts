@@ -169,7 +169,8 @@ export class FloorplanElement extends LitElement {
       await this.handleEntities(true);
     }
     else {
-      this.handleEntitiesDebounced(); // use debounced wrapper
+      // this.handleEntitiesDebounced(); // use debounced wrapper
+      this.handleEntities();
     }
   }
 
@@ -1433,7 +1434,8 @@ export class FloorplanElement extends LitElement {
 
     // Simulate an event change to all entities
     if (!isInitialLoad) {
-      this.handleEntitiesDebounced(); // use debounced wrapper
+      // this.handleEntitiesDebounced(); // use debounced wrapper
+      this.handleEntities();
     }
   }
 
