@@ -250,7 +250,7 @@ export class FloorplanElement extends LitElement {
   async loadConfig(config: FloorplanConfig | string): Promise<FloorplanConfig> {
     if (typeof config === 'string') {
       const targetConfig = await Utils.fetchText(config, this.isDemo, this.examplespath)
-      const configYaml = yaml.safeLoad(targetConfig);
+      const configYaml = yaml.load(targetConfig);
       return configYaml as FloorplanConfig;
     }
     else {
@@ -1198,17 +1198,17 @@ export class FloorplanElement extends LitElement {
   }
 
   callService(actionConfig: FloorplanCallServiceActionConfig, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo, ruleInfo?: FloorplanRuleInfo): ServiceContext {
-    const fullServiceName = this.evaluate(actionConfig.service, entityId, (svgElementInfo as FloorplanSvgElementInfo).svgElement) as string;
+    const fullServiceName = this.evaluate(actionConfig.service, entityId, svgElementInfo?.svgElement) as string;
 
     let data = {} as Record<string, unknown>;
 
     if (typeof actionConfig.service_data === 'object') {
       for (const key of Object.keys(actionConfig.service_data)) {
-        data[key] = this.evaluate(actionConfig.service_data[key], entityId, (svgElementInfo as FloorplanSvgElementInfo).svgElement) as string;
+        data[key] = this.evaluate(actionConfig.service_data[key], entityId, svgElementInfo?.svgElement) as string;
       }
     }
     else if (typeof actionConfig.service_data === 'string') {
-      const result = this.evaluate(actionConfig.service_data, entityId, (svgElementInfo as FloorplanSvgElementInfo).svgElement);
+      const result = this.evaluate(actionConfig.service_data, entityId, svgElementInfo?.svgElement);
       data = (typeof result === 'string') && (result.trim().startsWith("{")) ? JSON.parse(result) : result;
     }
     else if (actionConfig.service_data !== undefined) {
@@ -1253,7 +1253,7 @@ export class FloorplanElement extends LitElement {
 
   callFloorplanService(serviceContext: ServiceContext): void {
     const entityId = serviceContext.entityId as string;
-    const svgElementInfo = serviceContext.svgElementInfo as FloorplanSvgElementInfo;
+    const svgElementInfo = serviceContext.svgElementInfo;
     const svgElement = (svgElementInfo?.svgElement ?? undefined) as SVGGraphicsElement;
     const ruleInfo = serviceContext.ruleInfo as FloorplanRuleInfo;
 
@@ -1264,10 +1264,9 @@ export class FloorplanElement extends LitElement {
     let classes: Set<string>;
     let imageUrl: string;
     let imageRefreshInterval: number;
-    let textElement: HTMLElement | SVGGraphicsElement;
-    let tspanElement: SVGTSpanElement | null;
     let text: string;
     let targetSvgElementIds: string[] = [];
+    let targetSvgElements: SVGGraphicsElement[] = [];
 
     switch (serviceContext.service) {
       /*
@@ -1296,14 +1295,15 @@ export class FloorplanElement extends LitElement {
 
         if (targetSvgElementIds.length) {
           for (const targetSvgElementId of targetSvgElementIds) {
-            const targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
-            for (const targetSvgElement of targetSvgElements) {
-              Utils.setClass(targetSvgElement, className);
-            }
+            targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
           }
         }
         else {
-          Utils.setClass(svgElement, className);
+          targetSvgElements = [svgElement];
+        }
+
+        for (const targetSvgElement of targetSvgElements) {
+          Utils.setClass(targetSvgElement, className);
         }
         break;
 
@@ -1319,34 +1319,39 @@ export class FloorplanElement extends LitElement {
 
         if (targetSvgElementIds.length) {
           for (const targetSvgElementId of targetSvgElementIds) {
-            const targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
-            for (const targetSvgElement of targetSvgElements) {
-              Utils.setStyle(targetSvgElement, styleName);
-            }
+            targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
           }
         }
         else {
-          Utils.setStyle((svgElementInfo as FloorplanSvgElementInfo).svgElement, styleName);
+          targetSvgElements = [svgElementInfo.svgElement];
         }
 
+        for (const targetSvgElement of targetSvgElements) {
+          Utils.setStyle(targetSvgElement, styleName);
+        }
         break;
 
       case 'text_set':
         text = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.text as string;
 
-        textElement = svgElementInfo.svgElement;
+        if (Array.isArray(serviceContext.data?.elements)) {
+          targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
+        }
+        if (typeof serviceContext.data?.element === 'string') {
+          targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
+        }
 
-        tspanElement = textElement.querySelector('tspan');
-        if (tspanElement) {
-          tspanElement.textContent = text;
+        if (targetSvgElementIds.length) {
+          for (const targetSvgElementId of targetSvgElementIds) {
+            targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
+          }
         }
         else {
-          let titleElement = textElement.querySelector('title') as Element;
-          if (!titleElement) {
-            titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-            textElement.appendChild(titleElement);
-          }
-          titleElement.textContent = text;
+          targetSvgElements = [svgElementInfo.svgElement];
+        }
+
+        for (const targetSvgElement of targetSvgElements) {
+          Utils.setText(targetSvgElement, text);
         }
         break;
 

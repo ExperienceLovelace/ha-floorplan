@@ -12,7 +12,11 @@ config:
     - entity: sensor.ring_salon_battery
       state_action:
         - service: floorplan.text_set
-          service_data: '${entity.state ? entity.state + "%" : "unknown"}'
+          service_data:
+            element: sensor.ring_salon_battery
+            text: |
+              >
+              return entity.state ? entity.state + "%" : "unknown";
         - service: floorplan.style_set
           service_data: |
             >

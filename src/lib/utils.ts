@@ -52,6 +52,21 @@ export class Utils {
     }
   }
 
+  static setText(textElement: HTMLElement | SVGGraphicsElement, text: string): void {
+    const tspanElement = textElement.querySelector('tspan');
+    if (tspanElement) {
+      tspanElement.textContent = text;
+    }
+    else {
+      let titleElement = textElement.querySelector('title') as Element;
+      if (!titleElement) {
+        titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        textElement.appendChild(titleElement);
+      }
+      titleElement.textContent = text;
+    }
+  }
+
   static waitForChildNodes(element: Node, initializeNode: () => void, timeout: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => reject('Timeout waiting for child element(s) to load'), timeout);
@@ -83,7 +98,7 @@ export class Utils {
   }
 
   static parseYaml(yamlText: string): unknown {
-    return yaml.safeLoad(yamlText);
+    return yaml.load(yamlText);
   }
 
   static async fetchText(resourceUrl: string, isDemo: boolean, examplesPath: string, useCache = false): Promise<string> {
