@@ -2,6 +2,7 @@ title: Ring
 config:
   image: /local/floorplan/examples/ring/ring.svg
   stylesheet: /local/floorplan/examples/ring/ring.css
+  log_level: info
 
   defaults:
       hover_action:

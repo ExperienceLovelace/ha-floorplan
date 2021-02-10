@@ -194,7 +194,7 @@ export class FloorplanElement extends LitElement {
 
       this.logger = new Logger(this.logElement, config.log_level, config.console_log_level);
 
-      this.logInfo('INIT', `Floorplan initialized`);
+      this.logInfo('INIT', `${packageInfo.description} (${packageInfo.name}) v${packageInfo.version}`);
 
       if (!this.validateConfig(config)) return;
 
@@ -776,7 +776,10 @@ export class FloorplanElement extends LitElement {
     // Entities as a list of strings
     const entityIds = rule.entities.filter(x => (typeof x === 'string')) as string[];
     for (const entityId of entityIds) {
-      const elementIds = rule.elements ? rule.elements : (rule.element ? [rule.element] : [entityId]);
+      let elementIds = [] as string[];
+      if (rule.elements) elementIds = elementIds.concat(rule.elements);
+      else if (rule.element) elementIds = elementIds.concat(rule.element);
+      else if (rule.element !== null) elementIds = elementIds.concat(entityId);
       this.addTargetEntity(entityId, elementIds, targetEntities);
     }
 
@@ -952,10 +955,18 @@ export class FloorplanElement extends LitElement {
     entityInfo.lastState = Object.assign({}, entityState);
 
     for (const ruleInfo of entityInfo.ruleInfos) {
-      for (const svgElementInfo of Object.values(ruleInfo.svgElementInfos)) {
-        if (svgElementInfo.svgElement) { // images may not have been updated yet
-          this.handleActions(ruleInfo.rule.state_action, entityInfo.entityId, svgElementInfo, ruleInfo);
+      const svgElementInfos = Object.values(ruleInfo.svgElementInfos);
+      // rule with one or more elements specified
+      if (svgElementInfos.length) {
+        for (const svgElementInfo of svgElementInfos) {
+          if (svgElementInfo.svgElement) { // images may not have been updated yet
+            this.handleActions(ruleInfo.rule.state_action, entityInfo.entityId, svgElementInfo, ruleInfo);
+          }
         }
+      }
+      else {
+        // rule with element set to null
+        this.handleActions(ruleInfo.rule.state_action, entityInfo.entityId, undefined, ruleInfo);
       }
     }
 
