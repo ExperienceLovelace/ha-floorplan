@@ -17,7 +17,7 @@ config:
             element: sensor.ring_salon_battery
             text: |
               >
-              return entity.state ? entity.state + "%" : "unknown";
+              return (entity.state !== undefined) ? entity.state + "%" : "unknown";
         - service: floorplan.style_set
           service_data: |
             >
@@ -38,4 +38,16 @@ config:
     - entity: binary_sensor.ring_salon_ding
       state_action:
         service: floorplan.class_set
-        service_data: '${(entity.state === "on") ? "ring-ding" : ""}'
+        service_data:
+          class: |
+            >
+            switch (entity.state) {
+              case "on":
+                return "ring-ding";
+
+              case "off":
+                return "";
+
+              default:
+                return "";
+            }
