@@ -165,8 +165,8 @@ export class FloorplanElement extends LitElement {
     if (!this.hass || !this.config || !this.svg) return; // wait for SVG to be loaded
 
     if (!this.isRulesLoaded) {
-      this.isRulesLoaded = true;
       this.initFloorplanRules(this.svg, this.config)
+      this.isRulesLoaded = true;
       await this.handleEntities(true);
     }
     else {
