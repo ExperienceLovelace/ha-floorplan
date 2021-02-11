@@ -16,24 +16,27 @@ config:
         action: navigate
         navigation_path: /lovelace/lights
       state_action:
-        action: call-service
-        service: floorplan.style_set
-        service_data: |
-          >
-          var style = 'fill: black;'
-          
-          if (entity.state === 'on') {
-            if (entity.attributes.color_temp) {
-              var rgb = util.color.miredToRGB(entity.attributes.color_temp);
-              style = `fill: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});`;
-            }
-            else if (entity.attributes.rgb_color) {
-              var rgb = entity.attributes.rgb_color;
-              style = `fill: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});`;
-            }
-            else {
-              style = 'fill: white;';
-            }
-          }
+        - action: call-service
+          service: floorplan.style_set
+          service_data:
+            elements:
+              - light.office
+              - light_gradient_color_0
+            style: |
+              >
+              var color = 'rgb(0, 0, 0)';
+              var opacity = 0;
 
-          return style;
+              if (entity.state === 'on') {
+                if (entity.attributes.color_temp) {
+                  var rgb = util.color.miredToRGB(entity.attributes.color_temp);
+                  color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+                  opacity = 1;
+                }
+                else if (entity.attributes.rgb_color) {
+                  var rgb = entity.attributes.rgb_color;
+                  color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+                  opacity = 1;
+                }
+              }
+              return `fill: ${color}; stop-color: ${color}; stop-opacity: ${opacity};`;

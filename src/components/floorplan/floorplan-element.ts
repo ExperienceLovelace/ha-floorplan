@@ -1306,7 +1306,7 @@ export class FloorplanElement extends LitElement {
 
         if (targetSvgElementIds.length) {
           for (const targetSvgElementId of targetSvgElementIds) {
-            targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
+            targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
           }
         }
         else {
@@ -1330,7 +1330,7 @@ export class FloorplanElement extends LitElement {
 
         if (targetSvgElementIds.length) {
           for (const targetSvgElementId of targetSvgElementIds) {
-            targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
+            targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
           }
         }
         else {
@@ -1354,7 +1354,7 @@ export class FloorplanElement extends LitElement {
 
         if (targetSvgElementIds.length) {
           for (const targetSvgElementId of targetSvgElementIds) {
-            targetSvgElements = this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[];
+            targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
           }
         }
         else {
