@@ -6,7 +6,7 @@ import { ColorUtil } from './color-util';
 export class EvalHelper {
   static evaluateFunctionCache: { [key: string]: EvaluateFunction } = {};
 
-  static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
+  static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string, svgElement?: SVGGraphicsElement, functions?: unknown): unknown {
     const entityState = entityId ? hass.states[entityId] : undefined;
 
     let functionBody = expression.trim();
@@ -36,7 +36,7 @@ export class EvalHelper {
     }
     else {
       //console.log('Adding function to cache:', functionBody);
-      const func = new Function('entity', 'entities', 'hass', 'config', 'element', 'util', functionBody) as EvaluateFunction;
+      const func = new Function('entity', 'entities', 'hass', 'config', 'element', 'functions', 'util', functionBody) as EvaluateFunction;
       this.evaluateFunctionCache[functionBody] = func;
       targetFunc = func;
     }
@@ -45,7 +45,7 @@ export class EvalHelper {
       color: ColorUtil,
     };
 
-    const result = targetFunc(entityState as HassEntity, hass.states, hass, config, svgElement, util);
+    const result = targetFunc(entityState as HassEntity, hass.states, hass, config, svgElement, functions, util);
 
     return result;
   }
@@ -58,5 +58,6 @@ type EvaluateFunction =
     hass: HomeAssistant,
     config: FloorplanConfig,
     svgElement: SVGGraphicsElement | undefined,
+    functions: unknown,
     util: { color: ColorUtil },
   ) => unknown;

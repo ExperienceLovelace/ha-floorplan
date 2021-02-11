@@ -39,6 +39,7 @@ export class FloorplanElement extends LitElement {
   entityInfos: { [key: string]: FloorplanEntityInfo } = {};
   elementInfos: { [key: string]: FloorplanElementInfo } = {};
   cssRules: unknown[] = [];
+  functions: unknown = {};
   variables: { [key: string]: unknown } = {};
   logger!: Logger;
 
@@ -696,6 +697,10 @@ export class FloorplanElement extends LitElement {
   }
 
   initRules(config: FloorplanConfig, svg: SVGGraphicsElement, svgElements: SVGGraphicsElement[]): void {
+    if (config.functions) {
+      this.functions = this.evaluate(config.functions);
+    }
+
     // Apply default options to rules that don't override the options explictly
     if (config.defaults) {
       const defaultRule = config.defaults;
@@ -1081,7 +1086,7 @@ export class FloorplanElement extends LitElement {
   evaluate(expression: string | unknown, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     if ((typeof expression === 'string') && this.isTemplate(expression)) {
       try {
-        return EvalHelper.evaluate(expression, this.hass, this.config, entityId, svgElement);
+        return EvalHelper.evaluate(expression, this.hass, this.config, entityId, svgElement, this.functions);
       }
       catch (err) {
         return this.handleError(err, { expression, entityId, hass: this.hass, svgElement });

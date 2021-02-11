@@ -22,6 +22,7 @@ export class FloorplanConfig {
   startup_action!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
   defaults!: FloorplanRuleConfig;
   image_mobile!: FloorplanImageConfig | string;
+  functions!: string;
 
   // Experimental features
   pages!: string[];
