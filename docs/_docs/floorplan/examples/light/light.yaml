@@ -18,12 +18,13 @@ config:
       state_action:
         - action: call-service
           service: floorplan.style_set
-          service_data:
-            elements:
-              - light.office
-              - light_gradient_color_0
-            style: |
-              >
+          service_data: |
+            >
+              var elements = [
+                `${entity.entity_id}`,
+                `light_gradient_color_0`,
+              ];
+
               var color = 'rgb(0, 0, 0)';
               var opacity = 0;
 
@@ -39,4 +40,9 @@ config:
                   opacity = 1;
                 }
               }
-              return `fill: ${color}; stop-color: ${color}; stop-opacity: ${opacity};`;
+              var style = `fill: ${color}; stop-color: ${color}; stop-opacity: ${opacity};`;
+
+              return {
+                elements: elements,
+                style: style,
+              };

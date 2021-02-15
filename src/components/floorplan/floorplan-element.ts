@@ -748,7 +748,9 @@ export class FloorplanElement extends LitElement {
         svgElementInfo.svgElement = svgElement;
 
         // Create a title element (to support hover over text)
-        svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
+        if (!svgElement.querySelector('title')) {
+          svgElement.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
+        }
 
         this.attachClickHandlers(svgElement, svgElementInfo, entityId, undefined, ruleInfo);
       }
@@ -845,7 +847,10 @@ export class FloorplanElement extends LitElement {
       const element = elem as SVGGraphicsElement | HTMLElement;
       const isParent = (elem === targetSvgElement);
 
-      element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
+      // Create a title element (to support hover over text)
+      if (!element.querySelector('title')) {
+        element.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')); // add a title for hover-over text
+      }
 
       if (ruleInfo.rule.tap_action) {
         const actions = this.getActionConfigs(ruleInfo.rule.tap_action);
@@ -1298,92 +1303,100 @@ export class FloorplanElement extends LitElement {
       */
 
       case 'class_set':
-        className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
-        classes = new Set(svgElementInfo.originalClasses);
-        classes.add(className);
+        if (svgElementInfo) {
+          className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
+          classes = new Set(svgElementInfo.originalClasses);
+          classes.add(className);
 
-        if (Array.isArray(serviceContext.data?.elements)) {
-          targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
-        }
-        if (typeof serviceContext.data?.element === 'string') {
-          targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
-        }
-
-        if (targetSvgElementIds.length) {
-          for (const targetSvgElementId of targetSvgElementIds) {
-            targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+          if (Array.isArray(serviceContext.data?.elements)) {
+            targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
           }
-        }
-        else {
-          targetSvgElements = [svgElement];
-        }
+          if (typeof serviceContext.data?.element === 'string') {
+            targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
+          }
 
-        for (const targetSvgElement of targetSvgElements) {
-          Utils.setClass(targetSvgElement, className);
+          if (targetSvgElementIds.length) {
+            for (const targetSvgElementId of targetSvgElementIds) {
+              targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+            }
+          }
+          else {
+            targetSvgElements = [svgElement];
+          }
+
+          for (const targetSvgElement of targetSvgElements) {
+            Utils.setClass(targetSvgElement, className);
+          }
         }
         break;
 
       case 'style_set':
-        styleName = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.style as string;
+        if (svgElementInfo) {
+          styleName = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.style as string;
 
-        if (Array.isArray(serviceContext.data?.elements)) {
-          targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
-        }
-        if (typeof serviceContext.data?.element === 'string') {
-          targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
-        }
-
-        if (targetSvgElementIds.length) {
-          for (const targetSvgElementId of targetSvgElementIds) {
-            targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+          if (Array.isArray(serviceContext.data?.elements)) {
+            targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
           }
-        }
-        else {
-          targetSvgElements = [svgElementInfo.svgElement];
-        }
+          if (typeof serviceContext.data?.element === 'string') {
+            targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
+          }
 
-        for (const targetSvgElement of targetSvgElements) {
-          Utils.setStyle(targetSvgElement, styleName);
+          if (targetSvgElementIds.length) {
+            for (const targetSvgElementId of targetSvgElementIds) {
+              targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+            }
+          }
+          else {
+            targetSvgElements = [svgElementInfo.svgElement];
+          }
+
+          for (const targetSvgElement of targetSvgElements) {
+            Utils.setStyle(targetSvgElement, styleName);
+          }
         }
         break;
 
       case 'text_set':
-        text = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.text as string;
+        if (svgElementInfo) {
+          text = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.text as string;
 
-        if (Array.isArray(serviceContext.data?.elements)) {
-          targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
-        }
-        if (typeof serviceContext.data?.element === 'string') {
-          targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
-        }
-
-        if (targetSvgElementIds.length) {
-          for (const targetSvgElementId of targetSvgElementIds) {
-            targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+          if (Array.isArray(serviceContext.data?.elements)) {
+            targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
           }
-        }
-        else {
-          targetSvgElements = [svgElementInfo.svgElement];
-        }
+          if (typeof serviceContext.data?.element === 'string') {
+            targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
+          }
 
-        for (const targetSvgElement of targetSvgElements) {
-          Utils.setText(targetSvgElement, text);
+          if (targetSvgElementIds.length) {
+            for (const targetSvgElementId of targetSvgElementIds) {
+              targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+            }
+          }
+          else {
+            targetSvgElements = [svgElementInfo.svgElement];
+          }
+
+          for (const targetSvgElement of targetSvgElements) {
+            Utils.setText(targetSvgElement, text);
+          }
         }
         break;
 
       case 'image_set':
-        imageUrl = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.image as string;
-        imageRefreshInterval = (typeof serviceContext.data === 'object') ? (serviceContext.data.image_refresh_interval as number) : 0;
+        if (svgElementInfo) {
+          imageUrl = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.image as string;
+          imageRefreshInterval = (typeof serviceContext.data === 'object') ? (serviceContext.data.image_refresh_interval as number) : 0;
 
-        if (ruleInfo.imageLoader) {
-          clearInterval(ruleInfo.imageLoader); // cancel any previous image loading for this rule
+          if (ruleInfo.imageLoader) {
+            clearInterval(ruleInfo.imageLoader); // cancel any previous image loading for this rule
+          }
+
+          if (imageRefreshInterval) {
+            ruleInfo.imageLoader = setInterval(this.loadImage.bind(this), imageRefreshInterval * 1000, imageUrl, svgElementInfo, entityId, ruleInfo);
+          }
+
+          this.loadImage(imageUrl, svgElementInfo, entityId, ruleInfo);
         }
-
-        if (imageRefreshInterval) {
-          ruleInfo.imageLoader = setInterval(this.loadImage.bind(this), imageRefreshInterval * 1000, imageUrl, svgElementInfo, entityId, ruleInfo);
-        }
-
-        this.loadImage(imageUrl, svgElementInfo, entityId, ruleInfo);
         break;
 
       case 'page_navigate':

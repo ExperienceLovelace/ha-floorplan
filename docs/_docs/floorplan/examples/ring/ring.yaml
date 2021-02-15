@@ -20,7 +20,15 @@ config:
         var g = Math.floor(min[1] + ((max[1] - min[1]) * (entity.state / 100)));
         var b = Math.floor(min[2] + ((max[2] - min[2]) * (entity.state / 100)));
         return `fill: rgb(${r}, ${g}, ${b})`; 
-      }
+      },
+
+      someOtherFunctionA: (entity, entities, hass) => {
+        return 'foo'; 
+      },
+
+      someOtherFunctionB: (entity, entities, hass) => {
+        return 'bar'; 
+      },
       
     };
 
