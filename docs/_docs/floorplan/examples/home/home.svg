@@ -29,11 +29,26 @@
   </metadata>
   <defs
      id="defs430">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1181">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1"
+         offset="0"
+         id="stop1177" />
+      <stop
+         style="stop-color:#00ff00;stop-opacity:1"
+         offset="1"
+         id="stop1179" />
+    </linearGradient>
     <clipPath
        id="moisture-level-clip-path">
-      <path
-         d="m 197.63634,155.35753 h 32.52691 v 42.77996 h -32.52691 z"
-         id="path3" />
+      <rect
+         width="11.361679"
+         height="45.840492"
+         x="199.4892"
+         y="152.64606"
+         id="rect6" />
     </clipPath>
     <linearGradient
        id="linearGradient3167">
@@ -535,6 +550,15 @@
          values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
          id="feColorMatrix4617-7" />
     </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1181"
+       id="linearGradient1183"
+       x1="205.06096"
+       y1="198.1375"
+       x2="205.32613"
+       y2="152.79427"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -549,9 +573,9 @@
      inkscape:window-height="1001"
      id="namedview428"
      showgrid="false"
-     inkscape:zoom="2.8284272"
-     inkscape:cx="-41.683753"
-     inkscape:cy="124.46474"
+     inkscape:zoom="4.0000001"
+     inkscape:cx="126.55999"
+     inkscape:cy="37.539099"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -1738,27 +1762,33 @@
        inkscape:connector-curvature="0"
        style="fill:#ffffff;fill-opacity:1;stroke-width:0.00227431" />
   </g>
-  <g
-     id="moisture_level_clip_path"
-     clip-path="url(#moisture-level-clip-path)"
-     transform="matrix(0.34782607,0,0,1,128.89327,0)"
-     style="fill:#eacb81;fill-opacity:1">
-    <path
-       style="fill:#eacb81;fill-opacity:1;stroke:#cb3375;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 197.63634,155.35753 h 32.52691 v 42.77996 h -32.52691 z"
-       id="sensor.moisture_level"
-       inkscape:connector-curvature="0" />
-  </g>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
-     x="186.80161"
-     y="214.80974"
+     x="183.14037"
+     y="213.78549"
      id="text5097-5-6"
      transform="scale(1.0242454,0.97632852)"><tspan
        sodipodi:role="line"
-       x="186.80161"
-       y="214.80974"
+       x="183.14037"
+       y="213.78549"
        style="font-size:7.55913687px;stroke-width:0.94489211"
        id="tspan1201">Moisture</tspan></text>
+  <rect
+     inkscape:label="sensor.moisture_level_border"
+     y="152.64606"
+     x="199.4892"
+     height="45.840492"
+     width="11.361679"
+     id="sensor.moisture_level_border"
+     style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.47347587;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <rect
+     style="display:inline;fill:url(#linearGradient1183);fill-opacity:1;stroke:#000000;stroke-width:0.473;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="sensor.moisture_level"
+     width="11.361679"
+     height="45.840492"
+     x="199.4892"
+     y="152.64606"
+     clip-path="url(#moisture-level-clip-path)"
+     inkscape:label="sensor.moisture_level" />
 </svg>

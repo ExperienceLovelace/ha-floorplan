@@ -91,5 +91,6 @@ config:
           action: call-service
           service: floorplan.style_set
           service_data:
+            element: moisture-level-clip-path
             style: |
-              transform: translate(0, ${43 - Math.floor(entity.attributes.level / (100 / 43))}px);
+              transform: translate(0, ${46 - Math.floor(entity.attributes.level / (100 / 46))}px);
