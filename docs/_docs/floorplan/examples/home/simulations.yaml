@@ -1,5 +1,104 @@
 simulations:
   - entity:
+      entity_id: sensor.moisture_level
+      state: on
+      attributes:
+        foo: bar
+    states:
+      - state: on
+        attributes:
+          level: 0
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 10
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 20
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 30
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 40
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 40
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 40
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 40
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 50
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 60
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 70
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 80
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 90
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 100
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 90
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 80
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 70
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 60
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 50
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 40
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 30
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 20
+        duration: 0.25
+      - state: on
+        attributes:
+          level: 10
+        duration: 0.25
+
+  - entity:
       entity_id: binary_sensor.living_area
       state: on
       attributes:

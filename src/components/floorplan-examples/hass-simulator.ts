@@ -63,6 +63,7 @@ export class HassSimulator {
         case 'switch':
         case 'light':
         case 'binary_sensor':
+        case 'sensor':
           newState = (state === 'on') ? 'off' : 'on';
 
           for (const simulationProcessor of this.simulationProcessors) {
@@ -109,7 +110,7 @@ export class SimulationProcessor {
       const currentIndex = this.simulation.states.indexOf(currentState);
       const nextIndex = (currentIndex + 1) % this.simulation.states.length;
       const nextState = this.simulation.states[nextIndex];
-  
+
       if ((nextState as TimedHassEntity)?.duration) {
         setTimeout(this.triggerState.bind(this), (currentState as TimedHassEntity).duration * 1000, nextState);
       }
