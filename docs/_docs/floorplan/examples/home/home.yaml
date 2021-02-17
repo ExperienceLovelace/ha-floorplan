@@ -95,4 +95,4 @@ config:
             style: |
               >
               var height = Math.ceil(element.getBBox().height);
-              return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px`;
+              return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
