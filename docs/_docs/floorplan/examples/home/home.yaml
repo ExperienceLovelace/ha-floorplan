@@ -93,4 +93,6 @@ config:
           service_data:
             element: moisture-level-clip-path
             style: |
-              transform: translate(0, ${46 - Math.floor(entity.attributes.level / (100 / 46))}px);
+              >
+              var height = Math.ceil(element.getBBox().height);
+              return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px`;
