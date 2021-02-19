@@ -1,65 +1,74 @@
 import { HomeAssistant } from '../../../lib/homeassistant/types';
+import { HassEntity } from '../../floorplan-examples/homeassistant';
 import { FloorplanConfig } from './/floorplan-config';
 import { ColorUtil } from './color-util';
 import Sval from 'sval';
 
 export class EvalHelper {
+  static cache: { [key: string]: { interpreter: Sval, parsedFunction: () => void } } = {};
+  static cacheItem: { interpreter: Sval, parsedFunction: () => void };
+
+  static functionBody: string;
+  static entityState: HassEntity | undefined;
+
+  static interpreter: Sval;
+  static parsedFunction: () => void;
+
+  static util = {
+    color: ColorUtil,
+  }
+
   static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string,
     svgElement?: SVGGraphicsElement, svgElements?: { [elementId: string]: SVGGraphicsElement }, functions?: unknown): unknown {
-    const entityState = entityId ? hass.states[entityId] : undefined;
+    this.entityState = entityId ? hass.states[entityId] : undefined;
 
-    let functionBody = expression.trim();
+    this.functionBody = expression.trim();
 
-    if (functionBody.startsWith(">")) {
-      functionBody = functionBody.slice(">".length).trim(); // expression beginning with |- is real JavaScript code
+    if (this.functionBody.startsWith(">")) {
+      this.functionBody = this.functionBody.slice(">".length).trim(); // expression beginning with > is real JavaScript code
     }
-    else if (functionBody.indexOf('${') >= 0) {
-      if (functionBody.startsWith('"') && functionBody.endsWith('"')) {
-        functionBody = functionBody.slice(1, functionBody.length - 2); // remove leading and trailing quotes
+    else if (this.functionBody.indexOf('${') >= 0) {
+      if (this.functionBody.startsWith('"') && this.functionBody.endsWith('"')) {
+        this.functionBody = this.functionBody.slice(1, this.functionBody.length - 2); // remove leading and trailing quotes
       }
 
-      functionBody = functionBody.replace(/\\"/g, '"'); // change escaped quotes to just quotes
+      this.functionBody = this.functionBody.replace(/\\"/g, '"'); // change escaped quotes to just quotes
 
-      functionBody = `\`${functionBody}\`;`;
+      this.functionBody = `\`${this.functionBody}\`;`;
 
-      if (functionBody.indexOf('return') < 0) {
-        functionBody = `return ${functionBody}`;
+      if (this.functionBody.indexOf('return') < 0) {
+        this.functionBody = `return ${this.functionBody}`;
       }
     }
 
-    const util = {
-      color: ColorUtil,
-    };
+    this.cacheItem = this.cache[this.functionBody];
+    if (this.cacheItem) {
+      this.interpreter = this.cacheItem.interpreter;
+      this.parsedFunction = this.cacheItem.parsedFunction;
+    }
+    else {
+      // Create a interpreter
+      this.interpreter = new Sval({ ecmaVer: 2019, sandBox: true });
+      this.parsedFunction = this.interpreter.parse(`exports.result = (() => { ${this.functionBody} })();`);
 
-    // Create a interpreter
-    const interpreter = new Sval({ ecmaVer: 2019, sandBox: true });
+      // Add global modules in interpreter (static data)
+      this.interpreter.import('config', config);
+      this.interpreter.import('functions', functions);
+      this.interpreter.import('util', this.util);
 
-    const funcWrapper = `
-      function ___wrapper___() {
-        ${functionBody}
-      }
-      const ___result___ = ___wrapper___();
+      this.cacheItem = { interpreter: this.interpreter, parsedFunction: this.parsedFunction };
+      this.cache[this.functionBody] = this.cacheItem;
+    }
 
-      exports.result = ___result___;
-    `;
+    // Add global modules in interpreter (dynamic data)
+    this.interpreter.import('entity', this.entityState);
+    this.interpreter.import('entities', hass.states);
+    this.interpreter.import('hass', hass);
+    this.interpreter.import('element', svgElement);
+    this.interpreter.import('elements', svgElements);
 
-    const parsedFunc = interpreter.parse(funcWrapper);
+    this.interpreter.run(this.parsedFunction);
 
-    // Add global modules in interpreter
-    interpreter.import('entity', entityState);
-    interpreter.import('entities', hass.states);
-    interpreter.import('hass', hass);
-    interpreter.import('config', config);
-    interpreter.import('element', svgElement);
-    interpreter.import('elements', svgElements);
-    interpreter.import('functions', functions);
-    interpreter.import('util', util);
-
-    interpreter.run(parsedFunc);
-
-    // Get exports from runs
-    const resultNew = interpreter.exports.result;
-
-    return resultNew;
+    return this.interpreter.exports.result;
   }
 }
