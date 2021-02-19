@@ -42,6 +42,7 @@ export class FloorplanElement extends LitElement {
   functions: unknown = {};
   variables: { [key: string]: unknown } = {};
   logger!: Logger;
+  svgElements: { [elementId: string]: SVGGraphicsElement } = {};
 
   isRulesLoaded = false;
   svg!: SVGGraphicsElement;
@@ -693,6 +694,12 @@ export class FloorplanElement extends LitElement {
 
     const svgElements = this._querySelectorAll(svg, '*', true) as SVGGraphicsElement[];
 
+    for (const svgElement of svgElements) {
+      if (svgElement.id) {
+        this.svgElements[svgElement.id] = svgElement;
+      }
+    }
+
     this.initRules(config, svg, svgElements);
   }
 
@@ -1091,7 +1098,7 @@ export class FloorplanElement extends LitElement {
   evaluate(expression: string | unknown, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
     if ((typeof expression === 'string') && this.isTemplate(expression)) {
       try {
-        return EvalHelper.evaluate(expression, this.hass, this.config, entityId, svgElement, this.functions);
+        return EvalHelper.evaluate(expression, this.hass, this.config, entityId, svgElement, this.svgElements, this.functions);
       }
       catch (err) {
         return this.handleError(err, { expression, entityId, hass: this.hass, svgElement });

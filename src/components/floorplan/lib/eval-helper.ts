@@ -1,12 +1,11 @@
 import { HomeAssistant } from '../../../lib/homeassistant/types';
-import { HassEntity, HassEntities } from 'home-assistant-js-websocket';
 import { FloorplanConfig } from './/floorplan-config';
 import { ColorUtil } from './color-util';
+import Sval from 'sval';
 
 export class EvalHelper {
-  static evaluateFunctionCache: { [key: string]: EvaluateFunction } = {};
-
-  static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string, svgElement?: SVGGraphicsElement, functions?: unknown): unknown {
+  static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string,
+    svgElement?: SVGGraphicsElement, svgElements?: { [elementId: string]: SVGGraphicsElement }, functions?: unknown): unknown {
     const entityState = entityId ? hass.states[entityId] : undefined;
 
     let functionBody = expression.trim();
@@ -28,36 +27,39 @@ export class EvalHelper {
       }
     }
 
-    let targetFunc: EvaluateFunction;
-
-    if (this.evaluateFunctionCache[functionBody]) {
-      //console.log('Getting function from cache:', functionBody);
-      targetFunc = this.evaluateFunctionCache[functionBody];
-    }
-    else {
-      //console.log('Adding function to cache:', functionBody);
-      const func = new Function('entity', 'entities', 'hass', 'config', 'element', 'functions', 'util', functionBody) as EvaluateFunction;
-      this.evaluateFunctionCache[functionBody] = func;
-      targetFunc = func;
-    }
-
     const util = {
       color: ColorUtil,
     };
 
-    const result = targetFunc(entityState as HassEntity, hass.states, hass, config, svgElement, functions, util);
+    // Create a interpreter
+    const interpreter = new Sval({ ecmaVer: 2019, sandBox: true });
 
-    return result;
+    const funcWrapper = `
+      function ___wrapper___() {
+        ${functionBody}
+      }
+      const ___result___ = ___wrapper___();
+
+      exports.result = ___result___;
+    `;
+
+    const parsedFunc = interpreter.parse(funcWrapper);
+
+    // Add global modules in interpreter
+    interpreter.import('entity', entityState);
+    interpreter.import('entities', hass.states);
+    interpreter.import('hass', hass);
+    interpreter.import('config', config);
+    interpreter.import('element', svgElement);
+    interpreter.import('elements', svgElements);
+    interpreter.import('functions', functions);
+    interpreter.import('util', util);
+
+    interpreter.run(parsedFunc);
+
+    // Get exports from runs
+    const resultNew = interpreter.exports.result;
+
+    return resultNew;
   }
 }
-
-type EvaluateFunction =
-  (
-    entityState: HassEntity,
-    states: HassEntities,
-    hass: HomeAssistant,
-    config: FloorplanConfig,
-    svgElement: SVGGraphicsElement | undefined,
-    functions: unknown,
-    util: { color: ColorUtil },
-  ) => unknown;
