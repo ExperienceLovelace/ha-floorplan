@@ -27,18 +27,6 @@ simulations:
         duration: 0.25
       - state: on
         attributes:
-          level: 40
-        duration: 0.25
-      - state: on
-        attributes:
-          level: 40
-        duration: 0.25
-      - state: on
-        attributes:
-          level: 40
-        duration: 0.25
-      - state: on
-        attributes:
           level: 50
         duration: 0.25
       - state: on
