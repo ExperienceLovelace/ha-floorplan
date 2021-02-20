@@ -33,6 +33,7 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.20.0",
+    "minimist": "^1.2.5",
     "node-forge": "^0.10.0",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.5.1",
