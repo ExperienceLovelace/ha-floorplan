@@ -10,7 +10,6 @@ import { FloorplanClickContext, FloorplanPageInfo, FloorplanRuleInfo, FloorplanS
 import { FloorplanElementInfo, FloorplanEntityInfo } from './lib/floorplan-info';
 import { LongClicks } from './lib/long-clicks';
 import { EvalHelper } from './lib/eval-helper';
-import { debounce } from 'debounce';
 import * as yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
 import { Logger } from './lib/logger';
@@ -46,8 +45,6 @@ export class FloorplanElement extends LitElement {
 
   isRulesLoaded = false;
   svg!: SVGGraphicsElement;
-
-  handleEntitiesDebounced = debounce(this.handleEntities.bind(this), 100, true);
 
   constructor() {
     super();
@@ -171,7 +168,6 @@ export class FloorplanElement extends LitElement {
       await this.handleEntities(true);
     }
     else {
-      // this.handleEntitiesDebounced(); // use debounced wrapper
       this.handleEntities();
     }
   }
@@ -1089,14 +1085,8 @@ export class FloorplanElement extends LitElement {
     return isValid;
   }
 
-  isTemplate(expression: string): boolean {
-    if (expression.trim().startsWith(">")) return true;
-    if ((expression.indexOf("${") >= 0) && (expression.indexOf("}") >= 0)) return true;
-    return false;
-  }
-
   evaluate(expression: string | unknown, entityId?: string, svgElement?: SVGGraphicsElement): unknown {
-    if ((typeof expression === 'string') && this.isTemplate(expression)) {
+    if ((typeof expression === 'string') && EvalHelper.isCode(expression)) {
       try {
         return EvalHelper.evaluate(expression, this.hass, this.config, entityId, svgElement, this.svgElements, this.functions);
       }
@@ -1475,7 +1465,6 @@ export class FloorplanElement extends LitElement {
 
     // Simulate an event change to all entities
     if (!isInitialLoad) {
-      // this.handleEntitiesDebounced(); // use debounced wrapper
       this.handleEntities();
     }
   }
