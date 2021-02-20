@@ -16,7 +16,7 @@ import { Utils } from '../../lib/utils';
 import { Logger } from './lib/logger';
 import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from 'lit-element';
 import * as packageInfo from '../../../package.json';
-import * as OuiDomEvents from 'oui-dom-events';
+import * as OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents.default;
 
 // Display version in console

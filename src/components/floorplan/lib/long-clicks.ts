@@ -1,4 +1,4 @@
-import * as OuiDomEvents from 'oui-dom-events';
+import * as OuiDomEvents from './oui-dom-events';
 const E = OuiDomEvents.default;
 
 export class LongClicks {
@@ -54,7 +54,7 @@ export class LongClicks {
     // [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event.
     // Consider marking event handler as 'passive' to make the page more responsive.
     // See https://www.chromestatus.com/feature/5745543795965952
-    E.on(elem, 'touchstart', onTapStart.bind(this));
+    E.on(elem, 'touchstart', onTapStart.bind(this), { passive: true });
 
     E.on(elem, 'click', onTapEnd.bind(this));
 

@@ -48,7 +48,6 @@
     "home-assistant-js-websocket": "^5.8.1",
     "js-yaml": "^4.0.0",
     "lit-element": "^2.4.0",
-    "oui-dom-events": "^0.2.2",
     "superstruct": "^0.14.2",
     "sval": "^0.4.8"
   },
