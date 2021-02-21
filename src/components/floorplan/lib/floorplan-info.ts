@@ -18,10 +18,7 @@ export class FloorplanSvgElementInfo {
     public entityId: string,
     public svgElement: SVGGraphicsElement,
     public originalSvgElement: SVGGraphicsElement,
-    public originalClasses: Set<string>,
-    public originalStyles: Record<string, unknown>,
-    public originalBBox: DOMRect,
-    public originalClientRect: ClientRect | DOMRect) {
+    public originalBBox: DOMRect) {
   }
 }
 

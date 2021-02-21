@@ -35,7 +35,9 @@ export class EvalHelper {
 
     this.expression = expression.trim();
 
-    this.parsedFunction = this.cache[this.expression];
+    const cacheKey = `${this.expression}_${svgElement ?? ''}`;
+
+    this.parsedFunction = this.cache[cacheKey];
     if (this.parsedFunction === undefined) {
       this.functionBody = this.expression;
 
@@ -57,7 +59,7 @@ export class EvalHelper {
       }
     
       this.parsedFunction = this.interpreter.parse(`exports.result = (() => { ${this.functionBody} })();`);
-      this.cache[this.expression] = this.parsedFunction;
+      this.cache[cacheKey] = this.parsedFunction;
 
       // Add global modules in interpreter (static data)
       this.interpreter.import('config', config);

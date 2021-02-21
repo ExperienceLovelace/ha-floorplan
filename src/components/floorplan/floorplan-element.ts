@@ -879,10 +879,7 @@ export class FloorplanElement extends LitElement {
       svgElement.id,
       svgElement,
       svgElement,
-      Utils.getSet<string>(svgElement.classList),
-      Utils.getStyles(svgElement),
-      svgElement.getBBox(),
-      svgElement.getBoundingClientRect()
+      svgElement.getBBox()
     );
     ruleInfo.svgElementInfos[svgElement.id] = svgElementInfo;
 
@@ -1215,174 +1212,127 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  callService(actionConfig: FloorplanCallServiceActionConfig, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo, ruleInfo?: FloorplanRuleInfo): ServiceContext {
-    const fullServiceName = this.evaluate(actionConfig.service, entityId, svgElementInfo?.svgElement) as string;
+  getSvgElementsFromServiceData(serviceData: Record<string, unknown>, svgElement?: SVGGraphicsElement): SVGGraphicsElement[] {
+    let targetSvgElements: SVGGraphicsElement[] = [];
 
-    let data = {} as Record<string, unknown>;
+    let targetSvgElementIds: string[] = [];
+
+    if (Array.isArray(serviceData?.elements)) {
+      targetSvgElementIds = targetSvgElementIds.concat(serviceData?.elements as string[]);
+    }
+    if (typeof serviceData?.element === 'string') {
+      targetSvgElementIds = targetSvgElementIds.concat([serviceData?.element as string]);
+    }
+
+    if (targetSvgElementIds.length) {
+      for (const targetSvgElementId of targetSvgElementIds) {
+        targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
+      }
+    }
+    else if (svgElement) { // might be null (i.e. element: null in rule)
+      targetSvgElements = [svgElement];
+    }
+
+    return targetSvgElements;
+  }
+
+  getServiceData(actionConfig: FloorplanCallServiceActionConfig, entityId?: string, svgElement?: SVGGraphicsElement): Record<string, unknown> {
+    let serviceData = {} as Record<string, unknown>;
 
     if (typeof actionConfig.service_data === 'object') {
       for (const key of Object.keys(actionConfig.service_data)) {
-        data[key] = this.evaluate(actionConfig.service_data[key], entityId, svgElementInfo?.svgElement) as string;
+        serviceData[key] = this.evaluate(actionConfig.service_data[key], entityId, svgElement) as string;
       }
     }
     else if (typeof actionConfig.service_data === 'string') {
-      const result = this.evaluate(actionConfig.service_data, entityId, svgElementInfo?.svgElement);
-      data = (typeof result === 'string') && (result.trim().startsWith("{")) ? JSON.parse(result) : result;
+      const result = this.evaluate(actionConfig.service_data, entityId, svgElement);
+      serviceData = (typeof result === 'string') && (result.trim().startsWith("{")) ? JSON.parse(result) : result;
     }
     else if (actionConfig.service_data !== undefined) {
-      data = actionConfig.service_data;
+      serviceData = actionConfig.service_data;
     }
+
+    return serviceData;
+  }
+
+  callService(actionConfig: FloorplanCallServiceActionConfig, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo, ruleInfo?: FloorplanRuleInfo): void {
+    const fullServiceName = this.evaluate(actionConfig.service, entityId, svgElementInfo?.svgElement) as string;
 
     const [domain, service] = fullServiceName.split(".", 2);
 
-    if (domain !== 'floorplan') {
-      if (typeof data === 'object') {
-        if ((data.entity_id === null) || (Array.isArray(data.entity_id) && !data.entity_id.length)) {
-          // do not use entity_id in service call
-        }
-        else if (!data.entity_id && entityId) {
-          // automatically include entity_id in service call
-          data.entity_id = entityId;
-        }
-      }
-    }
-
-    const serviceContext = {
-      domain: domain,
-      service: service,
-      data: data,
-      entityId: entityId as string,
-      svgElementInfo: svgElementInfo,
-      ruleInfo: ruleInfo,
-    } as ServiceContext;
-
-    switch (serviceContext.domain) {
+    switch (domain) {
       case 'floorplan':
-        this.callFloorplanService(serviceContext);
+        this.callFloorplanService(domain, service, actionConfig, entityId, svgElementInfo, ruleInfo);
         break;
 
       default:
-        this.callHomeAssistantService(serviceContext);
+        this.callHomeAssistantService(domain, service, actionConfig, entityId, svgElementInfo);
         break;
     }
-
-    return serviceContext;
   }
 
-  callFloorplanService(serviceContext: ServiceContext): void {
-    const entityId = serviceContext.entityId as string;
-    const svgElementInfo = serviceContext.svgElementInfo;
+  callFloorplanService(domain: string, service: string, actionConfig: FloorplanCallServiceActionConfig, entityId?: string, svgElementInfo?: FloorplanSvgElementInfo, ruleInfo?: FloorplanRuleInfo): void {
     const svgElement = (svgElementInfo?.svgElement ?? undefined) as SVGGraphicsElement;
-    const ruleInfo = serviceContext.ruleInfo as FloorplanRuleInfo;
 
     let page_id: string;
     let targetPageInfo: FloorplanPageInfo | undefined;
     let className: string;
     let styleName: string;
-    let classes: Set<string>;
     let imageUrl: string;
     let imageRefreshInterval: number;
     let text: string;
-    let targetSvgElementIds: string[] = [];
     let targetSvgElements: SVGGraphicsElement[] = [];
+    let url: string;
+    let isSameTargetElement: boolean;
 
-    switch (serviceContext.service) {
-      /*
-      case 'window_navigate':
-        if (this.isDemo) {
-          this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service}`)
-        }
-        else {
-          url = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.url as string;
-          window.location.href = url;
-        }
-        break;
-      */
+    // Evaluate service data, in order to determine 'target' elements
+    let serviceData = this.getServiceData(actionConfig, entityId, svgElement);
 
+    switch (service) {
       case 'class_set':
-        if (svgElementInfo) {
-          className = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.class as string;
-          classes = new Set(svgElementInfo.originalClasses);
-          classes.add(className);
-
-          if (Array.isArray(serviceContext.data?.elements)) {
-            targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
+        targetSvgElements = this.getSvgElementsFromServiceData(serviceData, svgElementInfo?.svgElement);
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement = ((targetSvgElements.length === 1) && (targetSvgElements[0] === svgElementInfo?.svgElement));
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            serviceData = this.getServiceData(actionConfig, entityId, targetSvgElement);
           }
-          if (typeof serviceContext.data?.element === 'string') {
-            targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
-          }
-
-          if (targetSvgElementIds.length) {
-            for (const targetSvgElementId of targetSvgElementIds) {
-              targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
-            }
-          }
-          else {
-            targetSvgElements = [svgElement];
-          }
-
-          for (const targetSvgElement of targetSvgElements) {
-            Utils.setClass(targetSvgElement, className);
-          }
+          className = (typeof serviceData === 'string') ? serviceData : serviceData.class as string;
+          Utils.setClass(targetSvgElement, className);
         }
         break;
 
       case 'style_set':
-        if (svgElementInfo) {
-          styleName = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.style as string;
-
-          if (Array.isArray(serviceContext.data?.elements)) {
-            targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
+        targetSvgElements = this.getSvgElementsFromServiceData(serviceData, svgElementInfo?.svgElement);
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement = ((targetSvgElements.length === 1) && (targetSvgElements[0] === svgElementInfo?.svgElement));
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            serviceData = this.getServiceData(actionConfig, entityId, targetSvgElement);
           }
-          if (typeof serviceContext.data?.element === 'string') {
-            targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
-          }
-
-          if (targetSvgElementIds.length) {
-            for (const targetSvgElementId of targetSvgElementIds) {
-              targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
-            }
-          }
-          else {
-            targetSvgElements = [svgElementInfo.svgElement];
-          }
-
-          for (const targetSvgElement of targetSvgElements) {
-            Utils.setStyle(targetSvgElement, styleName);
-          }
+          styleName = (typeof serviceData === 'string') ? serviceData : serviceData.style as string;
+          Utils.setStyle(targetSvgElement, styleName);
         }
         break;
 
       case 'text_set':
-        if (svgElementInfo) {
-          text = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.text as string;
-
-          if (Array.isArray(serviceContext.data?.elements)) {
-            targetSvgElementIds = targetSvgElementIds.concat(serviceContext.data?.elements as string[]);
+        targetSvgElements = this.getSvgElementsFromServiceData(serviceData, svgElementInfo?.svgElement);
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement = ((targetSvgElements.length === 1) && (targetSvgElements[0] === svgElementInfo?.svgElement));
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            serviceData = this.getServiceData(actionConfig, entityId, targetSvgElement);
           }
-          if (typeof serviceContext.data?.element === 'string') {
-            targetSvgElementIds = targetSvgElementIds.concat([serviceContext.data?.element as string]);
-          }
-
-          if (targetSvgElementIds.length) {
-            for (const targetSvgElementId of targetSvgElementIds) {
-              targetSvgElements = targetSvgElements.concat(this._querySelectorAll(this.svg, `#${targetSvgElementId.replace(/\./g, '\\.')}`, false) as SVGGraphicsElement[]);
-            }
-          }
-          else {
-            targetSvgElements = [svgElementInfo.svgElement];
-          }
-
-          for (const targetSvgElement of targetSvgElements) {
-            Utils.setText(targetSvgElement, text);
-          }
+          text = (typeof serviceData === 'string') ? serviceData : serviceData.text as string;
+          Utils.setText(targetSvgElement, text);
         }
         break;
 
       case 'image_set':
-        if (svgElementInfo) {
-          imageUrl = (typeof serviceContext.data === 'string') ? serviceContext.data : serviceContext.data.image as string;
-          imageRefreshInterval = (typeof serviceContext.data === 'object') ? (serviceContext.data.image_refresh_interval as number) : 0;
+        if (svgElementInfo && ruleInfo) {
+          serviceData = this.getServiceData(actionConfig, entityId, svgElementInfo?.svgElement);
+          imageUrl = (typeof serviceData === 'string') ? serviceData : serviceData.image as string;
+          imageRefreshInterval = (typeof serviceData === 'object') ? (serviceData.image_refresh_interval as number) : 0;
 
           if (ruleInfo.imageLoader) {
             clearInterval(ruleInfo.imageLoader); // cancel any previous image loading for this rule
@@ -1392,12 +1342,13 @@ export class FloorplanElement extends LitElement {
             ruleInfo.imageLoader = setInterval(this.loadImage.bind(this), imageRefreshInterval * 1000, imageUrl, svgElementInfo, entityId, ruleInfo);
           }
 
-          this.loadImage(imageUrl, svgElementInfo, entityId, ruleInfo);
+          this.loadImage(imageUrl, svgElementInfo, entityId as string, ruleInfo as FloorplanRuleInfo);
         }
         break;
 
       case 'page_navigate':
-        page_id = serviceContext.data.page_id as string;
+        serviceData = this.getServiceData(actionConfig, entityId, svgElementInfo?.svgElement);
+        page_id = serviceData.page_id as string;
         targetPageInfo = page_id ? this.pageInfos[page_id] : undefined;
 
         if (targetPageInfo) {
@@ -1412,22 +1363,33 @@ export class FloorplanElement extends LitElement {
           targetPageInfo.svg.style.display = 'block';
         }
         break;
+      case 'window_navigate':
+        if (this.isDemo) {
+          this.notify(`Calling service: ${domain}.${service}`)
+        }
+        else {
+          serviceData = this.getServiceData(actionConfig, entityId, svgElementInfo?.svgElement);
+          url = (typeof serviceData === 'string') ? serviceData : serviceData.url as string;
+          window.location.href = url;
+        }
+        break;
 
       case 'variable_set':
-        if (serviceContext.data.variable) {
+        serviceData = this.getServiceData(actionConfig, entityId, svgElementInfo?.svgElement);
+        if (serviceData.variable) {
           const attributes = {} as Record<string, unknown>;
 
-          if (serviceContext.data.attributes) {
-            const actionDataAttributes = serviceContext.data.attributes as Record<string, FloorplanCallServiceActionConfig>;
+          if (serviceData.attributes) {
+            const actionDataAttributes = serviceData.attributes as Record<string, FloorplanCallServiceActionConfig>;
 
             for (const key of Object.keys(actionDataAttributes)) {
               attributes[key] = this.getActionValue(actionDataAttributes[key], entityId, svgElement);
             }
           }
 
-          const variableActionData = serviceContext.data as unknown as FloorplanCallServiceActionConfig;
+          const variableActionData = serviceData as unknown as FloorplanCallServiceActionConfig;
           const value = this.getActionValue(variableActionData, entityId, svgElement);
-          this.setVariable(serviceContext.data.variable as string, value, attributes, false);
+          this.setVariable(serviceData.variable as string, value, attributes, false);
         }
         break;
 
@@ -1473,11 +1435,24 @@ export class FloorplanElement extends LitElement {
   /* Home Assisant helper functions
   /***************************************************************************************************************************/
 
-  callHomeAssistantService(serviceContext: ServiceContext): void {
-    this.hass.callService(serviceContext.domain, serviceContext.service, serviceContext.data);
+  callHomeAssistantService(domain: string, service: string, actionConfig: FloorplanCallServiceActionConfig,
+    entityId?: string, svgElementInfo?: FloorplanSvgElementInfo): void {
+    const data = this.getServiceData(actionConfig, entityId, svgElementInfo?.svgElement);
+
+    if (typeof data === 'object') {
+      if ((data.entity_id === null) || (Array.isArray(data.entity_id) && !data.entity_id.length)) {
+        // do not use entity_id in service call
+      }
+      else if (!data.entity_id && entityId) {
+        // automatically include entity_id in service call
+        data.entity_id = entityId;
+      }
+    }
+
+    this.hass.callService(domain, service, data);
 
     if (this.isDemo) {
-      this.notify(`Calling service: ${serviceContext.domain}.${serviceContext.service} (${serviceContext.data.entity_id})`);
+      this.notify(`Calling service: ${domain}.${service} (${data.entity_id})`);
     }
   }
 
@@ -1539,14 +1514,4 @@ export class FloorplanElement extends LitElement {
 
 if (!customElements.get('floorplan-element')) {
   customElements.define('floorplan-element', FloorplanElement);
-}
-
-export class ServiceContext {
-  domain!: string;
-  service!: string;
-  data!: Record<string, unknown>;
-
-  entityId!: string;
-  svgElementInfo!: FloorplanSvgElementInfo;
-  ruleInfo!: FloorplanRuleInfo;
 }

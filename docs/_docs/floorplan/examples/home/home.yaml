@@ -94,5 +94,5 @@ config:
             element: moisture-level-clip-path
             style: |
               >
-              var height = Math.ceil(element.getBBox().height);
+              var height = Math.ceil(elements['sensor.moisture_level'].getBBox().height);
               return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
