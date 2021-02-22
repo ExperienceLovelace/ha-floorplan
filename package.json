@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^14.14.31",
+    "@types/strftime": "^0.9.2",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "babel-core": "^6.26.3",
@@ -46,6 +47,7 @@
     "home-assistant-js-websocket": "^5.8.1",
     "js-yaml": "^4.0.0",
     "lit-element": "^2.4.0",
+    "strftime": "^0.10.0",
     "superstruct": "^0.14.2",
     "sval": "^0.4.8"
   },

@@ -2,6 +2,7 @@ import { HomeAssistant } from '../../../lib/homeassistant/types';
 import { HassEntity } from '../../floorplan-examples/homeassistant';
 import { FloorplanConfig } from './/floorplan-config';
 import { ColorUtil } from './color-util';
+import { DateUtil } from './date-util';
 import Sval from 'sval';
 
 export class EvalHelper {
@@ -16,6 +17,7 @@ export class EvalHelper {
 
   static util = {
     color: ColorUtil,
+    date: DateUtil,
   }
 
   static isCode(expression: string): boolean {
