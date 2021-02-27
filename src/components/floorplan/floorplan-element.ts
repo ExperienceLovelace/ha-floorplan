@@ -1289,7 +1289,20 @@ export class FloorplanElement extends LitElement {
     let serviceData = this.getServiceData(actionConfig, entityId, svgElement);
 
     switch (service) {
-      case 'class_set':
+      case 'class_toggle':
+        targetSvgElements = this.getSvgElementsFromServiceData(serviceData, svgElementInfo?.svgElement);
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement = ((targetSvgElements.length === 1) && (targetSvgElements[0] === svgElementInfo?.svgElement));
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            serviceData = this.getServiceData(actionConfig, entityId, targetSvgElement);
+          }
+          className = (typeof serviceData === 'string') ? serviceData : serviceData.class as string;
+          Utils.toggleClass(targetSvgElement, className);
+        }
+        break;
+
+        case 'class_set':
         targetSvgElements = this.getSvgElementsFromServiceData(serviceData, svgElementInfo?.svgElement);
         for (const targetSvgElement of targetSvgElements) {
           isSameTargetElement = ((targetSvgElements.length === 1) && (targetSvgElements[0] === svgElementInfo?.svgElement));

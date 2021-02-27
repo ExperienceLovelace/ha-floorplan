@@ -18,14 +18,25 @@ export class Utils {
       element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
   }
 
+  static hassClass(element: Element, className: string): boolean {
+    return element.classList.contains(className);
+  }
+
   static addClass(element: Element, className: string): void {
-    (element.classList) ?
-      element.classList.add(className) :
-      element.className += ' ' + className;
+    element.classList.add(className);
   }
 
   static setClass(element: Element, className: string): void {
     element.setAttribute('class', className);
+  }
+
+  static toggleClass(element: Element, className: string): void {
+    if (this.hasClass(element, className)) {
+      this.removeClass(element, className);
+    }
+    else {
+      this.addClass(element, className);
+    }
   }
 
   static getStyles(element: HTMLElement | SVGGraphicsElement): Record<string, unknown> {
