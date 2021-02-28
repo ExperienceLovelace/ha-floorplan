@@ -2,6 +2,7 @@ import { HomeAssistant } from '../../lib/homeassistant/types';
 import { LovelaceCard } from '../../lib/homeassistant/panels/lovelace/types';
 import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
 
 export class FloorplanCard extends LitElement implements LovelaceCard {
@@ -65,7 +66,7 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   }
 
   get view(): Element | null | undefined {
-    return this.closestElement('#view');
+    return ShadowDomHelper.closestElement('#view', this);
   }
 
   get appHeader(): Element | null | undefined {
@@ -98,18 +99,6 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
 
   setConfig(config: LovelaceCardConfig): void {
     this.config = config;
-  }
-
-  closestElement(selector: string, base: Element = this): Element | null {
-    function __closestFrom(el: Element | Window | Document | HTMLSlotElement | null): Element | null {
-      if (!el || el === document || el === window) return null;
-      if ((el as Slottable).assignedSlot) el = (el as Slottable).assignedSlot;
-      const found = (el as Element).closest(selector);
-      return found
-        ? found
-        : __closestFrom(((el as Element).getRootNode() as ShadowRoot).host);
-    }
-    return __closestFrom(base);
   }
 }
 

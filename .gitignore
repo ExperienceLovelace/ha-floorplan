@@ -92,7 +92,3 @@ typings/
 
 # Jekyll
 _site/
-
-dist/
-dist/floorplan.js
-dist/**/*

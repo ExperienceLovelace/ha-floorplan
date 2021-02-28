@@ -209,7 +209,7 @@ export interface HomeAssistant {
   // suspendWhenHidden: boolean;
   // enableShortcuts: boolean;
   // vibrate: boolean;
-  // dockedSidebar: "docked" | "always_hidden" | "auto";
+  dockedSidebar: "docked" | "always_hidden" | "auto";
   // defaultPanel: string;
   // moreInfoEntityId: string | null;
   user?: CurrentUser;
