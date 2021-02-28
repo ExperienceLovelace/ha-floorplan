@@ -87,8 +87,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-dist/
-
 # Parcel
 .parcel-cache
 
@@ -96,4 +94,5 @@ dist/
 _site/
 
 dist/
+dist/floorplan.js
 dist/**/*

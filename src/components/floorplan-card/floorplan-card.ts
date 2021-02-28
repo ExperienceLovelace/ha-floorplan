@@ -15,19 +15,27 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
+  static cardHeaderHeight = 76;
+
   protected render(): TemplateResult {
     if (!this.config) {
       return html``;
     }
 
     return html`
+      <style>
+        :host .content.full-height {
+          height: calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px);
+        }
+      </style>
+
       <ha-card>
-        ${this.isDemo ? '' :
+        ${this.isDisplayCardHeader ?
         html`
           <h1 class="card-header">${this.config?.title}</h1>
-        `}
+        ` : ''}
 
-        <div class="content ${this.isPanel || this.config?.full_height ? ((this.config?.title as string)?.trim().length ? 'with-title-panel-height' : 'without-title-panel-height') : ''}">
+        <div class="content ${this.contentClass}">
           <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
         </div>
 
@@ -37,21 +45,51 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
 
   static get styles(): CSSResult {
     return css`
+      /* header (main toolbar) */
+      /* --header-height: 56px; */
+
+      /* card header */
+      /* height: 76px; */
+
       :host .content, :host .content floorplan-element {
         display: flex;
         flex-flow: column;
         flex: 1;
         min-height: 0;
       }
+      `;
+  }
 
-      :host .content.with-title-panel-height {
-        height: calc(100vh - var(--header-height) - 78px);
-      }
+  get isFullHeight(): boolean {
+    return this.config?.full_height;
+  }
 
-      :host .content.without-title-panel-height {
-        height: calc(100vh - 86px);
-      }      
-    `;
+  get view(): Element | null | undefined {
+    return this.closestElement('#view');
+  }
+
+  get appHeader(): Element | null | undefined {
+    return this.view?.previousElementSibling;
+  }
+
+  get appHeaderHeight(): number {
+    if (this.isDemo) return 0;
+    const appHeader = this.appHeader;
+    return appHeader ? appHeader.clientHeight : 0;
+  }
+
+  get cardHeaderHeight(): number {
+    if (this.isDemo) return 0;
+    return this.isDisplayCardHeader ? FloorplanCard.cardHeaderHeight : 0;
+  }
+
+  get isDisplayCardHeader(): boolean {
+    if (this.isDemo) return false;
+    return ((this.config?.title as string)?.trim().length > 0);
+  }
+
+  get contentClass(): string {
+    return this.isFullHeight ? 'full-height' : '';
   }
 
   getCardSize(): number | Promise<number> {
@@ -60,6 +98,18 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
 
   setConfig(config: LovelaceCardConfig): void {
     this.config = config;
+  }
+
+  closestElement(selector: string, base: Element = this): Element | null {
+    function __closestFrom(el: Element | Window | Document | HTMLSlotElement | null): Element | null {
+      if (!el || el === document || el === window) return null;
+      if ((el as Slottable).assignedSlot) el = (el as Slottable).assignedSlot;
+      const found = (el as Element).closest(selector);
+      return found
+        ? found
+        : __closestFrom(((el as Element).getRootNode() as ShadowRoot).host);
+    }
+    return __closestFrom(base);
   }
 }
 
