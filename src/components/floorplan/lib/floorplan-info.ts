@@ -1,5 +1,9 @@
 import { HassEntity } from 'home-assistant-js-websocket';
-import { FloorplanPageConfig, FloorplanRuleConfig, FloorplanActionConfig } from './floorplan-config';
+import {
+  FloorplanPageConfig,
+  FloorplanRuleConfig,
+  FloorplanActionConfig,
+} from './floorplan-config';
 
 export class FloorplanPageInfo {
   index!: number;
@@ -18,8 +22,8 @@ export class FloorplanSvgElementInfo {
     public entityId: string,
     public svgElement: SVGGraphicsElement,
     public originalSvgElement: SVGGraphicsElement,
-    public originalBBox: DOMRect) {
-  }
+    public originalBBox: DOMRect
+  ) {}
 }
 
 export class FloorplanRuleInfo {
@@ -27,8 +31,7 @@ export class FloorplanRuleInfo {
   imageUrl!: string;
   imageLoader!: number | undefined;
 
-  constructor(public rule: FloorplanRuleConfig) {
-  }
+  constructor(public rule: FloorplanRuleConfig) {}
 }
 
 export class FloorplanEntityInfo {
@@ -44,7 +47,6 @@ export class FloorplanClickContext {
     public elementId: string | undefined,
     public svgElementInfo: FloorplanSvgElementInfo,
     public ruleInfo: FloorplanRuleInfo,
-    public actions: Array<FloorplanActionConfig>,
-  ) {
-  }
+    public actions: Array<FloorplanActionConfig>
+  ) {}
 }

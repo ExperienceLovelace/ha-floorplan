@@ -1,21 +1,26 @@
 import * as yaml from 'js-yaml';
 
 export class Utils {
-
   /***************************************************************************************************************************/
   /* HTML DOM functions
   /***************************************************************************************************************************/
 
   static hasClass(element: Element, className: string): boolean {
-    return (element.classList) ?
-      element.classList.contains(className) :
-      new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
+    return element.classList
+      ? element.classList.contains(className)
+      : new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
   }
 
   static removeClass(element: Element, className: string): void {
-    (element.classList) ?
-      element.classList.remove(className) :
-      element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    element.classList
+      ? element.classList.remove(className)
+      : (element.className = element.className.replace(
+          new RegExp(
+            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+            'gi'
+          ),
+          ' '
+        ));
   }
 
   static hassClass(element: Element, className: string): boolean {
@@ -33,13 +38,14 @@ export class Utils {
   static toggleClass(element: Element, className: string): void {
     if (this.hasClass(element, className)) {
       this.removeClass(element, className);
-    }
-    else {
+    } else {
       this.addClass(element, className);
     }
   }
 
-  static getStyles(element: HTMLElement | SVGGraphicsElement): Record<string, unknown> {
+  static getStyles(
+    element: HTMLElement | SVGGraphicsElement
+  ): Record<string, unknown> {
     const styles: Record<string, unknown> = {};
 
     let styleName: string;
@@ -54,37 +60,55 @@ export class Utils {
     return styles;
   }
 
-  static setStyle(element: HTMLElement | SVGGraphicsElement, style: string): void {
-    const styles = (style ?? []).split(';').map(x => x.trim()).filter(x => x.length);
+  static setStyle(
+    element: HTMLElement | SVGGraphicsElement,
+    style: string
+  ): void {
+    const styles = (style ?? [])
+      .split(';')
+      .map((x) => x.trim())
+      .filter((x) => x.length);
 
     for (let i = 0; i < styles.length; i++) {
-      const parts = styles[i].split(':').map(x => x.trim());
+      const parts = styles[i].split(':').map((x) => x.trim());
       element.style.setProperty(parts[0], parts[1]);
     }
   }
 
-  static setText(textElement: HTMLElement | SVGGraphicsElement, text: string): void {
+  static setText(
+    textElement: HTMLElement | SVGGraphicsElement,
+    text: string
+  ): void {
     const tspanElement = textElement.querySelector('tspan');
     if (tspanElement) {
       tspanElement.textContent = text;
-    }
-    else {
+    } else {
       let titleElement = textElement.querySelector('title') as Element;
       if (!titleElement) {
-        titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        titleElement = document.createElementNS(
+          'http://www.w3.org/2000/svg',
+          'title'
+        );
         textElement.appendChild(titleElement);
       }
       titleElement.textContent = text;
     }
   }
 
-  static waitForChildNodes(element: Node, initializeNode: () => void, timeout: number): Promise<void> {
+  static waitForChildNodes(
+    element: Node,
+    initializeNode: () => void,
+    timeout: number
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(() => reject('Timeout waiting for child element(s) to load'), timeout);
+      const timeoutId = setTimeout(
+        () => reject('Timeout waiting for child element(s) to load'),
+        timeout
+      );
 
       const observer = new MutationObserver((mutationsList) => {
         for (const mutation of mutationsList) {
-          if ((mutation.type === 'childList') && mutation.addedNodes.length) {
+          if (mutation.type === 'childList' && mutation.addedNodes.length) {
             clearTimeout(timeoutId);
             return resolve();
           }
@@ -104,17 +128,26 @@ export class Utils {
   static formatDate(date: Date | string): string {
     if (!date) return '';
 
-    return (typeof date === 'string') ?
-      new Date(date).toLocaleString() : date.toLocaleString();
+    return typeof date === 'string'
+      ? new Date(date).toLocaleString()
+      : date.toLocaleString();
   }
 
   static parseYaml(yamlText: string): unknown {
     return yaml.load(yamlText);
   }
 
-  static async fetchText(resourceUrl: string, isDemo: boolean, examplesPath: string, useCache = false): Promise<string> {
+  static async fetchText(
+    resourceUrl: string,
+    isDemo: boolean,
+    examplesPath: string,
+    useCache = false
+  ): Promise<string> {
     if (examplesPath) {
-      resourceUrl = resourceUrl.replace(/^\/local\/floorplan\/examples\//g, `${examplesPath}/`);
+      resourceUrl = resourceUrl.replace(
+        /^\/local\/floorplan\/examples\//g,
+        `${examplesPath}/`
+      );
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
@@ -129,26 +162,34 @@ export class Utils {
       if (response.ok || (isDemo && response.type === 'opaque')) {
         const text = await response.text();
         return text;
-      }
-      else {
+      } else {
         throw new Error(`Error fetching resource`);
       }
-    }
-    catch (err) {
+    } catch (err) {
       throw new URIError(`${resourceUrl}: ${err.message}`);
     }
   }
 
-  static async fetchImage(resourceUrl: string, isDemo: boolean, examplesPath: string, useCache = false): Promise<string> {
+  static async fetchImage(
+    resourceUrl: string,
+    isDemo: boolean,
+    examplesPath: string,
+    useCache = false
+  ): Promise<string> {
     if (isDemo) {
-      resourceUrl = resourceUrl.replace(/^\/local\/floorplan\/examples\//g, `${examplesPath}/`);
+      resourceUrl = resourceUrl.replace(
+        /^\/local\/floorplan\/examples\//g,
+        `${examplesPath}/`
+      );
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
       cache: useCache ? 'reload' : 'no-store',
-      headers: new Headers({ 'Content-Type': 'text/plain; charset=x-user-defined' }),
+      headers: new Headers({
+        'Content-Type': 'text/plain; charset=x-user-defined',
+      }),
       mode: isDemo ? 'no-cors' : undefined,
     });
 
@@ -157,12 +198,10 @@ export class Utils {
       if (response.ok || (isDemo && response.type === 'opaque')) {
         const result = await response.arrayBuffer();
         return `data:image/jpeg;base64,${Utils.arrayBufferToBase64(result)}`;
-      }
-      else {
+      } else {
         throw new Error(`Error fetching resource`);
       }
-    }
-    catch (err) {
+    } catch (err) {
       throw new URIError(`${resourceUrl}: ${err.message}`);
     }
   }
@@ -171,36 +210,37 @@ export class Utils {
   /* Utility functions
   /***************************************************************************************************************************/
 
-  static singleToArray<T>(list: unknown[] | Record<string, unknown> | unknown | T): T[] {
-    if ((list === undefined) || (list === null)) {
+  static singleToArray<T>(
+    list: unknown[] | Record<string, unknown> | unknown | T
+  ): T[] {
+    if (list === undefined || list === null) {
       return [];
-    }
-    else if (Array.isArray(list)) {
+    } else if (Array.isArray(list)) {
       return list;
-    }
-    else {
-      return [(list as unknown as T)] as Array<T>;
+    } else {
+      return [(list as unknown) as T] as Array<T>;
     }
   }
 
-  static getArray<T>(list: unknown[] | Record<string, unknown> | unknown | T): T[] {
-    if ((list === undefined) || (list === null)) {
+  static getArray<T>(
+    list: unknown[] | Record<string, unknown> | unknown | T
+  ): T[] {
+    if (list === undefined || list === null) {
       return [];
-    }
-    else if (Array.isArray(list)) {
+    } else if (Array.isArray(list)) {
       return list;
-    }
-    else {
+    } else {
       const listObj = list as Record<string, unknown>;
       return Object.values(listObj) as Array<T>;
     }
   }
 
-  static getSet<T>(list: unknown[] | Record<string, unknown> | unknown): Set<T> {
+  static getSet<T>(
+    list: unknown[] | Record<string, unknown> | unknown
+  ): Set<T> {
     if (Array.isArray(list)) {
       return new Set<T>(list);
-    }
-    else {
+    } else {
       const listObj = list as Record<string, unknown>;
       return new Set<T>(Object.values(listObj) as Array<T>);
     }
@@ -210,12 +250,12 @@ export class Utils {
     let binary = '';
     const bytes = [].slice.call(new Uint8Array(buffer));
 
-    bytes.forEach((b) => binary += String.fromCharCode(b));
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
 
     let base64 = window.btoa(binary);
 
     // IOS / Safari will not render base64 images unless length is divisible by 4
-    while ((base64.length % 4) > 0) {
+    while (base64.length % 4 > 0) {
       base64 += '=';
     }
 
@@ -223,7 +263,9 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${(url.indexOf('?') >= 0) ? '&' : '?'}_=${new Date().getTime()}`;
+    return `${url}${
+      url.indexOf('?') >= 0 ? '&' : '?'
+    }_=${new Date().getTime()}`;
   }
 
   static equal(a: unknown, b: unknown): boolean {
@@ -260,7 +302,13 @@ export class Utils {
         if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
 
       for (i = 0; i < keys.length; i++)
-        if (!Utils.equal((a as Record<string, unknown>)[keys[i]], (b as Record<string, unknown>)[keys[i]])) return false;
+        if (
+          !Utils.equal(
+            (a as Record<string, unknown>)[keys[i]],
+            (b as Record<string, unknown>)[keys[i]]
+          )
+        )
+          return false;
 
       return true;
     }

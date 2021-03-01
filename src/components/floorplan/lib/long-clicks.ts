@@ -17,7 +17,7 @@ export class LongClicks {
         isLongClick = true;
         console.log('timer timed out: isLongClick:', isLongClick);
         console.log('timer timed out: dispatching event:', 'longClick');
-        elem.dispatchEvent(new Event("longClick"));
+        elem.dispatchEvent(new Event('longClick'));
       }, longClickDuration);
     };
 
@@ -29,8 +29,13 @@ export class LongClicks {
         // have already triggered long click
       } else {
         // trigger shortClick, shortMouseup etc
-        console.log('onTapEnd: dispatching event:', 'short' + evt.type[0].toUpperCase() + evt.type.slice(1));
-        elem.dispatchEvent(new Event('short' + evt.type[0].toUpperCase() + evt.type.slice(1)));
+        console.log(
+          'onTapEnd: dispatching event:',
+          'short' + evt.type[0].toUpperCase() + evt.type.slice(1)
+        );
+        elem.dispatchEvent(
+          new Event('short' + evt.type[0].toUpperCase() + evt.type.slice(1))
+        );
       }
     };
 

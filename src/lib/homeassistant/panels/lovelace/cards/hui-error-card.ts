@@ -6,13 +6,13 @@ import {
   LitElement,
   internalProperty,
   TemplateResult,
-} from "lit-element";
-import { HomeAssistant } from "../../../types";
-import { LovelaceCard } from "../types";
-import { ErrorCardConfig } from "./types";
-import { dump } from "js-yaml";
+} from 'lit-element';
+import { HomeAssistant } from '../../../types';
+import { LovelaceCard } from '../types';
+import { ErrorCardConfig } from './types';
+import { dump } from 'js-yaml';
 
-@customElement("hui-error-card")
+@customElement('hui-error-card')
 export class HuiErrorCard extends LitElement implements LovelaceCard {
   public hass?: HomeAssistant;
 
@@ -35,7 +35,7 @@ export class HuiErrorCard extends LitElement implements LovelaceCard {
       ${this._config.error}
       ${this._config.origConfig
         ? html`<pre>${dump(this._config.origConfig)}</pre>`
-        : ""}
+        : ''}
     `;
   }
 
@@ -59,6 +59,6 @@ export class HuiErrorCard extends LitElement implements LovelaceCard {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "hui-error-card": HuiErrorCard;
+    'hui-error-card': HuiErrorCard;
   }
 }

@@ -1,6 +1,14 @@
 import { HomeAssistant } from '../../lib/homeassistant/types';
 import { FloorplanPanelInfo } from './types';
-import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
+import {
+  css,
+  CSSResult,
+  html,
+  LitElement,
+  property,
+  TemplateResult,
+  PropertyValues,
+} from 'lit-element';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 import '../floorplan/floorplan-element';
 
@@ -26,13 +34,19 @@ export class FloorplanPanel extends LitElement {
 
         <app-header fixed slot="header" ?hidden=${!this.showAppHeader}>
           <app-toolbar>
-            <ha-menu-button .hass=${this.hass} .narrow=${this.narrow}"></ha-menu-button>
+            <ha-menu-button .hass=${this.hass} .narrow=${
+      this.narrow
+    }"></ha-menu-button>
             <div main-title>${this.panel?.title}</div>
           </app-toolbar>
         </app-header>        
 
         <div class="content" style=${styleMap(this.styles)}>
-          <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.panel?.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
+          <floorplan-element .examplespath=${this.examplespath} .hass=${
+      this.hass
+    } ._config=${this.panel?.config?.config} .isDemo=${this.isDemo} .notify=${
+      this.notify
+    }></floorplan-element>
         </div>
 
       </ha-app-layout>
@@ -41,7 +55,8 @@ export class FloorplanPanel extends LitElement {
 
   static get styles(): CSSResult {
     return css`
-      :host .content, :host .content floorplan-element {
+      :host .content,
+      :host .content floorplan-element {
         display: flex;
         flex-flow: column;
         flex: 1;
@@ -63,11 +78,12 @@ export class FloorplanPanel extends LitElement {
     super.update(changedProperties);
 
     if (changedProperties.has('panel')) {
-      this.showSideBar = (this.panel?.config.show_side_bar !== false);
-      this.showAppHeader = (this.panel?.config.show_app_header !== false) && !this.isDemo;
+      this.showSideBar = this.panel?.config.show_side_bar !== false;
+      this.showAppHeader =
+        this.panel?.config.show_app_header !== false && !this.isDemo;
 
       if (this.panel.config.show_side_bar === false) {
-        this.hass.dockedSidebar = "always_hidden";
+        this.hass.dockedSidebar = 'always_hidden';
       }
 
       this.styles = { height: `calc(100vh - ${this.appHeaderHeight}px)` };

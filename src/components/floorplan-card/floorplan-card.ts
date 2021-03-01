@@ -1,7 +1,14 @@
 import { HomeAssistant } from '../../lib/homeassistant/types';
 import { LovelaceCard } from '../../lib/homeassistant/panels/lovelace/types';
 import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
-import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+  css,
+  CSSResult,
+  html,
+  LitElement,
+  property,
+  TemplateResult,
+} from 'lit-element';
 import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
 
@@ -26,20 +33,26 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return html`
       <style>
         :host .content.full-height {
-          height: calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px);
+          height: calc(
+            100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px
+          );
         }
       </style>
 
       <ha-card>
-        ${this.isDisplayCardHeader ?
-        html`
-          <h1 class="card-header">${this.config?.title}</h1>
-        ` : ''}
+        ${this.isDisplayCardHeader
+          ? html` <h1 class="card-header">${this.config?.title}</h1> `
+          : ''}
 
         <div class="content ${this.contentClass}">
-          <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass} ._config=${this.config?.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-element>
+          <floorplan-element
+            .examplespath=${this.examplespath}
+            .hass=${this.hass}
+            ._config=${this.config?.config}
+            .isDemo=${this.isDemo}
+            .notify=${this.notify}
+          ></floorplan-element>
         </div>
-
       </ha-card>
     `;
   }
@@ -52,13 +65,14 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
       /* card header */
       /* height: 76px; */
 
-      :host .content, :host .content floorplan-element {
+      :host .content,
+      :host .content floorplan-element {
         display: flex;
         flex-flow: column;
         flex: 1;
         min-height: 0;
       }
-      `;
+    `;
   }
 
   get isFullHeight(): boolean {
@@ -86,7 +100,7 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
 
   get isDisplayCardHeader(): boolean {
     if (this.isDemo) return false;
-    return ((this.config?.title as string)?.trim().length > 0);
+    return (this.config?.title as string)?.trim().length > 0;
   }
 
   get contentClass(): string {

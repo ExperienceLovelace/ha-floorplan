@@ -6,7 +6,7 @@ import {
   HassEntities,
   // HassServices,
   MessageBase,
-} from "home-assistant-js-websocket";
+} from 'home-assistant-js-websocket';
 // import { LocalizeFunc } from "./common/translations/localize";
 // import { CoreFrontendUserData } from "./data/frontend";
 // import { getHassTranslations } from "./data/translation";
@@ -17,7 +17,7 @@ declare global {
   /* eslint-disable no-var, no-redeclare */
   var __DEV__: boolean;
   var __DEMO__: boolean;
-  var __BUILD__: "latest" | "es5";
+  var __BUILD__: 'latest' | 'es5';
   var __VERSION__: string;
   var __STATIC_PATH__: string;
   var __BACKWARDS_COMPAT__: boolean;
@@ -28,18 +28,18 @@ declare global {
     customPanelJS: string;
     ShadyCSS: {
       nativeCss: boolean;
-      nativeShadow: boolean;/*
+      nativeShadow: boolean /*
       prepareTemplate(templateElement, elementName, elementExtension);
       styleElement(element);
       styleSubtree(element, overrideProperties);
       styleDocument(overrideProperties);
       getComputedStyleValue(element, propertyName);
-      */
+      */;
     };
   }
   // for fire event
   interface HASSDomEvents {
-    "value-changed": {
+    'value-changed': {
       value: unknown;
     };
     change: undefined;
@@ -54,9 +54,9 @@ declare global {
 export type Constructor<T = any> = new (...args: any[]) => T;
 
 export interface ClassElement {
-  kind: "field" | "method";
+  kind: 'field' | 'method';
   key: PropertyKey;
-  placement: "static" | "prototype" | "own";
+  placement: 'static' | 'prototype' | 'own';
   initializer?: (...args: any) => unknown;
   extras?: ClassElement[];
   finisher?: <T>(cls: Constructor<T>) => undefined | Constructor<T>;
@@ -120,10 +120,10 @@ export interface CalendarViewChanged {
 }
 
 export type FullCalendarView =
-  | "dayGridMonth"
-  | "dayGridWeek"
-  | "dayGridDay"
-  | "list";
+  | 'dayGridMonth'
+  | 'dayGridWeek'
+  | 'dayGridDay'
+  | 'list';
 
 export interface ToggleButton {
   label: string;
@@ -158,7 +158,7 @@ export interface Notification {
   notification_id: string;
   message: string;
   title: string;
-  status: "read" | "unread";
+  status: 'read' | 'unread';
   created_at: string;
 }
 
@@ -209,16 +209,16 @@ export interface HomeAssistant {
   // suspendWhenHidden: boolean;
   // enableShortcuts: boolean;
   // vibrate: boolean;
-  dockedSidebar: "docked" | "always_hidden" | "auto";
+  dockedSidebar: 'docked' | 'always_hidden' | 'auto';
   // defaultPanel: string;
   // moreInfoEntityId: string | null;
   user?: CurrentUser;
   // userData?: CoreFrontendUserData | null;
   // hassUrl(path?: any): string;
   callService(
-    domain: ServiceCallRequest["domain"],
-    service: ServiceCallRequest["service"],
-    serviceData?: ServiceCallRequest["serviceData"]
+    domain: ServiceCallRequest['domain'],
+    service: ServiceCallRequest['service'],
+    serviceData?: ServiceCallRequest['serviceData']
   ): Promise<ServiceCallResponse>;
   /*
   callApi<T>(

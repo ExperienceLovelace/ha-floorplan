@@ -1,4 +1,11 @@
-import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import {
+  css,
+  CSSResult,
+  html,
+  LitElement,
+  property,
+  TemplateResult,
+} from 'lit-element';
 
 export class LitToast extends LitElement {
   @property({ type: String }) public _toastText!: string;
@@ -10,11 +17,7 @@ export class LitToast extends LitElement {
   }
 
   protected render(): TemplateResult {
-    return html`
-      <div role="alert">
-        ${this._toastText}
-      </div>
-  `;
+    return html` <div role="alert">${this._toastText}</div> `;
   }
 
   static get styles(): CSSResult {
@@ -91,7 +94,7 @@ export class LitToast extends LitElement {
           opacity: 0;
         }
       }
-  `;
+    `;
   }
 
   // To read out loud the toast

@@ -1,4 +1,4 @@
-import { Utils } from "../../../lib/utils";
+import { Utils } from '../../../lib/utils';
 
 export class Logger {
   logLevelGroups = {
@@ -9,14 +9,22 @@ export class Logger {
     debug: ['error', 'warning', 'warn', 'info', 'debug'],
   } as { [index: string]: string[] };
 
-  constructor(public element: HTMLElement, public logLevel?: string, public consoleLogLevel?: string) {
-  }
+  constructor(
+    public element: HTMLElement,
+    public logLevel?: string,
+    public consoleLogLevel?: string
+  ) {}
 
   log(level: string, message: string, force = false): void {
-    const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
+    const text = `${Utils.formatDate(
+      new Date()
+    )} ${level.toUpperCase()} ${message}`;
 
-    const targetLogLevels = this.logLevel && this.logLevelGroups[this.logLevel.toLowerCase()];
-    const shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
+    const targetLogLevels =
+      this.logLevel && this.logLevelGroups[this.logLevel.toLowerCase()];
+    const shouldLog =
+      targetLogLevels?.length &&
+      targetLogLevels.indexOf(level.toLowerCase()) >= 0;
 
     if (force || shouldLog) {
       if (this.element) {
@@ -32,10 +40,16 @@ export class Logger {
   }
 
   consoleLog(level: string, message: string, force = false): void {
-    const text = `${Utils.formatDate(new Date())} ${level.toUpperCase()} ${message}`;
+    const text = `${Utils.formatDate(
+      new Date()
+    )} ${level.toUpperCase()} ${message}`;
 
-    const targetLogLevels = this.consoleLogLevel && this.logLevelGroups[this.consoleLogLevel.toLowerCase()];
-    const shouldLog = targetLogLevels?.length && (targetLogLevels.indexOf(level.toLowerCase()) >= 0);
+    const targetLogLevels =
+      this.consoleLogLevel &&
+      this.logLevelGroups[this.consoleLogLevel.toLowerCase()];
+    const shouldLog =
+      targetLogLevels?.length &&
+      targetLogLevels.indexOf(level.toLowerCase()) >= 0;
 
     if (force || shouldLog) {
       switch (level) {

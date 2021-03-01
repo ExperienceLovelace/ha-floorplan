@@ -1,6 +1,6 @@
-import { ActionConfig } from "../../../data/lovelace";
-import { HomeAssistant } from "../../../types";
-import { Condition } from "../common/validate-condition";
+import { ActionConfig } from '../../../data/lovelace';
+import { HomeAssistant } from '../../../types';
+import { Condition } from '../common/validate-condition';
 
 export interface EntityConfig {
   entity: string;
@@ -16,40 +16,40 @@ export interface EntityFilterEntityConfig extends EntityConfig {
   state_filter?: Array<{ key: string } | string>;
 }
 export interface DividerConfig {
-  type: "divider";
+  type: 'divider';
   style: Record<string, string>;
 }
 export interface SectionConfig {
-  type: "section";
+  type: 'section';
   label: string;
 }
 export interface WeblinkConfig {
-  type: "weblink";
+  type: 'weblink';
   name?: string;
   icon?: string;
   url: string;
 }
 export interface TextConfig {
-  type: "text";
+  type: 'text';
   name: string;
   icon?: string;
   text: string;
 }
 export interface CallServiceConfig extends EntityConfig {
-  type: "call-service";
+  type: 'call-service';
   service: string;
   service_data?: Record<string, unknown>;
   action_name?: string;
 }
 export interface ButtonRowConfig extends EntityConfig {
-  type: "button";
+  type: 'button';
   action_name?: string;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
 }
 export interface CastConfig {
-  type: "cast";
+  type: 'cast';
   icon?: string;
   name?: string;
   view: string | number;
@@ -58,7 +58,7 @@ export interface CastConfig {
   hide_if_unavailable?: boolean;
 }
 export interface ButtonsRowConfig {
-  type: "buttons";
+  type: 'buttons';
   entities: Array<string | EntityConfig>;
 }
 export type LovelaceRowConfig =

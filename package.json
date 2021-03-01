@@ -10,7 +10,8 @@
     "build": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-content-hash --no-source-maps --out-file floorplan",
     "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file floorplan",
     "build:docs": "cross-env NODE_ENV=production parcel build src/components/floorplan-examples/floorplan-examples.ts --no-content-hash --no-source-maps --out-dir docs/_docs/floorplan --out-file floorplan-examples --public-url ./",
-    "serve:docs": "docker run -it --rm --volume=%cd%/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental"
+    "serve:docs": "docker run -it --rm --volume=%cd%/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental",
+    "prettier": "prettier --config .prettierrc src/**/*.ts --write"
   },
   "staticFiles": {
     "staticPath": [
@@ -27,17 +28,18 @@
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^14.14.31",
     "@types/strftime": "^0.9.2",
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
     "babel-core": "^6.26.3",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
-    "eslint": "^7.20.0",
+    "eslint": "^7.21.0",
     "minimist": "^1.2.5",
     "node-forge": "^0.10.0",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.5.1",
     "parcel-plugin-wrapper": "^0.2.3",
+    "prettier": "^2.2.1",
     "shx": "^0.3.3",
     "typescript": "^4.2.2"
   },

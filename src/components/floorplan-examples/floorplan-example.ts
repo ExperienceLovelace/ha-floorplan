@@ -4,14 +4,24 @@ import { HassSimulatorConfig, FloorplanExanple } from './types';
 import { FloorplanPanelConfig } from '../floorplan-panel/types';
 import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import { Utils } from '../../lib/utils';
-import { css, CSSResult, html, LitElement, property, TemplateResult, PropertyValues } from "lit-element";
+import {
+  css,
+  CSSResult,
+  html,
+  LitElement,
+  property,
+  TemplateResult,
+  PropertyValues,
+} from 'lit-element';
 import '../floorplan-card/floorplan-card';
 import '../floorplan-panel/floorplan-panel';
 import './code-block';
 
 export class FloorplanExanpleElement extends LitElement {
   @property({ type: Object }) public hass!: HomeAssistant;
-  @property({ type: Object }) public config!: LovelaceCardConfig | FloorplanPanelConfig;
+  @property({ type: Object }) public config!:
+    | LovelaceCardConfig
+    | FloorplanPanelConfig;
   @property({ type: String }) public configYaml!: string;
 
   @property({ type: String }) public examplespath!: string;
@@ -25,40 +35,69 @@ export class FloorplanExanpleElement extends LitElement {
     return html`
       <div>
         <div>
-          ${this.example.isCard ?
-            html`<floorplan-card .examplespath=${this.examplespath} .hass=${this.hass} .config=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-card>` :
-            html` <floorplan-panel .examplespath=${this.examplespath} .hass=${this.hass} .panel=${this.config} .isDemo=${this.isDemo} .notify=${this.notify}></floorplan-panel>`
-          }
+          ${this.example.isCard
+            ? html`<floorplan-card
+                .examplespath=${this.examplespath}
+                .hass=${this.hass}
+                .config=${this.config}
+                .isDemo=${this.isDemo}
+                .notify=${this.notify}
+              ></floorplan-card>`
+            : html` <floorplan-panel
+                .examplespath=${this.examplespath}
+                .hass=${this.hass}
+                .panel=${this.config}
+                .isDemo=${this.isDemo}
+                .notify=${this.notify}
+              ></floorplan-panel>`}
         </div>
 
         <!--div>
           <code-block lang="yaml" code=${this.configYaml}></code-block>
         </div-->
       </div>
-      `
-      ;
+    `;
   }
 
   static get styles(): CSSResult {
-    return css`
-    `;
+    return css``;
   }
 
   async update(changedProperties: PropertyValues): Promise<void> {
     super.update(changedProperties);
 
-    if ((changedProperties.has('example') || changedProperties.has('examplespath')) && this.example && this.examplespath) {
+    if (
+      (changedProperties.has('example') ||
+        changedProperties.has('examplespath')) &&
+      this.example &&
+      this.examplespath
+    ) {
       const configUrl = `${this.examplespath}/${this.example.dir}/${this.example.configFile}`;
-      const configYamlText = await Utils.fetchText(configUrl, true, this.examplespath);
+      const configYamlText = await Utils.fetchText(
+        configUrl,
+        true,
+        this.examplespath
+      );
 
-      this.config = Utils.parseYaml(configYamlText) as LovelaceCardConfig | FloorplanPanelConfig;
+      this.config = Utils.parseYaml(configYamlText) as
+        | LovelaceCardConfig
+        | FloorplanPanelConfig;
       this.configYaml = configYamlText;
 
       if (this.example.simulationFile) {
         const simulatorUrl = `${this.examplespath}/${this.example.dir}/${this.example.simulationFile}`;
-        const simulatorYamlText = await Utils.fetchText(simulatorUrl, true, this.examplespath);
-        const simulatorConfig = Utils.parseYaml(simulatorYamlText) as HassSimulatorConfig;
-        this.simulator = new HassSimulator(simulatorConfig, this.setHass.bind(this));
+        const simulatorYamlText = await Utils.fetchText(
+          simulatorUrl,
+          true,
+          this.examplespath
+        );
+        const simulatorConfig = Utils.parseYaml(
+          simulatorYamlText
+        ) as HassSimulatorConfig;
+        this.simulator = new HassSimulator(
+          simulatorConfig,
+          this.setHass.bind(this)
+        );
       }
     }
   }

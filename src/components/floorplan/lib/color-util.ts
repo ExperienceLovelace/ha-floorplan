@@ -14,13 +14,11 @@ export class ColorUtil {
 
       if (temp <= 19) {
         blue = 0;
-      }
-      else {
+      } else {
         blue = temp - 10;
         blue = 138.5177312231 * Math.log(blue) - 305.0447927307;
       }
-    }
-    else {
+    } else {
       red = temp - 60;
       red = 329.698727446 * Math.pow(red, -0.1332047592);
       green = temp - 60;
@@ -34,4 +32,4 @@ export class ColorUtil {
       Math.min(Math.max(Math.round(blue), 0), 255),
     ];
   }
-} 
+}

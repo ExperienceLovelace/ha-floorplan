@@ -1,5 +1,5 @@
-import { HomeAssistant } from "../../../types";
-import { UNAVAILABLE } from "../../../data/entity";
+import { HomeAssistant } from '../../../types';
+import { UNAVAILABLE } from '../../../data/entity';
 
 export interface Condition {
   entity: string;

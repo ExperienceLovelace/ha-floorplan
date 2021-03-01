@@ -18,23 +18,29 @@ export class EvalHelper {
   static util = {
     color: ColorUtil,
     date: DateUtil,
-  }
+  };
 
   static isCode(expression: string): boolean {
     return this.isCodeBlock(expression) || this.isCodeLine(expression);
   }
 
   static isCodeBlock(expression: string): boolean {
-    return (expression.trim().startsWith(">"));
+    return expression.trim().startsWith('>');
   }
-  
+
   static isCodeLine(expression: string): boolean {
-    return ((expression.indexOf("${") >= 0) && (expression.indexOf("}") >= 0));
+    return expression.indexOf('${') >= 0 && expression.indexOf('}') >= 0;
   }
 
-  static evaluate(expression: string, hass: HomeAssistant, config: FloorplanConfig, entityId?: string,
-    svgElement?: SVGGraphicsElement, svgElements?: { [elementId: string]: SVGGraphicsElement }, functions?: unknown): unknown {
-
+  static evaluate(
+    expression: string,
+    hass: HomeAssistant,
+    config: FloorplanConfig,
+    entityId?: string,
+    svgElement?: SVGGraphicsElement,
+    svgElements?: { [elementId: string]: SVGGraphicsElement },
+    functions?: unknown
+  ): unknown {
     this.expression = expression.trim();
 
     const cacheKey = `${this.expression}_${svgElement ?? ''}`;
@@ -44,23 +50,30 @@ export class EvalHelper {
       this.functionBody = this.expression;
 
       if (this.isCodeBlock(this.functionBody)) {
-        this.functionBody = this.functionBody.slice(">".length).trim(); // expression beginning with > is real JavaScript code
-      }
-      else if (this.isCodeLine(this.functionBody)) {
-        if (this.functionBody.startsWith('"') && this.functionBody.endsWith('"')) {
-          this.functionBody = this.functionBody.slice(1, this.functionBody.length - 2); // remove leading and trailing quotes
+        this.functionBody = this.functionBody.slice('>'.length).trim(); // expression beginning with > is real JavaScript code
+      } else if (this.isCodeLine(this.functionBody)) {
+        if (
+          this.functionBody.startsWith('"') &&
+          this.functionBody.endsWith('"')
+        ) {
+          this.functionBody = this.functionBody.slice(
+            1,
+            this.functionBody.length - 2
+          ); // remove leading and trailing quotes
         }
-  
+
         this.functionBody = this.functionBody.replace(/\\"/g, '"'); // change escaped quotes to just quotes
-  
+
         this.functionBody = `\`${this.functionBody}\`;`;
-  
+
         if (this.functionBody.indexOf('return') < 0) {
           this.functionBody = `return ${this.functionBody}`;
         }
       }
-    
-      this.parsedFunction = this.interpreter.parse(`exports.result = (() => { ${this.functionBody} })();`);
+
+      this.parsedFunction = this.interpreter.parse(
+        `exports.result = (() => { ${this.functionBody} })();`
+      );
       this.cache[cacheKey] = this.parsedFunction;
 
       // Add global modules in interpreter (static data)

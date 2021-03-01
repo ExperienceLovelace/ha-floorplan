@@ -1,7 +1,7 @@
-import { ActionConfig } from "../../../data/lovelace";
-import { object, optional, union, string, number, array } from "superstruct";
-import { actionConfigStruct, entitiesConfigStruct } from "../editor/types";
-import { EntityConfig } from "../entity-rows/types";
+import { ActionConfig } from '../../../data/lovelace';
+import { object, optional, union, string, number, array } from 'superstruct';
+import { actionConfigStruct, entitiesConfigStruct } from '../editor/types';
+import { EntityConfig } from '../entity-rows/types';
 
 export interface LovelaceHeaderFooterConfig {
   type: string;

@@ -1,14 +1,14 @@
-import { ActionConfig, LovelaceCardConfig } from "../../../data/lovelace";
-import { FullCalendarView } from "../../../types";
-import { Condition } from "../common/validate-condition";
+import { ActionConfig, LovelaceCardConfig } from '../../../data/lovelace';
+import { FullCalendarView } from '../../../types';
+import { Condition } from '../common/validate-condition';
 // import { HuiImage } from "../components/hui-image";
-import { LovelaceElementConfig } from "../elements/types";
+import { LovelaceElementConfig } from '../elements/types';
 import {
   EntityConfig,
   EntityFilterEntityConfig,
   LovelaceRowConfig,
-} from "../entity-rows/types";
-import { LovelaceHeaderFooterConfig } from "../header-footer/types";
+} from '../entity-rows/types';
+import { LovelaceHeaderFooterConfig } from '../header-footer/types';
 
 export interface AlarmPanelCardConfig extends LovelaceCardConfig {
   entity: string;
@@ -42,13 +42,13 @@ export interface EntityCardConfig extends LovelaceCardConfig {
 export interface EntitiesCardEntityConfig extends EntityConfig {
   type?: string;
   secondary_info?:
-    | "entity-id"
-    | "last-changed"
-    | "last-triggered"
-    | "last-updated"
-    | "position"
-    | "tilt-position"
-    | "brightness";
+    | 'entity-id'
+    | 'last-changed'
+    | 'last-triggered'
+    | 'last-updated'
+    | 'position'
+    | 'tilt-position'
+    | 'brightness';
   action_name?: string;
   service?: string;
   service_data?: Record<string, unknown>;
@@ -62,7 +62,7 @@ export interface EntitiesCardEntityConfig extends EntityConfig {
 }
 
 export interface EntitiesCardConfig extends LovelaceCardConfig {
-  type: "entities";
+  type: 'entities';
   show_header_toggle?: boolean;
   title?: string;
   entities: Array<LovelaceRowConfig | string>;
@@ -88,7 +88,7 @@ export interface ButtonCardConfig extends LovelaceCardConfig {
 }
 
 export interface EntityFilterCardConfig extends LovelaceCardConfig {
-  type: "entity-filter";
+  type: 'entity-filter';
   entities: Array<EntityFilterEntityConfig | string>;
   state_filter: Array<{ key: string } | string>;
   card: Partial<LovelaceCardConfig>;
@@ -170,14 +170,14 @@ export interface LightCardConfig extends LovelaceCardConfig {
 }
 
 export interface LogbookCardConfig extends LovelaceCardConfig {
-  type: "logbook";
+  type: 'logbook';
   entities: string[];
   title?: string;
   hours_to_show?: number;
 }
 
 export interface MapCardConfig extends LovelaceCardConfig {
-  type: "map";
+  type: 'map';
   title?: string;
   aspect_ratio?: string;
   default_zoom?: number;
@@ -188,7 +188,7 @@ export interface MapCardConfig extends LovelaceCardConfig {
 }
 
 export interface MarkdownCardConfig extends LovelaceCardConfig {
-  type: "markdown";
+  type: 'markdown';
   content: string;
   title?: string;
   card_size?: number;

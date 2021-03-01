@@ -1,11 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MessageBase } from 'home-assistant-js-websocket';
-import { HomeAssistant as IHomeAssistant, ServiceCallRequest, ServiceCallResponse } from '../../lib/homeassistant/types';
-import { HassEntityAttributeBase, HassEntityBase as IHassEntityBase } from 'home-assistant-js-websocket';
+import {
+  HomeAssistant as IHomeAssistant,
+  ServiceCallRequest,
+  ServiceCallResponse,
+} from '../../lib/homeassistant/types';
+import {
+  HassEntityAttributeBase,
+  HassEntityBase as IHassEntityBase,
+} from 'home-assistant-js-websocket';
 
 export class HomeAssistant implements IHomeAssistant {
   states: Record<string, IHassEntityBase> = {};
-  dockedSidebar!: "docked" | "always_hidden" | "auto";
+  dockedSidebar!: 'docked' | 'always_hidden' | 'auto';
 
   callWS<T>(msg: MessageBase): Promise<T> {
     console.log(msg);
@@ -13,9 +20,9 @@ export class HomeAssistant implements IHomeAssistant {
   }
 
   callService(
-    domain: ServiceCallRequest["domain"],
-    service: ServiceCallRequest["service"],
-    serviceData?: ServiceCallRequest["serviceData"]
+    domain: ServiceCallRequest['domain'],
+    service: ServiceCallRequest['service'],
+    serviceData?: ServiceCallRequest['serviceData']
   ): Promise<ServiceCallResponse> {
     if (domain && service && serviceData) {
       // placeholder
@@ -26,7 +33,7 @@ export class HomeAssistant implements IHomeAssistant {
         id: '',
         parent_id: undefined,
         user_id: undefined,
-      }
+      },
     } as ServiceCallResponse;
 
     return Promise.resolve(response);

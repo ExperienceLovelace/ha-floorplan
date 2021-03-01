@@ -1,5 +1,4 @@
 export enum ClickType {
   ShortClick,
-  LongClick
+  LongClick,
 }
-  

@@ -1,4 +1,7 @@
-import { ActionConfig, BaseActionConfig } from '../../../lib/homeassistant/lovelace/types';
+import {
+  ActionConfig,
+  BaseActionConfig,
+} from '../../../lib/homeassistant/lovelace/types';
 
 import {
   ToggleActionConfig,
@@ -7,7 +10,7 @@ import {
   UrlActionConfig,
   MoreInfoActionConfig,
   NoActionConfig,
-  CustomActionConfig
+  CustomActionConfig,
 } from '../../../lib/homeassistant/lovelace/types';
 
 export class FloorplanConfig {
@@ -19,7 +22,11 @@ export class FloorplanConfig {
   rules!: FloorplanRuleConfig[];
 
   // Optional features
-  startup_action!: FloorplanActionConfig[] | FloorplanActionConfig | string | false;
+  startup_action!:
+    | FloorplanActionConfig[]
+    | FloorplanActionConfig
+    | string
+    | false;
   defaults!: FloorplanRuleConfig;
   image_mobile!: FloorplanImageConfig | string;
   functions!: string;
@@ -32,16 +39,17 @@ export class FloorplanConfig {
 
 declare global {
   interface HASSDomEvents {
-    "ll-custom": ActionConfig;
+    'll-custom': ActionConfig;
   }
 }
 
-export interface FloorplanCallServiceActionConfig extends CallServiceActionConfig {
+export interface FloorplanCallServiceActionConfig
+  extends CallServiceActionConfig {
   value: unknown;
 }
 
 export interface HoverInfoActionConfig extends BaseActionConfig {
-  action: "hover-info";
+  action: 'hover-info';
 }
 
 export type FloorplanActionConfig =
@@ -83,11 +91,27 @@ export class FloorplanRuleConfig {
   service?: string;
   service_data?: Record<string, unknown>;
   // url?: string;
-  state_action!: FloorplanActionConfig | FloorplanActionConfig[] | string | false;
+  state_action!:
+    | FloorplanActionConfig
+    | FloorplanActionConfig[]
+    | string
+    | false;
   tap_action!: FloorplanActionConfig | FloorplanActionConfig[] | string | false;
-  hold_action!: FloorplanActionConfig | FloorplanActionConfig[] | string | false;
-  double_tap_action!: FloorplanActionConfig | FloorplanActionConfig[] | string | false;
-  hover_action!: FloorplanActionConfig | FloorplanActionConfig[] | string | false;
+  hold_action!:
+    | FloorplanActionConfig
+    | FloorplanActionConfig[]
+    | string
+    | false;
+  double_tap_action!:
+    | FloorplanActionConfig
+    | FloorplanActionConfig[]
+    | string
+    | false;
+  hover_action!:
+    | FloorplanActionConfig
+    | FloorplanActionConfig[]
+    | string
+    | false;
 }
 
 export class FloorplanRuleEntityElementConfig {

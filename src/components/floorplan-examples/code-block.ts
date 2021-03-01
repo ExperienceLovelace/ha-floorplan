@@ -1,4 +1,4 @@
-import { html, LitElement, property, css, CSSResult } from "lit-element";
+import { html, LitElement, property, css, CSSResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import * as hljs from 'highlight.js';
 
@@ -7,11 +7,12 @@ class CodeBlockElement extends LitElement {
   @property({ type: String }) public code = '';
 
   render() {
-    const highlightedCode = hljs.highlightAuto(this.code, this.lang ? [this.lang] : undefined).value;
+    const highlightedCode = hljs.highlightAuto(
+      this.code,
+      this.lang ? [this.lang] : undefined
+    ).value;
 
-    return html`
-      <pre><code>${unsafeHTML(highlightedCode)}</code></pre>
-    `;
+    return html` <pre><code>${unsafeHTML(highlightedCode)}</code></pre> `;
   }
 
   static get styles(): CSSResult {
@@ -20,21 +21,20 @@ class CodeBlockElement extends LitElement {
         display: block;
         overflow-x: auto;
         padding: 0.5em;
-        background: #F0F0F0;
+        background: #f0f0f0;
       }
-      
-      
+
       /* Base color: saturation 0; */
-      
+
       .hljs,
       .hljs-subst {
         color: #444;
       }
-      
+
       .hljs-comment {
         color: #888888;
       }
-      
+
       .hljs-keyword,
       .hljs-attribute,
       .hljs-selector-tag,
@@ -43,10 +43,9 @@ class CodeBlockElement extends LitElement {
       .hljs-name {
         font-weight: bold;
       }
-      
-      
+
       /* User color: hue: 0 */
-      
+
       .hljs-type,
       .hljs-string,
       .hljs-number,
@@ -57,13 +56,13 @@ class CodeBlockElement extends LitElement {
       .hljs-deletion {
         color: #880000;
       }
-      
+
       .hljs-title,
       .hljs-section {
         color: #880000;
         font-weight: bold;
       }
-      
+
       .hljs-regexp,
       .hljs-symbol,
       .hljs-variable,
@@ -71,41 +70,38 @@ class CodeBlockElement extends LitElement {
       .hljs-link,
       .hljs-selector-attr,
       .hljs-selector-pseudo {
-        color: #BC6060;
+        color: #bc6060;
       }
-      
-      
+
       /* Language color: hue: 90; */
-      
+
       .hljs-literal {
-        color: #78A960;
+        color: #78a960;
       }
-      
+
       .hljs-built_in,
       .hljs-bullet,
       .hljs-code,
       .hljs-addition {
         color: #397300;
       }
-      
-      
+
       /* Meta color: hue: 200 */
-      
+
       .hljs-meta {
         color: #1f7199;
       }
-      
+
       .hljs-meta-string {
         color: #4d99bf;
       }
-      
-      
+
       /* Misc effects */
-      
+
       .hljs-emphasis {
         font-style: italic;
       }
-      
+
       .hljs-strong {
         font-weight: bold;
       }
@@ -116,4 +112,3 @@ class CodeBlockElement extends LitElement {
 if (!customElements.get('code-block')) {
   customElements.define('code-block', CodeBlockElement);
 }
-
