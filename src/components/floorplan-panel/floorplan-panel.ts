@@ -9,8 +9,8 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit-element';
-import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 import '../floorplan/floorplan-element';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 
 export class FloorplanPanel extends LitElement {
   @property({ type: Object }) public hass!: HomeAssistant;
@@ -24,7 +24,7 @@ export class FloorplanPanel extends LitElement {
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
-  styles: StyleInfo = { height: 'calc(100vh - 100px)' };
+  styles: StyleInfo = { height: 'calc(100vh)' };
 
   static appHeaderHeight = 64;
 

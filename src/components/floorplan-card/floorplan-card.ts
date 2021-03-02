@@ -8,9 +8,11 @@ import {
   LitElement,
   property,
   TemplateResult,
+  PropertyValues,
 } from 'lit-element';
 import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 
 export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Object }) public hass!: HomeAssistant;
@@ -23,6 +25,8 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
+  styles: StyleInfo = { dummy: '' };
+
   static cardHeaderHeight = 76;
 
   protected render(): TemplateResult {
@@ -31,20 +35,12 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     }
 
     return html`
-      <style>
-        :host .content.full-height {
-          height: calc(
-            100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px
-          );
-        }
-      </style>
-
       <ha-card>
         ${this.isDisplayCardHeader
           ? html` <h1 class="card-header">${this.config?.title}</h1> `
           : ''}
 
-        <div class="content ${this.contentClass}">
+        <div class="content" style=${styleMap(this.styles)}>
           <floorplan-element
             .examplespath=${this.examplespath}
             .hass=${this.hass}
@@ -103,16 +99,26 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return (this.config?.title as string)?.trim().length > 0;
   }
 
-  get contentClass(): string {
-    return this.isFullHeight ? 'full-height' : '';
-  }
-
   getCardSize(): number | Promise<number> {
     return 1;
   }
 
   setConfig(config: LovelaceCardConfig): void {
     this.config = config;
+  }
+
+  update(changedProperties: PropertyValues): void {
+    super.update(changedProperties);
+
+    if (changedProperties.has('config')) {
+      if (this.isFullHeight) {
+        this.styles = {
+          height: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)`,
+        };
+      } else {
+        this.styles = { dummy: '' };
+      }
+    }
   }
 }
 
