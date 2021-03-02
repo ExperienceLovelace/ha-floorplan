@@ -37,8 +37,8 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card>
         ${this.isDisplayCardHeader
-          ? html` <h1 class="card-header">${this.config?.title}</h1> `
-          : ''}
+        ? html` <h1 class="card-header">${this.config?.title}</h1> `
+        : ''}
 
         <div class="content" style=${styleMap(this.styles)}>
           <floorplan-element
@@ -110,7 +110,7 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   update(changedProperties: PropertyValues): void {
     super.update(changedProperties);
 
-    if (changedProperties.has('config')) {
+    if (this.config) {
       if (this.isFullHeight) {
         this.styles = {
           height: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)`,
