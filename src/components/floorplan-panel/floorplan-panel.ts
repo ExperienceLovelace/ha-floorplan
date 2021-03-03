@@ -71,8 +71,6 @@ export class FloorplanPanel extends LitElement {
   }
 
   update(changedProperties: PropertyValues): void {
-    super.update(changedProperties);
-
     if (this.panel) {
       this.showSideBar = this.panel.config.show_side_bar !== false;
       this.showAppHeader =
@@ -84,6 +82,8 @@ export class FloorplanPanel extends LitElement {
 
       this.styles = { height: `calc(100vh - ${this.appHeaderHeight}px)` };
     }
+
+    super.update(changedProperties);
   }
 }
 
