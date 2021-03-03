@@ -76,7 +76,7 @@ export class FloorplanPanel extends LitElement {
       this.showAppHeader =
         (this.panel.config.show_app_header !== false) && !this.isDemo;
 
-      if (this.panel.config.show_side_bar === false) {
+      if (this.hass && (this.panel.config.show_side_bar === false)) {
         this.hass.dockedSidebar = 'always_hidden';
       }
 
