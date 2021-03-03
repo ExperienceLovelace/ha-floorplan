@@ -25,7 +25,10 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
-  styles: StyleInfo = { dummy: '' };
+  styles: StyleInfo = { dummy: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)` };
+
+  _view: Element | null | undefined;
+  _appHeader: Element | null | undefined;
 
   static cardHeaderHeight = 76;
 
@@ -76,11 +79,17 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   }
 
   get view(): Element | null | undefined {
-    return ShadowDomHelper.closestElement('#view', this);
+    if (!this._view) {
+      this._view = ShadowDomHelper.closestElement('#view', this);
+    }
+    return this._view;
   }
 
   get appHeader(): Element | null | undefined {
-    return this.view?.previousElementSibling;
+    if (!this._appHeader) {
+      this._appHeader = this.view?.previousElementSibling;
+    }
+    return this._appHeader;
   }
 
   get appHeaderHeight(): number {
@@ -108,17 +117,15 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   }
 
   update(changedProperties: PropertyValues): void {
-    super.update(changedProperties);
-
-    if (this.config) {
-      if (this.isFullHeight) {
-        this.styles = {
-          height: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)`,
-        };
-      } else {
-        this.styles = { dummy: '' };
-      }
+    if (this.isFullHeight) {
+      this.styles = {
+        height: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)`,
+      };
+    } else {
+      this.styles = { dummy: '' };
     }
+
+    super.update(changedProperties);
   }
 }
 
