@@ -1,6 +1,6 @@
 /* SVG size */
 
-#floorplan  {
+#floorplan {
   padding: 10px;
 }
 
@@ -21,9 +21,9 @@ g.floorplan-hover > :not(text):hover,
 g.floorplan-click > :not(text):hover,
 g.floorplan-long-click > :not(text):hover,
 :not(text).floorplan-hover:hover,
-:not(text).floorplan-click:hover, 
+:not(text).floorplan-click:hover,
 :not(text).floorplan-long-click:hover {
-  stroke: #03A9F4 !important;
+  stroke: #03a9f4 !important;
   stroke-width: 1px !important;
   stroke-opacity: 1 !important;
 }
@@ -51,18 +51,18 @@ g.floorplan-long-click > :not(text):hover,
 /* Binary sensors */
 
 .binary-sensor-on {
-  fill: #F9D27C !important;
+  fill: #f9d27c !important;
 }
 
 .binary-sensor-off {
-  fill: #7CB1F9 !important;
+  fill: #7cb1f9 !important;
   transition: fill 5s ease;
 }
 
 /* Buttons */
 
 .button-on rect {
-  fill: #1ABA92 !important;
+  fill: #1aba92 !important;
 }
 
 .button-off rect {

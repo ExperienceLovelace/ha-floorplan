@@ -4,10 +4,10 @@ config:
   stylesheet: /local/floorplan/examples/light/light.css
 
   defaults:
-      hover_action:
-        action: hover-info
-      tap_action:
-        action: more-info
+    hover_action:
+      action: hover-info
+    tap_action:
+      action: more-info
 
   rules:
     - entities:

@@ -15,12 +15,12 @@ export class Utils {
     element.classList
       ? element.classList.remove(className)
       : (element.className = element.className.replace(
-          new RegExp(
-            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-            'gi'
-          ),
-          ' '
-        ));
+        new RegExp(
+          '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+          'gi'
+        ),
+        ' '
+      ));
   }
 
   static hassClass(element: Element, className: string): boolean {
@@ -141,7 +141,7 @@ export class Utils {
     resourceUrl: string,
     isDemo: boolean,
     examplesPath: string,
-    useCache = false
+    useCache = true
   ): Promise<string> {
     if (examplesPath) {
       resourceUrl = resourceUrl.replace(
@@ -153,7 +153,7 @@ export class Utils {
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
-      cache: useCache ? 'reload' : 'no-store',
+      cache: useCache ? 'default' : 'no-store',
       mode: isDemo ? 'no-cors' : undefined,
     });
 
@@ -174,7 +174,7 @@ export class Utils {
     resourceUrl: string,
     isDemo: boolean,
     examplesPath: string,
-    useCache = false
+    useCache = true
   ): Promise<string> {
     if (isDemo) {
       resourceUrl = resourceUrl.replace(
@@ -186,7 +186,7 @@ export class Utils {
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
     const request = new Request(resourceUrl, {
-      cache: useCache ? 'reload' : 'no-store',
+      cache: useCache ? 'default' : 'no-store',
       headers: new Headers({
         'Content-Type': 'text/plain; charset=x-user-defined',
       }),
@@ -263,9 +263,8 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${
-      url.indexOf('?') >= 0 ? '&' : '?'
-    }_=${new Date().getTime()}`;
+    return `${url}${url.indexOf('?') >= 0 ? '&' : '?'
+      }_=${new Date().getTime()}`;
   }
 
   static equal(a: unknown, b: unknown): boolean {

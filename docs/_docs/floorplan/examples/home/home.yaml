@@ -36,7 +36,7 @@ config:
         state_action:
           action: call-service
           service: floorplan.text_set
-          service_data:  ${entity.state}
+          service_data: ${entity.state}
         tap_action: false
 
       - entity: switch.living_area_fan
@@ -64,7 +64,7 @@ config:
         state_action:
           action: call-service
           service: floorplan.text_set
-          service_data:  ${entity.state}
+          service_data: ${entity.state}
         tap_action: false
 
       - entity: camera.zagreb_ban_jelacic_square
