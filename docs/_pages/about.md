@@ -7,7 +7,7 @@ title: "About"
 
 [Petar Kožul](https://github.com/orgs/ExperienceLovelace/people/pkozul) started the first version of ha-floorplan. With Lovelace, Petar turned [ha-floorplan](https://github.com/pkozul/ha-floorplan) into a supported module for lovelace, too. The old lovelace-version was called [lovelace-floorplan](https://github.com/ExperienceLovelace/lovelace-floorplan). [Tobias Nordahl Kristensen](https://github.com/orgs/ExperienceLovelace/people/exetico) joined the ha-floorplan project in a period, where nothing really changed in the repo. After a huge pull-request, lovelace-floorplan finally supported HACS. What Tobias didn't know, was that Petar had working on a brand new base-code, which was much more modern - and improved both options, performance and general usage, too.
 
-We moved the lovelace-floorplan to the new team called [ExperinceLovelace](https://github.com/ExperienceLovelace). After a few weeks of testing and improvements to the new codebase, we finally released the first version of the new [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) (Yep, that's the current one).
+We moved the lovelace-floorplan to the new team called [ExperienceLovelace](https://github.com/ExperienceLovelace). After a few weeks of testing and improvements to the new codebase, we finally released the first version of the new [ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) (Yep, that's the current one).
 
 
 ## Your imagination (almost) defines the limits
