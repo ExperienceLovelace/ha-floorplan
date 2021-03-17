@@ -141,7 +141,7 @@ export class Utils {
     resourceUrl: string,
     isDemo: boolean,
     examplesPath: string,
-    useCache = true
+    useCache: boolean,
   ): Promise<string> {
     if (examplesPath) {
       resourceUrl = resourceUrl.replace(
@@ -174,7 +174,7 @@ export class Utils {
     resourceUrl: string,
     isDemo: boolean,
     examplesPath: string,
-    useCache = true
+    useCache: boolean
   ): Promise<string> {
     if (isDemo) {
       resourceUrl = resourceUrl.replace(
@@ -184,6 +184,8 @@ export class Utils {
     }
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
+
+    console.log(resourceUrl, useCache);
 
     const request = new Request(resourceUrl, {
       cache: useCache ? 'default' : 'no-store',

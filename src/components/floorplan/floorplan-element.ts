@@ -84,9 +84,8 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${
-            this.clearLog
-          }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${this.clearLog
+      }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -215,7 +214,7 @@ export class FloorplanElement extends LitElement {
 
   async init(): Promise<void> {
     try {
-      const config = await this.loadConfig(this._config);
+      const config = await this.loadConfig(this._config, false);
 
       this.isShowLog = config.log_level !== undefined;
 
@@ -260,7 +259,7 @@ export class FloorplanElement extends LitElement {
 
   async initSinglePage(): Promise<void> {
     try {
-      await this.loadStyleSheet(this.config.stylesheet);
+      await this.loadStyleSheet(this.config.stylesheet, false);
       const imageUrl = this.getBestImage(this.config);
       this.svg = await await this.loadFloorplanSvg(imageUrl);
       //this.initFloorplanRules(svg, this.config!)
@@ -277,12 +276,13 @@ export class FloorplanElement extends LitElement {
   /* Loading resources
   /***************************************************************************************************************************/
 
-  async loadConfig(config: FloorplanConfig | string): Promise<FloorplanConfig> {
+  async loadConfig(config: FloorplanConfig | string, useCache: boolean): Promise<FloorplanConfig> {
     if (typeof config === 'string') {
       const targetConfig = await Utils.fetchText(
         config,
         this.isDemo,
-        this.examplespath
+        this.examplespath,
+        useCache
       );
       const configYaml = yaml.load(targetConfig);
       return configYaml as FloorplanConfig;
@@ -313,9 +313,8 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${
-              ((err as unknown) as Record<string, Record<string, unknown>>)
-                .target.src
+            `${((err as unknown) as Record<string, Record<string, unknown>>)
+              .target.src
             }`
           )
         );
@@ -369,7 +368,8 @@ export class FloorplanElement extends LitElement {
     index: number
   ): Promise<FloorplanPageInfo> {
     const pageConfig = (await this.loadConfig(
-      pageConfigUrl
+      pageConfigUrl,
+      false
     )) as FloorplanPageConfig;
     const pageInfo = this.createPageInfo(pageConfig);
     pageInfo.index = index;
@@ -384,7 +384,7 @@ export class FloorplanElement extends LitElement {
     const svg = await this.loadFloorplanSvg(imageUrl, pageInfo, masterPageInfo);
     svg.id = pageInfo.config.page_id; // give the SVG an ID so it can be styled (i.e. background color)
     pageInfo.svg = svg;
-    await this.loadStyleSheet(pageInfo.config.stylesheet);
+    await this.loadStyleSheet(pageInfo.config.stylesheet, true); // use cache for main floorplan SVG image
     this.initFloorplanRules(pageInfo.svg, pageInfo.config);
   }
 
@@ -426,13 +426,14 @@ export class FloorplanElement extends LitElement {
     return pageInfo;
   }
 
-  async loadStyleSheet(stylesheetUrl: string): Promise<void> {
+  async loadStyleSheet(stylesheetUrl: string, useCache: boolean): Promise<void> {
     if (!stylesheetUrl) return;
 
     const stylesheet = await Utils.fetchText(
       stylesheetUrl,
       this.isDemo,
-      this.examplespath
+      this.examplespath,
+      useCache
     );
     const style = document.createElement('style');
 
@@ -476,12 +477,14 @@ export class FloorplanElement extends LitElement {
   async loadFloorplanSvg(
     imageUrl: string,
     pageInfo?: FloorplanPageInfo,
-    masterPageInfo?: FloorplanPageInfo
+    masterPageInfo?: FloorplanPageInfo,
+    useCache?: boolean
   ): Promise<SVGGraphicsElement> {
     const svgText = await Utils.fetchText(
       imageUrl,
       this.isDemo,
-      this.examplespath
+      this.examplespath,
+      (useCache === true)
     );
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
@@ -557,21 +560,24 @@ export class FloorplanElement extends LitElement {
     imageUrl: string,
     svgElementInfo: FloorplanSvgElementInfo,
     entityId: string,
-    ruleInfo: FloorplanRuleInfo
+    ruleInfo: FloorplanRuleInfo,
+    useCache: boolean
   ): Promise<SVGGraphicsElement> {
     if (imageUrl.toLowerCase().indexOf('.svg') >= 0) {
       return await this.loadSvgImage(
         imageUrl,
         svgElementInfo,
         entityId,
-        ruleInfo
+        ruleInfo,
+        useCache
       );
     } else {
       return await this.loadBitmapImage(
         imageUrl,
         svgElementInfo,
         entityId,
-        ruleInfo
+        ruleInfo,
+        useCache
       );
     }
   }
@@ -580,12 +586,14 @@ export class FloorplanElement extends LitElement {
     imageUrl: string,
     svgElementInfo: FloorplanSvgElementInfo,
     entityId: string,
-    ruleInfo: FloorplanRuleInfo
+    ruleInfo: FloorplanRuleInfo,
+    useCache: boolean
   ): Promise<SVGGraphicsElement> {
     const imageData = await Utils.fetchImage(
       imageUrl,
       this.isDemo,
-      this.examplespath
+      this.examplespath,
+      useCache
     );
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
@@ -634,12 +642,14 @@ export class FloorplanElement extends LitElement {
     imageUrl: string,
     svgElementInfo: FloorplanSvgElementInfo,
     entityId: string,
-    ruleInfo: FloorplanRuleInfo
+    ruleInfo: FloorplanRuleInfo,
+    useCache: boolean
   ): Promise<SVGGraphicsElement> {
     const svgText = await Utils.fetchText(
       imageUrl,
       this.isDemo,
-      this.examplespath
+      this.examplespath,
+      useCache
     );
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
@@ -1335,7 +1345,7 @@ export class FloorplanElement extends LitElement {
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-              'hover-info');
+            'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1365,9 +1375,8 @@ export class FloorplanElement extends LitElement {
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
-                  titleText += `${key}: ${
-                    (entityState.attributes as Record<string, unknown>)[key]
-                  }\n`;
+                  titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
+                    }\n`;
                 });
                 titleText += '\n';
 
@@ -1532,7 +1541,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-              `Are you sure you want to ${actionConfig.action}?`
+            `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;
@@ -1745,6 +1754,7 @@ export class FloorplanElement extends LitElement {
     let styleName: string;
     let imageUrl: string;
     let imageRefreshInterval: number;
+    let useCache: boolean;
     let text: string;
     let targetSvgElements: SVGGraphicsElement[] = [];
     let url: string;
@@ -1861,14 +1871,21 @@ export class FloorplanElement extends LitElement {
             entityId,
             svgElementInfo?.svgElement
           );
+
           imageUrl =
             typeof serviceData === 'string'
               ? serviceData
               : (serviceData.image as string);
+
           imageRefreshInterval =
             typeof serviceData === 'object'
               ? (serviceData.image_refresh_interval as number)
               : 0;
+
+          useCache =
+            typeof serviceData === 'object'
+              ? ((serviceData.cache as boolean) === true)
+              : true; // use cache by default
 
           if (ruleInfo.imageLoader) {
             clearInterval(ruleInfo.imageLoader); // cancel any previous image loading for this rule
@@ -1881,7 +1898,8 @@ export class FloorplanElement extends LitElement {
               imageUrl,
               svgElementInfo,
               entityId,
-              ruleInfo
+              ruleInfo,
+              false // don't use cache for refreshing images
             );
           }
 
@@ -1889,7 +1907,8 @@ export class FloorplanElement extends LitElement {
             imageUrl,
             svgElementInfo,
             entityId as string,
-            ruleInfo as FloorplanRuleInfo
+            ruleInfo as FloorplanRuleInfo,
+            useCache && !imageRefreshInterval
           );
         }
         break;

@@ -36,14 +36,14 @@ export class FloorplanExanpleElement extends LitElement {
       <div>
         <div>
           ${this.example.isCard
-            ? html`<floorplan-card
+        ? html`<floorplan-card
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
                 .config=${this.config}
                 .isDemo=${this.isDemo}
                 .notify=${this.notify}
               ></floorplan-card>`
-            : html` <floorplan-panel
+        : html` <floorplan-panel
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
                 .panel=${this.config}
@@ -76,7 +76,8 @@ export class FloorplanExanpleElement extends LitElement {
       const configYamlText = await Utils.fetchText(
         configUrl,
         true,
-        this.examplespath
+        this.examplespath,
+        false
       );
 
       this.config = Utils.parseYaml(configYamlText) as
@@ -89,7 +90,8 @@ export class FloorplanExanpleElement extends LitElement {
         const simulatorYamlText = await Utils.fetchText(
           simulatorUrl,
           true,
-          this.examplespath
+          this.examplespath,
+          false
         );
         const simulatorConfig = Utils.parseYaml(
           simulatorYamlText

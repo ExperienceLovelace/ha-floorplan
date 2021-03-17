@@ -18,7 +18,9 @@ config:
         state_action:
           action: call-service
           service: floorplan.image_set
-          service_data: /local/floorplan/examples/home/light_${entity.state}.svg
+          service_data:
+            image: /local/floorplan/examples/home/light_${entity.state}.svg
+            cache: true
         tap_action: toggle
 
       - entity: light.garage
