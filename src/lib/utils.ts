@@ -185,8 +185,6 @@ export class Utils {
 
     resourceUrl = useCache ? resourceUrl : Utils.cacheBuster(resourceUrl);
 
-    console.log(resourceUrl, useCache);
-
     const request = new Request(resourceUrl, {
       cache: useCache ? 'default' : 'no-store',
       headers: new Headers({
