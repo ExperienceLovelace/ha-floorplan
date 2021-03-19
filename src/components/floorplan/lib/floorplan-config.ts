@@ -16,7 +16,7 @@ import {
 export class FloorplanConfig {
   // Core features
   image!: FloorplanImageConfig | string;
-  stylesheet!: string;
+  stylesheet!: FloorplanStylesheetConfig | string;
   log_level!: string;
   console_log_level!: string;
   rules!: FloorplanRuleConfig[];
@@ -72,12 +72,20 @@ export class FloorplanMasterPageConfig extends FloorplanPageConfig {
 }
 
 export class FloorplanImageConfig {
+  location!: string;
+  cache!: boolean;
   sizes!: FloorplanImageSize[];
 }
 
 export class FloorplanImageSize {
   min_width = 0;
   location!: string;
+  cache!: boolean;
+}
+
+export class FloorplanStylesheetConfig {
+  location!: string;
+  cache!: boolean;
 }
 
 export class FloorplanRuleConfig {

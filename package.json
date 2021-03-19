@@ -1,6 +1,6 @@
 {
   "name": "ha-floorplan",
-  "version": "1.0.20beta7",
+  "version": "1.0.20",
   "description": "Floorplan for Home Assistant",
   "main": "index.js",
   "scripts": {

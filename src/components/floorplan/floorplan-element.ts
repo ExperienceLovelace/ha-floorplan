@@ -13,7 +13,7 @@ import {
   FloorplanRuleConfig,
   FloorplanVariableConfig,
 } from './lib/floorplan-config';
-import { FloorplanRuleEntityElementConfig } from './lib/floorplan-config';
+import { FloorplanRuleEntityElementConfig, FloorplanStylesheetConfig } from './lib/floorplan-config';
 import {
   FloorplanClickContext,
   FloorplanPageInfo,
@@ -259,9 +259,9 @@ export class FloorplanElement extends LitElement {
 
   async initSinglePage(): Promise<void> {
     try {
-      await this.loadStyleSheet(this.config.stylesheet, false);
-      const imageUrl = this.getBestImage(this.config);
-      this.svg = await await this.loadFloorplanSvg(imageUrl);
+      await this.loadStyleSheet(this.config.stylesheet);
+      const imageConfig = this.getBestImage(this.config);
+      this.svg = await this.loadFloorplanSvg(imageConfig);
       //this.initFloorplanRules(svg, this.config!)
       this.initPageDisplay();
       this.initVariables();
@@ -380,16 +380,17 @@ export class FloorplanElement extends LitElement {
     pageInfo: FloorplanPageInfo,
     masterPageInfo: FloorplanPageInfo
   ): Promise<void> {
-    const imageUrl = this.getBestImage(pageInfo.config);
-    const svg = await this.loadFloorplanSvg(imageUrl, pageInfo, masterPageInfo);
+    const imageConfig = this.getBestImage(pageInfo.config);
+    const svg = await this.loadFloorplanSvg(imageConfig, pageInfo, masterPageInfo);
     svg.id = pageInfo.config.page_id; // give the SVG an ID so it can be styled (i.e. background color)
     pageInfo.svg = svg;
-    await this.loadStyleSheet(pageInfo.config.stylesheet, true); // use cache for main floorplan SVG image
+    await this.loadStyleSheet(pageInfo.config.stylesheet);
     this.initFloorplanRules(pageInfo.svg, pageInfo.config);
   }
 
-  getBestImage(config: FloorplanConfig): string {
+  getBestImage(config: FloorplanConfig): { location: string, cache: boolean } {
     let imageUrl = '';
+    let cache = true;
 
     if (typeof config.image === 'string') {
       // Device detection
@@ -404,13 +405,18 @@ export class FloorplanElement extends LitElement {
         for (const pageSize of config.image.sizes) {
           if (screen.width >= pageSize.min_width) {
             imageUrl = pageSize.location;
+            cache = (pageSize.cache === true);
             break;
           }
         }
       }
+      else {
+        imageUrl = config.image.location;
+        cache = (config.image.cache === true);
+      }
     }
 
-    return imageUrl;
+    return { location: imageUrl, cache: cache };
   }
 
   createPageInfo(pageConfig: FloorplanPageConfig): FloorplanPageInfo {
@@ -426,7 +432,10 @@ export class FloorplanElement extends LitElement {
     return pageInfo;
   }
 
-  async loadStyleSheet(stylesheetUrl: string, useCache: boolean): Promise<void> {
+  async loadStyleSheet(stylesheetConfig: FloorplanStylesheetConfig | string): Promise<void> {
+    const stylesheetUrl = (typeof stylesheetConfig === 'string') ? stylesheetConfig : stylesheetConfig.location;
+    const useCache = (typeof stylesheetConfig === 'string') ? false : (stylesheetConfig.cache === true);
+
     if (!stylesheetUrl) return;
 
     const stylesheet = await Utils.fetchText(
@@ -475,16 +484,15 @@ export class FloorplanElement extends LitElement {
   }
 
   async loadFloorplanSvg(
-    imageUrl: string,
+    imageConfig: { location: string, cache: boolean },
     pageInfo?: FloorplanPageInfo,
     masterPageInfo?: FloorplanPageInfo,
-    useCache?: boolean
   ): Promise<SVGGraphicsElement> {
     const svgText = await Utils.fetchText(
-      imageUrl,
+      imageConfig.location,
       this.isDemo,
       this.examplespath,
-      (useCache === true)
+      imageConfig.cache
     );
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
