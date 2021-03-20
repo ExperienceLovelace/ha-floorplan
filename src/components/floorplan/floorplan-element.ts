@@ -12,6 +12,7 @@ import {
 import {
   FloorplanRuleConfig,
   FloorplanVariableConfig,
+  FloorplanImageConfig,
 } from './lib/floorplan-config';
 import { FloorplanRuleEntityElementConfig, FloorplanStylesheetConfig } from './lib/floorplan-config';
 import {
@@ -411,8 +412,14 @@ export class FloorplanElement extends LitElement {
         }
       }
       else {
-        imageUrl = config.image.location;
-        cache = (config.image.cache === true);
+        // Device detection
+        if (Utils.isMobile && config.image_mobile) {
+          imageUrl = (config.image_mobile as FloorplanImageConfig).location;
+          cache = ((config.image_mobile as FloorplanImageConfig).cache === true);
+        } else {
+          imageUrl = config.image.location;
+          cache = (config.image.cache === true);
+        }
       }
     }
 
