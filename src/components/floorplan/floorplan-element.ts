@@ -1897,10 +1897,15 @@ export class FloorplanElement extends LitElement {
               ? (serviceData.image_refresh_interval as number)
               : 0;
 
-          useCache =
-            typeof serviceData === 'object'
-              ? ((serviceData.cache as boolean) === true)
-              : true; // use cache by default
+          if (imageRefreshInterval > 0) {
+            useCache = false // don't use cache for refreshing images
+          }
+          else {
+            useCache =
+              typeof serviceData === 'object'
+                ? ((serviceData.cache as boolean) === true)
+                : true; // use cache by default
+          }
 
           if (ruleInfo.imageLoader) {
             clearInterval(ruleInfo.imageLoader); // cancel any previous image loading for this rule
@@ -1914,7 +1919,7 @@ export class FloorplanElement extends LitElement {
               svgElementInfo,
               entityId,
               ruleInfo,
-              false // don't use cache for refreshing images
+              useCache
             );
           }
 
@@ -1923,7 +1928,7 @@ export class FloorplanElement extends LitElement {
             svgElementInfo,
             entityId as string,
             ruleInfo as FloorplanRuleInfo,
-            useCache && !imageRefreshInterval
+            useCache
           );
         }
         break;
