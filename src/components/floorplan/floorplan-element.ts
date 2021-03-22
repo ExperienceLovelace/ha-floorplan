@@ -610,6 +610,9 @@ export class FloorplanElement extends LitElement {
       this.examplespath,
       useCache
     );
+
+    imageUrl = useCache ? imageUrl : Utils.cacheBuster(imageUrl);
+
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     let svgElement = svgElementInfo.svgElement; // assume the target element already exists
@@ -638,11 +641,13 @@ export class FloorplanElement extends LitElement {
       'http://www.w3.org/1999/xlink',
       'xlink:href'
     );
+
     if (existingHref !== imageData) {
       svgElement.removeAttributeNS(
         'http://www.w3.org/1999/xlink',
         'xlink:href'
       );
+
       svgElement.setAttributeNS(
         'http://www.w3.org/1999/xlink',
         'xlink:href',
