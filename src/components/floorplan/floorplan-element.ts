@@ -673,7 +673,9 @@ export class FloorplanElement extends LitElement {
     );
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
-    const svgContainer = document.createElement('div');
+    const svgContainer = (svgElementInfo.svgElement.nodeName === 'g') ?
+      svgElementInfo.svgElement : document.createElement('div');
+
     svgContainer.innerHTML = svgText;
     const svg = svgContainer.querySelector('svg') as SVGGraphicsElement;
 
@@ -690,17 +692,19 @@ export class FloorplanElement extends LitElement {
     svg.setAttribute('x', svgElementInfo.originalBBox.x.toString());
     svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
 
-    const originalTransform = svgElementInfo.svgElement.getAttribute(
-      'transform'
-    );
-    if (originalTransform) {
-      svg.setAttribute('transform', originalTransform);
-    }
+    if (svgElementInfo.svgElement.nodeName !== 'g') {
+      const originalTransform = svgElementInfo.svgElement.getAttribute(
+        'transform'
+      );
+      if (originalTransform) {
+        svg.setAttribute('transform', originalTransform);
+      }
 
-    svgElementInfo.svgElement = this.replaceElement(
-      svgElementInfo.svgElement,
-      svg
-    );
+      svgElementInfo.svgElement = this.replaceElement(
+        svgElementInfo.svgElement,
+        svg
+      );
+    }
 
     this.attachClickHandlers(
       svg,
