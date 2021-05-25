@@ -49,6 +49,18 @@ export class HassSimulator {
             break;
         }
         break;
+
+      case 'media_player':
+        switch (service) {
+          case 'volume_up':
+            this.homeAssistantVolumeUp(serviceData as Record<string, unknown>);
+            break;
+
+          case 'volume_down':
+            this.homeAssistantVolumeDown(serviceData as Record<string, unknown>);
+            break;
+        }
+        break;
     }
 
     const response = {
@@ -65,21 +77,66 @@ export class HassSimulator {
   homeAssistantToggle(data: Record<string, unknown>): void {
     if (data.entity_id) {
       const entityType = (data.entity_id as string).split('.')[0];
-      const state = this.hass.states[data.entity_id as string].state;
-
-      let newState: string;
+      const entity = this.hass.states[data.entity_id as string];
 
       switch (entityType) {
         case 'switch':
         case 'light':
         case 'binary_sensor':
         case 'sensor':
-          newState = state === 'on' ? 'off' : 'on';
+        case 'media_player':
+          entity.state = (entity.state === 'on') ? 'off' : 'on';
 
           for (const simulationProcessor of this.simulationProcessors) {
             simulationProcessor.updateEntityState(
               data.entity_id as string,
-              newState
+              entity
+            );
+          }
+          break;
+      }
+    }
+  }
+
+  homeAssistantVolumeUp(data: Record<string, unknown>): void {
+    if (data.entity_id) {
+      const entityType = (data.entity_id as string).split('.')[0];
+      const entity = this.hass.states[data.entity_id as string];
+
+      let value: number;
+
+      switch (entityType) {
+        case 'media_player':
+          value = (entity.attributes as Record<string, unknown>)['volume_level'] as number;
+          (entity.attributes as Record<string, unknown>)['volume_level'] = Math.min(1, value + 0.1);
+
+          for (const simulationProcessor of this.simulationProcessors) {
+            simulationProcessor.updateEntityState(
+              data.entity_id as string,
+              entity
+            );
+          }
+          break;
+      }
+    }
+  }
+
+  homeAssistantVolumeDown(data: Record<string, unknown>): void {
+    if (data.entity_id) {
+      const entityType = (data.entity_id as string).split('.')[0];
+      const entity = this.hass.states[data.entity_id as string];
+
+      let value: number;
+
+      switch (entityType) {
+        case 'media_player':
+          value = (entity.attributes as Record<string, unknown>)['volume_level'] as number;
+          (entity.attributes as Record<string, unknown>)['volume_level'] = Math.max(0, value - 0.1);
+
+          for (const simulationProcessor of this.simulationProcessors) {
+            simulationProcessor.updateEntityState(
+              data.entity_id as string,
+              entity
             );
           }
           break;

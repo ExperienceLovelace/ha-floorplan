@@ -18,6 +18,13 @@ export class FloorplanExamples extends LitElement {
   floorplanExamples = [
     // Cards
     {
+      name: 'remote',
+      dir: 'remote',
+      configFile: 'remote.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: true,
+    },
+    {
       name: 'light',
       dir: 'light',
       configFile: 'light.yaml',
@@ -60,14 +67,14 @@ export class FloorplanExamples extends LitElement {
   protected render(): TemplateResult {
     return html`
       ${this.examples?.map(
-        (example) =>
-          html` <floorplan-example
+      (example) =>
+        html` <floorplan-example
             .examplespath=${this.examplespath}
             .example=${example}
             .isDemo="${true}"
             .notify=${this.notify.bind(this)}
           ></floorplan-example>`
-      )}
+    )}
 
       <lit-toast></lit-toast>
     `;

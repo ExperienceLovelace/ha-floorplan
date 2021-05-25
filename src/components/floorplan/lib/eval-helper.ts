@@ -87,6 +87,7 @@ export class EvalHelper {
     this.interpreter.import('functions', functions);
     this.interpreter.import('entity', this.entityState);
     this.interpreter.import('entities', hass.states);
+    this.interpreter.import('states', hass.states);
     this.interpreter.import('hass', hass);
     this.interpreter.import('element', svgElement);
     this.interpreter.import('elements', svgElements);
