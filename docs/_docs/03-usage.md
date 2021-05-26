@@ -4,7 +4,7 @@ title: "Usage"
 toc: true
 ---
 
-# Contents
+## Table of Contents
 
 - [Image](#image)
 - [Stylesheet](#stylesheet)
@@ -188,14 +188,14 @@ Floorplan supports calling all [services](https://www.home-assistant.io/docs/scr
 
 Below are the services that are specific to Floorplan.
 
-| Floorplan Service           | Description                                      |
-| --------------------------- | ------------------------------------------------ |
-| `floorplan.class_toggle`    | Toggle a CSS class of the SVG element(s)        |
-| `floorplan.class_set`       | Set the CSS class of the SVG element(s)          | 
-| `floorplan.style_set`       | Set the CSS style of the of the SVG element      |
-| `floorplan.text_set`        | Set the text of the SVG element(s)               |
-| `floorplan.image_set`       | Set the image of the SVG element(s)              |
-| `floorplan.window_navigate` | Navigate to a URL in a new Web browser window    |
+| Floorplan Service           | Description                                      | Service Data Properties |
+| --------------------------- | ------------------------------------------------ | ----------------------- |
+| `floorplan.class_toggle`    | Toggle a CSS class of the SVG element(s)         | `class` (string)        |
+| `floorplan.class_set`       | Set the CSS class of the SVG element(s)          | `class` (string)        |
+| `floorplan.style_set`       | Set the CSS style of the of the SVG element(s)   | `style` (string)        |
+| `floorplan.text_set`        | Set the text of the SVG element(s)               | `text` (string)         |
+| `floorplan.image_set`       | Set the image of the SVG element(s)              | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
+| `floorplan.window_navigate` | Navigate to a URL in a new Web browser window    | `url` (string)        |
 
 ### Service Data
 
