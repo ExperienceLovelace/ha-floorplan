@@ -6,6 +6,7 @@ toc: true
 
 ## Table of Contents
 
+- [Configuration](#configuration)
 - [Image](#image)
 - [Stylesheet](#stylesheet)
 - [Logging](#logging)
@@ -18,6 +19,8 @@ toc: true
 - [Advanced Topics](#advanced-topics)
   - [Custom Functions](#custom-functions)
   - [Utility Library](#utility-library)
+
+## Configuration
 
 Each instance of Floorplan requires its own configuration.
 
@@ -164,11 +167,11 @@ The following types of items can be used as subjects within a rule.
 
 | Subject    | Description               |
 | ---------- | ------------------------- |
-| `entity`   | HA entity                 |
-| `entities` | list of HA entities       | 
-| `groups`   | list of HA group entities |
-| `element`  | SVG element               |
-| `elements` | list of SVG elements      |
+| `entity`   | Single HA entity          |
+| `entities` | List of HA entities       | 
+| `groups`   | List of HA group entities |
+| `element`  | Single SVG element        |
+| `elements` | List of SVG elements      |
 
 ## Actions
 
