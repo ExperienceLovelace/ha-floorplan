@@ -255,11 +255,11 @@ These custom functions can be used within any of the rules within the configurat
 
 Floorplan exposes a library of  utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
 
-| Function                     | Parameters                       | Return Type  | References     |
-| ---------------------------- | -------------------------------- | ------------ | -------------- |
-| `util.ColorUtil.miredToRGB`  | `mired` (number)                 | `number[]`   |                |
-| `util.ColorUtil.kelvinToRGB` | `kelvin` (number)                | `number[]`   |                |
-| `util.DateUtil.strftime`     | `format` (string), `date` (Date) | `string`     | [NPM package](https://www.npmjs.com/package/strftime) |
+| Function                 | Parameters                       | Return Type  | References     |
+| ------------------------ | -------------------------------- | ------------ | -------------- |
+| `util.color.miredToRGB`  | `mired` (number)                 | `number[]`   |                |
+| `util.color.kelvinToRGB` | `kelvin` (number)                | `number[]`   |                |
+| `util.date.strftime`     | `format` (string), `date` (Date) | `string`     | [NPM package](https://www.npmjs.com/package/strftime) |
 
 ## Troubleshooting
 
