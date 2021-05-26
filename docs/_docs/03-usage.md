@@ -19,6 +19,8 @@ toc: true
 - [Advanced Topics](#advanced-topics)
   - [Custom Functions](#custom-functions)
   - [Utility Library](#utility-library)
+  - [Creating a Floorplan SVG File](#creating-a-floorplan-svg-file)
+- [Troubleshooting](#troubleshooting)
 
 ## Configuration
 
@@ -26,12 +28,18 @@ Each instance of Floorplan requires its own configuration.
 
 The configuration can be stored in a separate file (i.e. `home.yaml`) or it can be embedded directly within the configuration of a Lovelace card or HA custom panel.
 
-The following example shows the minimum configuration required for Floorplan to work.
+The following example shows a minimal configuration of Floorplan.
 
 ```
   image: /local/floorplan/examples/home/home.svg
   stylesheet: /local/floorplan/examples/home/home.css
+
   rules:
+    - element: button.power
+      entity: media_player.tv
+      tap_action:
+        action: call-service
+        service: homeassistant.toggle
 ```
 
 The following sections describe the complete set of configuration items.
@@ -253,3 +261,38 @@ Floorplan exposes a library of  utility functions, which are available to JavaSc
 | `util.ColorUtil.miredToRGB`  | `mired` (number)                 | `number[]`   |                |
 | `util.ColorUtil.kelvinToRGB` | `kelvin` (number)                | `number[]`   |                |
 | `util.DateUtil.strftime`     | `format` (string), `date` (Date) | `string`     | [NPM package](https://www.npmjs.com/package/strftime) |
+
+## Creating a Floorplan SVG File
+
+[Inkscape](https://inkscape.org/en/develop/about-svg/) is a free application that lets you create vector images. You can make your floorplan as simple or as detailed as you want. The only requirement is that you create an element (i.e. `rect`, `path`, `text`, etc.) for each entity ( i.e. binary sensor, switch, camera, etc.) you want to display on your floorplan. Each of these elements needs to have its `id` set to the corresponding entity name in Home Assistant.
+
+For example, below is what the SVG element looks like for a Front Hallway binary sensor. The `id` of the shape is set to the entity name `binary_sensor.front_hallway`. This allows the shape to automatically get hooked up to the right entity when the floorplan is displayed.
+
+```html
+<path id="binary_sensor.front_hallway" d="M650 396 c0 -30 4 -34 31 -40 17 -3 107 -6 200 -6 l169 0 0 40 0 40
+-200 0 -200 0 0 -34z"/>
+```
+
+If you need a good source of SVG files for icons or images, you can check out the following resources :
+[Material Design Icons](https://materialdesignicons.com/), [Noun Project](https://thenounproject.com/) and [Flat Icon](http://flaticon.com).
+
+## Troubleshooting
+
+If you're running into any difficulties with Floorplan, below is a list of things you can try.
+
+- First of all, check the indentation of the floorplan config. All the examples above show the correct level of indentantion, so make sure that's done before proceedeing further.
+
+- The recommended web browser to use is Google Chrome. Pressing F12 displays the Developer Tools. When you press F5 to reload your floorplan page, the Console pane will show any errors that may have occurred. Also check the Network tab to see if any of the scripts failed to load. Ad-blockers have been known to prevent some scripts from loading.
+
+- If you're not seeing latest changes that you've made, try clearing the Web browser cache. This can also be done in the Chrome Developer Tools. Select the Network tab, right click and select Clear browser cache.
+
+- If you're not able to access the floorplan in your Web browser at all, it could be that you've been locked out of Home Assistant due to too many failed login attempts. Check the file `ip_bans.yaml` in the root Home Assistant config directory and remove your IP address if it's in there.
+
+- If you encounter any issues with your entities not appearing, or not correctly showing state changes, firstly make sure you enable [logging](#logging) in  floorplan config. It will report any SVG elements that are missing, misspelt, etc.
+
+- If you're adding your own CSS classes for styling your entities, make sure you escape the dot character in the id, by prefixing it with a backlash:
+
+  ```
+  #light\.hallway:hover {
+  }
+  ```
