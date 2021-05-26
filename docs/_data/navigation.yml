@@ -5,8 +5,8 @@ main:
   - title: "Quick Start"
     url: /docs/quick-start/
 
-  - title: "Options"
-    url: /docs/options/
+  - title: "Usage"
+    url: /docs/usage/
 
   - title: "Examples"
     url: /docs/examples/

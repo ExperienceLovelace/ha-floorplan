@@ -18,8 +18,8 @@
 
 You'll find information about:
 - Installation
+- Usage
 - Examples
-- Options
 - _And more..._
 
 

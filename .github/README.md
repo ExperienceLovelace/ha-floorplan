@@ -68,7 +68,7 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
 
 # Getting started
 
-If you're searching for __getting started__ information, good __examples__, and details about __options__, please visit our 
+If you're searching for __getting started__ information, good __examples__, and details about __usage__, please visit our 
 👉 **[documentation](https://experiencelovelace.github.io/ha-floorplan/)** 👈, hosted on [GitHub Page](https://experiencelovelace.github.io/ha-floorplan/).
 
 <br>
