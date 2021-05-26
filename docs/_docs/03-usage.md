@@ -6,6 +6,8 @@ toc: true
 
 Each instance of Floorplan requires its own configuration.
 
+The configuration can be stored in a separate file (i.e. `home.yaml`) or it can be embedded directly within the configuration of a Lovelace card or HA custom panel.
+
 The following example shows the minimum configuration required for Floorplan to work.
 
 ```
@@ -73,10 +75,10 @@ Logging comes in handy when trying to debug any Floorplan issues. Floorplan can 
   log_level: info
 ```
 
-By default, the logging panel is not displayed. Setting `log_level` to any of the following levels causes the logging panel to be displayed below the Floorplan image.
+By default, the logging panel is not displayed. Setting `log_level` to any of the following levels causes the logging panel to be displayed below the Floorplan image. The levels are listed in order of least verbose to most verbose.
 
 - `error`
-- `warn / warning`
+- `warn` (or `warning`)
 - `info`
 - `debug`
 
@@ -100,6 +102,13 @@ To avoid unnecessary repetition of actions within the configuration, Floorplan p
 
 This is a powerful feature, as Floorplan 'copies' the default actions to all rules within the configuration.
 
+To disable one of the defaults for a specific rule, the relevant action must be set to `false` within that rule.
+
+```
+      - entity: switch.fan
+        tap_action: false
+```
+
 To learn more about rules and actions, refer to the next section.
 
 # Rules
@@ -114,6 +123,7 @@ Each rule object contains the following parts:
 - Actions
   - Event - event to handle (i.e. HA entity state change)
   - Service - service to call (i.e. toggle HA entity state)
+  - Service data - data to include when calling service (i.e. HA entity)
 
 Below is a example of a simple rule.
 
@@ -127,29 +137,33 @@ Below is a example of a simple rule.
 
 The above rule can be described as follows:
 
-1) Observe the SVG `button.power` element for user interactions.
-1) Observe the HA `media_player.tv` entity for state changes.
-1) When the SVG element (i.e. `button.power`) is tapped (or clicked), call the `homeassistant.toggle` service for the HA `media_player.tv` entity.
+- Subjects:
+  - Observe the SVG `button.power` element for user interactions
+  - Observe the HA `media_player.tv` entity for state changes
+- Actions:
+  - When the SVG element (i.e. `button.power`) is tapped / clicked, call the `homeassistant.toggle` service for the HA `media_player.tv` entity
 
 ## Subjects
 
-| Item     | Description         |
-| -------- | ------------------- |
-| entity   | xxxxxxxxxxxxxxxxxxx |
-| entities | xxxxxxxxxxxxxxxxxxx | 
-| groups   | xxxxxxxxxxxxxxxxxxx |
-| element  | xxxxxxxxxxxxxxxxxxx |
-| elements | xxxxxxxxxxxxxxxxxxx |
+| Subject    | Description         |
+| ---------- | ------------------- |
+| `entity`   |                     |
+| `entities` |                     | 
+| `groups`   |                     |
+| `element`  |                     |
+| `elements` |                     |
 
 ## Actions
 
-| Item              | Description         |
-| ----------------- | ------------------- |
-| state_action      | xxxxxxxxxxxxxxxxxxx |
-| tap_action        | xxxxxxxxxxxxxxxxxxx | 
-| hold_action       | xxxxxxxxxxxxxxxxxxx |
-| double_tap_actio  | xxxxxxxxxxxxxxxxxxx |
-| hover_action      | xxxxxxxxxxxxxxxxxxx |
+Floorplan actions follow the same structure as [actions](https://www.home-assistant.io/lovelace/actions) used in Lovelace cards. Below is the list of actions that are supported by Floorplan.
+
+| Action               | Triggered When                              |
+| -------------------- | ------------------------------------------- |
+| `state_action`       | HA entity state is changed                  |
+| `tap_action`         | SVG element is tapped                       | 
+| `hold_action`        | SVG element is tapped-and-held              |
+| `double_tap_action`  | SVG element is double tapped                |
+| `hover_action`       | SVG element is hovered over                 |
 
 ## Services
 
@@ -158,28 +172,31 @@ The above rule can be described as follows:
   service_data
 ```
 
-| Floorplan Service         | Description         |
-| ------------------------- | ------------------- |
-| floorplan.class_toggle    | xxxxxxxxxxxxxxxxxxx |
-| floorplan.class_set       | xxxxxxxxxxxxxxxxxxx | 
-| floorplan.style_set       | xxxxxxxxxxxxxxxxxxx |
-| floorplan.text_set        | xxxxxxxxxxxxxxxxxxx |
-| floorplan.image_set       | xxxxxxxxxxxxxxxxxxx |
-| floorplan.page_navigate   | xxxxxxxxxxxxxxxxxxx |
-| floorplan.window_navigate | xxxxxxxxxxxxxxxxxxx |
-| floorplan.variable_set    | xxxxxxxxxxxxxxxxxxx |
+| Floorplan Service           | Description         |
+| --------------------------- | ------------------- |
+| `floorplan.class_toggle`    |                     |
+| `floorplan.class_set`       |                     | 
+| `floorplan.style_set`       |                     |
+| `floorplan.text_set`        |                     |
+| `floorplan.image_set`       |                     |
+| `floorplan.page_navigate`   |                     |
+| `floorplan.window_navigate` |                     |
+| `floorplan.variable_set`    |                     |
 
-### Expressions
+### Dynamic Service Data
 
-| Property    | Description         |
-| ----------- | ------------------- |
-| expression  | xxxxxxxxxxxxxxxxxxx |
-| hass        | xxxxxxxxxxxxxxxxxxx | 
-| config      | xxxxxxxxxxxxxxxxxxx |
-| entityId    | xxxxxxxxxxxxxxxxxxx |
-| svgElement  | xxxxxxxxxxxxxxxxxxx |
-| svgElements | xxxxxxxxxxxxxxxxxxx |
-| functions   | xxxxxxxxxxxxxxxxxxx |
+When defining service calls, service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
+
+| Property                 | Description                            |
+| ------------------------ | -------------------------------------- |
+| `config`                 | Floorplan configuration                |
+| `util`                   | Utility library                        |
+| `functions`              | User-defined functions                 |
+| `entity`                 | State object for the HA current entity |
+| `entities` (or `states`) | State objects for all HA entities      |
+| `hass`                   | HA [hass](https://home-assistant.io/developers/development_hass_object/) object |
+| `element`                | current SVG element                    |
+| `elements`               | current SVG elements                   |
 
 # Advanced Topics
 
