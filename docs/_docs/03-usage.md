@@ -211,7 +211,7 @@ Below are the services that are specific to Floorplan.
 
 When defining service calls, service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
 
-| Property                 | Description                            |
+| Object                   | Description                            |
 | ------------------------ | -------------------------------------- |
 | `config`                 | Floorplan configuration                |
 | `util`                   | [Utility library](#utility-library)    |
@@ -255,11 +255,11 @@ These custom functions can be used within any of the rules within the configurat
 
 Floorplan exposes a library of  utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
 
-| Function                 | Parameters                       | Return Type  | References     |
-| ------------------------ | -------------------------------- | ------------ | -------------- |
-| `util.color.miredToRGB`  | `mired` (number)                 | `number[]`   |                |
-| `util.color.kelvinToRGB` | `kelvin` (number)                | `number[]`   |                |
-| `util.date.strftime`     | `format` (string), `date` (Date) | `string`     | [NPM package](https://www.npmjs.com/package/strftime) |
+| Function                 | Description                               | Parameters        | Return Type  |
+| ------------------------ | ----------------------------------------- | ----------------- | ------------ |
+| `util.color.miredToRGB`  | Convert mired (light temperature) to RGB  | `mired` (number)  | `number[]`   |
+| `util.color.kelvinToRGB` | Convert kelvin (light temperature) to RGB | `kelvin` (number) | `number[]`   |
+| `util.date.strftime`     | Convert datetime to string (Python style)<br />[NPM package](https://www.npmjs.com/package/strftime) | `format` (string), `date` (Date) | `string`     |
 
 ## Troubleshooting
 
