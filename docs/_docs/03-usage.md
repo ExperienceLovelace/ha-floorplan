@@ -125,7 +125,7 @@ Each rule object contains the following parts:
   - Service - service to call (i.e. toggle HA entity state)
   - Service data - data to include when calling service (i.e. HA entity)
 
-Below is a example of a simple rule.
+Below is an example of a simple rule.
 
 ```
   - element: button.power
@@ -145,13 +145,15 @@ The above rule can be described as follows:
 
 ## Subjects
 
-| Subject    | Description         |
-| ---------- | ------------------- |
-| `entity`   |                     |
-| `entities` |                     | 
-| `groups`   |                     |
-| `element`  |                     |
-| `elements` |                     |
+The following types of items can be used as subjects within a rule.
+
+| Subject    | Description               |
+| ---------- | ------------------------- |
+| `entity`   | HA entity                 |
+| `entities` | list of HA entities       | 
+| `groups`   | list of HA group entities |
+| `element`  | SVG element               |
+| `elements` | list of SVG elements      |
 
 ## Actions
 
@@ -167,21 +169,19 @@ Floorplan actions follow the same structure as [actions](https://www.home-assist
 
 ## Services
 
-```
-  service
-  service_data
-```
+Floorplan supports calling all services exposed by Home Assistant, as well services that are exposed by Flooorplan.
 
-| Floorplan Service           | Description         |
-| --------------------------- | ------------------- |
-| `floorplan.class_toggle`    |                     |
-| `floorplan.class_set`       |                     | 
-| `floorplan.style_set`       |                     |
-| `floorplan.text_set`        |                     |
-| `floorplan.image_set`       |                     |
-| `floorplan.page_navigate`   |                     |
-| `floorplan.window_navigate` |                     |
-| `floorplan.variable_set`    |                     |
+Below are the services that are specific to Floorplan.
+
+| Floorplan Service           | Description                                      |
+| --------------------------- | ------------------------------------------------ |
+| `floorplan.class_toggle`    | Toggles a CSS class of the SVG element(s)        |
+| `floorplan.class_set`       | Set the CSS class of the SVG element(s)          | 
+| `floorplan.style_set`       | Set the CSS style of the of the SVG element      |
+| `floorplan.text_set`        | Set the text of the SVG element(s)               |
+| `floorplan.image_set`       | Set the image of the SVG element(s)              |
+| `floorplan.page_navigate`   | Navigate to a page within the Lovelace dashboard |
+| `floorplan.window_navigate` | Navigate to a URL in a new Web browser window    |
 
 ### Dynamic Service Data
 
@@ -208,15 +208,13 @@ Floorplan supports user-defined custom functions, which can be configured using 
   functions: |
     >
     return {
-
       someFunctionA: (entity, entities, hass) => {
         return 'foo'; 
       },
 
       someOtherFunctionB: (entity, entities, hass) => {
         return 'bar'; 
-      },
-      
+      },     
     };
 ```
 
@@ -229,9 +227,9 @@ These custom functions can be used within any of the rules within the configurat
         service_data: ${functions.someFunctionA(entity)}
 ```
 
-## Utility Functions
+## Utility Library
 
-Floorplan exposes some utility functions, which are available to JavaScript code. The following functions are available. (Note: This list is expected to grow over time).
+Floorplan exposes a library of  utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
 
 | Function                     | Parameters                       | Return Type  |
 | ---------------------------- | -------------------------------- | ------------ |
