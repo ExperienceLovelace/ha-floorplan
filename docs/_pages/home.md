@@ -41,10 +41,10 @@ feature_row:
     fa_color: "white"
     fa_size: "3x"
     fa_margin: "20px"
-    alt: "Options"
-    title: "Options"
+    alt: "Usage"
+    title: "Usage"
     excerpt: "There's plenty of options, including long-click, so what are you waiting for?"
-    url: "/docs/options/"
+    url: "/docs/usage/"
     btn_label: "Let's deep dive!"
     btn_class: "btn--primary"
 
@@ -69,7 +69,7 @@ First of all, check out the [Quick Start guide](./docs/quick-start/) guide. You'
 
 If you'd like to see interactive examples, head on over to the [Examples](./docs/examples/) page.
 
-Are you searching for a specific feature? Please take a look at the [Options](./docs/options/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
+Are you searching for a specific feature? Please take a look at the [Usage](./docs/usage/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
 
 ![Example of SVG Floorplan-file - Background created with Floorplanner](./assets/images/home/floorplan-background_with_floorplanner.png)
 

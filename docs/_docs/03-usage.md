@@ -19,7 +19,6 @@ toc: true
 - [Advanced Topics](#advanced-topics)
   - [Custom Functions](#custom-functions)
   - [Utility Library](#utility-library)
-  - [Creating a Floorplan SVG File](#creating-a-floorplan-svg-file)
 - [Troubleshooting](#troubleshooting)
 
 ## Configuration
@@ -30,7 +29,7 @@ The configuration can be stored in a separate file (i.e. `home.yaml`) or it can 
 
 The following example shows a minimal configuration of Floorplan.
 
-```
+```yaml
   image: /local/floorplan/examples/home/home.svg
   stylesheet: /local/floorplan/examples/home/home.css
 
@@ -50,13 +49,13 @@ Floorplan requires an SVG image, which can be configured using the `image` setti
 
 In the simplest case, `image` can be set to the file location of the image.
 
-```
+```yaml
   image: /local/floorplan/examples/home/home.svg
 ```
 
 Alternatively, `image` can be set to an object that allows setting the caching option. By setting `cache: true`, Floorplan will use the Web browser's cache, otherwise the image will be refetched every time the Floorplan is loaded.
 
-```
+```yaml
   image:
     location: /local/floorplan/examples/home/home.svg
     cache: true
@@ -66,7 +65,7 @@ For supporting multiple Floorplan images based on the current screen resolution,
 
 In the example below, the first image will be used if the screen width is less than 1024 pixels, and the second image will be used if the screen widths is greater than that.
 
-```
+```yaml
   image:
     sizes:
       - min_width: 0
@@ -79,7 +78,7 @@ In the example below, the first image will be used if the screen width is less t
 
 Floorplan can display an alternate image for mobile devices. This can be configured using the `image_mobile` setting.
 
-```
+```yaml
   image_mobile: /local/floorplan/examples/home/home-mobile.svg
 ```
 
@@ -89,7 +88,7 @@ Just like the regular `image` setting, `image_mobile` can also be set to an obje
 
 Floorplan also requires a CSS file, which can be configured using the `stylesheet` setting.
 
-```
+```yaml
   stylesheet: /local/floorplan/examples/home/home.css
 ```
 
@@ -97,7 +96,7 @@ Floorplan also requires a CSS file, which can be configured using the `styleshee
 
 Logging comes in handy when trying to debug any Floorplan issues. Floorplan can display its own logging panel which can be configured using the `log_level` setting.
 
-```
+```yaml
   log_level: info
 ```
 
@@ -110,7 +109,7 @@ By default, the logging panel is not displayed. Setting `log_level` to any of th
 
 Floorplan also allows logging to the Developer Console in the Web browser. This can be enabled using the `console_log_level` setting, in the same was as the reagular `log_level` setting.
 
-```
+```yaml
   console_log_level: info
 ```
 
@@ -120,7 +119,7 @@ Logging comes in handy when trying to debug any Floorplan issues.
 
 To avoid unnecessary repetition of actions within the configuration, Floorplan provides a `defaults` setting which can be used.
 
-```
+```yaml
   defaults:
     hover_action: hover-info
     tap_action: more-info
@@ -130,7 +129,7 @@ This is a powerful feature, as Floorplan 'copies' the default actions to all rul
 
 To disable one of the defaults for a specific rule, the relevant action must be set to `false` within that rule.
 
-```
+```yaml
       - entity: switch.fan
         tap_action: false
 ```
@@ -153,7 +152,7 @@ Each rule object contains the following parts:
 
 Below is an example of a simple rule.
 
-```
+```yaml
   - element: button.power
     entity: media_player.tv
     tap_action:
@@ -229,7 +228,7 @@ When defining service calls, service data can be dynamically constructed using J
 
 Floorplan supports user-defined custom functions, which can be configured using the `functions` setting.
 
-```
+```yaml
   functions: |
     >
     return {
@@ -245,7 +244,7 @@ Floorplan supports user-defined custom functions, which can be configured using 
 
 These custom functions can be used within any of the rules within the configuration, and must be called using the `functions.` prefix. Below is an example of calling a custom function.
 
-```
+```yaml
   - entity: sensor.ring_salon_battery
     state_action:
       - service: floorplan.style_set
@@ -262,37 +261,23 @@ Floorplan exposes a library of  utility functions, which are available to JavaSc
 | `util.ColorUtil.kelvinToRGB` | `kelvin` (number)                | `number[]`   |                |
 | `util.DateUtil.strftime`     | `format` (string), `date` (Date) | `string`     | [NPM package](https://www.npmjs.com/package/strftime) |
 
-## Creating a Floorplan SVG File
-
-[Inkscape](https://inkscape.org/en/develop/about-svg/) is a free application that lets you create vector images. You can make your floorplan as simple or as detailed as you want. The only requirement is that you create an element (i.e. `rect`, `path`, `text`, etc.) for each entity ( i.e. binary sensor, switch, camera, etc.) you want to display on your floorplan. Each of these elements needs to have its `id` set to the corresponding entity name in Home Assistant.
-
-For example, below is what the SVG element looks like for a Front Hallway binary sensor. The `id` of the shape is set to the entity name `binary_sensor.front_hallway`. This allows the shape to automatically get hooked up to the right entity when the floorplan is displayed.
-
-```html
-<path id="binary_sensor.front_hallway" d="M650 396 c0 -30 4 -34 31 -40 17 -3 107 -6 200 -6 l169 0 0 40 0 40
--200 0 -200 0 0 -34z"/>
-```
-
-If you need a good source of SVG files for icons or images, you can check out the following resources :
-[Material Design Icons](https://materialdesignicons.com/), [Noun Project](https://thenounproject.com/) and [Flat Icon](http://flaticon.com).
-
 ## Troubleshooting
 
 If you're running into any difficulties with Floorplan, below is a list of things you can try.
 
-- First of all, check the indentation of the floorplan config. All the examples above show the correct level of indentantion, so make sure that's done before proceedeing further.
+- First of all, check the indentation of the floorplan config to ensure the YAML is valid.
 
-- The recommended web browser to use is Google Chrome. Pressing F12 displays the Developer Tools. When you press F5 to reload your floorplan page, the Console pane will show any errors that may have occurred. Also check the Network tab to see if any of the scripts failed to load. Ad-blockers have been known to prevent some scripts from loading.
+- The recommended Web browser to use is Google Chrome. Pressing F12 displays the Developer Tools. When you press F5 to reload your floorplan page, the Console pane will show any errors that may have occurred. Also check the Network tab to see if any of the files failed to load.
 
 - If you're not seeing latest changes that you've made, try clearing the Web browser cache. This can also be done in the Chrome Developer Tools. Select the Network tab, right click and select Clear browser cache.
 
 - If you're not able to access the floorplan in your Web browser at all, it could be that you've been locked out of Home Assistant due to too many failed login attempts. Check the file `ip_bans.yaml` in the root Home Assistant config directory and remove your IP address if it's in there.
 
-- If you encounter any issues with your entities not appearing, or not correctly showing state changes, firstly make sure you enable [logging](#logging) in  floorplan config. It will report any SVG elements that are missing, misspelt, etc.
+- If you encounter any issues with your entities not appearing, or not correctly showing state changes, firstly make sure you enable [logging](#logging) in  your floorplan config. It will report any SVG elements that are missing, misspelt, etc.
 
 - If you're adding your own CSS classes for styling your entities, make sure you escape the dot character in the id, by prefixing it with a backlash:
 
-  ```
+  ```css
   #light\.hallway:hover {
   }
   ```

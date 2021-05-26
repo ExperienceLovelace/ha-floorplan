@@ -29,11 +29,11 @@ docs:
     children:
       - title: "Quick Start"
         url: /docs/quick-start/
-      - title: "Your first SVG-file"
+      - title: "Your First SVG File"
         url: /docs/create-svg-file/
-      - title: "Good-looking floorplans"
+      - title: "Good-looking Floorplans"
         url: /docs/create-goodlooking-floorplan/
-      - title: "Handle size and expand floorplan"
+      - title: "Handle Size and Expand Floorplan"
         url: /docs/how-to-handle-size-and-expand-floorplan/
 
   - title: "Examples"
@@ -45,6 +45,8 @@ docs:
         url: /docs/example-light/
       - title: "Ring"
         url: /docs/example-ring/
+      - title: "Remote"
+        url: /docs/example-remote/
         
-  - title: Options
-    url: /docs/options/
+  - title: Usage
+    url: /docs/usage/
