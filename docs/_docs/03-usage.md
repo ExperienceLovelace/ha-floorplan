@@ -104,27 +104,52 @@ To learn more about rules and actions, refer to the next section.
 
 # Rules
 
-Floorplan 
+At the heart of Floorplan is the concept of rules. Rules are used to describe how entities should be displayed on the floorplan, along with how user interactions should be handled.
 
-## Target Entities / Elements
+Floorplan rules can be configured using the `rules` setting, which represents a list of rule objects.
+
+Each rule object contains the following parts:
+
+- Subjects - entities / SVG elements to observe for changes, and to use in service calls
+- Actions
+  - Event - event to handle (i.e. HA entity state change)
+  - Service - service to call (i.e. toggle HA entity state)
+
+Below is a example of a simple rule.
 
 ```
-  entity
-  entities
-  groups
-  element
-  elements
+  - element: button.power
+    entity: media_player.tv
+    tap_action:
+      action: call-service
+      service: homeassistant.toggle
 ```
+
+The above rule can be described as follows:
+
+1) Observe the SVG `button.power` element for user interactions.
+1) Observe the HA `media_player.tv` entity for state changes.
+1) When the SVG element (i.e. `button.power`) is tapped (or clicked), call the `homeassistant.toggle` service for the HA `media_player.tv` entity.
+
+## Subjects
+
+| Item     | Description         |
+| -------- | ------------------- |
+| entity   | xxxxxxxxxxxxxxxxxxx |
+| entities | xxxxxxxxxxxxxxxxxxx | 
+| groups   | xxxxxxxxxxxxxxxxxxx |
+| element  | xxxxxxxxxxxxxxxxxxx |
+| elements | xxxxxxxxxxxxxxxxxxx |
 
 ## Actions
 
-```
-  state_action
-  tap_action
-  hold_action
-  double_tap_action
-  hover_action
-```
+| Item              | Description         |
+| ----------------- | ------------------- |
+| state_action      | xxxxxxxxxxxxxxxxxxx |
+| tap_action        | xxxxxxxxxxxxxxxxxxx | 
+| hold_action       | xxxxxxxxxxxxxxxxxxx |
+| double_tap_actio  | xxxxxxxxxxxxxxxxxxx |
+| hover_action      | xxxxxxxxxxxxxxxxxxx |
 
 ## Services
 
@@ -133,9 +158,7 @@ Floorplan
   service_data
 ```
 
-### Floorplan Services
-
-| Service                   | Description         |
+| Floorplan Service         | Description         |
 | ------------------------- | ------------------- |
 | floorplan.class_toggle    | xxxxxxxxxxxxxxxxxxx |
 | floorplan.class_set       | xxxxxxxxxxxxxxxxxxx | 
@@ -148,7 +171,7 @@ Floorplan
 
 ### Expressions
 
-| Property                  | Description         |
+| Property    | Description         |
 | ----------- | ------------------- |
 | expression  | xxxxxxxxxxxxxxxxxxx |
 | hass        | xxxxxxxxxxxxxxxxxxx | 
@@ -167,16 +190,7 @@ Floorplan
     >
     return {
 
-      getPercentageFill: (entity) => {
-        var max = [195, 232, 141];
-        var min = [240, 113, 120];
-        var r = Math.floor(min[0] + ((max[0] - min[0]) * (entity.state / 100)));
-        var g = Math.floor(min[1] + ((max[1] - min[1]) * (entity.state / 100)));
-        var b = Math.floor(min[2] + ((max[2] - min[2]) * (entity.state / 100)));
-        return `fill: rgb(${r}, ${g}, ${b})`; 
-      },
-
-      someOtherFunctionA: (entity, entities, hass) => {
+      someFunctionA: (entity, entities, hass) => {
         return 'foo'; 
       },
 
