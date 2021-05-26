@@ -161,7 +161,7 @@ Floorplan actions follow the same structure as [actions](https://www.home-assist
 | -------------------- | ------------------------------------------- |
 | `state_action`       | HA entity state is changed                  |
 | `tap_action`         | SVG element is tapped                       | 
-| `hold_action`        | SVG element is tapped-and-held              |
+| `hold_action`        | SVG element is tapped and held              |
 | `double_tap_action`  | SVG element is double tapped                |
 | `hover_action`       | SVG element is hovered over                 |
 
@@ -194,13 +194,15 @@ When defining service calls, service data can be dynamically constructed using J
 | `functions`              | User-defined functions                 |
 | `entity`                 | State object for the HA current entity |
 | `entities` (or `states`) | State objects for all HA entities      |
-| `hass`                   | HA [hass](https://home-assistant.io/developers/development_hass_object/) object |
+| `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
 | `element`                | current SVG element                    |
 | `elements`               | current SVG elements                   |
 
 # Advanced Topics
 
 ## Custom Functions
+
+Floorplan supports user-defined custom functions, which can be configured using the `functions` setting.
 
 ```
   functions: |
@@ -218,6 +220,21 @@ When defining service calls, service data can be dynamically constructed using J
     };
 ```
 
-## Expressions
+These custom functions can be used within any of the rules within the configuration, and must be called using the `functions.` prefix. Below is an example of calling a custom function.
+
+```
+  - entity: sensor.ring_salon_battery
+    state_action:
+      - service: floorplan.style_set
+        service_data: ${functions.someFunctionA(entity)}
+```
 
 ## Utility Functions
+
+Floorplan exposes some utility functions, which are available to JavaScript code. The following functions are available. (Note: This list is expected to grow over time).
+
+| Function                     | Parameters                       | Return Type  |
+| ---------------------------- | -------------------------------- | ------------ |
+| `util.ColorUtil.miredToRGB`  | `mired` (number)                 | `number[]`   |
+| `util.ColorUtil.kelvinToRGB` | `kelvin` (number)                | `number[]`   |
+| `util.DateUtil.strftime`     | `format` (string), `date` (Date) | `string`     |
