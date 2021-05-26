@@ -4,9 +4,17 @@ title: "Usage"
 toc: true
 ---
 
-# Configuration
+Each instance of Floorplan requires its own configuration.
 
-Each instance of Floorplan requires its own configuration. The following sections describe the various parts of the configuration.
+The following example shows the minimum configuration required for Floorplan to work.
+
+```
+  image: /local/floorplan/examples/home/home.svg
+  stylesheet: /local/floorplan/examples/home/home.css
+  rules:
+```
+
+The following sections describe the complete set of configuration items.
 
 ## Image
 
@@ -51,7 +59,7 @@ Just like the regular `image` setting, `image_mobile` can also be set to an obje
 
 ## Stylesheet
 
-Floorplan also requires a CSS file, which  be configured using the `stylesheet` setting.
+Floorplan also requires a CSS file, which can be configured using the `stylesheet` setting.
 
 ```
   stylesheet: /local/floorplan/examples/home/home.css
@@ -59,7 +67,7 @@ Floorplan also requires a CSS file, which  be configured using the `stylesheet` 
 
 ## Logging
 
-Floorplan can display its own logging panel which can be configured using the `log_level` setting.
+Logging comes in handy when trying to debug any Floorplan issues. Floorplan can display its own logging panel which can be configured using the `log_level` setting.
 
 ```
   log_level: info
@@ -72,7 +80,7 @@ By default, the logging panel is not displayed. Setting `log_level` to any of th
 - `info`
 - `debug`
 
-Floorplan also allows logging to the Developer Console in the Web browser. This can be enabled using the `console_log_level` setting.
+Floorplan also allows logging to the Developer Console in the Web browser. This can be enabled using the `console_log_level` setting, in the same was as the reagular `log_level` setting.
 
 ```
   console_log_level: info
