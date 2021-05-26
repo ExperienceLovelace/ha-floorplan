@@ -4,6 +4,21 @@ title: "Usage"
 toc: true
 ---
 
+# Contents
+
+- [Image](#image)
+- [Stylesheet](#stylesheet)
+- [Logging](#logging)
+- [Defaults](#defaults)
+- [Rules](#rules)
+  - [Subjects](#subjects)
+  - [Actions](#actions)
+  - [Services](#services)
+  - [Service Data](#service-data)
+- [Advanced Topics](#advanced-topics)
+  - [Custom Functions](#custom-functions)
+  - [Utility Library](#utility-library)
+
 Each instance of Floorplan requires its own configuration.
 
 The configuration can be stored in a separate file (i.e. `home.yaml`) or it can be embedded directly within the configuration of a Lovelace card or HA custom panel.
@@ -109,7 +124,7 @@ To disable one of the defaults for a specific rule, the relevant action must be 
         tap_action: false
 ```
 
-To learn more about rules and actions, refer to the next section.
+To learn more about [rules](#rules) and [actions](#actions), refer to the sections below.
 
 # Rules
 
@@ -169,29 +184,28 @@ Floorplan actions follow the same structure as [actions](https://www.home-assist
 
 ## Services
 
-Floorplan supports calling all services exposed by Home Assistant, as well services that are exposed by Flooorplan.
+Floorplan supports calling all [services](https://www.home-assistant.io/docs/scripts/service-calls) exposed by Home Assistant, as well services that are exposed by Flooorplan.
 
 Below are the services that are specific to Floorplan.
 
 | Floorplan Service           | Description                                      |
 | --------------------------- | ------------------------------------------------ |
-| `floorplan.class_toggle`    | Toggles a CSS class of the SVG element(s)        |
+| `floorplan.class_toggle`    | Toggle a CSS class of the SVG element(s)        |
 | `floorplan.class_set`       | Set the CSS class of the SVG element(s)          | 
 | `floorplan.style_set`       | Set the CSS style of the of the SVG element      |
 | `floorplan.text_set`        | Set the text of the SVG element(s)               |
 | `floorplan.image_set`       | Set the image of the SVG element(s)              |
-| `floorplan.page_navigate`   | Navigate to a page within the Lovelace dashboard |
 | `floorplan.window_navigate` | Navigate to a URL in a new Web browser window    |
 
-### Dynamic Service Data
+### Service Data
 
 When defining service calls, service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
 
 | Property                 | Description                            |
 | ------------------------ | -------------------------------------- |
 | `config`                 | Floorplan configuration                |
-| `util`                   | Utility library                        |
-| `functions`              | User-defined functions                 |
+| `util`                   | [Utility library](#utility-library)    |
+| `functions`              | [Custom functions](#custom-functions)  |
 | `entity`                 | State object for the HA current entity |
 | `entities` (or `states`) | State objects for all HA entities      |
 | `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
@@ -231,8 +245,8 @@ These custom functions can be used within any of the rules within the configurat
 
 Floorplan exposes a library of  utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
 
-| Function                     | Parameters                       | Return Type  |
-| ---------------------------- | -------------------------------- | ------------ |
-| `util.ColorUtil.miredToRGB`  | `mired` (number)                 | `number[]`   |
-| `util.ColorUtil.kelvinToRGB` | `kelvin` (number)                | `number[]`   |
-| `util.DateUtil.strftime`     | `format` (string), `date` (Date) | `string`     |
+| Function                     | Parameters                       | Return Type  | References     |
+| ---------------------------- | -------------------------------- | ------------ | -------------- |
+| `util.ColorUtil.miredToRGB`  | `mired` (number)                 | `number[]`   |                |
+| `util.ColorUtil.kelvinToRGB` | `kelvin` (number)                | `number[]`   |                |
+| `util.DateUtil.strftime`     | `format` (string), `date` (Date) | `string`     | [NPM package](https://www.npmjs.com/package/strftime) |
