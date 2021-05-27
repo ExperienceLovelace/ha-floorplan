@@ -1183,8 +1183,11 @@
      width="4.5962"
      y="1474.4"
      x="-282.31" /></g>
+  <g
+   id="button.tv"
+   inkscape:label="button.power">     
 	 <rect
-   id="rect10297"
+   id="tv_rect"
    style="opacity:0.9020004;fill:#000f00;stroke:#ff0000;stroke-width:2.48169994;stroke-linejoin:round"
    rx="6.3797002"
    ry="6.3797002"
@@ -1192,6 +1195,7 @@
    width="45.73"
    y="17.290882"
    x="794.86053" />
+   </g>
    <g
    id="button.power"
    inkscape:label="button.power">
@@ -1222,7 +1226,7 @@
      y="33.709999"
      x="85.960999" /><path
      id="path10309"
-     style="fill:#ff0000;stroke:#000000;stroke-width:0.73795003;stroke-linecap:square;stroke-miterlimit:0;filter:url(#filter7071)"
+     style="fill:#ff0000;stroke-width:0.73795003;stroke-linecap:square;stroke-miterlimit:0;filter:url(#filter7071)"
      d="m 125.5,80.129 v 27.929 a 131.52,131.52 0 0 1 104.97,125.11 l 0.0482,3.5936 a 131.52,131.52 0 0 1 -130.62,131.53 131.52,131.52 0 0 1 -132.41,-129.73 131.52,131.52 0 0 1 105.01,-130.52 v -27.858 a 159.01,159.01 0 0 0 -132.49,158.76 159.01,159.01 0 0 0 160.08,156.83 159.01,159.01 0 0 0 157.92,-159.01 l -0.0598,-4.3459 a 159.01,159.01 0 0 0 -132.45,-152.28 z"
      inkscape:connector-curvature="0" /><rect
      id="rect10311"
@@ -1269,7 +1273,7 @@
        y="33.709999"
        x="85.960999" /><path
        id="path10325"
-       style="fill:#ff0000;stroke:#000000;stroke-width:0.73795003;stroke-linecap:square;stroke-miterlimit:0;filter:url(#filter7071)"
+       style="fill:#ff0000;stroke-width:0.73795003;stroke-linecap:square;stroke-miterlimit:0;filter:url(#filter7071)"
        d="m 125.5,80.129 v 27.929 a 131.52,131.52 0 0 1 104.97,125.11 l 0.0482,3.5936 a 131.52,131.52 0 0 1 -130.62,131.53 131.52,131.52 0 0 1 -132.41,-129.73 131.52,131.52 0 0 1 105.01,-130.52 v -27.858 a 159.01,159.01 0 0 0 -132.49,158.76 159.01,159.01 0 0 0 160.08,156.83 159.01,159.01 0 0 0 157.92,-159.01 l -0.0598,-4.3459 a 159.01,159.01 0 0 0 -132.45,-152.28 z"
        inkscape:connector-curvature="0" /><rect
        id="rect10327"
@@ -1576,7 +1580,7 @@
      x="76.5"
      y="160.52138"
      style="font-size:26.66666603px;fill:#ffffff"
-     id="tspan1175">top-right corner of the remote.</tspan></text>
+     id="tspan1175">top-left or top-right corner of the remote.</tspan></text>
 
 <flowRoot
    xml:space="preserve"

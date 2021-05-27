@@ -24,14 +24,24 @@ g.floorplan-long-click > :not(text):hover,
   stroke-opacity: 1 !important;
 }
 
-/* TV power */
+/* TV power (fill) */
 
-.tv-on {
+.tv-on-fill {
   fill: green !important;
 }
 
-.tv-off {
+.tv-off-fill {
   fill: red !important;
+}
+
+/* TV power (outline) */
+
+.tv-on-outline {
+  stroke: green !important;
+}
+
+.tv-off-outline {
+  stroke: red !important;
 }
 
 /* TV content */

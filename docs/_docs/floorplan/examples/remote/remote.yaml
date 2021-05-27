@@ -15,7 +15,14 @@ config:
           service_data: ${entity.state.toUpperCase()}
         - action: call-service
           service: floorplan.class_set
-          service_data: 'tv-${entity.state}'
+          service_data: 'tv-${entity.state}-fill'
+        - action: call-service
+          service: floorplan.class_set
+          service_data:
+            elements:
+              - tv_rect
+              - power_rect
+            class: 'tv-${entity.state}-outline'
         - action: call-service
           service: floorplan.text_set
           service_data:
@@ -27,7 +34,9 @@ config:
             element: media_player.tv.volume_group
             class: '${entity.state === "on" ? "show" : "hide" }'
 
-    - element: button.power
+    - elements:
+        - button.power
+        - button.tv
       entity: media_player.tv
       tap_action:
         action: call-service
