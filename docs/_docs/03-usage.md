@@ -119,7 +119,7 @@ To disable one of the defaults for a specific rule, the relevant action must be 
 
 To learn more about [rules](#rules) and [actions](#actions), refer to the sections below.
 
-# Rules
+## Rules
 
 At the heart of Floorplan is the concept of rules. Rules are used to describe how entities should be displayed on the floorplan, along with how user interactions should be handled.
 
@@ -161,7 +161,7 @@ The above rule can be simplified as shown below, since Floorplan uses `call-serv
     tap_action: homeassistant.toggle
 ```
 
-## Subjects
+### Subjects
 
 The following types of items can be used as subjects within a rule.
 
@@ -173,7 +173,7 @@ The following types of items can be used as subjects within a rule.
 | `element`  | Single SVG element        |
 | `elements` | List of SVG elements      |
 
-## Action Triggers
+### Action Triggers
 
 Floorplan action triggers follow the same structure as [actions](https://www.home-assistant.io/lovelace/actions) used in Lovelace cards. Below is the list of action triggers that are supported by Floorplan.
 
@@ -185,7 +185,7 @@ Floorplan action triggers follow the same structure as [actions](https://www.hom
 | `double_tap_action`  | SVG element is double tapped                |
 | `hover_action`       | SVG element is hovered over                 |
 
-## Actions to Perform
+### Actions to Perform
 
 For each action trigger, the following actions can be performed.
 
@@ -200,7 +200,7 @@ For each action trigger, the following actions can be performed.
 
 Below are examples showing each of the actions to perform.
 
-### call-service
+**call-service**
 
 ```yaml
   - element: light.kitchen
@@ -213,7 +213,7 @@ Below are examples showing each of the actions to perform.
 
 More information can be found in the section about [services](#services).
 
-### more-info
+**more-info**
 
 ```yaml
   - element: light.kitchen
@@ -222,7 +222,7 @@ More information can be found in the section about [services](#services).
       entity_id: light.kitchen
 ```
 
-### toggle
+**toggle**
 
 ```yaml
   - element: light.kitchen
@@ -231,7 +231,7 @@ More information can be found in the section about [services](#services).
       entity_id: light.kitchen
 ```
 
-### navigate
+**navigate**
 
 ```yaml
   - element: light.kitchen
@@ -240,7 +240,7 @@ More information can be found in the section about [services](#services).
       navigation_path: /some/url
 ```
 
-### url
+**url**
 
 ```yaml
   - element: light.kitchen
@@ -249,7 +249,7 @@ More information can be found in the section about [services](#services).
       url_path: light.kitchen
 ```
 
-### fire-dom-event
+**fire-dom-event**
 
 ```yaml
   - element: light.kitchen
@@ -258,7 +258,7 @@ More information can be found in the section about [services](#services).
       foor: bar
 ```
 
-## Services
+### Services
 
 Floorplan supports calling all [services](https://www.home-assistant.io/docs/scripts/service-calls) exposed by Home Assistant, as well services that are exposed by Flooorplan.
 
@@ -314,9 +314,9 @@ The following example shows how the style is generated using a block of JavaScri
           return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
 ```
 
-# Advanced Topics
+## Advanced Topics
 
-## Custom Functions
+### Custom Functions
 
 Floorplan supports user-defined custom functions, which can be configured using the `functions` setting.
 
@@ -343,7 +343,7 @@ These custom functions can be used within any of the rules within the configurat
         service_data: ${functions.someFunctionA(entity)}
 ```
 
-## Utility Library
+### Utility Library
 
 Floorplan exposes a library of  utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
 
