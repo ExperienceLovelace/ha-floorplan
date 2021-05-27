@@ -4,23 +4,6 @@ title: "Usage"
 toc: true
 ---
 
-## Table of Contents
-
-- [Configuration](#configuration)
-- [Image](#image)
-- [Stylesheet](#stylesheet)
-- [Logging](#logging)
-- [Defaults](#defaults)
-- [Rules](#rules)
-  - [Subjects](#subjects)
-  - [Actions](#actions)
-  - [Services](#services)
-  - [Service Data](#service-data)
-- [Advanced Topics](#advanced-topics)
-  - [Custom Functions](#custom-functions)
-  - [Utility Library](#utility-library)
-- [Troubleshooting](#troubleshooting)
-
 ## Configuration
 
 Each instance of Floorplan requires its own configuration.
@@ -145,10 +128,10 @@ Floorplan rules can be configured using the `rules` setting, which represents a 
 Each rule object contains the following parts:
 
 - Subjects - entities / SVG elements to observe for changes, and to use in service calls
-- Actions
-  - Event - event to handle (i.e. HA entity state change)
-  - Service - service to call (i.e. toggle HA entity state)
-  - Service data - data to include when calling service (i.e. HA entity)
+- Action triggers (i.e. HA entity state change)
+  - Action to perform (i.e. call a service)
+  - Service to call (i.e. toggle HA entity state)
+  - Service data (i.e. HA entity)
 
 Below is an example of a simple rule.
 
@@ -158,6 +141,8 @@ Below is an example of a simple rule.
     tap_action:
       action: call-service
       service: homeassistant.toggle
+      service_data:
+        entity_id: media_player.tv
 ```
 
 The above rule can be described as follows:
@@ -165,8 +150,16 @@ The above rule can be described as follows:
 - Subjects:
   - Observe the SVG `button.power` element for user interactions
   - Observe the HA `media_player.tv` entity for state changes
-- Actions:
+- Action triggers:
   - When the SVG element (i.e. `button.power`) is tapped / clicked, call the `homeassistant.toggle` service for the HA `media_player.tv` entity
+
+The above rule can be simplified as shown below, since Floorplan uses `call-service` as the default action to perform. Also, Floorplan automatically includes the entity as part of the service data when calling the service.
+
+```yaml
+  - element: button.power
+    entity: media_player.tv
+    tap_action: homeassistant.toggle
+```
 
 ## Subjects
 
@@ -180,17 +173,90 @@ The following types of items can be used as subjects within a rule.
 | `element`  | Single SVG element        |
 | `elements` | List of SVG elements      |
 
-## Actions
+## Action Triggers
 
-Floorplan actions follow the same structure as [actions](https://www.home-assistant.io/lovelace/actions) used in Lovelace cards. Below is the list of actions that are supported by Floorplan.
+Floorplan action triggers follow the same structure as [actions](https://www.home-assistant.io/lovelace/actions) used in Lovelace cards. Below is the list of action triggers that are supported by Floorplan.
 
-| Action               | Triggered When                              |
+| Action Trigger       | Triggered When                              |
 | -------------------- | ------------------------------------------- |
 | `state_action`       | HA entity state is changed                  |
 | `tap_action`         | SVG element is tapped                       | 
 | `hold_action`        | SVG element is tapped and held              |
 | `double_tap_action`  | SVG element is double tapped                |
 | `hover_action`       | SVG element is hovered over                 |
+
+## Actions to Perform
+
+For each action trigger, the following actions can be performed.
+
+| Action to Perform    | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| `call-service`       | Call a Home Assistant or Floorplan service     |
+| `more-info`          | Display the more info popup for the HA entity  |
+| `toggle`             | Call the `homeassistant.toggle` service        |
+| `navigate`           | Navigate to a URL in the Web browser           |
+| `url`                | Navigate to a URL in the Web browser           |      |
+| `fire-dom-event`     | Fire a HTML DOM event                          |
+
+Below are examples showing each of the actions to perform.
+
+### call-service
+
+```yaml
+  - element: light.kitchen
+    tap_action:
+      action: call-service
+      service: homeassistant.toggle
+      service_data:
+        entity_id: light.kitchen
+```
+
+More information can be found in the section about [services](#services).
+
+### more-info
+
+```yaml
+  - element: light.kitchen
+    tap_action:
+      action: more-info
+      entity_id: light.kitchen
+```
+
+### toggle
+
+```yaml
+  - element: light.kitchen
+    tap_action:
+      action: toggle
+      entity_id: light.kitchen
+```
+
+### navigate
+
+```yaml
+  - element: light.kitchen
+    tap_action:
+      action: navigate
+      navigation_path: /some/url
+```
+
+### url
+
+```yaml
+  - element: light.kitchen
+    tap_action:
+      action: url
+      url_path: light.kitchen
+```
+
+### fire-dom-event
+
+```yaml
+  - element: light.kitchen
+    tap_action:
+      action: fire-dom-event
+      foor: bar
+```
 
 ## Services
 
@@ -205,11 +271,9 @@ Below are the services that are specific to Floorplan.
 | `floorplan.style_set`       | Set the CSS style of the of the SVG element(s)   | `style` (string)        |
 | `floorplan.text_set`        | Set the text of the SVG element(s)               | `text` (string)         |
 | `floorplan.image_set`       | Set the image of the SVG element(s)              | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
-| `floorplan.window_navigate` | Navigate to a URL in a new Web browser window    | `url` (string)        |
+| `floorplan.window_navigate` | Navigate to a URL in the Web browser             | `url` (string)          |
 
-### Service Data
-
-When defining service calls, service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
+Service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
 
 | Object                   | Description                            |
 | ------------------------ | -------------------------------------- |
@@ -221,6 +285,34 @@ When defining service calls, service data can be dynamically constructed using J
 | `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
 | `element`                | current SVG element                    |
 | `elements`               | current SVG elements                   |
+
+Below is an example of using JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate the CSS class to use.
+
+```yaml
+  - entities:
+      - binary_sensor.kitchen
+      - binary_sensor.laundry
+    state_action:
+      action: call-service
+      service: floorplan.class_set
+      service_data:
+        class: '${(entity.state === "on") ? "motion-on" : "motion-off"}'
+```
+
+The following example shows how the style is generated using a block of JavaScript code that spans multiple lines.
+
+```yaml
+  - entity: sensor.moisture_level
+    state_action:
+      action: call-service
+      service: floorplan.style_set
+      service_data:
+        element: moisture-level-clip-path
+        style: |
+          >
+          var height = Math.ceil(elements['sensor.moisture_level'].getBBox().height);
+          return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
+```
 
 # Advanced Topics
 
