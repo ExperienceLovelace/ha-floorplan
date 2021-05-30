@@ -53,6 +53,13 @@ export class FloorplanExamples extends LitElement {
       simulationFile: 'simulations.yaml',
       isCard: false,
     },
+    {
+      name: 'multi_floor',
+      dir: 'multi_floor',
+      configFile: 'multi_floor.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: false,
+    },
     // TODO
     //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
     //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },

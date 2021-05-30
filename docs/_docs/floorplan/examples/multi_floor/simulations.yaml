@@ -1,0 +1,18 @@
+simulations:
+  - entity:
+      entity_id: binary_sensor.activity
+      state: on
+      attributes:
+        foo: bar
+    states:
+      - state: on
+        duration: 3
+      - state: off
+        duration: 2
+
+  - entity: binary_sensor.garage
+    states:
+      - state: on
+        duration: 4
+      - state: off
+        duration: 2
