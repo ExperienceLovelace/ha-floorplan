@@ -21,7 +21,7 @@
   <defs
      id="defs4141">
     <radialGradient
-       id="grad1"
+       id="light.office.gradient"
        cx="319.93942"
        cy="261.92999"
        r="292.0097"
@@ -40,7 +40,7 @@
     <radialGradient
        gradientTransform="translate(-430.21947,0.60358879)"
        gradientUnits="userSpaceOnUse"
-       id="grad1-4"
+       id="light.kitchen.gradient"
        cx="319.93942"
        cy="261.92999"
        r="292.0097"
@@ -100,7 +100,7 @@
        id="g9145"
        transform="matrix(0.3246143,0,0,0.3246143,311.60581,432.06822)">
       <circle
-         style="display:inline;fill:url(#grad1)"
+         style="display:inline;fill:url(#light.office.gradient)"
          id="light.office.gradient"
          cx="319.93942"
          cy="261.92999"
@@ -153,7 +153,7 @@
          id="rect5149"
          inkscape:connector-curvature="0" />
       <circle
-         style="display:inline;fill:url(#grad1-4);stroke-width:0.99999994"
+         style="display:inline;fill:url(#light.kitchen.gradient);stroke-width:0.99999994"
          id="light.kitchen.gradient"
          cx="-110.28003"
          cy="262.5336"
