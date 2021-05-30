@@ -15,6 +15,7 @@ config:
 
   rules:
     - entities:
+        - light.kitchen
         - light.office
       tap_action:
         action: navigate
@@ -26,7 +27,7 @@ config:
             >
               var elements = [
                 `${entity.entity_id}`,
-                `light_gradient_color_0`,
+                `${entity.entity_id}.gradient_color_0`,
               ];
 
               var color = 'rgb(0, 0, 0)';
