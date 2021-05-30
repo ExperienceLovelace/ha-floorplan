@@ -96,8 +96,6 @@ Floorplan also allows logging to the Developer Console in the Web browser. This 
   console_log_level: info
 ```
 
-Logging comes in handy when trying to debug any Floorplan issues.
-
 ## Defaults
 
 To avoid unnecessary repetition of actions within the configuration, Floorplan provides a `defaults` setting which can be used.
@@ -117,7 +115,7 @@ To disable one of the defaults for a specific rule, the relevant action must be 
         tap_action: false
 ```
 
-To learn more about [rules](#rules) and [actions](#actions), refer to the sections below.
+More information about [rules](#rules) and [actions](#actions) can be found in the sections below.
 
 ## Rules
 
@@ -152,6 +150,8 @@ The above rule can be described as follows:
   - Observe the HA `media_player.tv` entity for state changes
 - Action triggers:
   - When the SVG element (i.e. `button.power`) is tapped / clicked, call the `homeassistant.toggle` service for the HA `media_player.tv` entity
+
+### Rule Simplification
 
 The above rule can be simplified as shown below, since Floorplan uses `call-service` as the default action to perform. Also, Floorplan automatically includes the entity as part of the service data when calling the service.
 
@@ -200,10 +200,12 @@ For each action trigger, the following actions can be performed.
 
 Below are examples showing each of the actions to perform.
 
-**call-service**
+#### call-service
+
+Example of a standard rule using `call-service`.
 
 ```yaml
-  - element: light.kitchen
+  - entity: light.kitchen
     tap_action:
       action: call-service
       service: homeassistant.toggle
@@ -211,52 +213,114 @@ Below are examples showing each of the actions to perform.
         entity_id: light.kitchen
 ```
 
-More information can be found in the section about [services](#services).
-
-**more-info**
+Simplified version of the rule, where `entity_id` defaults to `light.kitchen`.
 
 ```yaml
-  - element: light.kitchen
+  - entity: light.kitchen
+    tap_action:
+      action: call-service
+      service: homeassistant.toggle
+```
+
+Even further simplified version of the rule, where `action` defaults to `call-service`.
+
+```yaml
+  - entity: light.kitchen
+    tap_action: homeassistant.toggle
+```
+
+More information can be found in the section about [services](#services).
+
+#### more-info
+
+Example of a standard rule using `more-info`.
+
+```yaml
+  - entity: light.kitchen
     tap_action:
       action: more-info
       entity_id: light.kitchen
 ```
 
-**toggle**
+Simplified version of the rule, where `entity_id` defaults to `light.kitchen`.
+
+```yaml
+  - entity: light.kitchen
+    tap_action:
+      action: more-info
+```
+
+Even further simplified version of the rule, where `action` defaults to `more-info`.
 
 ```yaml
   - element: light.kitchen
+    tap_action: more-info
+```
+
+#### toggle
+
+Example of a standard rule using `toggle`.
+
+```yaml
+  - entity: light.kitchen
     tap_action:
       action: toggle
       entity_id: light.kitchen
 ```
 
-**navigate**
+Simplified version of the rule, where `entity_id` defaults to `light.kitchen`.
 
 ```yaml
   - element: light.kitchen
+    tap_action:
+      action: toggle
+```
+
+Even further simplified version of the rule, where `action` defaults to `toggle`.
+
+```yaml
+  - element: light.kitchen
+    tap_action: toggle
+```
+
+#### navigate
+
+Example of a standard rule using `navigate`.
+
+```yaml
+  - element: foo.button
     tap_action:
       action: navigate
       navigation_path: /some/url
 ```
 
-**url**
+More information about `navigate` can be found in the [Lovelace actions](https://www.home-assistant.io/lovelace/actions) documentation.
+
+#### url
+
+Example of a standard rule using `url`.
 
 ```yaml
-  - element: light.kitchen
+  - element: foo.button
     tap_action:
       action: url
-      url_path: light.kitchen
+      url_path: /some/url
 ```
 
-**fire-dom-event**
+More information about `url` can be found in the [Lovelace Actions](https://www.home-assistant.io/lovelace/actions) documentation.
+
+#### fire-dom-event
+
+Example of a standard rule using `fire-dom-event`.
 
 ```yaml
-  - element: light.kitchen
+  - element: foo.button
     tap_action:
       action: fire-dom-event
       foor: bar
 ```
+
+More information about `fire-dom-event` can be found in the [browser_mod](https://github.com/thomasloven/hass-browser_mod) documentation.
 
 ### Services
 
@@ -313,6 +377,8 @@ The following example shows how the style is generated using a block of JavaScri
           var height = Math.ceil(elements['sensor.moisture_level'].getBBox().height);
           return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
 ```
+
+Service calls can be simplified. More information can be found in the section on [rule simplification](#rule-simplification).
 
 ## Advanced Topics
 
