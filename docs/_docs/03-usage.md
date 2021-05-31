@@ -409,15 +409,21 @@ These custom functions can be used within any of the rules within the configurat
         service_data: ${functions.someFunctionA(entity)}
 ```
 
+The [Ring](/ha-floorplan/docs/example-ring) example shows how `functions` can be used.
+
 ### Utility Library
 
-Floorplan exposes a library of  utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
+Floorplan exposes a library of utility functions, which are available to JavaScript code within rules. The following functions are available. (Note: This list is expected to grow over time).
 
 | Function                 | Description                               | Parameters        | Return Type  |
 | ------------------------ | ----------------------------------------- | ----------------- | ------------ |
 | `util.color.miredToRGB`  | Convert mired (light temperature) to RGB  | `mired` (number)  | `number[]`   |
 | `util.color.kelvinToRGB` | Convert kelvin (light temperature) to RGB | `kelvin` (number) | `number[]`   |
 | `util.date.strftime`     | Convert datetime to string (Python style)<br />[NPM package](https://www.npmjs.com/package/strftime) | `format` (string), `date` (Date) | `string`     |
+
+The [Light](/ha-floorplan/docs/example-light) example shows how `util.color.miredToRGB()` can be used.
+The [Light](/docs/example-light) example shows how `util.color.miredToRGB()` can be used.
+The [Light](/example-light) example shows how `util.color.miredToRGB()` can be used.
 
 ## Troubleshooting
 
