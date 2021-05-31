@@ -127,7 +127,7 @@ Each rule object contains the following parts:
 
 - Subjects - entities / SVG elements to observe for changes, and to use in service calls
 - Action triggers (i.e. HA entity state change)
-  - Action to perform (i.e. call a service)
+  - Action (i.e. call a service)
   - Service to call (i.e. toggle HA entity state)
   - Service data (i.e. HA entity)
 
@@ -153,7 +153,7 @@ The above rule can be described as follows:
 
 ### Rule Simplification
 
-The above rule can be simplified as shown below, since Floorplan uses `call-service` as the default action to perform. Also, Floorplan automatically includes the entity as part of the service data when calling the service.
+The above rule can be simplified as shown below, since Floorplan uses `call-service` as the default action. Also, Floorplan automatically includes the entity as part of the service data when calling the service.
 
 ```yaml
   - element: button.power
@@ -175,17 +175,14 @@ The following types of items can be used as subjects within a rule.
 
 ### Action Triggers
 
-Floorplan action triggers follow the same structure as [actions](https://www.home-assistant.io/lovelace/actions) used in Lovelace cards. Below is the list of action triggers that are supported by Floorplan.
+Floorplan supports the same action triggers used in [Lovelace](https://www.home-assistant.io/lovelace/actions) (`tap_action`, `hold_action`, `double_tap_action`). In addition to these, Floorplan adds two of its own action triggers.
 
 | Action Trigger       | Triggered When                              |
 | -------------------- | ------------------------------------------- |
-| `state_action`       | HA entity state is changed                  |
-| `tap_action`         | SVG element is tapped                       | 
-| `hold_action`        | SVG element is tapped and held              |
-| `double_tap_action`  | SVG element is double tapped                |
+| `state_action`       | Home Assistant entity state is changed                  |
 | `hover_action`       | SVG element is hovered over                 |
 
-### Actions to Perform
+### Actions
 
 When an action trigger is executed, Floorplan can perform any of the available [Lovelace actions](https://www.home-assistant.io/lovelace/actions) (`call-service`, `more-info`, `toggle`, `navigate`, etc.). Floorplan expands on the `call-service` action, allowing it to run both Home Assistant and Floorplan services.
 
