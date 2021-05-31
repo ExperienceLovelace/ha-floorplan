@@ -421,9 +421,7 @@ Floorplan exposes a library of utility functions, which are available to JavaScr
 | `util.color.kelvinToRGB` | Convert kelvin (light temperature) to RGB | `kelvin` (number) | `number[]`   |
 | `util.date.strftime`     | Convert datetime to string (Python style)<br />[NPM package](https://www.npmjs.com/package/strftime) | `format` (string), `date` (Date) | `string`     |
 
-The [Light](/ha-floorplan/docs/example-light) example shows how `util.color.miredToRGB()` can be used.
-The [Light](/docs/example-light) example shows how `util.color.miredToRGB()` can be used.
-The [Light](/example-light) example shows how `util.color.miredToRGB()` can be used.
+The [Light](/ha-floorplan/docs/example-light) example shows how the utility library's `util.color.miredToRGB()` function can be used.
 
 ## Troubleshooting
 
