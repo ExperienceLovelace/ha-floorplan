@@ -187,18 +187,7 @@ Floorplan action triggers follow the same structure as [actions](https://www.hom
 
 ### Actions to Perform
 
-For each action trigger, the following actions can be performed.
-
-| Action to Perform    | Description                                    |
-| -------------------- | ---------------------------------------------- |
-| `call-service`       | Call a Home Assistant or Floorplan service     |
-| `more-info`          | Display the more info popup for the HA entity  |
-| `toggle`             | Call the `homeassistant.toggle` service        |
-| `navigate`           | Navigate to a URL in the Web browser           |
-| `url`                | Navigate to a URL in the Web browser           |      |
-| `fire-dom-event`     | Fire a HTML DOM event                          |
-
-Below are examples showing each of the actions to perform.
+When an action trigger is executed, Floorplan can perform any of the available [Lovelace actions](https://www.home-assistant.io/lovelace/actions) (`more-info`, `toggle`, `navigate`, etc.). In addition to those actions, Floorplan provides the `call-service` action which can be used to run both Home Assistant and Floorplan services.
 
 #### call-service
 
@@ -231,99 +220,6 @@ Even further simplified version of the rule, where `action` defaults to `call-se
 
 More information can be found in the section about [services](#services).
 
-#### more-info
-
-Example of a standard rule using `more-info`.
-
-```yaml
-  - entity: light.kitchen
-    tap_action:
-      action: more-info
-      entity_id: light.kitchen
-```
-
-Simplified version of the rule, where `entity_id` defaults to `light.kitchen`.
-
-```yaml
-  - entity: light.kitchen
-    tap_action:
-      action: more-info
-```
-
-Even further simplified version of the rule, where `action` defaults to `more-info`.
-
-```yaml
-  - element: light.kitchen
-    tap_action: more-info
-```
-
-#### toggle
-
-Example of a standard rule using `toggle`.
-
-```yaml
-  - entity: light.kitchen
-    tap_action:
-      action: toggle
-      entity_id: light.kitchen
-```
-
-Simplified version of the rule, where `entity_id` defaults to `light.kitchen`.
-
-```yaml
-  - element: light.kitchen
-    tap_action:
-      action: toggle
-```
-
-Even further simplified version of the rule, where `action` defaults to `toggle`.
-
-```yaml
-  - element: light.kitchen
-    tap_action: toggle
-```
-
-#### navigate
-
-Example of a standard rule using `navigate`.
-
-```yaml
-  - element: foo.button
-    tap_action:
-      action: navigate
-      navigation_path: /some/url
-```
-
-More information about `navigate` can be found in the [Lovelace actions](https://www.home-assistant.io/lovelace/actions) documentation.
-
-#### url
-
-Example of a standard rule using `url`.
-
-```yaml
-  - element: foo.button
-    tap_action:
-      action: url
-      url_path: /some/url
-```
-
-More information about `url` can be found in the [Lovelace Actions](https://www.home-assistant.io/lovelace/actions) documentation.
-
-#### fire-dom-event
-
-Example of a standard rule using `fire-dom-event`.
-
-```yaml
-  - element: foo.button
-    tap_action:
-      action: fire-dom-event
-      browser_mod:
-        command: toast
-        message: Hello, world!
-```
-
-More information about `fire-dom-event` can be found in the [browser_mod](https://github.com/thomasloven/hass-browser_mod) documentation.
-
 ### Services
 
 Floorplan supports calling all [services](https://www.home-assistant.io/docs/scripts/service-calls) exposed by Home Assistant, as well services that are exposed by Flooorplan.
@@ -337,7 +233,6 @@ Below are the services that are specific to Floorplan.
 | `floorplan.style_set`       | Set the CSS style of the of the SVG element(s)   | `style` (string)        |
 | `floorplan.text_set`        | Set the text of the SVG element(s)               | `text` (string)         |
 | `floorplan.image_set`       | Set the image of the SVG element(s)              | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
-| `floorplan.window_navigate` | Navigate to a URL in the Web browser             | `url` (string)          |
 
 Service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
 

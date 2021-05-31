@@ -1963,22 +1963,6 @@ export class FloorplanElement extends LitElement {
           targetPageInfo.svg.style.display = 'block';
         }
         break;
-      case 'window_navigate':
-        if (this.isDemo) {
-          this.notify(`Calling service: ${domain}.${service}`);
-        } else {
-          serviceData = this.getServiceData(
-            actionConfig,
-            entityId,
-            svgElementInfo?.svgElement
-          );
-          url =
-            typeof serviceData === 'string'
-              ? serviceData
-              : (serviceData.url as string);
-          window.location.href = url;
-        }
-        break;
 
       case 'variable_set':
         serviceData = this.getServiceData(
