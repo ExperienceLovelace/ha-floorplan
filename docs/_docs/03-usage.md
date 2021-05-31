@@ -83,7 +83,7 @@ Logging comes in handy when trying to debug any Floorplan issues. Floorplan can 
   log_level: info
 ```
 
-By default, the logging panel is not displayed. Setting `log_level` to any of the following levels causes the logging panel to be displayed below the Floorplan image. The levels are listed in order of least verbose to most verbose.
+By default, the logging panel is not displayed. Setting `log_level` to any of the following levels causes the logging panel to be displayed below the Floorplan image. The levels are listed in order of least to most verbose.
 
 - `error`
 - `warn` (or `warning`)
@@ -187,7 +187,7 @@ Floorplan action triggers follow the same structure as [actions](https://www.hom
 
 ### Actions to Perform
 
-When an action trigger is executed, Floorplan can perform any of the available [Lovelace actions](https://www.home-assistant.io/lovelace/actions) (`more-info`, `toggle`, `navigate`, etc.). In addition to those actions, Floorplan provides the `call-service` action which can be used to run both Home Assistant and Floorplan services.
+When an action trigger is executed, Floorplan can perform any of the available [Lovelace actions](https://www.home-assistant.io/lovelace/actions) (`call-service`, `more-info`, `toggle`, `navigate`, etc.). Floorplan expands on the `call-service` action, allowing it to run both Home Assistant and Floorplan services.
 
 #### call-service
 
