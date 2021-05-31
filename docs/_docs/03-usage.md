@@ -317,7 +317,9 @@ Example of a standard rule using `fire-dom-event`.
   - element: foo.button
     tap_action:
       action: fire-dom-event
-      foor: bar
+      browser_mod:
+        command: toast
+        message: Hello, world!
 ```
 
 More information about `fire-dom-event` can be found in the [browser_mod](https://github.com/thomasloven/hass-browser_mod) documentation.
