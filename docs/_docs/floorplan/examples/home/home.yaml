@@ -98,3 +98,18 @@ config:
               >
               var height = Math.ceil(elements['sensor.moisture_level'].getBBox().height);
               return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
+
+      - entity: sensor.wind_direction
+        state_action:
+          action: call-service
+          service: floorplan.style_set
+          service_data:
+            style: |
+              >
+              var rotation = Math.floor(entity.state) - 90;
+
+              return `
+                transform-box: fill-box;
+                transform-origin: center;
+                transform: rotate(${rotation}deg);
+              `;

@@ -1,4 +1,31 @@
 simulations:
+  - entity: sensor.wind_direction
+    states:
+      - state: 0
+        duration: 1
+      - state: 30
+        duration: 1
+      - state: 60
+        duration: 1
+      - state: 90
+        duration: 1
+      - state: 120
+        duration: 1
+      - state: 150
+        duration: 1
+      - state: 180
+        duration: 1
+      - state: 210
+        duration: 1
+      - state: 240
+        duration: 1
+      - state: 270
+        duration: 1
+      - state: 300
+        duration: 1
+      - state: 330
+        duration: 1
+
   - entity:
       entity_id: sensor.moisture_level
       state: on
