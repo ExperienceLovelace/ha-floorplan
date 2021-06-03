@@ -14,7 +14,7 @@ simulations:
       - light.guesttoilet
       - light.bedroom
     states:
-      - state: on
+      - state: off
 
   - entity: sensor.hallway
     states:
