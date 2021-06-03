@@ -89,7 +89,6 @@ If you're not ready to initiate it on your own. What about testing it? Below you
          </div>
       </div>
      <p class="page__lead"><small>Find more details on the <a href="docs/example-floorplanner-home/">Floorplanner Home</a>-example page.</small></p>
-      </p>
    </div>
 </div>
 <br>
