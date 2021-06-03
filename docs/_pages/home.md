@@ -71,7 +71,7 @@ If you'd like to see interactive examples, head on over to the [Examples](./docs
 
 Are you searching for a specific feature? Please take a look at the [Usage](./docs/usage/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
 
-<div class="page__hero--overlay" style="padding-left:50px;background-color: #5e616c; background-image: url('/ha-floorplan/assets/images/bg-frontpage.png');">
+<div class="page__hero--overlay" style="padding:50px 30px;background-color: #5e616c; background-image: url('/ha-floorplan/assets/images/bg-frontpage.png');">
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">See it in action</h1>
         <p class="page__lead">Here's a real world example of how to use ha-floorplan, with a floorplan created with Floorplanner. This is just a simple example of how to get started. Use a combination of YAML, CSS and JavaScript to get the most out of it, or take a look at the examples to get inspired.
@@ -97,6 +97,20 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
       <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
         <floorplan-examples examplespath="_docs/floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
       </div>
+      
+      
+      <div data-tab="floorplanner_home-yaml" class="tabcontent">
+  {% highlight ruby %}
+  {% include_relative _docs/floorplan/examples/floorplanner_home/floorplanner_home.yaml %}
+  {% endhighlight %}
+      </div>
+
+      <div data-tab="floorplanner_home-css" class="tabcontent">
+  {% highlight ruby %}
+  {% include_relative _docs/floorplan/examples/floorplanner_home/floorplanner_home.css %}
+  {% endhighlight %}
+      </div>
+      
 
     </div>
 
