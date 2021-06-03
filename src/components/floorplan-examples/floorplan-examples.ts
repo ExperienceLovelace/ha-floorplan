@@ -45,6 +45,13 @@ export class FloorplanExamples extends LitElement {
       simulationFile: 'simulations.yaml',
       isCard: true,
     },
+    {
+      name: 'tobias',
+      dir: 'tobias',
+      configFile: 'tobias.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: true,
+    },
     // Panels
     {
       name: 'home',
@@ -60,9 +67,6 @@ export class FloorplanExamples extends LitElement {
       simulationFile: 'simulations.yaml',
       isCard: false,
     },
-    // TODO
-    //{ dir: "home-multi", configFile: "main.yaml", simulationFile: "simulations.yaml", },
-    //{ dir: "ian", configFile: "home.yaml", simulationFile: "simulations.yaml", },
   ] as FloorplanExanple[];
 
   constructor() {

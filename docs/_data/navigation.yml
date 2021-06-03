@@ -49,6 +49,8 @@ docs:
         url: /docs/example-remote/
       - title: "Multi Floor"
         url: /docs/example-multi-floor/
+      - title: "Tobias"
+        url: /docs/example-tobias/
         
   - title: Usage
     url: /docs/usage/

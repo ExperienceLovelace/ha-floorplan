@@ -50,6 +50,14 @@ export class HassSimulator {
         }
         break;
 
+      case 'light':
+        switch (service) {
+          case 'toggle':
+            this.homeAssistantToggle(serviceData as Record<string, unknown>);
+            break;
+        }
+        break;
+
       case 'media_player':
         switch (service) {
           case 'volume_up':

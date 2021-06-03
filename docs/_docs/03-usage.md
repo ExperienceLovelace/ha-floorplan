@@ -215,8 +215,6 @@ Even further simplified version of the rule, where `action` defaults to `call-se
     tap_action: homeassistant.toggle
 ```
 
-More information can be found in the section about [services](#services).
-
 ### Services
 
 Floorplan supports calling all [services](https://www.home-assistant.io/docs/scripts/service-calls) exposed by Home Assistant, as well services that are exposed by Flooorplan.

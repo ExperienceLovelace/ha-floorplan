@@ -5,7 +5,7 @@ config:
   config:
     image: /local/floorplan/examples/multi_floor/multi_floor.svg
     stylesheet: /local/floorplan/examples/multi_floor/multi_floor.css
-    log_level: info
+    # log_level: info
     console_log_level: info
 
     defaults:
