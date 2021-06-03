@@ -2,7 +2,6 @@ title: Tobias
 config:
   image: /local/floorplan/examples/tobias/tobias.svg
   stylesheet: /local/floorplan/examples/tobias/tobias.css
-  log_level: info
 
   defaults:
       hover_action: hover-info

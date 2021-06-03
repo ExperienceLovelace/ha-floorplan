@@ -1,12 +1,16 @@
 simulations:
   - entities:
-      - light.udestue
-      - light.restroom
       - light.kitchen
-      - light.guestroom
       - light.livingroom
       - light.office
       - light.hallway
+    states:
+      - state: on
+
+  - entities:
+      - light.udestue
+      - light.restroom
+      - light.guestroom
       - light.guesttoilet
       - light.bedroom
     states:
