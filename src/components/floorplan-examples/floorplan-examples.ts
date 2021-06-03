@@ -46,9 +46,9 @@ export class FloorplanExamples extends LitElement {
       isCard: true,
     },
     {
-      name: 'tobias',
-      dir: 'tobias',
-      configFile: 'tobias.yaml',
+      name: 'floorplanner_home',
+      dir: 'floorplanner_home',
+      configFile: 'floorplanner_home.yaml',
       simulationFile: 'simulations.yaml',
       isCard: true,
     },
