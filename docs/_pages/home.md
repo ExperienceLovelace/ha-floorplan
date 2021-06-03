@@ -100,11 +100,13 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
       
       
       <div data-tab="floorplanner_home-yaml" class="tabcontent">
-Test
+        {% highlight ruby %}
+        {% include_relative ../_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
+        {% endhighlight %}
       </div>
 
       <div data-tab="floorplanner_home-css" class="tabcontent">
-Test
+See "Examples" > "Floorplanner Home"
       </div>
       
 
