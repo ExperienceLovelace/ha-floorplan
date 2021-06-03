@@ -25,7 +25,7 @@
     <div data-tab="{{ e.example_name }}-yaml" class="tabcontent">
     
 {% highlight ruby %}
-{% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
+{% include_relative ./_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
 {% endhighlight %}
 
     </div>
@@ -33,7 +33,7 @@
     <div data-tab="{{ e.example_name }}-css" class="tabcontent">
     
 {% highlight ruby %}
-{% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
+{% include_relative ./_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
 {% endhighlight %}
     
     </div>
