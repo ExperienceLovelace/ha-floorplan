@@ -95,7 +95,7 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
     <div class="tabcontent-container size-auto">
 
       <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
-        <floorplan-examples examplespath="_docs/floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
+        <floorplan-examples examplespath="docs/floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
       </div>
       
       
