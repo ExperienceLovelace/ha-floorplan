@@ -47,6 +47,9 @@ feature_row:
     url: "/docs/usage/"
     btn_label: "Let's deep dive!"
     btn_class: "btn--primary"
+floorplan_example:
+  - example_name: "floorplanner_home"
+    example_classes: "size-auto"
 
 ---
 
@@ -71,7 +74,16 @@ If you'd like to see interactive examples, head on over to the [Examples](./docs
 
 Are you searching for a specific feature? Please take a look at the [Usage](./docs/usage/) page. You'll see how to use triggers, actions, and more advanced stuff. We'll do our best to keep it up to date.
 
-![Example of SVG Floorplan-file - Background created with Floorplanner](./assets/images/home/floorplan-background_with_floorplanner.png)
+<div class="page__hero--overlay" style="background-color: #5e616c; background-image: url('/ha-floorplan/assets/images/header-frontpage.png');">
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">See it in action</h1>
+        <p class="page__lead">Here's a real world example of how to use ha-floorplan, with a floorplan created with Floorplanner. This is just a simple example of how to get started. Use a combination of YAML, CSS and JavaScript to get the most out of it, or take a look at the examples to get inspired.
+<small>Use your own custom styles to visualize whatever you can think of. Your imagination becomes the new limit.</small>
+</p>
+<p>
+  {% include floorplan_example %}
+    </p></div>
+</div>
 
 
 ## Posts
