@@ -81,7 +81,7 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
 <small>Use your own custom styles to visualize whatever you can think of. Your imagination becomes the new limit.</small>
 </p>
 <p>
-  {% include _includes/floorplan_example %}
+  {% include docs/floorplan_example %}
     </p></div>
 </div>
 
