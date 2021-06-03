@@ -79,7 +79,6 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
       <p>
       <div class="example_wrapper">
          <script src="docs/floorplan/floorplan-examples.js"></script>
-         <script src="assets/js/tabs.js"></script>
          <link rel="stylesheet" href="assets/css/tabs.css">
          <div class="tabcontent-container size-auto">
             <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
