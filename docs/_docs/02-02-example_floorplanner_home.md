@@ -1,5 +1,5 @@
 ---
-permalink: /docs/example-floorplanner_home/
+permalink: /docs/example-floorplanner-home/
 title: "Floorplanner Home Example"
 toc: true
 floorplan_example:
