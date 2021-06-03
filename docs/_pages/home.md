@@ -82,8 +82,8 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
   <div class="example_wrapper">
 
 
-    <script src="../floorplan/floorplan-examples.js"></script>
-    <script src="../../assets/js/tabs.js"></script>
+    <script src="../docs/floorplan/floorplan-examples.js"></script>
+    <script src="../../ha-floorplan/assets/js/tabs.js"></script>
     <link rel="stylesheet" href="../../assets/css/tabs.css">
 
     <div class="tab">
