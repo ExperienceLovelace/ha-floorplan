@@ -1,9 +1,9 @@
 ---
-permalink: /docs/example-tobias/
-title: "Tobias Example"
+permalink: /docs/example-floorplanner_home/
+title: "Floorplanner Home Example"
 toc: true
 floorplan_example:
-  - example_name: "tobias"
+  - example_name: "floorplanner_home"
     example_classes: "size-auto"
 ---
 
