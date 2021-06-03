@@ -73,13 +73,12 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
 
 If you're not ready to initiate it on your own. What about testing it? Below you'll find a working example of ha-floorplan.
 
-<br><br>
-<div class="page__hero--overlay" style="width: calc(100% + 40px); margin-left: -20px;padding:40px 30px;background-color: #5e616c; background-image: url('/ha-floorplan/assets/images/bg-frontpage.png');">
+<br>
+<div class="page__hero--overlay" style="width: calc(100% + 40px); margin-left: -20px;padding:60px 30px 40px 30px;background-color: #5e616c; background-image: url('/ha-floorplan/assets/images/bg-frontpage.png');">
    <div class="wrapper">
-      <h1 id="page-title" class="page__title" style="font-size:1.4em">See it in action</h1>
-      <p class="page__lead">Here's a real world example of how to use ha-floorplan, with a floorplan created with Floorplanner. This is just a simple example of how to get started. Use a combination of YAML, CSS and JavaScript to get the most out of it, or take a look at the examples to get inspired.
+      <h1 id="page-title" class="page__title" style="font-size:1.5em">See it in action</h1>
+      <p class="page__lead" style=">Here's a real world example of how to use ha-floorplan, with a floorplan created with Floorplanner. This is just a simple example of how to get started. Use a combination of YAML, CSS and JavaScript to get the most out of it, or take a look at the examples to get inspired.
       </p>
-      <p>
       <div class="example_wrapper">
          <script src="docs/floorplan/floorplan-examples.js"></script>
          <link rel="stylesheet" href="assets/css/tabs.css">
@@ -93,7 +92,7 @@ If you're not ready to initiate it on your own. What about testing it? Below you
       </p>
    </div>
 </div>
-<br><br>
+<br>
 
 ## Posts
 
