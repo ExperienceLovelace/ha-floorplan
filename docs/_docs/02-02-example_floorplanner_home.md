@@ -9,6 +9,8 @@ floorplan_example:
 
 ## Example
 
+This floorplan have a background, created with the online web-bsed software called <a href="https://floorplanner.com/" targer="_blank">Floorplanner</a>.
+
 {% include floorplan_example %}
 
 {% include assets_ref %}
