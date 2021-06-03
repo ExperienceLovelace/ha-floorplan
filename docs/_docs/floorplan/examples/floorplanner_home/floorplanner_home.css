@@ -69,30 +69,36 @@ svg, svg * {
   fill: white !important;
 }
 
-
 /* Light Control */
+
 path[id*="area."].light-on{
-  opacity:0!important;
+  opacity: 0 !important;
 }
 
-
 path[id*="area."]{
-  opacity:0.5!important;
+  opacity: 0.5 !important;
   transition: opacity .25s;
   -moz-transition: opacity .25s;
   -webkit-transition: opacity .25s;
 }
 
 /* Things Control */
+
 [id*="thing."].thing-on{
-  opacity:1!important;
+  opacity: 1 !important;
   filter: drop-shadow(0px -5px 3px #ffedde);
   fill: #fffae54f !important;
 }
 
 [id*="thing."]{
-  opacity:0!important;
+  opacity: 0 !important;
   transition: opacity .25s;
   -moz-transition: opacity .25s;
   -webkit-transition: opacity .25s;
+}
+
+/* Temperature text */
+
+.static-temp, .static-temp tspan {
+  fill: #ffffff;
 }
