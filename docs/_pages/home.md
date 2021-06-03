@@ -81,12 +81,12 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
          <script src="docs/floorplan/floorplan-examples.js"></script>
          <link rel="stylesheet" href="assets/css/tabs.css">
          <div class="tabcontent-container size-auto">
-            <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
+            <div data-tab="floorplanner_home-floorplan">
                <floorplan-examples examplespath="docs/floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
             </div>
          </div>
       </div>
-     Find more details on the [Floorplanner Home](./docs/example-floorplanner-home/)-example page.
+     <p class="page__lead"><small>Find more details on the <a href="docs/example-floorplanner-home/">Floorplanner Home</a>-example page.</small></p>
       </p>
    </div>
 </div>
