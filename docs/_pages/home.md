@@ -94,25 +94,9 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
 
     <div class="tabcontent-container size-auto">
 
-    <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
-      <floorplan-examples examplespath="../floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
-    </div>
-
-    <div data-tab="floorplanner_home-yaml" class="tabcontent">
-    
-{% highlight ruby %}
-{% include_relative ../_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
-{% endhighlight %}
-
-    </div>
-
-    <div data-tab="floorplanner_home-css" class="tabcontent">
-    
-{% highlight ruby %}
-{% include_relative ../_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
-{% endhighlight %}
-    
-    </div>
+      <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
+        <floorplan-examples examplespath="../floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
+      </div>
 
     </div>
 
