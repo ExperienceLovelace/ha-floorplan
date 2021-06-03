@@ -1,7 +1,7 @@
-title: Tobias
+title: Floorplanner Home
 config:
-  image: /local/floorplan/examples/tobias/tobias.svg
-  stylesheet: /local/floorplan/examples/tobias/tobias.css
+  image: /local/floorplan/examples/floorplanner_home/floorplanner_home.svg
+  stylesheet: /local/floorplan/examples/floorplanner_home/floorplanner_home.css
 
   defaults:
       hover_action: hover-info
