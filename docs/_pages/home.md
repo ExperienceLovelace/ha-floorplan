@@ -47,9 +47,6 @@ feature_row:
     url: "/docs/usage/"
     btn_label: "Let's deep dive!"
     btn_class: "btn--primary"
-floorplan_example:
-  - example_name: "floorplanner_home"
-    example_classes: "size-auto"
 
 ---
 
@@ -81,7 +78,52 @@ Are you searching for a specific feature? Please take a look at the [Usage](./do
 <small>Use your own custom styles to visualize whatever you can think of. Your imagination becomes the new limit.</small>
 </p>
 <p>
-  {% include floorplan_example %}
+  
+  <div class="example_wrapper">
+
+
+    <script src="../floorplan/floorplan-examples.js"></script>
+    <script src="../../assets/js/tabs.js"></script>
+    <link rel="stylesheet" href="../../assets/css/tabs.css">
+
+    <div class="tab">
+      <button class="tablinks active" onclick="showTab(event, 'floorplanner_home-floorplan')">Floorplan</button>
+      <button class="tablinks" onclick="showTab(event, 'floorplanner_home-yaml')">YAML</button>
+      <button class="tablinks" onclick="showTab(event, 'floorplanner_home-css')">CSS</button>
+    </div>
+
+    <div class="tabcontent-container size-auto">
+
+    <div data-tab="floorplanner_home-floorplan" class="tabcontent active">
+      <floorplan-examples examplespath="../floorplan/examples" data-include="floorplanner_home"></floorplan-examples>
+    </div>
+
+    <div data-tab="floorplanner_home-yaml" class="tabcontent">
+    
+{% highlight ruby %}
+{% include_relative ../_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
+{% endhighlight %}
+
+    </div>
+
+    <div data-tab="floorplanner_home-css" class="tabcontent">
+    
+{% highlight ruby %}
+{% include_relative ../_docs/floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
+{% endhighlight %}
+    
+    </div>
+
+    </div>
+
+
+</div>
+  
+  
+  
+  
+  
+  
     </p></div>
 </div>
 
