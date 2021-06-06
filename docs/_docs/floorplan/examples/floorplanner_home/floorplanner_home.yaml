@@ -44,3 +44,9 @@ config:
         - service: floorplan.class_set
           service_data:
             class: 'static-temp'
+
+    - entity: switch.udestue_fan
+      tap_action: toggle
+      state_action:
+        service: floorplan.class_set
+        service_data: '${(entity.state === "on") ? "spinning" : ""}'

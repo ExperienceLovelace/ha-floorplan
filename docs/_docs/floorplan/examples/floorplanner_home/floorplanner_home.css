@@ -102,3 +102,23 @@ path[id*="area."]{
 .static-temp, .static-temp tspan {
   fill: #ffffff;
 }
+
+/* Spinning fan */
+
+.spinning {
+  animation-name: spin;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

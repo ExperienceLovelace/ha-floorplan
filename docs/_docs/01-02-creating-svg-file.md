@@ -15,8 +15,31 @@ For example, below is what the SVG element looks like for a Front Hallway binary
 
 If you need a good source of SVG icons / images, the following resources are a good starting point.
 
+- [SVG Repo](https://www.svgrepo.com)
 - [Free SVG](https://freesvg.org)
 - [Online Web Fonts](https://www.onlinewebfonts.com/icon)
 - [Material Design Icons](https://materialdesignicons.com)
 - [Noun Project](https://thenounproject.com)
 - [Flat Icon](http://flaticon.com)
+
+## Animations not in the right position?
+
+If you're using animations in your floorplans, and your SVG elements are not appearing in the right pisition, or are spinning off the page, it's most likely because your SVG element already has a [transform](https://www.w3schools.com/cssref/css3_pr_transform.asp) applied to it. Best way to resolve this is to view the SVG file in a text editor, and location your SVG element. If the SVG element contains a `transform` attribute, it means that any `tranform` you apply in Floorplan will likely conflict with this existing `tranform`. Below is an example of an SVG element with a `tranform` already applied.
+
+```xml
+  <g
+     id="switch.kitchen_fan"
+     transform="translate(-243.57143,81.428571)">
+```
+
+The best way to resolve this is to create a `<g>` element to act as a container for your SVG element, and move the original transfrom attribute to the `<g>` element.
+
+Below is an example of a `<g>` element that contains the original SVG element. As you can see, the `<g>` element contains the original `transform`, which frees up the SVG element to use any `transform` applied in Floorplan.
+
+```xml
+  <g
+     id="switch.kitchen_fan_group"
+     transform="translate(-243.57143,81.428571)">
+    <g
+       id="switch.kitchen_fan">
+```

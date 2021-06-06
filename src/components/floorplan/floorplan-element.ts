@@ -1781,7 +1781,6 @@ export class FloorplanElement extends LitElement {
     let useCache: boolean;
     let text: string;
     let targetSvgElements: SVGGraphicsElement[] = [];
-    let url: string;
     let isSameTargetElement: boolean;
 
     // Evaluate service data, in order to determine 'target' elements
