@@ -24,7 +24,7 @@ If you need a good source of SVG icons / images, the following resources are a g
 
 ## Animations not in the right position?
 
-If you're using animations in your floorplans, and your SVG elements are not appearing in the right pisition, or are spinning off the page, it's most likely because your SVG element already has a [transform](https://www.w3schools.com/cssref/css3_pr_transform.asp) applied to it. Best way to resolve this is to view the SVG file in a text editor, and location your SVG element. If the SVG element contains a `transform` attribute, it means that any `tranform` you apply in Floorplan will likely conflict with this existing `tranform`. Below is an example of an SVG element with a `tranform` already applied.
+If you're using animations in your floorplans, and your SVG elements are not appearing in the right position, or are spinning off the page, it's most likely because your SVG element already has a [transform](https://www.w3schools.com/cssref/css3_pr_transform.asp) applied to it. Best way to resolve this is to view the SVG file in a text editor, and locate your SVG element. If the SVG element contains a `transform` attribute, it means that any `transform` you apply in Floorplan will likely conflict with this existing `transform`. Below is an example of an SVG element with a `transform` already applied.
 
 ```xml
   <g
