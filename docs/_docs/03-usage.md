@@ -173,6 +173,8 @@ The following types of items can be used as subjects within a rule.
 | `element`  | Single SVG element        |
 | `elements` | List of SVG elements      |
 
+The special case `entity: '*'` represents all HA entities. It can be used in rules that need to run whenever the state of any HA entity changes.
+
 ### Action Triggers
 
 Floorplan supports the same action triggers used in [Lovelace](https://www.home-assistant.io/lovelace/actions) (`tap_action`, `hold_action`, `double_tap_action`). In addition to these, Floorplan adds two of its own action triggers.
@@ -311,7 +313,8 @@ Floorplan exposes a library of utility functions, which are available to JavaScr
 | ------------------------ | ----------------------------------------- | ----------------- | ------------ |
 | `util.color.miredToRGB`  | Convert mired (light temperature) to RGB  | `mired` (number)  | `number[]`   |
 | `util.color.kelvinToRGB` | Convert kelvin (light temperature) to RGB | `kelvin` (number) | `number[]`   |
-| `util.date.strftime`     | Convert datetime to string (Python style)<br />[NPM package](https://www.npmjs.com/package/strftime) | `format` (string), `date` (Date) | `string`     |
+| `util.date.strftime`     | Format datetime (Python style)<br />[NPM package](https://www.npmjs.com/package/strftime) | `format` (string), `date` (Date) | `string`     |
+| `util.date.timeago `     | Format datetime as 'time ago' (i.e. 2 hours ago) <br />[NPM package](https://www.npmjs.com/package/timeago.js) | `date` (Date) | `string`     |
 
 The [Light](/ha-floorplan/docs/example-light) example shows how the utility library's `util.color.miredToRGB()` function can be used.
 

@@ -144,12 +144,6 @@ simulations:
     states:
       - state: on
 
-  - entities:
-      - light.garage
-      - switch.living_area_fan
-    states:
-      - state: on
-
   - entity: camera.zagreb_ban_jelacic_square
     states:
       - state: idle

@@ -23,6 +23,14 @@ config:
             cache: true
         tap_action: toggle
 
+      - entity: '*'
+        element: light.garage.last_changed
+        state_action:
+          - action: call-service
+            service: floorplan.text_set
+            service_data:
+              text: 'Last changed: ${util.date.timeago(new Date(entities["light.garage"].last_changed))}'
+
       - entity: light.garage
         element: light.garage.button
         state_action:

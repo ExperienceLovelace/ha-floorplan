@@ -573,9 +573,9 @@
      inkscape:window-height="1001"
      id="namedview428"
      showgrid="false"
-     inkscape:zoom="5.6568544"
-     inkscape:cx="158.78448"
-     inkscape:cy="86.841481"
+     inkscape:zoom="4.0000001"
+     inkscape:cx="105.56308"
+     inkscape:cy="105.50583"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -1642,17 +1642,18 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
-     x="175.70084"
-     y="130.62215"
+     x="167.89023"
+     y="132.67059"
      id="text5097-5"
      transform="scale(1.0242454,0.97632852)"><tspan
        sodipodi:role="line"
        id="tspan5095-7"
-       x="175.70084"
-       y="130.62215"
+       x="167.89023"
+       y="132.67059"
        style="font-size:7.55913687px;stroke-width:0.94489211">Garage light</tspan></text>
   <g
-     id="switch.living_area_fan.button">
+     id="switch.living_area_fan.button"
+     inkscape:label="switch.living_area_fan.button">
     <rect
        style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        width="29.517944"
@@ -1676,7 +1677,8 @@
   </g>
   <g
      id="light.garage.button"
-     transform="translate(0,16)">
+     transform="translate(0,16)"
+     inkscape:label="ight.garage.button">
     <rect
        style="fill:#c8c8c8;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        width="29.517944"
@@ -1767,17 +1769,17 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
      x="174.16557"
-     y="212.69911"
+     y="224.99007"
      id="text5097-5-6"
      transform="scale(1.0242454,0.97632852)"><tspan
        sodipodi:role="line"
        x="174.16557"
-       y="212.69911"
+       y="224.99007"
        style="font-size:7.55913687px;stroke-width:0.94489211"
        id="tspan1201">Moisture</tspan></text>
   <rect
      inkscape:label="sensor.moisture_level_border"
-     y="151.5854"
+     y="163.5854"
      x="190.29681"
      height="45.840492"
      width="11.361679"
@@ -1792,7 +1794,7 @@
      y="152.64606"
      clip-path="url(#moisture-level-clip-path)"
      inkscape:label="sensor.moisture_level"
-     transform="translate(-9.1923879,-1.0606601)" />
+     transform="translate(-9.1923879,10.93934)" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
@@ -1809,12 +1811,12 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
      x="222.35393"
-     y="212.89311"
+     y="225.18407"
      id="text5097-5-6-4"
      transform="scale(1.0242454,0.97632852)"><tspan
        sodipodi:role="line"
        x="222.35393"
-       y="212.89311"
+       y="225.18407"
        style="font-size:7.55913687px;stroke-width:0.94489211"
        id="tspan1201-7">Wind</tspan></text>
   <g
@@ -1864,7 +1866,8 @@
      transform="matrix(0,-0.07723815,0.07723815,0,218.97702,193.85464)" />
   <g
      id="sensor.wind_direction"
-     inkscape:label="sensor.wind_direction">
+     inkscape:label="sensor.wind_direction"
+     transform="translate(0,12)">
     <path
        style="stroke-width:0.08090124"
        inkscape:connector-curvature="0"
@@ -1881,4 +1884,17 @@
        id="path14-2"
        d="M 244.59517,177.94448 H 220.3938 v 2.79247 h 24.20129 c 1.28317,0 2.32704,1.04395 2.32704,2.32704 0,1.28317 -1.04395,2.32704 -2.32704,2.32704 -1.28309,0 -2.32705,-1.04395 -2.32705,-2.32704 h -2.79247 c 0,2.82289 2.29663,5.11952 5.11952,5.11952 2.82289,0 5.11951,-2.29663 5.11951,-5.11952 0,-2.82289 -2.29654,-5.11951 -5.11943,-5.11951 z" />
   </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:37.79568863px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.94489211"
+     x="167.87894"
+     y="145.46539"
+     id="light.garage.last_changed"
+     transform="scale(1.0242453,0.97632861)"
+     inkscape:label="light.garage.last_changed"><tspan
+       sodipodi:role="line"
+       x="167.87894"
+       y="145.46539"
+       style="font-size:5.33333349px;stroke-width:0.94489211"
+       id="tspan1191-7">Last changed:</tspan></text>
 </svg>

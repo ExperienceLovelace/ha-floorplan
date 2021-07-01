@@ -29,6 +29,7 @@ import { LongClicks } from './lib/long-clicks';
 import { EvalHelper } from './lib/eval-helper';
 import * as yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
+import { DateUtil } from './lib/date-util';
 import { Logger } from './lib/logger';
 import {
   css,
@@ -191,6 +192,15 @@ export class FloorplanElement extends LitElement {
 
   async hassChanged(): Promise<void> {
     if (!this.hass || !this.config || !this.svg) return; // wait for SVG to be loaded
+
+    this.hass.states['*'] = {
+      entity_id: '*',
+      state: '',
+      last_changed: new Date().toString(),
+      last_updated: new Date().toString(),
+      attributes: {},
+      context: {},
+    } as HassEntityBase;
 
     if (!this.isRulesLoaded) {
       this.initFloorplanRules(this.svg, this.config);
@@ -634,7 +644,10 @@ export class FloorplanElement extends LitElement {
         undefined,
         ruleInfo
       );
-      this.handleEntityIdSetHoverOver(entityId);
+
+      svgElement.onmouseover = () => {
+        this.handleEntityIdSetHoverOver(entityId);
+      }
     }
 
     const existingHref = svgElement.getAttributeNS(
@@ -713,7 +726,10 @@ export class FloorplanElement extends LitElement {
       undefined,
       ruleInfo
     );
-    this.handleEntityIdSetHoverOver(entityId);
+
+    svgElementInfo.svgElement.onmouseover = () => {
+      this.handleEntityIdSetHoverOver(entityId);
+    }
 
     return svg;
   }
@@ -999,6 +1015,10 @@ export class FloorplanElement extends LitElement {
           svgElement.appendChild(
             document.createElementNS('http://www.w3.org/2000/svg', 'title')
           );
+
+          svgElement.onmouseover = () => {
+            this.handleEntitySetHoverOver(entityInfo);
+          }
         }
 
         this.attachClickHandlers(
@@ -1155,7 +1175,7 @@ export class FloorplanElement extends LitElement {
       if (!element.querySelector('title')) {
         element.appendChild(
           document.createElementNS('http://www.w3.org/2000/svg', 'title')
-        ); // add a title for hover-over text
+        );
       }
 
       if (ruleInfo.rule.tap_action) {
@@ -1249,46 +1269,51 @@ export class FloorplanElement extends LitElement {
     const entityIds = Object.keys(this.hass.states);
 
     for (const entityId of entityIds) {
-      const entityInfo = this.entityInfos[entityId];
-      if (entityInfo) {
-        const entityState = this.hass.states[entityId];
+      if ((entityId === '*') && !changedEntityIds.has(entityId)) {
+        changedEntityIds.add(entityId);
+      }
+      else {
+        const entityInfo = this.entityInfos[entityId];
+        if (entityInfo) {
+          const entityState = this.hass.states[entityId];
 
-        if (isInitialLoad) {
-          this.logDebug(
-            'STATE',
-            `${entityId}: ${entityState.state} (initial load)`
-          );
-          if (!changedEntityIds.has(entityId)) {
-            changedEntityIds.add(entityId);
-          }
-        } else if (entityInfo.lastState) {
-          const newState = entityState.state;
-
-          if (entityState.last_changed !== entityInfo.lastState.last_changed) {
+          if (isInitialLoad) {
             this.logDebug(
               'STATE',
-              `${entityId}: ${newState} (last changed ${Utils.formatDate(
-                entityInfo.lastState.last_changed
-              )})`
+              `${entityId}: ${entityState.state} (initial load)`
             );
             if (!changedEntityIds.has(entityId)) {
               changedEntityIds.add(entityId);
             }
-          } else {
-            if (
-              !Utils.equal(
-                entityInfo.lastState.attributes,
-                entityState.attributes
-              )
-            ) {
+          } else if (entityInfo.lastState) {
+            const newState = entityState.state;
+
+            if (entityState.last_changed !== entityInfo.lastState.last_changed) {
               this.logDebug(
                 'STATE',
-                `${entityId}: attributes (last updated ${Utils.formatDate(
+                `${entityId}: ${newState} (last changed ${Utils.formatDate(
                   entityInfo.lastState.last_changed
                 )})`
               );
               if (!changedEntityIds.has(entityId)) {
                 changedEntityIds.add(entityId);
+              }
+            } else {
+              if (
+                !Utils.equal(
+                  entityInfo.lastState.attributes,
+                  entityState.attributes
+                )
+              ) {
+                this.logDebug(
+                  'STATE',
+                  `${entityId}: attributes (last updated ${Utils.formatDate(
+                    entityInfo.lastState.last_changed
+                  )})`
+                );
+                if (!changedEntityIds.has(entityId)) {
+                  changedEntityIds.add(entityId);
+                }
               }
             }
           }
@@ -1332,8 +1357,6 @@ export class FloorplanElement extends LitElement {
         );
       }
     }
-
-    this.handleEntitySetHoverOver(entityInfo);
   }
 
   async handleElements(): Promise<void> {
@@ -1404,8 +1427,8 @@ export class FloorplanElement extends LitElement {
                 });
                 titleText += '\n';
 
-                titleText += `Last changed: ${lastChangedDate}\n`;
-                titleText += `Last updated: ${lastUpdatedDate}`;
+                titleText += `Last changed: ${DateUtil.timeago(lastChangedDate)}\n`;
+                titleText += `Last updated: ${DateUtil.timeago(lastUpdatedDate)}`;
 
                 titleElement.textContent = titleText;
               });
