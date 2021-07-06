@@ -9,14 +9,14 @@ export class LongClicks {
     let isLongClick = false;
 
     const onTapStart = () => {
-      console.log('onTapStart: isLongClick:', isLongClick);
+      // console.log('onTapStart: isLongClick:', isLongClick);
 
       isLongClick = false;
 
       timer = setTimeout(() => {
         isLongClick = true;
-        console.log('timer timed out: isLongClick:', isLongClick);
-        console.log('timer timed out: dispatching event:', 'longClick');
+        // console.log('timer timed out: isLongClick:', isLongClick);
+        // console.log('timer timed out: dispatching event:', 'longClick');
         elem.dispatchEvent(new Event('longClick'));
       }, longClickDuration);
     };
@@ -25,14 +25,14 @@ export class LongClicks {
       clearTimeout(timer);
 
       if (isLongClick) {
-        console.log('onTapEnd: isLongClick:', isLongClick);
+        // console.log('onTapEnd: isLongClick:', isLongClick);
         // have already triggered long click
       } else {
         // trigger shortClick, shortMouseup etc
-        console.log(
-          'onTapEnd: dispatching event:',
-          'short' + evt.type[0].toUpperCase() + evt.type.slice(1)
-        );
+        // console.log(
+        //   'onTapEnd: dispatching event:',
+        //   'short' + evt.type[0].toUpperCase() + evt.type.slice(1)
+        // );
         elem.dispatchEvent(
           new Event('short' + evt.type[0].toUpperCase() + evt.type.slice(1))
         );
@@ -41,14 +41,14 @@ export class LongClicks {
 
     const onTap = (evt: Event) => {
       if (isLongClick) {
-        console.log('onTap: isLongClick:', isLongClick);
+        // console.log('onTap: isLongClick:', isLongClick);
         evt.preventDefault();
         if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
       }
     };
 
     const onClick = (evt: Event) => {
-      console.log('onClick: isLongClick:', isLongClick);
+      // console.log('onClick: isLongClick:', isLongClick);
       evt.preventDefault();
       if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
     };

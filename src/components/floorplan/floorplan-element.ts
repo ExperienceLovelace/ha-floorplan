@@ -948,10 +948,12 @@ export class FloorplanElement extends LitElement {
           rule.hover_action === undefined
             ? defaultRule.hover_action
             : rule.hover_action;
+
         rule.tap_action =
           rule.tap_action === undefined
             ? defaultRule.tap_action
             : rule.tap_action;
+
         rule.hold_action =
           rule.hold_action === undefined
             ? defaultRule.hold_action
@@ -1015,10 +1017,10 @@ export class FloorplanElement extends LitElement {
           svgElement.appendChild(
             document.createElementNS('http://www.w3.org/2000/svg', 'title')
           );
+        }
 
-          svgElement.onmouseover = () => {
-            this.handleEntitySetHoverOver(entityInfo);
-          }
+        svgElement.onmouseover = () => {
+          this.handleEntitySetHoverOver(entityInfo);
         }
 
         this.attachClickHandlers(

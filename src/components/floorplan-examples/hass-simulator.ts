@@ -51,6 +51,7 @@ export class HassSimulator {
         break;
 
       case 'light':
+      case 'fan':
         switch (service) {
           case 'toggle':
             this.homeAssistantToggle(serviceData as Record<string, unknown>);
@@ -90,6 +91,7 @@ export class HassSimulator {
       switch (entityType) {
         case 'switch':
         case 'light':
+        case 'fan':
         case 'binary_sensor':
         case 'sensor':
         case 'media_player':
