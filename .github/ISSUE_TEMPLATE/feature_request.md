@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for ha-floorplan
 title: "[FEATURE] "
-labels: waiting on review
+labels: [feature request,waiting on review,]
 assignees: ''
 
 ---
