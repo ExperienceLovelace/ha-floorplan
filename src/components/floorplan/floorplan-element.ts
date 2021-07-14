@@ -289,12 +289,21 @@ export class FloorplanElement extends LitElement {
 
   async loadConfig(config: FloorplanConfig | string, useCache: boolean): Promise<FloorplanConfig> {
     if (typeof config === 'string') {
-      const targetConfig = await Utils.fetchText(
-        config,
-        this.isDemo,
-        this.examplespath,
-        useCache
-      );
+      let targetConfig: string;
+
+      try {
+        targetConfig = await Utils.fetchText(
+          config,
+          this.isDemo,
+          this.examplespath,
+          useCache
+        );
+      }
+      catch (err) {
+        this.logError('CONFIG', `Error loading config: ${config}`);
+        throw err;
+      }
+
       const configYaml = yaml.load(targetConfig);
       return configYaml as FloorplanConfig;
     } else {
@@ -455,12 +464,21 @@ export class FloorplanElement extends LitElement {
 
     if (!stylesheetUrl) return;
 
-    const stylesheet = await Utils.fetchText(
-      stylesheetUrl,
-      this.isDemo,
-      this.examplespath,
-      useCache
-    );
+    let stylesheet: string;
+
+    try {
+      stylesheet = await Utils.fetchText(
+        stylesheetUrl,
+        this.isDemo,
+        this.examplespath,
+        useCache
+      );
+    }
+    catch (err) {
+      this.logError('STYLESHEET', `Error loading stylesheet: ${stylesheetUrl}`);
+      throw err;
+    }
+
     const style = document.createElement('style');
 
     const initializeNode = () => {
@@ -471,7 +489,6 @@ export class FloorplanElement extends LitElement {
     try {
       await Utils.waitForChildNodes(style, initializeNode, 10000);
     } catch (err) {
-      console.error(err);
       this.logError('STYLESHEET', `Error loading stylesheet`);
     }
 
@@ -505,12 +522,21 @@ export class FloorplanElement extends LitElement {
     pageInfo?: FloorplanPageInfo,
     masterPageInfo?: FloorplanPageInfo,
   ): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(
-      imageConfig.location,
-      this.isDemo,
-      this.examplespath,
-      imageConfig.cache
-    );
+    let svgText: string;
+
+    try {
+      svgText = await Utils.fetchText(
+        imageConfig.location,
+        this.isDemo,
+        this.examplespath,
+        imageConfig.cache
+      );
+    }
+    catch (err) {
+      this.logError('IMAGE', `Error loading image: ${imageConfig.location}`);
+      throw err;
+    }
+
     const svgContainer = document.createElement('div');
     svgContainer.innerHTML = svgText;
     const svg = svgContainer.querySelector('svg') as SVGGraphicsElement;
@@ -614,12 +640,20 @@ export class FloorplanElement extends LitElement {
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
   ): Promise<SVGGraphicsElement> {
-    const imageData = await Utils.fetchImage(
-      imageUrl,
-      this.isDemo,
-      this.examplespath,
-      useCache
-    );
+    let imageData: string;
+
+    try {
+      imageData = await Utils.fetchImage(
+        imageUrl,
+        this.isDemo,
+        this.examplespath,
+        useCache
+      );
+    }
+    catch (err) {
+      this.logError('IMAGE', `Error loading image: ${imageUrl}`);
+      throw err;
+    }
 
     imageUrl = useCache ? imageUrl : Utils.cacheBuster(imageUrl);
 
@@ -678,12 +712,21 @@ export class FloorplanElement extends LitElement {
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
   ): Promise<SVGGraphicsElement> {
-    const svgText = await Utils.fetchText(
-      imageUrl,
-      this.isDemo,
-      this.examplespath,
-      useCache
-    );
+    let svgText: string;
+
+    try {
+      svgText = await Utils.fetchText(
+        imageUrl,
+        this.isDemo,
+        this.examplespath,
+        useCache
+      );
+    }
+    catch (err) {
+      this.logError('IMAGE', `Error loading image: ${imageUrl}`);
+      throw err;
+    }
+
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
     const svgContainer = (svgElementInfo.svgElement.nodeName === 'g') ?
