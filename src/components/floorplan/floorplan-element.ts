@@ -14,7 +14,10 @@ import {
   FloorplanVariableConfig,
   FloorplanImageConfig,
 } from './lib/floorplan-config';
-import { FloorplanRuleEntityElementConfig, FloorplanStylesheetConfig } from './lib/floorplan-config';
+import {
+  FloorplanRuleEntityElementConfig,
+  FloorplanStylesheetConfig,
+} from './lib/floorplan-config';
 import {
   FloorplanClickContext,
   FloorplanPageInfo,
@@ -26,6 +29,7 @@ import {
   FloorplanEntityInfo,
 } from './lib/floorplan-info';
 import { LongClicks } from './lib/long-clicks';
+import { ManyClicks } from './lib/many-clicks';
 import { EvalHelper } from './lib/eval-helper';
 import * as yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
@@ -86,8 +90,9 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${this.clearLog
-      }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${
+            this.clearLog
+          }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -287,7 +292,10 @@ export class FloorplanElement extends LitElement {
   /* Loading resources
   /***************************************************************************************************************************/
 
-  async loadConfig(config: FloorplanConfig | string, useCache: boolean): Promise<FloorplanConfig> {
+  async loadConfig(
+    config: FloorplanConfig | string,
+    useCache: boolean
+  ): Promise<FloorplanConfig> {
     if (typeof config === 'string') {
       let targetConfig: string;
 
@@ -298,8 +306,7 @@ export class FloorplanElement extends LitElement {
           this.examplespath,
           useCache
         );
-      }
-      catch (err) {
+      } catch (err) {
         this.logError('CONFIG', `Error loading config: ${config}`);
         throw err;
       }
@@ -333,8 +340,9 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${((err as unknown) as Record<string, Record<string, unknown>>)
-              .target.src
+            `${
+              (err as unknown as Record<string, Record<string, unknown>>).target
+                .src
             }`
           )
         );
@@ -401,14 +409,18 @@ export class FloorplanElement extends LitElement {
     masterPageInfo: FloorplanPageInfo
   ): Promise<void> {
     const imageConfig = this.getBestImage(pageInfo.config);
-    const svg = await this.loadFloorplanSvg(imageConfig, pageInfo, masterPageInfo);
+    const svg = await this.loadFloorplanSvg(
+      imageConfig,
+      pageInfo,
+      masterPageInfo
+    );
     svg.id = pageInfo.config.page_id; // give the SVG an ID so it can be styled (i.e. background color)
     pageInfo.svg = svg;
     await this.loadStyleSheet(pageInfo.config.stylesheet);
     this.initFloorplanRules(pageInfo.svg, pageInfo.config);
   }
 
-  getBestImage(config: FloorplanConfig): { location: string, cache: boolean } {
+  getBestImage(config: FloorplanConfig): { location: string; cache: boolean } {
     let imageUrl = '';
     let cache = true;
 
@@ -425,19 +437,18 @@ export class FloorplanElement extends LitElement {
         for (const pageSize of config.image.sizes) {
           if (screen.width >= pageSize.min_width) {
             imageUrl = pageSize.location;
-            cache = (pageSize.cache === true);
+            cache = pageSize.cache === true;
             break;
           }
         }
-      }
-      else {
+      } else {
         // Device detection
         if (Utils.isMobile && config.image_mobile) {
           imageUrl = (config.image_mobile as FloorplanImageConfig).location;
-          cache = ((config.image_mobile as FloorplanImageConfig).cache === true);
+          cache = (config.image_mobile as FloorplanImageConfig).cache === true;
         } else {
           imageUrl = config.image.location;
-          cache = (config.image.cache === true);
+          cache = config.image.cache === true;
         }
       }
     }
@@ -458,9 +469,17 @@ export class FloorplanElement extends LitElement {
     return pageInfo;
   }
 
-  async loadStyleSheet(stylesheetConfig: FloorplanStylesheetConfig | string): Promise<void> {
-    const stylesheetUrl = (typeof stylesheetConfig === 'string') ? stylesheetConfig : stylesheetConfig.location;
-    const useCache = (typeof stylesheetConfig === 'string') ? false : (stylesheetConfig.cache === true);
+  async loadStyleSheet(
+    stylesheetConfig: FloorplanStylesheetConfig | string
+  ): Promise<void> {
+    const stylesheetUrl =
+      typeof stylesheetConfig === 'string'
+        ? stylesheetConfig
+        : stylesheetConfig.location;
+    const useCache =
+      typeof stylesheetConfig === 'string'
+        ? false
+        : stylesheetConfig.cache === true;
 
     if (!stylesheetUrl) return;
 
@@ -473,8 +492,7 @@ export class FloorplanElement extends LitElement {
         this.examplespath,
         useCache
       );
-    }
-    catch (err) {
+    } catch (err) {
       this.logError('STYLESHEET', `Error loading stylesheet: ${stylesheetUrl}`);
       throw err;
     }
@@ -503,7 +521,7 @@ export class FloorplanElement extends LitElement {
     if (style.sheet) {
       cssRules = style.sheet?.cssRules ?? style.sheet?.rules;
     } else {
-      const otherStyle = (style as unknown) as Record<
+      const otherStyle = style as unknown as Record<
         string,
         Record<string, unknown>
       >;
@@ -518,9 +536,9 @@ export class FloorplanElement extends LitElement {
   }
 
   async loadFloorplanSvg(
-    imageConfig: { location: string, cache: boolean },
+    imageConfig: { location: string; cache: boolean },
     pageInfo?: FloorplanPageInfo,
-    masterPageInfo?: FloorplanPageInfo,
+    masterPageInfo?: FloorplanPageInfo
   ): Promise<SVGGraphicsElement> {
     let svgText: string;
 
@@ -531,8 +549,7 @@ export class FloorplanElement extends LitElement {
         this.examplespath,
         imageConfig.cache
       );
-    }
-    catch (err) {
+    } catch (err) {
       this.logError('IMAGE', `Error loading image: ${imageConfig.location}`);
       throw err;
     }
@@ -649,8 +666,7 @@ export class FloorplanElement extends LitElement {
         this.examplespath,
         useCache
       );
-    }
-    catch (err) {
+    } catch (err) {
       this.logError('IMAGE', `Error loading image: ${imageUrl}`);
       throw err;
     }
@@ -681,7 +697,7 @@ export class FloorplanElement extends LitElement {
 
       svgElement.onmouseover = () => {
         this.handleEntityIdSetHoverOver(entityId);
-      }
+      };
     }
 
     const existingHref = svgElement.getAttributeNS(
@@ -721,16 +737,17 @@ export class FloorplanElement extends LitElement {
         this.examplespath,
         useCache
       );
-    }
-    catch (err) {
+    } catch (err) {
       this.logError('IMAGE', `Error loading image: ${imageUrl}`);
       throw err;
     }
 
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
 
-    const svgContainer = (svgElementInfo.svgElement.nodeName === 'g') ?
-      svgElementInfo.svgElement : document.createElement('div');
+    const svgContainer =
+      svgElementInfo.svgElement.nodeName === 'g'
+        ? svgElementInfo.svgElement
+        : document.createElement('div');
 
     svgContainer.innerHTML = svgText;
     const svg = svgContainer.querySelector('svg') as SVGGraphicsElement;
@@ -749,9 +766,8 @@ export class FloorplanElement extends LitElement {
     svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
 
     if (svgElementInfo.svgElement.nodeName !== 'g') {
-      const originalTransform = svgElementInfo.svgElement.getAttribute(
-        'transform'
-      );
+      const originalTransform =
+        svgElementInfo.svgElement.getAttribute('transform');
       if (originalTransform) {
         svg.setAttribute('transform', originalTransform);
       }
@@ -772,7 +788,7 @@ export class FloorplanElement extends LitElement {
 
     svgElementInfo.svgElement.onmouseover = () => {
       this.handleEntityIdSetHoverOver(entityId);
-    }
+    };
 
     return svg;
   }
@@ -1064,7 +1080,7 @@ export class FloorplanElement extends LitElement {
 
         svgElement.onmouseover = () => {
           this.handleEntitySetHoverOver(entityInfo);
-        }
+        };
 
         this.attachClickHandlers(
           svgElement,
@@ -1122,7 +1138,8 @@ export class FloorplanElement extends LitElement {
     // Entities as a list of objects
     const entityObjects = rule.entities.filter((x) => typeof x !== 'string');
     for (const entityObject of entityObjects) {
-      const ruleEntityElement = entityObject as FloorplanRuleEntityElementConfig;
+      const ruleEntityElement =
+        entityObject as FloorplanRuleEntityElementConfig;
       this.addTargetEntity(
         ruleEntityElement.entity,
         [ruleEntityElement.element],
@@ -1223,17 +1240,51 @@ export class FloorplanElement extends LitElement {
         );
       }
 
-      if (ruleInfo.rule.tap_action) {
-        const actions = this.getActionConfigs(ruleInfo.rule.tap_action);
-        const context = new FloorplanClickContext(
-          this,
-          entityId,
-          elementId,
-          svgElementInfo,
-          ruleInfo,
-          actions
-        );
-        E.on(element, 'click', this.onClick.bind(context));
+      if (ruleInfo.rule.tap_action || ruleInfo.rule.double_tap_action) {
+        const singleTapAction = ruleInfo.rule.tap_action
+          ? this.getActionConfigs(ruleInfo.rule.tap_action)
+          : false;
+        const doubleTapAction = ruleInfo.rule.double_tap_action
+          ? this.getActionConfigs(ruleInfo.rule.double_tap_action)
+          : false;
+
+        const singleTapContext = singleTapAction
+          ? new FloorplanClickContext(
+              this,
+              entityId,
+              elementId,
+              svgElementInfo,
+              ruleInfo,
+              singleTapAction
+            )
+          : false;
+        const hej = true;
+        // Use simple function without delay, if doubleTap is not in use
+        if (singleTapAction && !doubleTapAction)
+          E.on(element, 'click', this.onClick.bind(singleTapContext));
+
+        if (doubleTapAction) {
+          const doubleTapContext = doubleTapAction
+            ? new FloorplanClickContext(
+                this,
+                entityId,
+                elementId,
+                svgElementInfo,
+                ruleInfo,
+                doubleTapAction
+              )
+            : false;
+
+          ManyClicks.observe(element as HTMLElement | SVGElement);
+
+          // Use advanced function with delay, if doubleTap is in use
+          if (singleTapAction)
+            E.on(element, 'singleClick', this.onClick.bind(singleTapContext));
+
+          // Use advanced function with delay, if doubleTab is in use
+          E.on(element, 'doubleClick', this.onLongClick.bind(doubleTapContext));
+        }
+
         if (element.style) element.style.cursor = 'pointer';
         Utils.addClass(element, `floorplan-click${isParent ? '' : '-child'}`); // mark the element as being processed by floorplan
       }
@@ -1314,10 +1365,9 @@ export class FloorplanElement extends LitElement {
     const entityIds = Object.keys(this.hass.states);
 
     for (const entityId of entityIds) {
-      if ((entityId === '*') && !changedEntityIds.has(entityId)) {
+      if (entityId === '*' && !changedEntityIds.has(entityId)) {
         changedEntityIds.add(entityId);
-      }
-      else {
+      } else {
         const entityInfo = this.entityInfos[entityId];
         if (entityInfo) {
           const entityState = this.hass.states[entityId];
@@ -1333,7 +1383,9 @@ export class FloorplanElement extends LitElement {
           } else if (entityInfo.lastState) {
             const newState = entityState.state;
 
-            if (entityState.last_changed !== entityInfo.lastState.last_changed) {
+            if (
+              entityState.last_changed !== entityInfo.lastState.last_changed
+            ) {
               this.logDebug(
                 'STATE',
                 `${entityId}: ${newState} (last changed ${Utils.formatDate(
@@ -1437,7 +1489,7 @@ export class FloorplanElement extends LitElement {
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-            'hover-info');
+              'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1467,13 +1519,18 @@ export class FloorplanElement extends LitElement {
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
-                  titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
-                    }\n`;
+                  titleText += `${key}: ${
+                    (entityState.attributes as Record<string, unknown>)[key]
+                  }\n`;
                 });
                 titleText += '\n';
 
-                titleText += `Last changed: ${DateUtil.timeago(lastChangedDate)}\n`;
-                titleText += `Last updated: ${DateUtil.timeago(lastUpdatedDate)}`;
+                titleText += `Last changed: ${DateUtil.timeago(
+                  lastChangedDate
+                )}\n`;
+                titleText += `Last updated: ${DateUtil.timeago(
+                  lastUpdatedDate
+                )}`;
 
                 titleElement.textContent = titleText;
               });
@@ -1577,10 +1634,11 @@ export class FloorplanElement extends LitElement {
   /***************************************************************************************************************************/
 
   onClick(e: Event): void {
+    console.log('Test Test Test');
     e.stopPropagation();
     e.preventDefault();
 
-    const context = (this as unknown) as FloorplanClickContext;
+    const context = this as unknown as FloorplanClickContext;
     const floorplan = context.instance as FloorplanElement;
 
     floorplan.handleActions(
@@ -1595,7 +1653,7 @@ export class FloorplanElement extends LitElement {
     e.stopPropagation();
     e.preventDefault();
 
-    const context = (this as unknown) as FloorplanClickContext;
+    const context = this as unknown as FloorplanClickContext;
     const floorplan = context.instance as FloorplanElement;
 
     setTimeout(() => {
@@ -1633,7 +1691,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-            `Are you sure you want to ${actionConfig.action}?`
+              `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;
@@ -1974,12 +2032,11 @@ export class FloorplanElement extends LitElement {
               : 0;
 
           if (imageRefreshInterval > 0) {
-            useCache = false // don't use cache for refreshing images
-          }
-          else {
+            useCache = false; // don't use cache for refreshing images
+          } else {
             useCache =
               typeof serviceData === 'object'
-                ? ((serviceData.cache as boolean) === true)
+                ? (serviceData.cache as boolean) === true
                 : true; // use cache by default
           }
 
@@ -2055,7 +2112,8 @@ export class FloorplanElement extends LitElement {
             }
           }
 
-          const variableActionData = (serviceData as unknown) as FloorplanCallServiceActionConfig;
+          const variableActionData =
+            serviceData as unknown as FloorplanCallServiceActionConfig;
           const value = this.getActionValue(
             variableActionData,
             entityId,
@@ -2097,10 +2155,9 @@ export class FloorplanElement extends LitElement {
     this.variables[variableName] = value;
 
     if (this.hass.states[variableName]) {
-      this.hass.states[variableName].state = (value as Record<
-        string,
-        unknown
-      >).toString();
+      this.hass.states[variableName].state = (
+        value as Record<string, unknown>
+      ).toString();
 
       for (const key of Object.keys(attributes)) {
         (this.hass.states[variableName].attributes as Record<string, unknown>)[
