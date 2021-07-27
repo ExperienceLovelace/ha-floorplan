@@ -1634,7 +1634,6 @@ export class FloorplanElement extends LitElement {
   /***************************************************************************************************************************/
 
   onClick(e: Event): void {
-    console.log('Test Test Test');
     e.stopPropagation();
     e.preventDefault();
 
