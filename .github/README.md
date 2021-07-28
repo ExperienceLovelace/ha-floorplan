@@ -75,7 +75,7 @@ If you're searching for __getting started__ information, good __examples__, and 
 
 
 <span align="center">
-	<a href="https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/"><img src="/docs/assets/images/home/floorplan-background_with_floorplanner.png"></a>
+	<a href="https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/" target="_blank" title="See it in action - Go to our docs"><img src="/docs/assets/images/home/floorplan-background_with_floorplanner.png"></a>
 </span>
 
 
