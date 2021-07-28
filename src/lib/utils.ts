@@ -15,12 +15,12 @@ export class Utils {
     element.classList
       ? element.classList.remove(className)
       : (element.className = element.className.replace(
-        new RegExp(
-          '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-          'gi'
-        ),
-        ' '
-      ));
+          new RegExp(
+            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+            'gi'
+          ),
+          ' '
+        ));
   }
 
   static hassClass(element: Element, className: string): boolean {
@@ -141,7 +141,7 @@ export class Utils {
     resourceUrl: string,
     isDemo: boolean,
     examplesPath: string,
-    useCache: boolean,
+    useCache: boolean
   ): Promise<string> {
     if (examplesPath) {
       resourceUrl = resourceUrl.replace(
@@ -218,7 +218,7 @@ export class Utils {
     } else if (Array.isArray(list)) {
       return list;
     } else {
-      return [(list as unknown) as T] as Array<T>;
+      return [list as unknown as T] as Array<T>;
     }
   }
 
@@ -263,8 +263,9 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${url.indexOf('?') >= 0 ? '&' : '?'
-      }_=${new Date().getTime()}`;
+    return `${url}${
+      url.indexOf('?') >= 0 ? '&' : '?'
+    }_=${new Date().getTime()}`;
   }
 
   static equal(a: unknown, b: unknown): boolean {

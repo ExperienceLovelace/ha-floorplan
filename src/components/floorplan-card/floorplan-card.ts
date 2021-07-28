@@ -25,7 +25,9 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
-  styles: StyleInfo = { dummy: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)` };
+  styles: StyleInfo = {
+    dummy: `calc(100vh - ${this.appHeaderHeight}px - ${this.cardHeaderHeight}px)`,
+  };
 
   _view: Element | null | undefined;
   _appHeader: Element | null | undefined;
@@ -40,8 +42,8 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card>
         ${this.isDisplayCardHeader
-        ? html` <h1 class="card-header">${this.config?.title}</h1> `
-        : ''}
+          ? html` <h1 class="card-header">${this.config?.title}</h1> `
+          : ''}
 
         <div class="content" style=${styleMap(this.styles)}>
           <floorplan-element

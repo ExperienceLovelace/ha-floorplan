@@ -66,7 +66,9 @@ export class HassSimulator {
             break;
 
           case 'volume_down':
-            this.homeAssistantVolumeDown(serviceData as Record<string, unknown>);
+            this.homeAssistantVolumeDown(
+              serviceData as Record<string, unknown>
+            );
             break;
         }
         break;
@@ -95,7 +97,7 @@ export class HassSimulator {
         case 'binary_sensor':
         case 'sensor':
         case 'media_player':
-          entity.state = (entity.state === 'on') ? 'off' : 'on';
+          entity.state = entity.state === 'on' ? 'off' : 'on';
 
           for (const simulationProcessor of this.simulationProcessors) {
             simulationProcessor.updateEntityState(
@@ -117,8 +119,11 @@ export class HassSimulator {
 
       switch (entityType) {
         case 'media_player':
-          value = (entity.attributes as Record<string, unknown>)['volume_level'] as number;
-          (entity.attributes as Record<string, unknown>)['volume_level'] = Math.min(1, value + 0.1);
+          value = (entity.attributes as Record<string, unknown>)[
+            'volume_level'
+          ] as number;
+          (entity.attributes as Record<string, unknown>)['volume_level'] =
+            Math.min(1, value + 0.1);
 
           for (const simulationProcessor of this.simulationProcessors) {
             simulationProcessor.updateEntityState(
@@ -140,8 +145,11 @@ export class HassSimulator {
 
       switch (entityType) {
         case 'media_player':
-          value = (entity.attributes as Record<string, unknown>)['volume_level'] as number;
-          (entity.attributes as Record<string, unknown>)['volume_level'] = Math.max(0, value - 0.1);
+          value = (entity.attributes as Record<string, unknown>)[
+            'volume_level'
+          ] as number;
+          (entity.attributes as Record<string, unknown>)['volume_level'] =
+            Math.max(0, value - 0.1);
 
           for (const simulationProcessor of this.simulationProcessors) {
             simulationProcessor.updateEntityState(
