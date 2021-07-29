@@ -1258,7 +1258,7 @@ export class FloorplanElement extends LitElement {
               singleTapAction
             )
           : false;
-        const hej = true;
+
         // Use simple function without delay, if doubleTap is not in use
         if (singleTapAction && !doubleTapAction)
           E.on(element, 'click', this.onClick.bind(singleTapContext));
