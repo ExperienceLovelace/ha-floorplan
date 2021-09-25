@@ -79,20 +79,15 @@ export class Utils {
     textElement: HTMLElement | SVGGraphicsElement,
     text: string
   ): void {
-    const tspanElement = textElement.querySelector('tspan');
-    if (tspanElement) {
-      tspanElement.textContent = text;
-    } else {
-      let titleElement = textElement.querySelector('title') as Element;
-      if (!titleElement) {
-        titleElement = document.createElementNS(
-          'http://www.w3.org/2000/svg',
-          'title'
-        );
-        textElement.appendChild(titleElement);
-      }
-      titleElement.textContent = text;
+    let tspanElement = textElement.querySelector('tspan');
+    if (!tspanElement) {
+      tspanElement = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'tspan'
+      );
+      textElement.appendChild(tspanElement);
     }
+    tspanElement.textContent = text;
   }
 
   static waitForChildNodes(
