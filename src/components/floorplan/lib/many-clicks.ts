@@ -1,8 +1,16 @@
 import * as OuiDomEvents from './oui-dom-events';
+
 const E = OuiDomEvents.default;
+
+const elements = new Set<HTMLElement | SVGElement>();
 
 export class ManyClicks {
   static observe(elem: HTMLElement | SVGElement): void {
+    if (elements.has(elem)) {
+      return;
+    }
+    elements.add(elem);
+
     const doubleClickDuration = 400;
 
     let timer: NodeJS.Timeout;
