@@ -39,29 +39,31 @@ jobs:
       id: nothing_committed
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
-    - name: Echo info
+    - name: Echo-area
       shell: bash
       run: |
         echo "HI_BOB: $HI_BOB"
-        echo "GITHUB_WORKFLOW: $GITHUB_WORKFLOW"
-        echo "GITHUB_JOB: $GITHUB_JOB"
-        echo "GITHUB_ACTION: $GITHUB_ACTION"
-        echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
-        echo "GITHUB_ACTOR: $GITHUB_ACTOR"
-        echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
-        echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
-        echo "GITHUB_EVENT_PATH: $GITHUB_EVENT_PATH"
-        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-        echo "GITHUB_REF: $GITHUB_REF"        
-        echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"        
-        echo "GITHUB_REF_TYPE: $GITHUB_REF_TYPE"        
-        echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"        
-        echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"        
-        echo "RUNNER_NAME: $RUNNER_NAME"        
+    # DEBUG INFO BELOW
+    #     echo "HI_BOB: $HI_BOB"
+    #     echo "GITHUB_WORKFLOW: $GITHUB_WORKFLOW"
+    #     echo "GITHUB_JOB: $GITHUB_JOB"
+    #     echo "GITHUB_ACTION: $GITHUB_ACTION"
+    #     echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
+    #     echo "GITHUB_ACTOR: $GITHUB_ACTOR"
+    #     echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+    #     echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
+    #     echo "GITHUB_EVENT_PATH: $GITHUB_EVENT_PATH"
+    #     echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+    #     echo "GITHUB_REF: $GITHUB_REF"        
+    #     echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"        
+    #     echo "GITHUB_REF_TYPE: $GITHUB_REF_TYPE"        
+    #     echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"        
+    #     echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"        
+    #     echo "RUNNER_NAME: $RUNNER_NAME"        
       env:
         "HI_BOB": "BOB SAYS HI"
     - name: Push changes
-      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false && ${{ github.actor != 'dependabot[bot]' }} 
+      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false 
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
