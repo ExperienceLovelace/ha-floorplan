@@ -14,7 +14,7 @@ hacs_images_gallery:
 {% capture workinprogress-notice-1 %}
 **Important notice before you begin the ha-floorplan journey**
 
-Please be aware that `ha-floorplan` will require a good amount of your time. Take a look at our [examples](http://localhost:4000/ha-floorplan/docs/examples/), if you're getting stuck. Our [Discussion](https://github.com/ExperienceLovelace/ha-floorplan/discussions) area a also a good place to find help, but we're expecting you to read the docs and give it a try, before you're asking for help. Thanks you, for your understanding.
+Please be aware that `ha-floorplan` will require a good amount of your time. Take a look at our [examples](https://experiencelovelace.github.io/ha-floorplan/docs/examples/), if you're getting stuck. Our [Discussion](https://github.com/ExperienceLovelace/ha-floorplan/discussions) area a also a good place to find help, but we're expecting you to read the docs and give it a try, before you're asking for help. Thanks you, for your understanding.
 
 If you're decided to go all in, we'll recommend you to draw your floorplan in Floorplanner or simular tool. After that's done, export is as an image. Sadly Floorplanner doesn't support export as a SVG-file.
 
