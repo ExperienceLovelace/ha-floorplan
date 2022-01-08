@@ -39,6 +39,12 @@ jobs:
       id: nothing_committed
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
+    - name: Echo info
+      shell: bash
+      run: |
+        echo "GH_ACTOR: $GH_ACTOR"
+      env:
+        GH_ACTOR: ${{ github.actor }}
     - name: Push changes
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false && ${{ github.actor != 'dependabot[bot]' }} 
       uses: ad-m/github-push-action@master
