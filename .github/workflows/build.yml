@@ -40,7 +40,7 @@ jobs:
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
     - name: Push changes
-      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false
+      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false && ${{ github.actor !== 'dependabot[bot]' }} 
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
