@@ -1727,7 +1727,7 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${actionConfig.url_path}`
             );
           } else {
-            navigate(this, actionConfig.url_path);
+            window.location.href = actionConfig.url_path;
           }
           break;
         }
