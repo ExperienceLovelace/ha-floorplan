@@ -136,6 +136,7 @@ export interface NavigateActionConfig extends BaseActionConfig {
 export interface UrlActionConfig extends BaseActionConfig {
   action: 'url';
   url_path: string;
+  same_tab: boolean;
 }
 
 export interface MoreInfoActionConfig extends BaseActionConfig {

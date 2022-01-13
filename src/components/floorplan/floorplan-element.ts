@@ -1727,7 +1727,8 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${actionConfig.url_path}`
             );
           } else {
-            window.open(actionConfig.url_path, '_blank');
+            const open_type = actionConfig.same_tab ? '_self': '_blank';
+            window.open(actionConfig.url_path, open_type);
           }
           break;
         }
