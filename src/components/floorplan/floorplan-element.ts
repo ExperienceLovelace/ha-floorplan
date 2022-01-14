@@ -1801,13 +1801,15 @@ export class FloorplanElement extends LitElement {
 
     if (targetSvgElementIds.length) {
       for (const targetSvgElementId of targetSvgElementIds) {
-        targetSvgElements = targetSvgElements.concat(
-          this._querySelectorAll(
-            this.svg,
-            `#${targetSvgElementId.replace(/\./g, '\\.')}`,
-            false
-          ) as SVGGraphicsElement[]
-        );
+        for (const pageInfo of Object.values(this.pageInfos)) {
+          targetSvgElements = targetSvgElements.concat(
+            this._querySelectorAll(
+              pageInfo.svg,
+              `#${targetSvgElementId.replace(/\./g, '\\.')}`,
+              false
+            ) as SVGGraphicsElement[]
+          );
+        }
       }
     } else if (svgElement) {
       // might be null (i.e. element: null in rule)
