@@ -14,7 +14,7 @@ panel_mode_gallery:
     alt: "After Panel-mode are enabled"
 ---
 
-[ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) comes with a built-in way to handle the render size of your floorplan. It's defined as the `full_height` option, to prevent vertical scollbars. By combining the `full_height` option with Home Assistant's [panel mode](https://www.home-assistant.io/lovelace/dashboards-and-views/#panel) for views, you're all set.
+[ha-floorplan](https://github.com/ExperienceLovelace/ha-floorplan) comes with a built-in way to handle the render size of your floorplan. It's defined as the `full_height` option, to prevent vertical scollbars. By combining the `full_height` option with Home Assistant's [panel mode](https://www.home-assistant.io/lovelace/panel/) for views, you're all set.
 
 The `full_height` option should be added at the same level as the `config:` and `type:` definitions (in the root).
 
@@ -38,7 +38,7 @@ Here's example where both _panel mode_ and our `full_height` option are used. It
 
 ## Panel mode in GUI-mode
 
-Most people joining Home Assistant today will start using lovelace cards right away - and most of them, won't go _back_ to YAML mode. If you're still in the normal edit mode, you can change the [panel mode](https://www.home-assistant.io/lovelace/dashboards-and-views/#panel) through the GUI.
+Most people joining Home Assistant today will start using lovelace cards right away - and most of them, won't go _back_ to YAML mode. If you're still in the normal edit mode, you can change the [panel mode](https://www.home-assistant.io/lovelace/panel/) through the GUI.
 
 1. Click the 3 vertical dots to the right of the screen
 2. Click 'Edit Dashboard'
