@@ -120,6 +120,7 @@ export class FloorplanRuleConfig {
     | FloorplanActionConfig[]
     | string
     | false;
+  filter!: string[];
 }
 
 export class FloorplanRuleEntityElementConfig {

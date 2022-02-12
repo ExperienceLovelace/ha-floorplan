@@ -406,7 +406,7 @@ export class FloorplanElement extends LitElement {
 
   async loadPageFloorplanSvg(
     pageInfo: FloorplanPageInfo,
-    masterPageInfo: FloorplanPageInfo
+    mstorageasterPageInfo: FloorplanPageInfo
   ): Promise<void> {
     const imageConfig = this.getBestImage(pageInfo.config);
     const svg = await this.loadFloorplanSvg(
@@ -1479,6 +1479,7 @@ export class FloorplanElement extends LitElement {
   handleEntitySetHoverOver(entityInfo: FloorplanEntityInfo): void {
     const entityId = entityInfo.entityId as string;
     const entityState = this.hass.states[entityId];
+    const filter = this.config.defaults.filter;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
       if (ruleInfo.rule.hover_action) {
@@ -1519,9 +1520,11 @@ export class FloorplanElement extends LitElement {
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
-                  titleText += `${key}: ${
-                    (entityState.attributes as Record<string, unknown>)[key]
-                  }\n`;
+		  if (! filter.includes(key)){
+                    titleText += `${key}: ${
+                      (entityState.attributes as Record<string, unknown>)[key]
+                    }\n`;
+		  }
                 });
                 titleText += '\n';
 
