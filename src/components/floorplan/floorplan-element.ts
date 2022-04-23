@@ -1520,11 +1520,11 @@ export class FloorplanElement extends LitElement {
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
-		  if (! filter.includes(key)){
+                  if !(filter && filter.includes(key)){
                     titleText += `${key}: ${
                       (entityState.attributes as Record<string, unknown>)[key]
                     }\n`;
-		  }
+                  }
                 });
                 titleText += '\n';
 
