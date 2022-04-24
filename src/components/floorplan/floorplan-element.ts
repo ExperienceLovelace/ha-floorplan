@@ -406,7 +406,7 @@ export class FloorplanElement extends LitElement {
 
   async loadPageFloorplanSvg(
     pageInfo: FloorplanPageInfo,
-    mstorageasterPageInfo: FloorplanPageInfo
+    masterPageInfo: FloorplanPageInfo
   ): Promise<void> {
     const imageConfig = this.getBestImage(pageInfo.config);
     const svg = await this.loadFloorplanSvg(
