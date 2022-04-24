@@ -1479,7 +1479,7 @@ export class FloorplanElement extends LitElement {
   handleEntitySetHoverOver(entityInfo: FloorplanEntityInfo): void {
     const entityId = entityInfo.entityId as string;
     const entityState = this.hass.states[entityId];
-    const filter = this.config.defaults.filter;
+    const filter = this.config.defaults.hover_info_filter;
 
     for (const ruleInfo of entityInfo.ruleInfos) {
       if (ruleInfo.rule.hover_action) {
