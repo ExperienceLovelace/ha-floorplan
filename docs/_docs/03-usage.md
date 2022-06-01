@@ -106,6 +106,9 @@ To avoid unnecessary repetition of actions within the configuration, Floorplan p
     hover_info_filter:
       - min_mireds
       - max_mireds
+      - icon
+      - order
+      - color_mode
     tap_action: more-info
 ```
 
@@ -118,7 +121,7 @@ To disable one of the defaults for a specific rule, the relevant action must be 
         tap_action: false
 ```
 
-The `hove_info_filter` could be used to filter unnecessary atrributes being displayed.
+Use `hover_info_filter` to filter unnecessary atrributes being displayed on hover. Note that this will impact hover-info on all entities.
 
 More information about [rules](#rules) and [actions](#actions) can be found in the sections below.
 
