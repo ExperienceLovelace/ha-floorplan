@@ -120,6 +120,7 @@ export class FloorplanRuleConfig {
     | FloorplanActionConfig[]
     | string
     | false;
+  hover_info_filter!: string[];
 }
 
 export class FloorplanRuleEntityElementConfig {

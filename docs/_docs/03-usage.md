@@ -103,6 +103,9 @@ To avoid unnecessary repetition of actions within the configuration, Floorplan p
 ```yaml
   defaults:
     hover_action: hover-info
+    hover_info_filter:
+      - min_mireds
+      - max_mireds
     tap_action: more-info
 ```
 
@@ -114,6 +117,8 @@ To disable one of the defaults for a specific rule, the relevant action must be 
       - entity: switch.fan
         tap_action: false
 ```
+
+The `hove_info_filter` could be used to filter unnecessary atrributes being displayed.
 
 More information about [rules](#rules) and [actions](#actions) can be found in the sections below.
 

@@ -1017,6 +1017,11 @@ export class FloorplanElement extends LitElement {
           rule.hold_action === undefined
             ? defaultRule.hold_action
             : rule.hold_action;
+            
+        rule.hover_info_filter =
+          rule.hover_info_filter === undefined
+            ? defaultRule.hover_info_filter
+            : rule.hover_info_filter;
       }
     }
 
@@ -1484,7 +1489,7 @@ export class FloorplanElement extends LitElement {
       if (ruleInfo.rule.hover_action) {
         let isHoverInfo =
           typeof ruleInfo.rule.hover_action === 'string' &&
-          ruleInfo.rule.hover_action === 'hover-info';
+          ruleInfo.rule.hover_action === 'hover-info'; 
         isHoverInfo =
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
@@ -1498,6 +1503,8 @@ export class FloorplanElement extends LitElement {
             ));
 
         if (isHoverInfo) {
+          const hoverInfoFilter = new Set<string>(ruleInfo.rule.hover_info_filter);
+
           for (const svgElementInfo of Object.values(
             ruleInfo.svgElementInfos
           )) {
@@ -1519,9 +1526,11 @@ export class FloorplanElement extends LitElement {
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
-                  titleText += `${key}: ${
-                    (entityState.attributes as Record<string, unknown>)[key]
-                  }\n`;
+                  if !(hoverInfoFilter.has(key)){
+                    titleText += `${key}: ${
+                      (entityState.attributes as Record<string, unknown>)[key]
+                    }\n`;
+                  }
                 });
                 titleText += '\n';
 
