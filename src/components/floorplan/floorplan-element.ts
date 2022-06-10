@@ -1515,12 +1515,8 @@ export class FloorplanElement extends LitElement {
             svgElementInfo.svgElement
               .querySelectorAll('title')
               .forEach((titleElement) => {
-                const lastChangedDate = Utils.formatDate(
-                  entityState.last_changed
-                );
-                const lastUpdatedDate = Utils.formatDate(
-                  entityState.last_updated
-                );
+                const lastChangedDate = entityState.last_changed.toString();
+                const lastUpdatedDate = entityState.last_changed.toString();
 
                 let titleText = `${entityState.attributes.friendly_name}\n`;
                 titleText += `State: ${entityState.state}\n\n`;
