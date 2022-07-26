@@ -324,4 +324,17 @@ export class Utils {
 
     return isMobile;
   }
+
+  static deviceId(): string {
+    const ID_BROWER_KEY = 'lovelace-ha-floorplan-device-id';
+
+    if(!localStorage[ID_BROWER_KEY])
+    {
+      const s4 = () => {
+        return Math.floor((1+Math.random())*100000).toString(16).substring(1);
+      }
+      localStorage[ID_BROWER_KEY] = `${s4()}${s4()}-${s4()}${s4()}`;
+    }
+    return localStorage[ID_BROWER_KEY];
+  }
 }
