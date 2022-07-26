@@ -198,12 +198,20 @@ export class FloorplanElement extends LitElement {
   async hassChanged(): Promise<void> {
     if (!this.hass || !this.config || !this.svg) return; // wait for SVG to be loaded
 
+    var deviceId = Utils.deviceId();
+
     this.hass.states['*'] = {
-      entity_id: '*',
-      state: '',
+      entity_id: `sensor.${deviceId}`,
+      state: 'on',
       last_changed: new Date().toString(),
       last_updated: new Date().toString(),
-      attributes: {},
+      attributes: {
+        device_class: 'ha-floorplan',
+        friendly_name: `ha-floorplan - Floorplan for Home Assistant`,
+        icon: 'mdi:floor-plan',
+        assumed_state: false,
+        hidden: true
+      },
       context: {},
     } as HassEntityBase;
 
