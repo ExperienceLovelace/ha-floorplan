@@ -1529,14 +1529,23 @@ export class FloorplanElement extends LitElement {
                   }
                 });
                 titleText += '\n';
-
-                titleText += `Last changed: ${DateUtil.timeago(
-                  lastChangedDate
-                )}\n`;
-                titleText += `Last updated: ${DateUtil.timeago(
-                  lastUpdatedDate
-                )}`;
-
+                let language:String = window.navigator.userLanguage || window.navigator.language;
+                if (language.includes('zh')) {
+                  titleText += `上次变化: ${DateUtil.timeago(
+                    lastChangedDate, 'zh_CN'
+                  )}\n`;
+                  titleText += `上次更新: ${DateUtil.timeago(
+                    lastUpdatedDate, 'zh_CN'
+                  )}`;
+                }
+                else {
+                  titleText += `Last changed: ${DateUtil.timeago(
+                    lastChangedDate
+                  )}\n`;
+                  titleText += `Last updated: ${DateUtil.timeago(
+                    lastUpdatedDate
+                  )}`;
+                }
                 titleElement.textContent = titleText;
               });
           }
