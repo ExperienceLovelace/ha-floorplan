@@ -1143,7 +1143,9 @@ export class FloorplanElement extends LitElement {
     for (const entityId of entityIds) {
       let elementIds = [] as string[];
       if (rule.elements) elementIds = elementIds.concat(rule.elements);
-      else if (rule.element) elementIds = elementIds.concat(rule.element);
+      else if (rule.element) elementIds = elementIds.concat(
+        this.evaluate(rule.element, entityId, undefined) as string
+      );
       else if (rule.element !== null) elementIds = elementIds.concat(entityId);
       this.addTargetEntity(entityId, elementIds, targetEntities);
     }
