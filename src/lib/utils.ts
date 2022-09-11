@@ -15,12 +15,12 @@ export class Utils {
     element.classList
       ? element.classList.remove(className)
       : (element.className = element.className.replace(
-          new RegExp(
-            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-            'gi'
-          ),
-          ' '
-        ));
+        new RegExp(
+          '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+          'gi'
+        ),
+        ' '
+      ));
   }
 
   static hassClass(element: Element, className: string): boolean {
@@ -40,6 +40,45 @@ export class Utils {
       this.removeClass(element, className);
     } else {
       this.addClass(element, className);
+    }
+  }
+
+  static changePrefixedClassValue(element: Element, prefix: string, value: string): void {
+    const currentClassValue = this.getPrefixedClass(element, prefix);
+    if (currentClassValue) {
+      this.replacePrefixedClassValue(element, currentClassValue, prefix, value);
+    }
+    else {
+      this.addClass(element, `${prefix}-${value}`);
+    }
+  }
+
+  static replacePrefixedClassValue(element: Element, prevValue: string, prefix: string, value: string): void {
+    if (element.classList) {
+      element.classList.replace(prevValue, `${prefix}-${value}`);
+    }
+    else {
+      element.className = element.className.replace(
+        new RegExp(
+          '(^|\\b)' + prevValue.split(' ').join('|') + '(\\b|$)',
+          'gi'
+        ),
+        `${prefix}-${value}`);
+    }
+  }
+
+  static getPrefixedClass(element: Element, prefix: string): string | undefined {
+    prefix = prefix + '-';
+    if (element.classList) {
+      for (const item of element.classList) {
+        if (item.includes(prefix)) {
+          return item;
+        }
+      }
+      return undefined;
+    }
+    else {
+      return new RegExp('(^| )' + `${prefix}-` + '( |$)', 'gi').exec(element.className)?.pop();
     }
   }
 
@@ -258,9 +297,8 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${
-      url.indexOf('?') >= 0 ? '&' : '?'
-    }_=${new Date().getTime()}`;
+    return `${url}${url.indexOf('?') >= 0 ? '&' : '?'
+      }_=${new Date().getTime()}`;
   }
 
   static equal(a: unknown, b: unknown): boolean {
@@ -328,10 +366,9 @@ export class Utils {
   static deviceId(): string {
     const ID_BROWER_KEY = 'lovelace-ha-floorplan-device-id';
 
-    if(!localStorage[ID_BROWER_KEY])
-    {
+    if (!localStorage[ID_BROWER_KEY]) {
       const s4 = () => {
-        return Math.floor((1+Math.random())*100000).toString(16).substring(1);
+        return Math.floor((1 + Math.random()) * 100000).toString(16).substring(1);
       }
       localStorage[ID_BROWER_KEY] = `${s4()}${s4()}-${s4()}${s4()}`;
     }

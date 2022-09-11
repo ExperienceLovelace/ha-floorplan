@@ -90,9 +90,8 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${
-            this.clearLog
-          }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${this.clearLog
+      }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -198,7 +197,7 @@ export class FloorplanElement extends LitElement {
   async hassChanged(): Promise<void> {
     if (!this.hass || !this.config || !this.svg) return; // wait for SVG to be loaded
 
-    var deviceId = Utils.deviceId();
+    const deviceId = Utils.deviceId();
 
     this.hass.states['*'] = {
       entity_id: `sensor.${deviceId}`,
@@ -348,9 +347,8 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${
-              (err as unknown as Record<string, Record<string, unknown>>).target
-                .src
+            `${(err as unknown as Record<string, Record<string, unknown>>).target
+              .src
             }`
           )
         );
@@ -1025,7 +1023,7 @@ export class FloorplanElement extends LitElement {
           rule.hold_action === undefined
             ? defaultRule.hold_action
             : rule.hold_action;
-            
+
         rule.hover_info_filter =
           rule.hover_info_filter === undefined
             ? defaultRule.hover_info_filter
@@ -1263,13 +1261,13 @@ export class FloorplanElement extends LitElement {
 
         const singleTapContext = singleTapAction
           ? new FloorplanClickContext(
-              this,
-              entityId,
-              elementId,
-              svgElementInfo,
-              ruleInfo,
-              singleTapAction
-            )
+            this,
+            entityId,
+            elementId,
+            svgElementInfo,
+            ruleInfo,
+            singleTapAction
+          )
           : false;
 
         // Use simple function without delay, if doubleTap is not in use
@@ -1279,13 +1277,13 @@ export class FloorplanElement extends LitElement {
         if (doubleTapAction) {
           const doubleTapContext = doubleTapAction
             ? new FloorplanClickContext(
-                this,
-                entityId,
-                elementId,
-                svgElementInfo,
-                ruleInfo,
-                doubleTapAction
-              )
+              this,
+              entityId,
+              elementId,
+              svgElementInfo,
+              ruleInfo,
+              doubleTapAction
+            )
             : false;
 
           ManyClicks.observe(element as HTMLElement | SVGElement);
@@ -1497,12 +1495,12 @@ export class FloorplanElement extends LitElement {
       if (ruleInfo.rule.hover_action) {
         let isHoverInfo =
           typeof ruleInfo.rule.hover_action === 'string' &&
-          ruleInfo.rule.hover_action === 'hover-info'; 
+          ruleInfo.rule.hover_action === 'hover-info';
         isHoverInfo =
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-              'hover-info');
+            'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1534,10 +1532,9 @@ export class FloorplanElement extends LitElement {
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
-                  if !(hoverInfoFilter.has(key)){
-                    titleText += `${key}: ${
-                      (entityState.attributes as Record<string, unknown>)[key]
-                    }\n`;
+                  if (!hoverInfoFilter.has(key)) {
+                    titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
+                      }\n`;
                   }
                 });
                 titleText += '\n';
@@ -1707,7 +1704,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-              `Are you sure you want to ${actionConfig.action}?`
+            `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;
@@ -1744,7 +1741,7 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${actionConfig.url_path}`
             );
           } else {
-            const open_type = actionConfig.same_tab ? '_self': '_blank';
+            const open_type = actionConfig.same_tab ? '_self' : '_blank';
             window.open(actionConfig.url_path, open_type);
           }
           break;
@@ -1977,6 +1974,42 @@ export class FloorplanElement extends LitElement {
               ? serviceData
               : (serviceData.class as string);
           Utils.setClass(targetSvgElement, className);
+        }
+        break;
+
+      case 'class_prefixed_set':
+        targetSvgElements = this.getSvgElementsFromServiceData(
+          serviceData,
+          svgElementInfo?.svgElement
+        );
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement =
+            targetSvgElements.length === 1 &&
+            targetSvgElements[0] === svgElementInfo?.svgElement;
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            serviceData = this.getServiceData(
+              actionConfig,
+              entityId,
+              targetSvgElement
+            );
+          }
+          let value: string;
+          let prefix: string;
+          if (typeof serviceData === 'string') {
+            const split = (serviceData as string).split('-');
+            if (split.length < 2) {
+              this.logError("FLOORPLAN_ACTION", `Service data "${serviceData}" is not a prefixed class.`)
+              break;
+            }
+            value = split.pop()!;
+            prefix = split.join('-');
+          }
+          else {
+            value = serviceData.value as string;
+            prefix = serviceData.prefix as string;
+          }
+          Utils.changePrefixedClassValue(targetSvgElement, prefix, value);
         }
         break;
 
