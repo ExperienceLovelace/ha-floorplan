@@ -397,6 +397,8 @@ export class FloorplanElement extends LitElement {
     for (const pageInfo of nonMasterPages) {
       await this.loadPageFloorplanSvg(pageInfo, masterPageInfo);
     }
+    
+    this.svg = masterPageInfo.svg;
   }
 
   async loadPageConfig(
