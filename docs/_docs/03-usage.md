@@ -267,7 +267,7 @@ Below is an example of using JavaScript [template literals](https://developer.mo
         class: '${(entity.state === "on") ? "motion-on" : "motion-off"}'
 ```
 
-Following is an example of using dataset and JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate the CSS class to use.
+Following is an example of using dataset and JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate data attribute to use.
 
 ```yaml
   - entities:
@@ -278,7 +278,7 @@ Following is an example of using dataset and JavaScript [template literals](http
       service: floorplan.dataset_set
       service_data:
         key: motion
-        state: ${entity.state}
+        value: ${entity.state}
       #or alternatively
       service_data: 'motion:${entity.state}'
 ```
