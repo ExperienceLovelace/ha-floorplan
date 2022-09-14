@@ -1977,42 +1977,43 @@ export class FloorplanElement extends LitElement {
         }
         break;
 
-      case 'class_prefixed_set':
-        targetSvgElements = this.getSvgElementsFromServiceData(
-          serviceData,
-          svgElementInfo?.svgElement
-        );
-        for (const targetSvgElement of targetSvgElements) {
-          isSameTargetElement =
-            targetSvgElements.length === 1 &&
-            targetSvgElements[0] === svgElementInfo?.svgElement;
-          if (!isSameTargetElement) {
-            // Evaluate service data again, this time supplying 'target' element
-            serviceData = this.getServiceData(
-              actionConfig,
-              entityId,
-              targetSvgElement
-            );
-          }
+      case 'dataset_set':
+        {
           let value: string;
-          let prefix: string;
+          let key: string;
           if (typeof serviceData === 'string') {
-            const split = (serviceData as string).split('-');
+            const split = (serviceData as string).split(':');
             if (split.length < 2) {
-              this.logError("FLOORPLAN_ACTION", `Service data "${serviceData}" is not a prefixed class.`)
+              this.logError("FLOORPLAN_ACTION", `Service data "${serviceData}" is not a valid dataset key value pair.`)
               break;
             }
-            value = split.pop()!;
-            prefix = split.join('-');
+            value = split[1];
+            key = split[0];
           }
           else {
             value = serviceData.value as string;
-            prefix = serviceData.prefix as string;
+            key = serviceData.key as string;
           }
-          Utils.changePrefixedClassValue(targetSvgElement, prefix, value);
+          targetSvgElements = this.getSvgElementsFromServiceData(
+            serviceData,
+            svgElementInfo?.svgElement
+          );
+          for (const targetSvgElement of targetSvgElements) {
+            isSameTargetElement =
+              targetSvgElements.length === 1 &&
+              targetSvgElements[0] === svgElementInfo?.svgElement;
+            if (!isSameTargetElement) {
+              // Evaluate service data again, this time supplying 'target' element
+              serviceData = this.getServiceData(
+                actionConfig,
+                entityId,
+                targetSvgElement
+              );
+            }
+            Utils.datasetSet(targetSvgElement, key, value);
+          }
+          break;
         }
-        break;
-
       case 'style_set':
         targetSvgElements = this.getSvgElementsFromServiceData(
           serviceData,

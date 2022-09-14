@@ -235,7 +235,7 @@ Below are the services that are specific to Floorplan.
 | ----------------------------- | ------------------------------------------------ | ----------------------- |
 | `floorplan.class_toggle`      | Toggle a CSS class of the SVG element(s)         | `class` (string)        |
 | `floorplan.class_set`         | Set the CSS class of the SVG element(s)          | `class` (string)        |
-| `floorplan.class_prefixed_set`| Find a class with this prefix and set the value  | `prefix` (string)<br /> `value` (string) |
+| `floorplan.dataset_set`       | Set a data attribute of the SVG element(s)       | `key` (string)<br /> `value` (string) |
 | `floorplan.style_set`         | Set the CSS style of the of the SVG element(s)   | `style` (string)        |
 | `floorplan.text_set`          | Set the text of the SVG element(s)               | `text` (string)         |
 | `floorplan.image_set`         | Set the image of the SVG element(s)              | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
@@ -267,7 +267,7 @@ Below is an example of using JavaScript [template literals](https://developer.mo
         class: '${(entity.state === "on") ? "motion-on" : "motion-off"}'
 ```
 
-Following is an example of using prefixed classes and JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate the CSS class to use.
+Following is an example of using dataset and JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate the CSS class to use.
 
 ```yaml
   - entities:
@@ -275,12 +275,12 @@ Following is an example of using prefixed classes and JavaScript [template liter
       - binary_sensor.laundry
     state_action:
       action: call-service
-      service: floorplan.class_prefixed_set
+      service: floorplan.dataset_set
       service_data:
-        prefix: motion
+        key: motion
         state: ${entity.state}
       #or alternatively
-      service_data: 'motion-${entity.state}'
+      service_data: 'motion:${entity.state}'
 ```
 
 The following example shows how the style is generated using a block of JavaScript code that spans multiple lines.

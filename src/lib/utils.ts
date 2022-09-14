@@ -43,43 +43,8 @@ export class Utils {
     }
   }
 
-  static changePrefixedClassValue(element: Element, prefix: string, value: string): void {
-    const currentClassValue = this.getPrefixedClass(element, prefix);
-    if (currentClassValue) {
-      this.replacePrefixedClassValue(element, currentClassValue, prefix, value);
-    }
-    else {
-      this.addClass(element, `${prefix}-${value}`);
-    }
-  }
-
-  static replacePrefixedClassValue(element: Element, prevValue: string, prefix: string, value: string): void {
-    if (element.classList) {
-      element.classList.replace(prevValue, `${prefix}-${value}`);
-    }
-    else {
-      element.className = element.className.replace(
-        new RegExp(
-          '(^|\\b)' + prevValue.split(' ').join('|') + '(\\b|$)',
-          'gi'
-        ),
-        `${prefix}-${value}`);
-    }
-  }
-
-  static getPrefixedClass(element: Element, prefix: string): string | undefined {
-    prefix = prefix + '-';
-    if (element.classList) {
-      for (const item of element.classList) {
-        if (item.includes(prefix)) {
-          return item;
-        }
-      }
-      return undefined;
-    }
-    else {
-      return new RegExp('(^| )' + `${prefix}-` + '( |$)', 'gi').exec(element.className)?.pop();
-    }
+  static datasetSet(element: SVGGraphicsElement | HTMLElement, key: string, value: string): void {
+    element.dataset[key] = value;
   }
 
   static getStyles(
