@@ -80,14 +80,21 @@ If you're unsure on how to get started, we'll recommend you to look at the follo
 
 [How to setup ha-floorplan in Hass.io](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico)
 
+If you're more a video-person, check this video:
+[ha-floorplan - Getting Started (1) | Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
+
+
 ### How to start using Inkscape with a background image
 If you're unsure on how to prepare the SVG-file with your own Floorplanner image, kindly check the following answer:
 
 [First steps in Inkscape, after you've created your Floorplanner image](https://github.com/ExperienceLovelace/ha-floorplan/discussions/131#discussioncomment-1654167)
 
 ### How to get started from scratch, but as a video 
-If you're move a watch-and-learn type of person, consider to give this video a view:
 
+I'll recommend you to take a look at this video.
+[ha-floorplan - Getting Started (1) | Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
+
+Here's another (very) long video, where there's plenty of good tips and tricks:
 [Home Assistant Floorplan SVG Inkscape](https://www.youtube.com/watch?v=MCNxgb0mrSA)
 
 ### How to bind your Home Assistant elements with SVG elements
