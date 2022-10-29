@@ -239,7 +239,7 @@ Below are the services that are specific to Floorplan.
 | `floorplan.style_set`    | Set the CSS style of the of the SVG element(s) | `style` (string)                                                               |
 | `floorplan.text_set`     | Set the text of the SVG element(s)             | `text` (string)                                                                |
 | `floorplan.image_set`    | Set the image of the SVG element(s)            | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
-| `floorplan.execute`      | Execute your own JS, defiend in service_data   | `<all>` (array)                                                                |
+| `floorplan.execute`      | Execute your own JS, defined in service_data   | `<all>` (array)                                                                |
 
 Service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
 
@@ -254,6 +254,8 @@ Service data can be dynamically constructed using JavaScript code. Below is the 
 | `element`                | current SVG element                                                                         |
 | `elements`               | current SVG elements                                                                        |
 
+#### Using `class_set` to define a entity-state related class
+
 Below is an example of using JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate the CSS class to use.
 
 ```yaml
@@ -266,6 +268,8 @@ Below is an example of using JavaScript [template literals](https://developer.mo
     service_data:
       class: '${(entity.state === "on") ? "motion-on" : "motion-off"}'
 ```
+
+#### Using `dataset_set` to add data-keys to the DOM-element
 
 Following is an example of using dataset and JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate data attribute to use.
 
@@ -283,6 +287,8 @@ Following is an example of using dataset and JavaScript [template literals](http
       service_data: 'motion:${entity.state}'
 ```
 
+#### Using `style_set` with a block of JavaScript code
+
 The following example shows how the style is generated using a block of JavaScript code that spans multiple lines.
 
 ```yaml
@@ -297,6 +303,8 @@ The following example shows how the style is generated using a block of JavaScri
         var height = Math.ceil(elements['sensor.moisture_level'].getBBox().height);
         return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
 ```
+
+#### Using `execute` with browser_mod
 
 The following example shows how to use the `execute` service, where we also use the 3rd-party solution called [browser_mod](https://github.com/thomasloven/hass-browser_mod) (Can be found in [HACS](https://hacs.xyz/)).
 
