@@ -4,6 +4,7 @@ import { FloorplanConfig } from './/floorplan-config';
 import { ColorUtil } from './color-util';
 import { DateUtil } from './date-util';
 import Sval from 'sval';
+import { getErrorMessage } from './error-util';
 
 export class EvalHelper {
   static cache: { [key: string]: () => void } = {};
@@ -92,7 +93,15 @@ export class EvalHelper {
     this.interpreter.import('element', svgElement);
     this.interpreter.import('elements', svgElements);
 
-    this.interpreter.run(this.parsedFunction);
+    try {
+      this.interpreter.run(this.parsedFunction);
+    } catch (error) {
+      throw new EvalError(getErrorMessage(error));
+
+      // throw new EvalError(
+      //   'Errors while evaluate function (' + error.message + ')'
+      // );
+    }
 
     return this.interpreter.exports.result;
   }

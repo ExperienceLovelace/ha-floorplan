@@ -46,6 +46,7 @@ import {
 } from 'lit-element';
 import * as packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
+import { getErrorMessage } from './lib/error-util';
 const E = OuiDomEvents.default;
 
 // Display version in console
@@ -90,8 +91,9 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${this.clearLog
-      }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${
+            this.clearLog
+          }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -209,7 +211,7 @@ export class FloorplanElement extends LitElement {
         friendly_name: `ha-floorplan - Floorplan for Home Assistant`,
         icon: 'mdi:floor-plan',
         assumed_state: false,
-        hidden: true
+        hidden: true,
       },
       context: {},
     } as HassEntityBase;
@@ -347,8 +349,9 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${(err as unknown as Record<string, Record<string, unknown>>).target
-              .src
+            `${
+              (err as unknown as Record<string, Record<string, unknown>>).target
+                .src
             }`
           )
         );
@@ -395,7 +398,7 @@ export class FloorplanElement extends LitElement {
     for (const pageInfo of nonMasterPages) {
       await this.loadPageFloorplanSvg(pageInfo, masterPageInfo);
     }
-    
+
     this.svg = masterPageInfo.svg;
   }
 
@@ -1143,9 +1146,10 @@ export class FloorplanElement extends LitElement {
     for (const entityId of entityIds) {
       let elementIds = [] as string[];
       if (rule.elements) elementIds = elementIds.concat(rule.elements);
-      else if (rule.element) elementIds = elementIds.concat(
-        this.evaluate(rule.element, entityId, undefined) as string
-      );
+      else if (rule.element)
+        elementIds = elementIds.concat(
+          this.evaluate(rule.element, entityId, undefined) as string
+        );
       else if (rule.element !== null) elementIds = elementIds.concat(entityId);
       this.addTargetEntity(entityId, elementIds, targetEntities);
     }
@@ -1265,13 +1269,13 @@ export class FloorplanElement extends LitElement {
 
         const singleTapContext = singleTapAction
           ? new FloorplanClickContext(
-            this,
-            entityId,
-            elementId,
-            svgElementInfo,
-            ruleInfo,
-            singleTapAction
-          )
+              this,
+              entityId,
+              elementId,
+              svgElementInfo,
+              ruleInfo,
+              singleTapAction
+            )
           : false;
 
         // Use simple function without delay, if doubleTap is not in use
@@ -1281,13 +1285,13 @@ export class FloorplanElement extends LitElement {
         if (doubleTapAction) {
           const doubleTapContext = doubleTapAction
             ? new FloorplanClickContext(
-              this,
-              entityId,
-              elementId,
-              svgElementInfo,
-              ruleInfo,
-              doubleTapAction
-            )
+                this,
+                entityId,
+                elementId,
+                svgElementInfo,
+                ruleInfo,
+                doubleTapAction
+              )
             : false;
 
           ManyClicks.observe(element as HTMLElement | SVGElement);
@@ -1504,7 +1508,7 @@ export class FloorplanElement extends LitElement {
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-            'hover-info');
+              'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1513,7 +1517,9 @@ export class FloorplanElement extends LitElement {
             ));
 
         if (isHoverInfo) {
-          const hoverInfoFilter = new Set<string>(ruleInfo.rule.hover_info_filter);
+          const hoverInfoFilter = new Set<string>(
+            ruleInfo.rule.hover_info_filter
+          );
 
           for (const svgElementInfo of Object.values(
             ruleInfo.svgElementInfos
@@ -1537,8 +1543,9 @@ export class FloorplanElement extends LitElement {
 
                 Object.keys(entityState.attributes).map((key) => {
                   if (!hoverInfoFilter.has(key)) {
-                    titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
-                      }\n`;
+                    titleText += `${key}: ${
+                      (entityState.attributes as Record<string, unknown>)[key]
+                    }\n`;
                   }
                 });
                 titleText += '\n';
@@ -1708,7 +1715,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-            `Are you sure you want to ${actionConfig.action}?`
+              `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;
@@ -1867,6 +1874,39 @@ export class FloorplanElement extends LitElement {
     return serviceData;
   }
 
+  executeServiceData(
+    actionConfig: FloorplanCallServiceActionConfig,
+    entityId?: string,
+    svgElement?: SVGGraphicsElement
+  ): Boolean {
+    try {
+      if (typeof actionConfig.service_data === 'object') {
+        for (const key of Object.keys(actionConfig.service_data)) {
+          try {
+            this.evaluate(
+              actionConfig.service_data[key],
+              entityId,
+              svgElement
+            ) as string;
+          } catch (error) {
+            this.logWarning(
+              'ERROR',
+              `Error in evaluation:` + getErrorMessage(error)
+            );
+          }
+        }
+      } else if (typeof actionConfig.service_data === 'string') {
+        this.evaluate(actionConfig.service_data, entityId, svgElement);
+      } else if (actionConfig.service_data !== undefined) {
+        this.logWarning('CONFIG', `Invalid execution data`);
+      }
+      return true;
+    } catch (e) {
+      this.logWarning('CONFIG', `Error thrown while executing service`);
+      return false;
+    }
+  }
+
   callService(
     actionConfig: FloorplanCallServiceActionConfig,
     entityId?: string,
@@ -1926,9 +1966,17 @@ export class FloorplanElement extends LitElement {
     let text: string;
     let targetSvgElements: SVGGraphicsElement[] = [];
     let isSameTargetElement: boolean;
+    let serviceData = null;
 
     // Evaluate service data, in order to determine 'target' elements
-    let serviceData = this.getServiceData(actionConfig, entityId, svgElement);
+    const servicesWithoutPreparation: string[] = ['execute'];
+    const prepareServiceData = !servicesWithoutPreparation.includes(service);
+
+    if (prepareServiceData) {
+      serviceData = this.getServiceData(actionConfig, entityId, svgElement);
+    } else {
+      serviceData = {};
+    }
 
     switch (service) {
       case 'class_toggle':
@@ -1981,43 +2029,44 @@ export class FloorplanElement extends LitElement {
         }
         break;
 
-      case 'dataset_set':
-        {
-          let value: string;
-          let key: string;
-          if (typeof serviceData === 'string') {
-            const split = (serviceData as string).split(':');
-            if (split.length < 2) {
-              this.logError("FLOORPLAN_ACTION", `Service data "${serviceData}" is not a valid dataset key value pair.`)
-              break;
-            }
-            value = split[1];
-            key = split[0];
+      case 'dataset_set': {
+        let value: string;
+        let key: string;
+        if (typeof serviceData === 'string') {
+          const split = (serviceData as string).split(':');
+          if (split.length < 2) {
+            this.logError(
+              'FLOORPLAN_ACTION',
+              `Service data "${serviceData}" is not a valid dataset key value pair.`
+            );
+            break;
           }
-          else {
-            value = serviceData.value as string;
-            key = serviceData.key as string;
-          }
-          targetSvgElements = this.getSvgElementsFromServiceData(
-            serviceData,
-            svgElementInfo?.svgElement
-          );
-          for (const targetSvgElement of targetSvgElements) {
-            isSameTargetElement =
-              targetSvgElements.length === 1 &&
-              targetSvgElements[0] === svgElementInfo?.svgElement;
-            if (!isSameTargetElement) {
-              // Evaluate service data again, this time supplying 'target' element
-              serviceData = this.getServiceData(
-                actionConfig,
-                entityId,
-                targetSvgElement
-              );
-            }
-            Utils.datasetSet(targetSvgElement, key, value);
-          }
-          break;
+          value = split[1];
+          key = split[0];
+        } else {
+          value = serviceData.value as string;
+          key = serviceData.key as string;
         }
+        targetSvgElements = this.getSvgElementsFromServiceData(
+          serviceData,
+          svgElementInfo?.svgElement
+        );
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement =
+            targetSvgElements.length === 1 &&
+            targetSvgElements[0] === svgElementInfo?.svgElement;
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            serviceData = this.getServiceData(
+              actionConfig,
+              entityId,
+              targetSvgElement
+            );
+          }
+          Utils.datasetSet(targetSvgElement, key, value);
+        }
+        break;
+      }
       case 'style_set':
         targetSvgElements = this.getSvgElementsFromServiceData(
           serviceData,
@@ -2180,6 +2229,23 @@ export class FloorplanElement extends LitElement {
             attributes,
             false
           );
+        }
+        break;
+
+      case 'execute':
+        this.executeServiceData(
+          actionConfig,
+          entityId,
+          svgElementInfo?.svgElement
+        );
+        for (const targetSvgElement of targetSvgElements) {
+          isSameTargetElement =
+            targetSvgElements.length === 1 &&
+            targetSvgElements[0] === svgElementInfo?.svgElement;
+          if (!isSameTargetElement) {
+            // Evaluate service data again, this time supplying 'target' element
+            this.executeServiceData(actionConfig, entityId, targetSvgElement);
+          }
         }
         break;
 
