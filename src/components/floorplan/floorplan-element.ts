@@ -40,13 +40,11 @@ import {
   CSSResult,
   html,
   LitElement,
-  property,
   TemplateResult,
   PropertyValues,
 } from 'lit-element';
 import * as packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
-import { getErrorMessage } from './lib/error-util';
 const E = OuiDomEvents.default;
 
 // Display version in console
@@ -1878,7 +1876,7 @@ export class FloorplanElement extends LitElement {
     actionConfig: FloorplanCallServiceActionConfig,
     entityId?: string,
     svgElement?: SVGGraphicsElement
-  ): Boolean {
+  ): boolean {
     try {
       if (typeof actionConfig.service_data === 'object') {
         for (const key of Object.keys(actionConfig.service_data)) {
