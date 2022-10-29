@@ -315,7 +315,7 @@ hold_action:
       my_custom_exec_calling_browser_mod: |
         > 
         try{
-          // Remember that ha-floorplan exposed a lot of useful properties
+          // Remember that ha-floorplan exposes a lot of useful properties
           console.log(
             "this",this, "\nentitiy",entity, "\nelements", elements, "\nentities", entities,
             "\nconfig",config, "\nutil", util, "\nelement", element, "\nstates", states);
