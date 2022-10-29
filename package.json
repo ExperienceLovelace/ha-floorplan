@@ -1,6 +1,6 @@
 {
   "name": "ha-floorplan",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "description": "Floorplan for Home Assistant",
   "main": "index.js",
   "scripts": {
@@ -16,12 +16,10 @@
     "prettier": "prettier --config .prettierrc 'src/**/**/*.ts' 'src/**/*.ts' --write"
   },
   "staticFiles": {
-    "staticPath": [
-      {
-        "staticPath": "docs/_docs/floorplan",
-        "env": "development"
-      }
-    ]
+    "staticPath": [{
+      "staticPath": "docs/_docs/floorplan",
+      "env": "development"
+    }]
   },
   "keywords": [],
   "author": "",
