@@ -40,6 +40,7 @@ import {
   CSSResult,
   html,
   LitElement,
+  property,
   TemplateResult,
   PropertyValues,
 } from 'lit-element';
