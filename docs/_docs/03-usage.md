@@ -298,7 +298,7 @@ The following example shows how the style is generated using a block of JavaScri
         return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
 ```
 
-The following example shows how to use the `execute` command, where we also use the 3rd-party solution called `browser_mod`.
+The following example shows how to use the `execute` service, where we also use the 3rd-party solution called [browser_mod](https://github.com/thomasloven/hass-browser_mod) (Can be found in [HACS](https://hacs.xyz/)).
 
 ```yaml
 hold_action:
@@ -307,7 +307,10 @@ hold_action:
       my_custom_exec_calling_browser_mod: |
         > 
         try{
-          console.log(entity)
+          // Remember that ha-floorplan exposed a lot of useful properties
+          console.log(
+            "this",this, "\nentitiy",entity, "\nelements", elements, "\nentities", entities,
+            "\nconfig",config, "\nutil", util, "\nelement", element, "\nstates", states);
 
           // Call browser_mod service
           browser_mod.service('popup',{title: "My custom function with browser-mod call",
