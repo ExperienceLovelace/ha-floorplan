@@ -40,13 +40,11 @@ import {
   CSSResult,
   html,
   LitElement,
-  property,
   TemplateResult,
   PropertyValues,
 } from 'lit-element';
 import * as packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
-import { getErrorMessage } from './lib/error-util';
 const E = OuiDomEvents.default;
 
 // Display version in console
@@ -1878,22 +1876,15 @@ export class FloorplanElement extends LitElement {
     actionConfig: FloorplanCallServiceActionConfig,
     entityId?: string,
     svgElement?: SVGGraphicsElement
-  ): Boolean {
+  ): boolean {
     try {
       if (typeof actionConfig.service_data === 'object') {
         for (const key of Object.keys(actionConfig.service_data)) {
-          try {
-            this.evaluate(
-              actionConfig.service_data[key],
-              entityId,
-              svgElement
-            ) as string;
-          } catch (error) {
-            this.logWarning(
-              'ERROR',
-              `Error in evaluation:` + getErrorMessage(error)
-            );
-          }
+          this.evaluate(
+            actionConfig.service_data[key],
+            entityId,
+            svgElement
+          ) as string;
         }
       } else if (typeof actionConfig.service_data === 'string') {
         this.evaluate(actionConfig.service_data, entityId, svgElement);
@@ -2370,10 +2361,10 @@ export class FloorplanElement extends LitElement {
     if (typeof err === 'string') {
       message = err;
     }
-    if (err.stack) {
+    if (err.message) {
+      message = `${err.message} (See console for more info)`;
+    } else if (err.stack) {
       message = `${err.stack}`;
-    } else if (err.message) {
-      message = `${err.message}`;
     }
 
     this.logger.log('error', message);
