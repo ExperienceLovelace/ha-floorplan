@@ -9,6 +9,21 @@ hacs_images_gallery:
   - url: /assets/images/docs/quick-start/hacs-setup-2.png
     image_path: /assets/images/docs/quick-start/hacs-setup-2.png
     alt: "HACS - Install and remember to add ressources"
+feature_row:
+  - image_path: /assets/images/docs/quick-start/video-getting-started.png
+    alt: "Video - Getting Started"
+    title: "▶️ Getting Started"
+    excerpt: "Add HACS & SVG-files and YAML entity mapping in Home Assistant"
+    url: "https://youtu.be/5ue9J4WG2a8"
+    btn_label: "Watch now"
+    btn_class: "btn--inverse"
+  - image_path: /assets/images/docs/quick-start/video-first-floorplan-part1.png
+    alt: "Video - Create your first floorplan"
+    title: "▶️ Floorplan in Inkscape"
+    excerpt: "Create your first floorplan in Inkscape (1/2), including CSS and YAML configuration"
+    url: "https://youtu.be/f_3KAPc53hQ"
+    btn_label: "Watch now"
+    btn_class: "btn--inverse"
 ---
 
 {% capture workinprogress-notice-1 %}
@@ -31,6 +46,10 @@ With that said.... Good luck, and let's get started! 🥳
 {% endcapture %}
 
 <div class="notice--warning">{{ workinprogress-notice-1 | markdownify }}</div>
+
+## Videos
+
+{% include feature_row %}
 
 ## Things required for you to get started
 
@@ -81,8 +100,12 @@ If you're unsure on how to get started, we'll recommend you to look at the follo
 [How to setup ha-floorplan in Hass.io](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico)
 
 If you're more a video-person, check this video:
-[ha-floorplan - Getting Started (1) | Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
 
+[Getting Started (1) \| Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
+
+If you're ready to create your first floorplan, check this video:
+
+[Create your first floorplan in Inkscape (1/2) \| Including CSS and YAML configuration](https://youtu.be/f_3KAPc53hQ)
 
 ### How to start using Inkscape with a background image
 If you're unsure on how to prepare the SVG-file with your own Floorplanner image, kindly check the following answer:
@@ -91,8 +114,9 @@ If you're unsure on how to prepare the SVG-file with your own Floorplanner image
 
 ### How to get started from scratch, but as a video 
 
-I'll recommend you to take a look at this video.
-[ha-floorplan - Getting Started (1) | Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
+I'll recommend you to take a look at this video:
+
+[Getting Started (1) Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
 
 Here's another (very) long video, where there's plenty of good tips and tricks:
 [Home Assistant Floorplan SVG Inkscape](https://www.youtube.com/watch?v=MCNxgb0mrSA)
@@ -101,3 +125,11 @@ Here's another (very) long video, where there's plenty of good tips and tricks:
 If you're still facing problems on how to use your SVG-file, try visiting our live examples, and take a closer look at the YAML and CSS-tabs, to see the actual config for each solution:
 
 [Floorplanner Home Example](https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/)
+
+
+### How to get started with CSS
+There's plenty of tutorials related to CSS online. We'll recommend you to give one of them a chance, and maybe even take a look at our examples in the docs.
+
+With that said, here's one very simple video about how to get started with CSS in ha-floorplan:
+
+[Using CSS-selectors \| How CSS-styling works in ha-floorplan and in general](https://youtu.be/oqO4Vx6U1Mo)
