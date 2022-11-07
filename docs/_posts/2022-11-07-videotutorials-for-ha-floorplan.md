@@ -1,6 +1,7 @@
 ---
 title: "Video-tutorials for all of you"
-date: 2022-11-07T19:02:00+00:00
+date: 2022-11-07T17:53:10+00:00
+excerpt: "There's now video tutorials on YouTube, ready for you to watch. So, now you can watch how to get started with ha-floorplan!"
 categories:
   - Meta
 tags:
