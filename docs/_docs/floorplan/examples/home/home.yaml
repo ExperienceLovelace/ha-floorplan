@@ -23,25 +23,13 @@ config:
             cache: true
         tap_action: toggle
 
-      - entity: light.main_bedroom
-        element: light.main_bedroom
-        state_action:
-          - action: call-service
-            service: floorplan.image_set
-            service_data:
-              image: /local/floorplan/examples/home/light_on.svg
-              cache: true
-          - service: floorplan.class_set
-            service_data: light-${entity.state}
-        tap_action: toggle
-
       - entity: '*'
         element: light.garage.last_changed
         state_action:
           - action: call-service
             service: floorplan.text_set
             service_data:
-              text: '${util.date.timeago(new Date(entities["light.garage"].last_changed))}'
+              text: 'Last changed: ${util.date.timeago(new Date(entities["light.garage"].last_changed))}'
 
       - entity: light.garage
         element: light.garage.button
@@ -58,23 +46,7 @@ config:
         state_action:
           action: call-service
           service: floorplan.text_set
-          service_data: '${entity.state.toUpperCase()}'
-        tap_action: false
-
-      - entity: light.main_bedroom
-        element: light.main_bedroom.button
-        state_action:
-          action: call-service
-          service: floorplan.class_set
-          service_data: 'button-${entity.state}'
-        tap_action: homeassistant.toggle
-
-      - entity: light.main_bedroom
-        element: light.main_bedroom.text
-        state_action:
-          action: call-service
-          service: floorplan.text_set
-          service_data: '${entity.state.toUpperCase()}'
+          service_data: ${entity.state}
         tap_action: false
 
       - entity: switch.living_area_fan
@@ -102,19 +74,16 @@ config:
         state_action:
           action: call-service
           service: floorplan.text_set
-          service_data: '${entity.state.toUpperCase()}'
+          service_data: ${entity.state}
         tap_action: false
 
       - entity: camera.zagreb_ban_jelacic_square
         state_action:
-          - action: call-service
-            service: floorplan.image_set
-            service_data:
-              image: '${entity.attributes.entity_picture}'
-              image_refresh_interval: 10
-          - service: floorplan.class_set
-            service_data:
-              class: weathericon
+          action: call-service
+          service: floorplan.image_set
+          service_data:
+            image: '${entity.attributes.entity_picture}'
+            image_refresh_interval: 10
 
       - entities:
           - binary_sensor.main_bedroom

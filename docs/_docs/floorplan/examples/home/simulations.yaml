@@ -140,7 +140,6 @@ simulations:
 
   - entities:
       - light.garage
-      - light.main_bedroom
       - switch.living_area_fan
     states:
       - state: on
