@@ -4,7 +4,7 @@
   padding: 10px;
 }
 
-#floorplan>svg {
+#floorplan > svg {
   max-width: 700px;
 }
 
@@ -17,9 +17,9 @@ svg * {
 /* Hover over */
 
 .floorplan-shape:hover,
-g.floorplan-hover> :not(text):hover,
-g.floorplan-click> :not(text):hover,
-g.floorplan-long-click> :not(text):hover,
+g.floorplan-hover > :not(text):hover,
+g.floorplan-click > :not(text):hover,
+g.floorplan-long-click > :not(text):hover,
 :not(text).floorplan-hover:hover,
 :not(text).floorplan-click:hover,
 :not(text).floorplan-long-click:hover {
@@ -28,25 +28,14 @@ g.floorplan-long-click> :not(text):hover,
   stroke-opacity: 1 !important;
 }
 
-/* Animation */
+/* Layers */
 
-.spinning {
-  animation-name: spin;
-  animation-duration: 5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  transform-origin: 50% 50%;
-  transform-box: fill-box;
+.layer-visible {
+  display: inline !important;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.layer-hidden {
+  display: none !important;
 }
 
 /* Binary sensors */
@@ -66,23 +55,13 @@ g.floorplan-long-click> :not(text):hover,
   fill: #1aba92 !important;
 }
 
+/*
 .button-off rect {
   fill: #d32f2f !important;
 }
+*/
 
 .button-on tspan,
 .button-off tspan {
   fill: white !important;
-}
-
-/* Lights */
-
-.light-on * {
-  /* Nothing to do */
-}
-
-.light-off * {
-  -webkit-filter: grayscale(100%);
-  filter: grayscale(100%);
-  filter: gray;
 }

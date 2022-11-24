@@ -1,0 +1,124 @@
+#floorplan  {
+  padding: 10px;
+}
+
+/* #floorplan svg{
+  height: 100vh!important;
+} */
+
+svg tspan {
+  fill: var(--primary-text-color);
+}
+
+/* Animation */
+
+.spinning {
+  animation-name: spin;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* SVG shapes */
+
+svg, svg * {
+  vector-effect: non-scaling-stroke !important;
+  pointer-events: all !important;
+}
+
+/* Hover over */
+.ha-entity:hover {
+  stroke: #03A9F4 !important;
+  stroke-width: 1px !important;
+  stroke-opacity: 1 !important;
+}
+
+/* Binary sensors */
+
+.binary-sensor-on {
+  fill: #F9D27C !important;
+}
+
+.binary-sensor-off {
+  fill: #7CB1F9 !important;
+  transition: fill 5s ease;
+}
+
+/* Buttons */
+
+.background-on {
+  fill: #1ABA92 !important;
+}
+
+.background-off {
+  fill: #d32f2f !important;
+}
+
+.background-on tspan {
+  fill: white !important;
+}
+
+/* Light Control */
+
+path[id*="area."].light-on{
+  opacity: 0 !important;
+}
+
+path[id*="area."]{
+  opacity: 0.5 !important;
+  transition: opacity .25s;
+  -moz-transition: opacity .25s;
+  -webkit-transition: opacity .25s;
+}
+
+/* Things Control */
+
+[id*="thing."].thing-on{
+  opacity: 1 !important;
+  filter: drop-shadow(0px -5px 3px #ffedde);
+  fill: #fffae54f !important;
+}
+
+[id*="thing."]{
+  opacity: 0 !important;
+  transition: opacity .25s;
+  -moz-transition: opacity .25s;
+  -webkit-transition: opacity .25s;
+}
+
+/* Temperature text */
+
+.static-temp, .static-temp tspan {
+  fill: #ffffff;
+}
+
+/* Spinning fan */
+
+.spinning {
+  animation-name: spin;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

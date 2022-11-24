@@ -1,0 +1,148 @@
+simulations:
+  - entities:
+      - light.kitchen
+    states:
+      - state: on
+        attributes:
+          rgb_color:
+            - 252
+            - 191
+            - 123
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 254
+            - 220
+            - 129
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 238
+            - 230
+            - 131
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 204
+            - 221
+            - 130
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 169
+            - 210
+            - 127
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 204
+            - 221
+            - 130
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 238
+            - 230
+            - 131
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 254
+            - 220
+            - 129
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 252
+            - 191
+            - 123
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 251
+            - 162
+            - 118
+        duration: 0.25
+
+  - entities:
+      - light.office
+    states:
+      - state: on
+        attributes:
+          rgb_color:
+            - 251
+            - 162
+            - 118
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 252
+            - 191
+            - 123
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 254
+            - 220
+            - 129
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 238
+            - 230
+            - 131
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 204
+            - 221
+            - 130
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 169
+            - 210
+            - 127
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 204
+            - 221
+            - 130
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 238
+            - 230
+            - 131
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 254
+            - 220
+            - 129
+        duration: 0.25
+      - state: on
+        attributes:
+          rgb_color:
+            - 252
+            - 191
+            - 123
+        duration: 0.25

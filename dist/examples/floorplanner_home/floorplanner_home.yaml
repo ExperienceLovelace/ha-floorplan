@@ -1,0 +1,52 @@
+title: Floorplanner Home
+config:
+  image: /local/floorplan/examples/floorplanner_home/floorplanner_home.svg
+  stylesheet: /local/floorplan/examples/floorplanner_home/floorplanner_home.css
+
+  defaults:
+      hover_action: hover-info
+      tap_action: more-info
+
+  rules:
+    - name: Rooms
+      entities:
+        - entity: light.udestue 
+          element: area.udestue
+        - entity: light.restroom 
+          element: area.restroom
+        - entity: light.kitchen 
+          element: area.kitchen
+        - entity: light.guestroom 
+          element: area.guestroom
+        - entity: light.livingroom
+          element: area.livingroom
+        - entity: light.office
+          element: area.office
+        - entity: light.hallway 
+          element: area.hallway
+        - entity: light.guesttoilet 
+          element: area.guesttoilet
+        - entity: light.bedroom 
+          element: area.bedroom
+      tap_action: light.toggle
+      state_action:
+        service: floorplan.class_set
+        service_data: '${(entity.state === "on") ? "light-on" : "light-off"}'
+
+    - name: Temperature
+      entities:
+        - sensor.hallway
+        - sensor.livingroom
+        - sensor.udestue
+      state_action:
+        - service: floorplan.text_set
+          service_data: '${(entity.state !== undefined) ? Math.round(entity.state * 10) / 10 + "°" : "unknown"}'
+        - service: floorplan.class_set
+          service_data:
+            class: 'static-temp'
+
+    - entity: switch.udestue_fan
+      tap_action: toggle
+      state_action:
+        service: floorplan.class_set
+        service_data: '${(entity.state === "on") ? "spinning" : ""}'
