@@ -1,0 +1,25 @@
+/* SVG size */
+
+#floorplan > svg {
+  max-width: 200px;
+}
+
+/* SVG elements */
+
+svg * {
+  vector-effect: non-scaling-stroke !important;
+}
+
+/* Hover over */
+
+.floorplan-shape:hover,
+g.floorplan-hover > :not(text):hover,
+g.floorplan-click > :not(text):hover,
+g.floorplan-long-click > :not(text):hover,
+:not(text).floorplan-hover:hover,
+:not(text).floorplan-click:hover,
+:not(text).floorplan-long-click:hover {
+  stroke: #03a9f4 !important;
+  stroke-width: 1px !important;
+  stroke-opacity: 1 !important;
+}

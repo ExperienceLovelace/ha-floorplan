@@ -1,0 +1,7 @@
+simulations:
+  - entities:
+      - media_player.tv
+    states:
+      - state: off
+        attributes:
+          volume_level: 0.5

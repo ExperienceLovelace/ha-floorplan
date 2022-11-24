@@ -1,0 +1,48 @@
+simulations:
+  - entity: binary_sensor.hvac_on_off_sensor
+    state: off
+
+  - entity: binary_sensor.hvac_heat_mode_sensor
+    state: on
+
+  - entity: binary_sensor.hvac_cool_mode_sensor
+    state: off
+
+  - entity: binary_sensor.hvac_fan_mode_sensor
+    state: off
+
+  - entity: binary_sensor.hvac_zone_a_sensor
+    state: off
+
+  - entity: binary_sensor.hvac_zone_b_sensor
+    state: off
+
+  - entity: binary_sensor.hvac_zone_c_sensor
+    state: off
+
+  - entity: sensor.hvac_mode
+    state: heat
+
+  - entity: sensor.hvac_mode_icon
+    state: heat
+
+  - entity: sensor.hvac_current_temperature
+    state: 24.5
+
+  - entity: sensor.hvac_set_temperature
+    state: 22.0
+
+  - entity: binary_sensor.hvac_fan_speed
+    state: 2
+
+  - entity: sensor.hvac_zone_a
+    state: off
+
+  - entity: sensor.hvac_zone_b
+    state: off
+
+  - entity: sensor.hvac_zone_c
+    state: off
+
+  - entity: sensor.hvac_wifimodule_status
+    state: ok
