@@ -90,9 +90,8 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${
-            this.clearLog
-          }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${this.clearLog
+      }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -265,7 +264,7 @@ export class FloorplanElement extends LitElement {
         await this.initSinglePage();
       }
     } catch (err) {
-      this.handleError(err);
+      this.handleError(err as Error);
     }
   }
 
@@ -277,7 +276,7 @@ export class FloorplanElement extends LitElement {
       this.initStartupActions();
       //await this.handleEntities(true);
     } catch (err) {
-      this.handleError(err);
+      this.handleError(err as Error);
     }
   }
 
@@ -292,7 +291,7 @@ export class FloorplanElement extends LitElement {
       this.initStartupActions();
       //await this.handleEntities(true);
     } catch (error) {
-      this.handleError(error);
+      this.handleError(error as Error);
     }
   }
 
@@ -348,9 +347,8 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${
-              (err as unknown as Record<string, Record<string, unknown>>).target
-                .src
+            `${(err as unknown as Record<string, Record<string, unknown>>).target
+              .src
             }`
           )
         );
@@ -821,6 +819,11 @@ export class FloorplanElement extends LitElement {
   ): SVGGraphicsElement {
     const parentElement = previousSvgElement.parentElement;
 
+    // Retain any classes from the original element
+    for (const className of Array.from(previousSvgElement.classList)) {
+      svgElement.classList.add(className);
+    }
+
     this._querySelectorAll(previousSvgElement, '*', true).forEach(
       (element: Element) => {
         E.off(element, 'click');
@@ -1268,13 +1271,13 @@ export class FloorplanElement extends LitElement {
 
         const singleTapContext = singleTapAction
           ? new FloorplanClickContext(
-              this,
-              entityId,
-              elementId,
-              svgElementInfo,
-              ruleInfo,
-              singleTapAction
-            )
+            this,
+            entityId,
+            elementId,
+            svgElementInfo,
+            ruleInfo,
+            singleTapAction
+          )
           : false;
 
         // Use simple function without delay, if doubleTap is not in use
@@ -1284,13 +1287,13 @@ export class FloorplanElement extends LitElement {
         if (doubleTapAction) {
           const doubleTapContext = doubleTapAction
             ? new FloorplanClickContext(
-                this,
-                entityId,
-                elementId,
-                svgElementInfo,
-                ruleInfo,
-                doubleTapAction
-              )
+              this,
+              entityId,
+              elementId,
+              svgElementInfo,
+              ruleInfo,
+              doubleTapAction
+            )
             : false;
 
           ManyClicks.observe(element as HTMLElement | SVGElement);
@@ -1507,7 +1510,7 @@ export class FloorplanElement extends LitElement {
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-              'hover-info');
+            'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1530,30 +1533,22 @@ export class FloorplanElement extends LitElement {
             svgElementInfo.svgElement
               .querySelectorAll('title')
               .forEach((titleElement) => {
-                const lastChangedDate = Utils.formatDate(
-                  entityState.last_changed
-                );
-                const lastUpdatedDate = Utils.formatDate(
-                  entityState.last_updated
-                );
-
                 let titleText = `${entityState.attributes.friendly_name}\n`;
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
                   if (!hoverInfoFilter.has(key)) {
-                    titleText += `${key}: ${
-                      (entityState.attributes as Record<string, unknown>)[key]
-                    }\n`;
+                    titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
+                      }\n`;
                   }
                 });
                 titleText += '\n';
 
                 titleText += `Last changed: ${DateUtil.timeago(
-                  lastChangedDate
+                  entityState.last_changed
                 )}\n`;
                 titleText += `Last updated: ${DateUtil.timeago(
-                  lastUpdatedDate
+                  entityState.last_updated
                 )}`;
 
                 titleElement.textContent = titleText;
@@ -1641,7 +1636,7 @@ export class FloorplanElement extends LitElement {
           this.functions
         );
       } catch (err) {
-        return this.handleError(err, {
+        return this.handleError(err as Error, {
           expression,
           entityId,
           hass: this.hass,
@@ -1714,7 +1709,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-              `Are you sure you want to ${actionConfig.action}?`
+            `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;
