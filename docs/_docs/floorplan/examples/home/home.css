@@ -4,7 +4,7 @@
   padding: 10px;
 }
 
-#floorplan > svg {
+#floorplan>svg {
   max-width: 700px;
 }
 
@@ -17,9 +17,9 @@ svg * {
 /* Hover over */
 
 .floorplan-shape:hover,
-g.floorplan-hover > :not(text):hover,
-g.floorplan-click > :not(text):hover,
-g.floorplan-long-click > :not(text):hover,
+g.floorplan-hover> :not(text):hover,
+g.floorplan-click> :not(text):hover,
+g.floorplan-long-click> :not(text):hover,
 :not(text).floorplan-hover:hover,
 :not(text).floorplan-click:hover,
 :not(text).floorplan-long-click:hover {
@@ -43,6 +43,7 @@ g.floorplan-long-click > :not(text):hover,
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -72,4 +73,16 @@ g.floorplan-long-click > :not(text):hover,
 .button-on tspan,
 .button-off tspan {
   fill: white !important;
+}
+
+/* Lights */
+
+.light-on * {
+  /* Nothing to do */
+}
+
+.light-off * {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  filter: gray;
 }
