@@ -59,13 +59,13 @@ jobs:
     - name: Set target branch (when pull request merged)
       run: |-
         echo TARGET_BRANCH='${{ github.head_ref }}' >> $GITHUB_ENV
-        echo env.$TARGET_BRANCH
+        echo ${{ env.TARGET_BRANCH }}
       if: github.event.pull_request.merged
 
     - name: Set target branch (when changes pushed)
       run: |-
         echo TARGET_BRANCH='${{ github.ref_name }}' >> $GITHUB_ENV
-        echo env.$TARGET_BRANCH
+        echo ${{ env.TARGET_BRANCH }}
       if: (github.event_name == 'push')
 
     - name: Push changes to target branch
@@ -73,4 +73,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: env.$TARGET_BRANCH
+        branch: ${{ env.TARGET_BRANCH }}
