@@ -57,16 +57,15 @@ jobs:
         JSON: ${{ toJSON(github) }}
 
     - name: Set target branch (when pull request merged)
-      run: |-
-        echo TARGET_BRANCH='${{ github.head_ref }}' >> $GITHUB_ENV
-        echo ${{ env.TARGET_BRANCH }}
+      run: echo 'TARGET_BRANCH=${{ github.head_ref }}' >> $GITHUB_ENV
       if: github.event.pull_request.merged
 
     - name: Set target branch (when changes pushed)
-      run: |-
-        echo TARGET_BRANCH='${{ github.ref_name }}' >> $GITHUB_ENV
-        echo ${{ env.TARGET_BRANCH }}
+      run: echo 'TARGET_BRANCH=${{ github.ref_name }}' >> $GITHUB_ENV
       if: (github.event_name == 'push')
+
+    - name: Dump target branch
+      run: echo ${{ env.TARGET_BRANCH }}
 
     - name: Push changes to target branch
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.pull_request.merged
