@@ -79,6 +79,12 @@ jobs:
     - name: Echo github obj
       run: echo ${{ toJson(github) }}
 
+    - name: Check object
+      run: |
+        cat << OBJECT
+        ${{ toJson(github) }}
+        OBJECT
+
     - name: Push changes (on pull request merge)
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.pull_request && github.event.pull_request.merged
       uses: ad-m/github-push-action@master
