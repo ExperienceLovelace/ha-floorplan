@@ -68,7 +68,7 @@ jobs:
       run: echo ${{ env.TARGET_BRANCH }}
 
     - name: Push changes to target branch
-      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.pull_request.merged
+      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false)
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
