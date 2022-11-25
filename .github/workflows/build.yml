@@ -76,11 +76,8 @@ jobs:
       env:
         "HI_BOB": "BOB SAYS HI"
 
-    - name: Show default environment variables
-      run: |
-        echo "github.event.pull_request: ${{ github.event.pull_request }}"
-        echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
-        echo "github.event.push: ${{ github.event.push }}"
+    - name: Echo github obj
+      run: echo ${{ toJson(github) }}
 
     - name: Push changes (on pull request merge)
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.pull_request && github.event.pull_request.merged
