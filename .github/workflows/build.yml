@@ -23,27 +23,35 @@ jobs:
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
     - name: Build files with Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
     - run: npm ci
+
     - run: npm run build
+
     - run: npm run build:docs
+
     - name: Add files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add -f dist/floorplan.js
+
     - name: Commit changes
       id: can_commit
       run: |-
        commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
        echo "::set-output name=commit_result::$commit_result"
+
     - name: Nothing to commit
       id: nothing_committed
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
+
     - name: Echo-area
       shell: bash
       run: |
@@ -67,14 +75,22 @@ jobs:
     #     echo "RUNNER_NAME: $RUNNER_NAME"        
       env:
         "HI_BOB": "BOB SAYS HI"
+
+    - name: Show default environment variables
+      run: |
+        echo "github.event.pull_request: ${{ github.event.pull_request }}"
+        echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
+        echo "github.event.push: ${{ github.event.push }}"
+
     - name: Push changes (on pull request merge)
-      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false ) && github.event.pull_request && github.event.pull_request.merged
+      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.pull_request && github.event.pull_request.merged
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.head_ref }}
-    - name: Push changes (on commit)
-      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false ) && github.event.push
+
+    - name: Push changes (on push)
+      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.push
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
