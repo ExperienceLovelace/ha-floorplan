@@ -3,7 +3,12 @@
 
 name: Last commit
 
-on: [push, pull_request]
+on:
+  push:
+
+  pull_request:
+    types:
+      - closed
 
 jobs:
   build:
@@ -62,8 +67,14 @@ jobs:
     #     echo "RUNNER_NAME: $RUNNER_NAME"        
       env:
         "HI_BOB": "BOB SAYS HI"
-    - name: Push changes
-      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false 
+    - name: Push changes (on pull request merge)
+      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false ) && github.event.pull_request && github.event.pull_request.merged
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.head_ref }}
+    - name: Push changes (on commit)
+      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false ) && github.event.push
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
