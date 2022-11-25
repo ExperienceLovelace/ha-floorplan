@@ -35,7 +35,7 @@ jobs:
 
     - run: npm run build:docs
 
-    - name: Add files
+    - name: Add file(s) for commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
@@ -48,26 +48,29 @@ jobs:
        echo "::set-output name=commit_result::$commit_result"
 
     - name: Nothing to commit
-      id: nothing_committed
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
 
     - name: Dump GitHub context
-      id: github_context_step
       run: echo $JSON
       env:
         JSON: ${{ toJSON(github) }}
 
-    - name: Push changes (on pull request branch)
+    - name: Set target branch (when pull request merged)
+      run: |-
+        echo TARGET_BRANCH='${{ github.head_ref }}' >> $GITHUB_ENV
+        echo env.$TARGET_BRANCH
+      if: github.event.pull_request.merged
+
+    - name: Set target branch (when changes pushed)
+      run: |-
+        echo TARGET_BRANCH='${{ github.ref_name }}' >> $GITHUB_ENV
+        echo env.$TARGET_BRANCH
+      if: (github.event_name == 'push')
+
+    - name: Push changes to target branch
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && github.event.pull_request.merged
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.head_ref }}
-
-    - name: Push changes (on master branch)
-      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref_name }}
+        branch: env.$TARGET_BRANCH
