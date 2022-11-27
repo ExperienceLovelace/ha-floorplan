@@ -3,7 +3,7 @@
   "version": "1.0.36",
   "description": "Floorplan for Home Assistant",
   "floorplan": "dist/floorplan.js",
-  "examples": "docs/_docs/floorplan/floorplan-examples.js",
+  "examples": "dist/floorplan-examples.js",
   "demo": "dist/demo.html",
   "targets": {
     "floorplan": {
@@ -26,13 +26,12 @@
   "scripts": {
     "clean": "shx rm -rf dist/*",
     "start": "npm run clean && npm run copy-examples && parcel --target demo",
-    "copy-examples": "shx cp -R docs/_docs/floorplan/examples dist",
-    "build": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --no-content-hash",
-    "build:examples": "cross-env NODE_ENV=production npm run clean && parcel build --target examples --no-content-hash",
-    "build:demo": "cross-env NODE_ENV=production npm run clean && npm run copy-examples && parcel build --target demo --no-content-hash",
+    "copy-examples-folder-to-dist": "shx cp -R docs/_docs/floorplan/examples dist",
+    "move-examples-module-to-docs": "shx mv dist/floorplan-examples.js docs/_docs/floorplan",
+    "build": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --target examples --no-content-hash",
+    "build:demo": "cross-env NODE_ENV=production npm run clean && npm run copy-examples-folder-to-dist && parcel build --target demo --no-content-hash",
     "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --no-optimize",
-    "analyze": "npm run clean && parcel build --target floorplan --reporter @parcel/reporter-bundle-analyzer",
-    "analyze:examples": "npm run clean && parcel build --target examples --reporter @parcel/reporter-bundle-analyzer",
+    "analyze": "npm run clean && parcel build --target floorplan --target examples --reporter @parcel/reporter-bundle-analyzer",
     "analyze:demo": "npm run clean && parcel build --target demo --reporter @parcel/reporter-bundle-analyzer",
     "update:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll bundle update github-pages",
     "serve:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental",

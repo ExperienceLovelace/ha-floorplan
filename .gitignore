@@ -97,4 +97,5 @@ _site/
 # dist directory
 dist/
 
+# docs directory
 docs/_docs/floorplan/floorplan-examples.js

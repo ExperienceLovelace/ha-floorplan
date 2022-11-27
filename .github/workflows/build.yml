@@ -26,15 +26,16 @@ jobs:
 
     - run: npm ci
 
-    - run: npm run build:examples
-
     - run: npm run build
+
+    - run: npm run move-examples-module-to-docs
 
     - name: Add file(s) for commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add -f dist/floorplan.js
+        git add -f docs/_docs/floorplan/floorplan-examples.js
 
     - name: Commit changes
       id: can_commit
