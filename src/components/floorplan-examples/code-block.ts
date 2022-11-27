@@ -1,6 +1,7 @@
-import { html, LitElement, property, css, CSSResult } from 'lit-element';
+import { html, LitElement, css, CSSResult } from 'lit';
+import { property } from 'lit/decorators';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import * as hljs from 'highlight.js';
+import hljs from 'highlight.js';
 
 class CodeBlockElement extends LitElement {
   @property({ type: String }) public lang = '';

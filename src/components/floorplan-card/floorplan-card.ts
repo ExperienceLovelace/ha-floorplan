@@ -6,10 +6,10 @@ import {
   CSSResult,
   html,
   LitElement,
-  property,
   TemplateResult,
   PropertyValues,
-} from 'lit-element';
+} from 'lit';
+import { property } from 'lit/decorators';
 import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
@@ -42,8 +42,8 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card>
         ${this.isDisplayCardHeader
-          ? html` <h1 class="card-header">${this.config?.title}</h1> `
-          : ''}
+        ? html` <h1 class="card-header">${this.config?.title}</h1> `
+        : ''}
 
         <div class="content" style=${styleMap(this.styles)}>
           <floorplan-element

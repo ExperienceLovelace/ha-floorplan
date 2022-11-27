@@ -3,9 +3,9 @@ import {
   CSSResult,
   html,
   LitElement,
-  property,
   TemplateResult,
-} from 'lit-element';
+} from 'lit';
+import { property } from 'lit/decorators';
 
 export class LitToast extends LitElement {
   @property({ type: String }) public _toastText!: string;
