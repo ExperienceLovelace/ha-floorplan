@@ -40,10 +40,10 @@ import {
   CSSResult,
   html,
   LitElement,
-  property,
   TemplateResult,
   PropertyValues,
-} from 'lit-element';
+} from 'lit';
+import { property } from 'lit/decorators';
 import * as packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents.default;

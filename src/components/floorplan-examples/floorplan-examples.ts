@@ -3,9 +3,9 @@ import {
   CSSResult,
   html,
   LitElement,
-  property,
   TemplateResult,
-} from 'lit-element';
+} from 'lit';
+import { property } from 'lit/decorators';
 import { FloorplanExanple } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';
@@ -78,14 +78,14 @@ export class FloorplanExamples extends LitElement {
   protected render(): TemplateResult {
     return html`
       ${this.examples?.map(
-        (example) =>
-          html` <floorplan-example
+      (example) =>
+        html` <floorplan-example
             .examplespath=${this.examplespath}
             .example=${example}
             .isDemo="${true}"
             .notify=${this.notify.bind(this)}
           ></floorplan-example>`
-      )}
+    )}
 
       <lit-toast></lit-toast>
     `;

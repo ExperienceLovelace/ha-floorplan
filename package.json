@@ -66,8 +66,7 @@
     "highlight.js": "^11.7.0",
     "home-assistant-js-websocket": "^8.0.0",
     "js-yaml": "^4.1.0",
-    "lit-element": "^3.2.2",
-    "lit-html": "^2.4.0",
+    "lit": "^2.4.1",
     "strftime": "^0.10.1",
     "superstruct": "^1.0.3",
     "sval": "^0.4.8"
