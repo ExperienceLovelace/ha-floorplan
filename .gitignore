@@ -95,7 +95,8 @@ parcel-bundle-reports
 _site/
 
 # dist directory
-dist/
+# dist/
+# dist/floorplan.js
 
 # docs directory
-docs/_docs/floorplan/floorplan-examples.js
+# docs/_docs/floorplan/floorplan-examples.js
