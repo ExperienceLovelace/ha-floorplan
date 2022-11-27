@@ -28,7 +28,7 @@ jobs:
 
     - run: npm run build
 
-    - run: npm run build:docs
+    - run: npm run build:examples
 
     - name: Add file(s) for commit
       run: |

@@ -1,61 +1,76 @@
 {
   "name": "ha-floorplan",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "description": "Floorplan for Home Assistant",
-  "main": "index.js",
+  "floorplan": "dist/floorplan.js",
+  "examples": "docs/_docs/floorplan/floorplan-examples.js",
+  "demo": "dist/demo.html",
+  "targets": {
+    "floorplan": {
+      "source": "src/index.ts",
+      "context": "browser",
+      "sourceMap": false
+    },
+    "examples": {
+      "source": "src/components/floorplan-examples/floorplan-examples.ts",
+      "context": "browser",
+      "sourceMap": false,
+      "publicUrl": "./"
+    },
+    "demo": {
+      "source": "docs/_docs/floorplan/demo.html",
+      "context": "browser",
+      "sourceMap": false
+    }
+  },
   "scripts": {
     "clean": "shx rm -rf dist/*",
-    "start": "npm run clean && parcel docs/_docs/floorplan/demo.html",
-    "build:demo": "npm run clean && parcel build docs/_docs/floorplan/demo.html",
-    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "build": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-content-hash --no-source-maps --out-file floorplan",
-    "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build src/index.ts --no-source-maps --no-minify --out-file floorplan",
-    "build:docs": "cross-env NODE_ENV=production parcel build src/components/floorplan-examples/floorplan-examples.ts --no-content-hash --no-source-maps --out-dir docs/_docs/floorplan --out-file floorplan-examples --public-url ./",
+    "start": "npm run clean && npm run copy-examples && parcel --target demo",
+    "copy-examples": "shx cp -R docs/_docs/floorplan/examples dist",
+    "build": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --no-content-hash",
+    "build:examples": "cross-env NODE_ENV=production npm run clean && parcel build --target examples --no-content-hash",
+    "build:demo": "cross-env NODE_ENV=production npm run clean && npm run copy-examples && parcel build --target demo --no-content-hash",
+    "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --no-optimize",
+    "analyze": "npm run clean && parcel build --target floorplan --reporter @parcel/reporter-bundle-analyzer",
+    "analyze:examples": "npm run clean && parcel build --target examples --reporter @parcel/reporter-bundle-analyzer",
+    "analyze:demo": "npm run clean && parcel build --target demo --reporter @parcel/reporter-bundle-analyzer",
     "update:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll bundle update github-pages",
     "serve:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental",
-    "prettier": "prettier --config .prettierrc 'src/**/**/*.ts' 'src/**/*.ts' --write"
-  },
-  "staticFiles": {
-    "staticPath": [
-      {
-        "staticPath": "docs/_docs/floorplan",
-        "env": "development"
-      }
-    ]
+    "prettier": "prettier --config .prettierrc 'src/**/**/*.ts' 'src/**/*.ts' --write",
+    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@parcel/reporter-bundle-analyzer": "^2.8.0",
     "@types/js-yaml": "^4.0.5",
     "@types/node": "^18.11.9",
     "@types/strftime": "^0.9.4",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "babel-core": "^6.26.3",
-    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.28.0",
     "is-svg": "^4.3.2",
     "minimist": "^1.2.7",
     "node-forge": "^1.3.1",
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.6.0",
-    "parcel-plugin-wrapper": "^0.2.3",
+    "parcel": "^2.8.0",
     "prettier": "^2.8.0",
     "shx": "^0.3.4",
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@swc/helpers": "^0.4.14",
     "acorn": "^8.8.1",
     "highlight.js": "^11.7.0",
     "home-assistant-js-websocket": "^8.0.0",
     "js-yaml": "^4.1.0",
     "lit-element": "^3.2.2",
+    "lit-html": "^2.4.0",
     "strftime": "^0.10.1",
     "superstruct": "^1.0.3",
-    "sval": "^0.4.8",
-    "timeago.js": "^4.0.2"
+    "sval": "^0.4.8"
   },
   "browserslist": [
     "last 1 Chrome version"
