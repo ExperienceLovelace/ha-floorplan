@@ -43,7 +43,7 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators';
 import * as packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents.default;
@@ -55,6 +55,7 @@ console.info(
   'color: white; font-weight: bold; background: rgb(71, 170, 238)'
 );
 
+@customElement('floorplan-element')
 export class FloorplanElement extends LitElement {
   @property({ type: String }) public examplespath!: string;
   @property({ type: Object }) public hass!: HomeAssistant;
@@ -2381,8 +2382,4 @@ export class FloorplanElement extends LitElement {
   logDebug(area: string, message: string): void {
     this.logger.log('debug', `${area} ${message}`);
   }
-}
-
-if (!customElements.get('floorplan-element')) {
-  customElements.define('floorplan-element', FloorplanElement);
 }

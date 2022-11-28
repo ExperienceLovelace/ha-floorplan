@@ -9,11 +9,12 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators';
 import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 
+@customElement('floorplan-card')
 export class FloorplanCard extends LitElement implements LovelaceCard {
   @property({ type: Object }) public hass!: HomeAssistant;
   @property({ type: Boolean }) public isPanel!: boolean;
@@ -129,8 +130,4 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
 
     super.update(changedProperties);
   }
-}
-
-if (!customElements.get('floorplan-card')) {
-  customElements.define('floorplan-card', FloorplanCard);
 }

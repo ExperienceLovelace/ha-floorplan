@@ -5,12 +5,13 @@ import {
   LitElement,
   TemplateResult,
 } from 'lit';
-import { property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators';
 import { FloorplanExanple } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';
 import { LitToast } from '../lit-toast/lit-toast';
 
+@customElement('floorplan-examples')
 export class FloorplanExamples extends LitElement {
   @property({ type: String }) public examplespath!: string;
   @property({ type: Array }) public examples!: FloorplanExanple[];
@@ -113,8 +114,4 @@ export class FloorplanExamples extends LitElement {
   notify(message: string): void {
     this.litToast.show(message);
   }
-}
-
-if (!customElements.get('floorplan-examples')) {
-  customElements.define('floorplan-examples', FloorplanExamples);
 }

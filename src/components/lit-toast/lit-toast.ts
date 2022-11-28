@@ -5,8 +5,9 @@ import {
   LitElement,
   TemplateResult,
 } from 'lit';
-import { property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators';
 
+@customElement('lit-toast')
 export class LitToast extends LitElement {
   @property({ type: String }) public _toastText!: string;
 
@@ -115,8 +116,4 @@ export class LitToast extends LitElement {
       }, 3000);
     }
   }
-}
-
-if (!customElements.get('lit-toast')) {
-  customElements.define('lit-toast', LitToast);
 }

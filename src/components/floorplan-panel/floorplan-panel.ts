@@ -8,10 +8,11 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators';
 import '../floorplan/floorplan-element';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 
+@customElement('floorplan-panel')
 export class FloorplanPanel extends LitElement {
   @property({ type: Object }) public hass!: HomeAssistant;
   @property({ type: Boolean }) public narrow!: boolean;
@@ -88,8 +89,4 @@ export class FloorplanPanel extends LitElement {
 
     super.update(changedProperties);
   }
-}
-
-if (!customElements.get('floorplan-panel')) {
-  customElements.define('floorplan-panel', FloorplanPanel);
 }
