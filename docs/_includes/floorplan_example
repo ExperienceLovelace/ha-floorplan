@@ -24,17 +24,17 @@
 
     <div data-tab="{{ e.example_name }}-yaml" class="tabcontent">
 
-      {% highlight yaml %}
-      {% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
-      {% endhighlight %}
+{% highlight yaml %}
+{% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.yaml %}
+{% endhighlight %}
 
     </div>
 
     <div data-tab="{{ e.example_name }}-css" class="tabcontent">
 
-      {% highlight css %}
-      {% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
-      {% endhighlight %}
+{% highlight css %}
+{% include_relative floorplan/examples/{{ e.example_name }}/{{ e.example_name }}.css %}
+{% endhighlight %}
 
     </div>
 
