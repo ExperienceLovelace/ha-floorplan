@@ -1,5 +1,5 @@
 import { html, LitElement, css, CSSResult } from 'lit';
-import { property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 /*
 import hljs from 'highlight.js/lib/core';
@@ -9,6 +9,7 @@ hljs.registerLanguage('yaml', highlightYaml);
 hljs.registerLanguage('css', highlightCss);
 */
 
+@customElement('code-block')
 class CodeBlockElement extends LitElement {
   @property({ type: String }) public lang = '';
   @property({ type: String }) public code = '';
@@ -118,8 +119,4 @@ class CodeBlockElement extends LitElement {
       }
     `;
   }
-}
-
-if (!customElements.get('code-block')) {
-  customElements.define('code-block', CodeBlockElement);
 }
