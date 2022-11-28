@@ -1,23 +1,29 @@
 import { html, LitElement, css, CSSResult } from 'lit';
 import { property } from 'lit/decorators';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
+/*
 import hljs from 'highlight.js/lib/core';
 import highlightYaml from 'highlight.js/lib/languages/yaml';
 import highlightCss from 'highlight.js/lib/languages/css';
 hljs.registerLanguage('yaml', highlightYaml);
 hljs.registerLanguage('css', highlightCss);
+*/
 
 class CodeBlockElement extends LitElement {
   @property({ type: String }) public lang = '';
   @property({ type: String }) public code = '';
 
   render() {
+    /*
     const highlightedCode = hljs.highlightAuto(
       this.code,
       this.lang ? [this.lang] : undefined
     ).value;
 
     return html` <pre><code>${unsafeHTML(highlightedCode)}</code></pre> `;
+    */
+
+    return html` <pre><code>${unsafeHTML(this.code)}</code></pre> `;
   }
 
   static get styles(): CSSResult {
