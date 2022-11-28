@@ -1,7 +1,11 @@
 import { html, LitElement, css, CSSResult } from 'lit';
 import { property } from 'lit/decorators';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
+import highlightYaml from 'highlight.js/lib/languages/yaml';
+import highlightCss from 'highlight.js/lib/languages/css';
+hljs.registerLanguage('yaml', highlightYaml);
+hljs.registerLanguage('css', highlightCss);
 
 class CodeBlockElement extends LitElement {
   @property({ type: String }) public lang = '';
