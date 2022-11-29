@@ -93,8 +93,3 @@ parcel-bundle-reports
 
 # Jekyll
 _site/
-
-# dist directory
-dist/
-
-docs/_docs/floorplan/floorplan-examples.js
