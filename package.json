@@ -8,19 +8,15 @@
   "targets": {
     "floorplan": {
       "source": "src/index.ts",
-      "context": "browser",
       "sourceMap": false
     },
     "examples": {
       "source": "src/components/floorplan-examples/floorplan-examples.ts",
-      "context": "browser",
-      "sourceMap": false,
-      "publicUrl": "./"
+      "sourceMap": false
     },
     "demo": {
       "source": "docs/_docs/floorplan/demo.html",
-      "context": "browser",
-      "sourceMap": false
+      "sourceMap": true
     }
   },
   "scripts": {
@@ -29,6 +25,7 @@
     "copy-examples-folder-to-dist": "shx cp -R docs/_docs/floorplan/examples dist",
     "move-examples-module-to-docs": "shx mv dist/floorplan-examples.js docs/_docs/floorplan",
     "build": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --target examples --no-content-hash && npm run move-examples-module-to-docs",
+    "build:dev": "npm run build:demo",
     "build:demo": "cross-env NODE_ENV=production npm run clean && npm run copy-examples-folder-to-dist && parcel build --target demo --no-content-hash",
     "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --no-optimize",
     "analyze": "npm run clean && parcel build --target floorplan --target examples --reporter @parcel/reporter-bundle-analyzer",
