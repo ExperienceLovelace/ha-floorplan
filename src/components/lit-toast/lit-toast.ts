@@ -1,10 +1,4 @@
-import {
-  css,
-  CSSResult,
-  html,
-  LitElement,
-  TemplateResult,
-} from 'lit';
+import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 @customElement('lit-toast')

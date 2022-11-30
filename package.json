@@ -34,7 +34,7 @@
     "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
     "update:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll bundle update github-pages",
     "serve:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental",
-    "prettier": "prettier --config .prettierrc 'src/**/**/*.ts' 'src/**/*.ts' --write",
+    "prettier": "prettier --config .prettierrc \"src/**/*.ts\" \"src/**/*.ts\" --write",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {

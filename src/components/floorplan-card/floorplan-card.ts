@@ -43,8 +43,8 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return html`
       <ha-card>
         ${this.isDisplayCardHeader
-        ? html` <h1 class="card-header">${this.config?.title}</h1> `
-        : ''}
+          ? html` <h1 class="card-header">${this.config?.title}</h1> `
+          : ''}
 
         <div class="content" style=${styleMap(this.styles)}>
           <floorplan-element

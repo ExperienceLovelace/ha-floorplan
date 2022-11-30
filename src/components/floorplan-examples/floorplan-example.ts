@@ -37,14 +37,14 @@ export class FloorplanExanpleElement extends LitElement {
       <div>
         <div>
           ${this.example.isCard
-        ? html`<floorplan-card
+            ? html`<floorplan-card
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
                 .config=${this.config}
                 .isDemo=${this.isDemo}
                 .notify=${this.notify}
               ></floorplan-card>`
-        : html` <floorplan-panel
+            : html` <floorplan-panel
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
                 .panel=${this.config}

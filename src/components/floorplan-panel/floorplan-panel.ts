@@ -35,17 +35,20 @@ export class FloorplanPanel extends LitElement {
 
         <app-header fixed slot="header" ?hidden=${!this.showAppHeader}>
           <app-toolbar>
-            <ha-menu-button .hass=${this.hass} .narrow=${this.narrow
-      }"></ha-menu-button>
+            <ha-menu-button .hass=${this.hass} .narrow=${
+      this.narrow
+    }"></ha-menu-button>
             <div main-title>${this.panel?.title}</div>
           </app-toolbar>
         </app-header>        
 
         <div class="content" style=${styleMap(this.styles)}>
-          <floorplan-element .examplespath=${this.examplespath} .hass=${this.hass
-      }
-          ._config=${this.panel?.config?.config} .isDemo=${this.isDemo
-      } .notify=${this.notify}>
+          <floorplan-element .examplespath=${this.examplespath} .hass=${
+      this.hass
+    }
+          ._config=${this.panel?.config?.config} .isDemo=${
+      this.isDemo
+    } .notify=${this.notify}>
           </floorplan-element>
         </div>
 
