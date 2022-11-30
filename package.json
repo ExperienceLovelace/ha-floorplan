@@ -2,66 +2,64 @@
   "name": "ha-floorplan",
   "version": "1.0.36",
   "description": "Floorplan for Home Assistant",
-  "floorplan": "dist/floorplan.js",
-  "examples": "dist/floorplan-examples.js",
-  "demo": "dist/demo.html",
-  "targets": {
-    "floorplan": {
-      "source": "src/index.ts",
-      "sourceMap": false
-    },
-    "examples": {
-      "source": "src/components/floorplan-examples/floorplan-examples.ts",
-      "sourceMap": false
-    },
-    "demo": {
-      "source": "docs/_docs/floorplan/demo.html",
-      "sourceMap": true
-    }
+  "homepage": "https://experiencelovelace.github.io/ha-floorplan",
+  "keywords": [
+    "homeassistant",
+    "home assisant",
+    "floorplan",
+    "svg"
+  ],
+  "bugs": {
+    "url": "https://github.com/ExperienceLovelace/ha-floorplan/issues"
   },
+  "license": "ISC",
+  "contributors": [
+    {
+      "name": "Petar Kožul",
+      "email": "pkozul@yahoo.com",
+      "url": "https://github.com/pkozul"
+    },
+    {
+      "name": "Tobias Nordahl Kristensen",
+      "email": "tobiasnordahl@gmail.com",
+      "url": "https://github.com/exetico"
+    }
+  ],
+  "main": "dist/floorplan.js",
+  "repository": "https://github.com/ExperienceLovelace/ha-floorplan",
   "scripts": {
-    "clean": "shx rm -rf dist/*",
-    "start": "npm run clean && npm run copy-examples-folder-to-dist && parcel --target demo",
-    "copy-examples-folder-to-dist": "shx cp -R docs/_docs/floorplan/examples dist",
-    "move-examples-module-to-docs": "shx mv dist/floorplan-examples.js docs/_docs/floorplan",
-    "build": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --target examples --no-content-hash && npm run move-examples-module-to-docs",
-    "build:dev": "npm run build:demo",
-    "build:demo": "cross-env NODE_ENV=production npm run clean && npm run copy-examples-folder-to-dist && parcel build --target demo --no-content-hash",
-    "build:no-minify": "cross-env NODE_ENV=production npm run clean && parcel build --target floorplan --no-optimize",
-    "analyze": "npm run clean && parcel build --target floorplan --target examples --reporter @parcel/reporter-bundle-analyzer",
-    "analyze:demo": "npm run clean && parcel build --target demo --reporter @parcel/reporter-bundle-analyzer",
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production --env production",
+    "build:dev": "webpack --mode development --env development",
+    "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
     "update:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll bundle update github-pages",
     "serve:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental",
     "prettier": "prettier --config .prettierrc 'src/**/**/*.ts' 'src/**/*.ts' --write",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@parcel/reporter-bundle-analyzer": "^2.8.0",
-    "@types/js-yaml": "^4.0.5",
-    "@types/node": "^18.11.9",
-    "@types/strftime": "^0.9.4",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.28.0",
-    "is-svg": "^4.3.2",
-    "parcel": "^2.8.0",
-    "prettier": "^2.8.0",
-    "shx": "^0.3.4",
-    "typescript": "^4.9.3"
-  },
   "dependencies": {
-    "home-assistant-js-websocket": "^8.0.0",
+    "home-assistant-js-websocket": "^8.0.1",
     "js-yaml": "^4.1.0",
     "lit": "^2.4.1",
     "strftime": "^0.10.1",
     "superstruct": "^1.0.3",
     "sval": "^0.4.8"
   },
-  "browserslist": [
-    "last 1 Chrome version"
-  ]
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "@types/node": "^18.11.9",
+    "@types/strftime": "^0.9.4",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "eslint": "^8.28.0",
+    "html-loader": "^4.2.0",
+    "prettier": "^2.8.0",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.9.3",
+    "webpack": "^5.75.0",
+    "webpack-bundle-analyzer": "^4.7.0",
+    "webpack-cli": "^5.0.0",
+    "webpack-dev-server": "^4.11.1"
+  }
 }

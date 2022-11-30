@@ -5,7 +5,7 @@ import {
   LitElement,
   TemplateResult,
 } from 'lit';
-import { customElement, property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators.js';
 import { FloorplanExanple } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';

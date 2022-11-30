@@ -8,9 +8,9 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { customElement, property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators.js';
 import '../floorplan/floorplan-element';
-import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 @customElement('floorplan-panel')
 export class FloorplanPanel extends LitElement {

@@ -43,8 +43,8 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { customElement, property } from 'lit/decorators';
-import * as packageInfo from '../../../package.json';
+import { customElement, property } from 'lit/decorators.js';
+import packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents.default;
 

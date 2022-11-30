@@ -93,3 +93,6 @@ parcel-bundle-reports
 
 # Jekyll
 _site/
+
+# Webpack bundle analyzer
+stats.json

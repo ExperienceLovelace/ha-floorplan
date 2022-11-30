@@ -165,7 +165,7 @@ export class Utils {
         throw new Error(`Error fetching resource`);
       }
     } catch (err) {
-      throw new URIError(`${resourceUrl}: ${err.message}`);
+      throw new URIError(`${resourceUrl}: ${(err as Error).message}`);
     }
   }
 
@@ -201,7 +201,7 @@ export class Utils {
         throw new Error(`Error fetching resource`);
       }
     } catch (err) {
-      throw new URIError(`${resourceUrl}: ${err.message}`);
+      throw new URIError(`${resourceUrl}: ${(err as Error).message}`);
     }
   }
 
