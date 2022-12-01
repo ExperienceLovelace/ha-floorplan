@@ -43,8 +43,8 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { customElement, property } from 'lit/decorators';
-import * as packageInfo from '../../../package.json';
+import { customElement, property } from 'lit/decorators.js';
+import packageInfo from '../../../package.json';
 import * as OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents.default;
 
@@ -91,8 +91,9 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${this.clearLog
-      }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${
+            this.clearLog
+          }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -348,8 +349,9 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${(err as unknown as Record<string, Record<string, unknown>>).target
-              .src
+            `${
+              (err as unknown as Record<string, Record<string, unknown>>).target
+                .src
             }`
           )
         );
@@ -640,7 +642,12 @@ export class FloorplanElement extends LitElement {
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
   ): Promise<SVGGraphicsElement> {
-    if (imageUrl.toLowerCase().indexOf('.svg') >= 0) {
+    const isSvg =
+      imageUrl.toLowerCase().includes('.svg') ||
+      svgElementInfo.svgElement.nodeName === 'svg' ||
+      svgElementInfo.svgElement.querySelector('svg');
+
+    if (isSvg) {
       return await this.loadSvgImage(
         imageUrl,
         svgElementInfo,
@@ -666,20 +673,6 @@ export class FloorplanElement extends LitElement {
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
   ): Promise<SVGGraphicsElement> {
-    let imageData: string;
-
-    try {
-      imageData = await Utils.fetchImage(
-        imageUrl,
-        this.isDemo,
-        this.examplespath,
-        useCache
-      );
-    } catch (err) {
-      this.logError('IMAGE', `Error loading image: ${imageUrl}`);
-      throw err;
-    }
-
     imageUrl = useCache ? imageUrl : Utils.cacheBuster(imageUrl);
 
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
@@ -709,23 +702,11 @@ export class FloorplanElement extends LitElement {
       };
     }
 
-    const existingHref = svgElement.getAttributeNS(
+    svgElement.setAttributeNS(
       'http://www.w3.org/1999/xlink',
-      'xlink:href'
+      'xlink:href',
+      imageUrl
     );
-
-    if (existingHref !== imageData) {
-      svgElement.removeAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'xlink:href'
-      );
-
-      svgElement.setAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'xlink:href',
-        imageUrl
-      );
-    }
 
     return svgElement;
   }
@@ -739,16 +720,25 @@ export class FloorplanElement extends LitElement {
   ): Promise<SVGGraphicsElement> {
     let svgText: string;
 
-    try {
-      svgText = await Utils.fetchText(
-        imageUrl,
-        this.isDemo,
-        this.examplespath,
-        useCache
+    if (!imageUrl?.trim().length) {
+      const emptySvg = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg'
       );
-    } catch (err) {
-      this.logError('IMAGE', `Error loading image: ${imageUrl}`);
-      throw err;
+      emptySvg.setAttribute('viewBox', '0 0 0 0');
+      svgText = emptySvg.outerHTML;
+    } else {
+      try {
+        svgText = await Utils.fetchText(
+          imageUrl,
+          this.isDemo,
+          this.examplespath,
+          useCache
+        );
+      } catch (err) {
+        this.logError('IMAGE', `Error loading image: ${imageUrl}`);
+        throw err;
+      }
     }
 
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
@@ -1272,13 +1262,13 @@ export class FloorplanElement extends LitElement {
 
         const singleTapContext = singleTapAction
           ? new FloorplanClickContext(
-            this,
-            entityId,
-            elementId,
-            svgElementInfo,
-            ruleInfo,
-            singleTapAction
-          )
+              this,
+              entityId,
+              elementId,
+              svgElementInfo,
+              ruleInfo,
+              singleTapAction
+            )
           : false;
 
         // Use simple function without delay, if doubleTap is not in use
@@ -1288,13 +1278,13 @@ export class FloorplanElement extends LitElement {
         if (doubleTapAction) {
           const doubleTapContext = doubleTapAction
             ? new FloorplanClickContext(
-              this,
-              entityId,
-              elementId,
-              svgElementInfo,
-              ruleInfo,
-              doubleTapAction
-            )
+                this,
+                entityId,
+                elementId,
+                svgElementInfo,
+                ruleInfo,
+                doubleTapAction
+              )
             : false;
 
           ManyClicks.observe(element as HTMLElement | SVGElement);
@@ -1511,7 +1501,7 @@ export class FloorplanElement extends LitElement {
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-            'hover-info');
+              'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1539,8 +1529,9 @@ export class FloorplanElement extends LitElement {
 
                 Object.keys(entityState.attributes).map((key) => {
                   if (!hoverInfoFilter.has(key)) {
-                    titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
-                      }\n`;
+                    titleText += `${key}: ${
+                      (entityState.attributes as Record<string, unknown>)[key]
+                    }\n`;
                   }
                 });
                 titleText += '\n';
@@ -1710,7 +1701,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-            `Are you sure you want to ${actionConfig.action}?`
+              `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;

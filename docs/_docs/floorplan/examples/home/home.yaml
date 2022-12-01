@@ -105,7 +105,7 @@ config:
           service_data: '${entity.state.toUpperCase()}'
         tap_action: false
 
-      - entity: camera.zagreb_ban_jelacic_square
+      - entity: camera.zagreb
         state_action:
           - action: call-service
             service: floorplan.image_set

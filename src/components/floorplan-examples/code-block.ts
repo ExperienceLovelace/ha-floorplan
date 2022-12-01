@@ -1,5 +1,5 @@
 import { html, LitElement, css, CSSResult } from 'lit';
-import { customElement, property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 /*
 import hljs from 'highlight.js/lib/core';
@@ -10,7 +10,7 @@ hljs.registerLanguage('css', highlightCss);
 */
 
 @customElement('code-block')
-class CodeBlockElement extends LitElement {
+export class CodeBlockElement extends LitElement {
   @property({ type: String }) public lang = '';
   @property({ type: String }) public code = '';
 

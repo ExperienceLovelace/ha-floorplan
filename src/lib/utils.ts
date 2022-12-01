@@ -15,12 +15,12 @@ export class Utils {
     element.classList
       ? element.classList.remove(className)
       : (element.className = element.className.replace(
-        new RegExp(
-          '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-          'gi'
-        ),
-        ' '
-      ));
+          new RegExp(
+            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+            'gi'
+          ),
+          ' '
+        ));
   }
 
   static hassClass(element: Element, className: string): boolean {
@@ -43,7 +43,11 @@ export class Utils {
     }
   }
 
-  static datasetSet(element: SVGGraphicsElement | HTMLElement, key: string, value: string): void {
+  static datasetSet(
+    element: SVGGraphicsElement | HTMLElement,
+    key: string,
+    value: string
+  ): void {
     element.dataset[key] = value;
   }
 
@@ -165,7 +169,7 @@ export class Utils {
         throw new Error(`Error fetching resource`);
       }
     } catch (err) {
-      throw new URIError(`${resourceUrl}: ${err.message}`);
+      throw new URIError(`${resourceUrl}: ${(err as Error).message}`);
     }
   }
 
@@ -201,7 +205,7 @@ export class Utils {
         throw new Error(`Error fetching resource`);
       }
     } catch (err) {
-      throw new URIError(`${resourceUrl}: ${err.message}`);
+      throw new URIError(`${resourceUrl}: ${(err as Error).message}`);
     }
   }
 
@@ -262,8 +266,9 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${url.indexOf('?') >= 0 ? '&' : '?'
-      }_=${new Date().getTime()}`;
+    return `${url}${
+      url.indexOf('?') >= 0 ? '&' : '?'
+    }_=${new Date().getTime()}`;
   }
 
   static equal(a: unknown, b: unknown): boolean {
@@ -333,8 +338,10 @@ export class Utils {
 
     if (!localStorage[ID_BROWER_KEY]) {
       const s4 = () => {
-        return Math.floor((1 + Math.random()) * 100000).toString(16).substring(1);
-      }
+        return Math.floor((1 + Math.random()) * 100000)
+          .toString(16)
+          .substring(1);
+      };
       localStorage[ID_BROWER_KEY] = `${s4()}${s4()}-${s4()}${s4()}`;
     }
     return localStorage[ID_BROWER_KEY];

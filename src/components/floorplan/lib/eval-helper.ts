@@ -5,12 +5,13 @@ import { ColorUtil } from './color-util';
 import { DateUtil } from './date-util';
 import Sval from 'sval';
 import { getErrorMessage } from './error-util';
+import * as estree from 'estree';
 
 export class EvalHelper {
-  static cache: { [key: string]: () => void } = {};
+  static cache: { [key: string]: estree.Node } = {};
 
   static interpreter = new Sval({ ecmaVer: 2019, sandBox: true });
-  static parsedFunction: () => void;
+  static parsedFunction: estree.Node;
 
   static expression: string;
   static functionBody: string;
@@ -74,7 +75,7 @@ export class EvalHelper {
 
       this.parsedFunction = this.interpreter.parse(
         `exports.result = (() => { ${this.functionBody} })();`
-      );
+      ) as estree.Node;
       this.cache[cacheKey] = this.parsedFunction;
 
       // Add global modules in interpreter (static data)
@@ -94,7 +95,7 @@ export class EvalHelper {
     this.interpreter.import('elements', svgElements);
 
     try {
-      this.interpreter.run(this.parsedFunction);
+      this.interpreter.run(this.parsedFunction as estree.Node);
     } catch (error) {
       throw new EvalError(getErrorMessage(error));
 

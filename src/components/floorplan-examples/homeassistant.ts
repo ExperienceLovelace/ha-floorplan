@@ -53,5 +53,5 @@ export class HassEntity implements IHassEntityBase {
   last_changed!: string;
   last_updated!: string;
   attributes!: HassEntityAttributeBase;
-  context!: { id: string; user_id: string | null };
+  context!: { id: string; user_id: string | null; parent_id: string | null };
 }

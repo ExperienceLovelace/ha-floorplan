@@ -1,10 +1,4 @@
-import {
-  css,
-  CSSResult,
-  html,
-  LitElement,
-  TemplateResult,
-} from 'lit';
+import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { HomeAssistant } from '../../../types';
 import { LovelaceCard } from '../types';
 import { ErrorCardConfig } from './types';

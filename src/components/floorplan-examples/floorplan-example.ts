@@ -12,7 +12,7 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
-import { customElement, property } from 'lit/decorators';
+import { customElement, property } from 'lit/decorators.js';
 import '../floorplan-card/floorplan-card';
 import '../floorplan-panel/floorplan-panel';
 import './code-block';
@@ -37,14 +37,14 @@ export class FloorplanExanpleElement extends LitElement {
       <div>
         <div>
           ${this.example.isCard
-        ? html`<floorplan-card
+            ? html`<floorplan-card
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
                 .config=${this.config}
                 .isDemo=${this.isDemo}
                 .notify=${this.notify}
               ></floorplan-card>`
-        : html` <floorplan-panel
+            : html` <floorplan-panel
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
                 .panel=${this.config}
