@@ -2,9 +2,25 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
 module.exports = (env) => {
   const isProduction = env.production;
+
+  const plugins = isProduction ?
+    [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, 'dist/floorplan-examples.js'),
+            to: path.resolve(__dirname, 'docs/_docs/floorplan'),
+            force: true,
+          },
+        ],
+      })
+    ] : [];
+
+  const packageInfo = require("./package.json");
 
   return {
     mode: isProduction ? 'production' : 'development',
@@ -25,17 +41,14 @@ module.exports = (env) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
     },
-    plugins: isProduction ? [
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(__dirname, 'dist/floorplan-examples.js'),
-            to: path.resolve(__dirname, 'docs/_docs/floorplan'),
-            force: true,
-          },
-        ],
+    plugins: [
+      ...plugins,
+      new DefinePlugin({
+        NAME: JSON.stringify(packageInfo.name),
+        DESCRIPTION: JSON.stringify(packageInfo.description),
+        VERSION: JSON.stringify(packageInfo.version),
       }),
-    ] : undefined,
+    ],
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, isProduction ? 'dist' : 'dist_local'),
