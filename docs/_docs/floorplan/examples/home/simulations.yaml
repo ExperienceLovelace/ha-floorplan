@@ -145,8 +145,17 @@ simulations:
     states:
       - state: on
 
-  - entity: camera.zagreb_ban_jelacic_square
+  - entity: camera.zagreb
     states:
       - state: idle
         attributes:
+          entity_picture: https://cdn.whatsupcams.com/snapshot/hr_zagreb5.jpg
+        duration: 3
+      - state: idle
+        attributes:
           entity_picture: https://cdn.whatsupcams.com/snapshot/hr_zagreb6.jpg
+        duration: 3
+      - state: idle
+        attributes:
+          entity_picture: https://cdn.whatsupcams.com/snapshot/hr_zagreb7.jpg
+        duration: 3

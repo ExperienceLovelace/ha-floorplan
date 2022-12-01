@@ -28,9 +28,9 @@
   "main": "dist/floorplan.js",
   "repository": "https://github.com/ExperienceLovelace/ha-floorplan",
   "scripts": {
-    "start": "webpack-dev-server --mode development",
-    "build": "webpack --mode production --env production",
-    "build:dev": "webpack --mode development --env development",
+    "start": "webpack-dev-server",
+    "build": "webpack --env production",
+    "build:dev": "webpack",
     "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
     "update:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll bundle update github-pages",
     "serve:docs": "docker run -it --rm --volume=${PWD}/docs:/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --incremental",

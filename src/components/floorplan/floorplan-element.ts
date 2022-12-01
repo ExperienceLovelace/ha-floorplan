@@ -642,7 +642,12 @@ export class FloorplanElement extends LitElement {
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
   ): Promise<SVGGraphicsElement> {
-    if (imageUrl.toLowerCase().indexOf('.svg') >= 0) {
+    const isSvg =
+      imageUrl.toLowerCase().includes('.svg') ||
+      svgElementInfo.svgElement.nodeName === 'svg' ||
+      svgElementInfo.svgElement.querySelector('svg');
+
+    if (isSvg) {
       return await this.loadSvgImage(
         imageUrl,
         svgElementInfo,
@@ -668,20 +673,6 @@ export class FloorplanElement extends LitElement {
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
   ): Promise<SVGGraphicsElement> {
-    let imageData: string;
-
-    try {
-      imageData = await Utils.fetchImage(
-        imageUrl,
-        this.isDemo,
-        this.examplespath,
-        useCache
-      );
-    } catch (err) {
-      this.logError('IMAGE', `Error loading image: ${imageUrl}`);
-      throw err;
-    }
-
     imageUrl = useCache ? imageUrl : Utils.cacheBuster(imageUrl);
 
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);
@@ -711,23 +702,11 @@ export class FloorplanElement extends LitElement {
       };
     }
 
-    const existingHref = svgElement.getAttributeNS(
+    svgElement.setAttributeNS(
       'http://www.w3.org/1999/xlink',
-      'xlink:href'
+      'xlink:href',
+      imageUrl
     );
-
-    if (existingHref !== imageData) {
-      svgElement.removeAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'xlink:href'
-      );
-
-      svgElement.setAttributeNS(
-        'http://www.w3.org/1999/xlink',
-        'xlink:href',
-        imageUrl
-      );
-    }
 
     return svgElement;
   }
@@ -741,16 +720,25 @@ export class FloorplanElement extends LitElement {
   ): Promise<SVGGraphicsElement> {
     let svgText: string;
 
-    try {
-      svgText = await Utils.fetchText(
-        imageUrl,
-        this.isDemo,
-        this.examplespath,
-        useCache
+    if (!imageUrl?.trim().length) {
+      const emptySvg = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg'
       );
-    } catch (err) {
-      this.logError('IMAGE', `Error loading image: ${imageUrl}`);
-      throw err;
+      emptySvg.setAttribute('viewBox', '0 0 0 0');
+      svgText = emptySvg.outerHTML;
+    } else {
+      try {
+        svgText = await Utils.fetchText(
+          imageUrl,
+          this.isDemo,
+          this.examplespath,
+          useCache
+        );
+      } catch (err) {
+        this.logError('IMAGE', `Error loading image: ${imageUrl}`);
+        throw err;
+      }
     }
 
     this.logDebug('IMAGE', `${entityId} (setting image: ${imageUrl})`);

@@ -5,6 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => {
   return {
+    mode: env.production ? 'production' : 'development',
     entry: {
       'floorplan': './src/index.ts',
       'floorplan-examples': './src/components/floorplan-examples/floorplan-examples.ts',
