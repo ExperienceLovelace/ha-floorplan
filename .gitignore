@@ -96,3 +96,6 @@ _site/
 
 # Webpack bundle analyzer
 stats.json
+
+# Local dist folder
+dist_local

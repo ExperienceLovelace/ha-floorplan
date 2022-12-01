@@ -4,13 +4,15 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => {
+  const isProduction = env.production;
+
   return {
-    mode: env.production ? 'production' : 'development',
+    mode: isProduction ? 'production' : 'development',
     entry: {
       'floorplan': './src/index.ts',
       'floorplan-examples': './src/components/floorplan-examples/floorplan-examples.ts',
     },
-    devtool: env.production ? undefined : 'inline-source-map',
+    devtool: isProduction ? undefined : 'inline-source-map',
     module: {
       rules: [
         {
@@ -23,19 +25,20 @@ module.exports = (env) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
     },
-    plugins: [
+    plugins: isProduction ? [
       new CopyPlugin({
         patterns: [
           {
             from: path.resolve(__dirname, 'dist/floorplan-examples.js'),
-            to: path.resolve(__dirname, 'docs/_docs/floorplan')
+            to: path.resolve(__dirname, 'docs/_docs/floorplan'),
+            force: true,
           },
         ],
       }),
-    ],
+    ] : undefined,
     output: {
       filename: '[name].js',
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, isProduction ? 'dist' : 'dist_local'),
       clean: true,
     },
     optimization: {
