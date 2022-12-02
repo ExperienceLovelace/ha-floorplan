@@ -1,6 +1,6 @@
 {
   "name": "ha-floorplan",
-  "version": "1.0.36beta",
+  "version": "1.0.36",
   "description": "Floorplan for Home Assistant",
   "homepage": "https://experiencelovelace.github.io/ha-floorplan",
   "keywords": [
