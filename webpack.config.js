@@ -13,7 +13,7 @@ module.exports = (env) => {
         patterns: [
           {
             from: path.resolve(__dirname, 'dist', 'floorplan-examples.js'),
-            to: path.resolve(__dirname, 'docs', 'docs', 'floorplan'),
+            to: path.resolve(__dirname, 'docs', '_docs', 'floorplan'),
             force: true,
           },
         ],

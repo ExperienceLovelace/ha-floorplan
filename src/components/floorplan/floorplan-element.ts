@@ -31,7 +31,7 @@ import {
 import { LongClicks } from './lib/long-clicks';
 import { ManyClicks } from './lib/many-clicks';
 import { EvalHelper } from './lib/eval-helper';
-import * as yaml from 'js-yaml';
+import yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
 import { DateUtil } from './lib/date-util';
 import { Logger } from './lib/logger';
@@ -44,8 +44,8 @@ import {
   PropertyValues,
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import * as OuiDomEvents from './lib/oui-dom-events';
-const E = OuiDomEvents.default;
+import OuiDomEvents from './lib/oui-dom-events';
+const E = OuiDomEvents;
 
 declare const NAME: string;
 declare const DESCRIPTION: string;

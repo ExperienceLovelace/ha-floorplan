@@ -5,7 +5,7 @@ import { ColorUtil } from './color-util';
 import { DateUtil } from './date-util';
 import Sval from 'sval';
 import { getErrorMessage } from './error-util';
-import * as estree from 'estree';
+import estree from 'estree';
 
 export class EvalHelper {
   static cache: { [key: string]: estree.Node } = {};

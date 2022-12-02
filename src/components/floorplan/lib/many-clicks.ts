@@ -1,6 +1,6 @@
-import * as OuiDomEvents from './oui-dom-events';
+import OuiDomEvents from './oui-dom-events';
 
-const E = OuiDomEvents.default;
+const E = OuiDomEvents;
 
 const elements = new Set<HTMLElement | SVGElement>();
 

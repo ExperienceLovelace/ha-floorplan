@@ -1,5 +1,5 @@
-import * as OuiDomEvents from './oui-dom-events';
-const E = OuiDomEvents.default;
+import OuiDomEvents from './oui-dom-events';
+const E = OuiDomEvents;
 
 export class LongClicks {
   static observe(elem: HTMLElement | SVGElement): void {
