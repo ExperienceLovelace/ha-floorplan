@@ -31,7 +31,7 @@ export class EvalHelper {
   }
 
   static isCodeLine(expression: string): boolean {
-    return expression.indexOf('${') >= 0 && expression.indexOf('}') >= 0;
+    return expression.includes('${') && expression.includes('}');
   }
 
   static evaluate(
@@ -68,7 +68,7 @@ export class EvalHelper {
 
         this.functionBody = `\`${this.functionBody}\`;`;
 
-        if (this.functionBody.indexOf('return') < 0) {
+        if (!this.functionBody.includes('return')) {
           this.functionBody = `return ${this.functionBody}`;
         }
       }

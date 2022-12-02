@@ -70,7 +70,6 @@ module.exports = (env) => {
         directory: path.join(__dirname, 'docs/_docs/floorplan'),
       },
       compress: true,
-      port: 4000,
     },
   };
 };

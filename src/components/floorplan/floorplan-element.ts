@@ -932,7 +932,7 @@ export class FloorplanElement extends LitElement {
 
       return [actionConfig];
     } else if (typeof actionConfig === 'string') {
-      if (actionConfig.indexOf('.') >= 0) {
+      if (actionConfig.includes('.')) {
         return [
           {
             action: 'call-service',
@@ -2326,7 +2326,7 @@ export class FloorplanElement extends LitElement {
     colno?: number,
     error?: Error
   ): boolean {
-    if ((event as string).toLowerCase().indexOf('script error') >= 0) {
+    if ((event as string).toLowerCase().includes('script error')) {
       this.logError('SCRIPT', 'Script error: See browser console for detail');
     } else {
       const message = [

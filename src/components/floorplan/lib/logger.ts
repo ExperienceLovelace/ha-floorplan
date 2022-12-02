@@ -24,7 +24,7 @@ export class Logger {
       this.logLevel && this.logLevelGroups[this.logLevel.toLowerCase()];
     const shouldLog =
       targetLogLevels?.length &&
-      targetLogLevels.indexOf(level.toLowerCase()) >= 0;
+      targetLogLevels.includes(level.toLowerCase());
 
     if (force || shouldLog) {
       if (this.element) {
@@ -49,7 +49,7 @@ export class Logger {
       this.logLevelGroups[this.consoleLogLevel.toLowerCase()];
     const shouldLog =
       targetLogLevels?.length &&
-      targetLogLevels.indexOf(level.toLowerCase()) >= 0;
+      targetLogLevels.includes(level.toLowerCase());
 
     if (force || shouldLog) {
       switch (level) {
