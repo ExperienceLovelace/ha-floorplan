@@ -12,8 +12,8 @@ module.exports = (env) => {
       new CopyPlugin({
         patterns: [
           {
-            from: path.resolve(__dirname, 'dist/floorplan-examples.js'),
-            to: path.resolve(__dirname, 'docs/_docs/floorplan'),
+            from: path.resolve(__dirname, 'dist', 'floorplan-examples.js'),
+            to: path.resolve(__dirname, 'docs', 'docs', 'floorplan'),
             force: true,
           },
         ],
