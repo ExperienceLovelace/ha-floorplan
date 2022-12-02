@@ -266,9 +266,7 @@ export class Utils {
   }
 
   static cacheBuster(url: string): string {
-    return `${url}${
-      url.includes('?') ? '&' : '?'
-    }_=${new Date().getTime()}`;
+    return `${url}${url.includes('?') ? '&' : '?'}_=${new Date().getTime()}`;
   }
 
   static equal(a: unknown, b: unknown): boolean {
