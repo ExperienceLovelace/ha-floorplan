@@ -2,7 +2,7 @@
   "search.exclude": {
     "**/.cache": true,
     "**/dist": true,
-    "**/docs": true
+    // "**/docs": true
   },
   // Default (format when you paste)
   "editor.formatOnPaste": true,

@@ -21,5 +21,5 @@ export interface HassSimulation {
 }
 
 export interface TimedHassEntity extends HassEntity {
-  duration: number;
+  duration: number | string;
 }

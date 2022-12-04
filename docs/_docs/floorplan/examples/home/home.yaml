@@ -152,3 +152,19 @@ config:
                 transform-origin: center;
                 transform: rotate(${rotation}deg);
               `;
+
+      - entity: sensor.test
+        element: triangle
+        state_action:
+          action: call-service
+          service: floorplan.style_set
+          service_data:
+            style: |
+              >
+              var rotation = ((Math.floor(entity.attributes.level) * 1.8) - 90);
+
+              return `
+                transform-box: fill-box;
+                transform-origin: center bottom;
+                transform: rotate(${rotation}deg);
+              `;

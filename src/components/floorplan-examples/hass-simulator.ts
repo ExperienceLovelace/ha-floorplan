@@ -4,6 +4,8 @@ import {
 } from '../../lib/homeassistant/types';
 import { HassSimulatorConfig, HassSimulation, TimedHassEntity } from './types';
 import { HomeAssistant, HassEntity } from './homeassistant';
+import parseDuration from 'parse-duration';
+import { SimulatorEvalHelper } from '../floorplan/lib/simulator-eval-helper';
 
 export class HassSimulator {
   simulationProcessors: SimulationProcessor[] = [];
@@ -199,16 +201,30 @@ export class SimulationProcessor {
     }
 
     if (this.simulation.states) {
-      const currentIndex = this.simulation.states.indexOf(currentState);
-      const nextIndex = (currentIndex + 1) % this.simulation.states.length;
-      const nextState = this.simulation.states[nextIndex];
+      let nextState: HassEntity;
+
+      if (typeof this.simulation.states === 'string') {
+        const entityState = this.simulation.state ?? {
+          entity_id: this.simulation.entity,
+        };
+
+        nextState = SimulatorEvalHelper.evaluate(this.simulation.states, entityState) as HassEntity;
+        this.simulation.state = nextState;
+      }
+      else {
+        const currentIndex = this.simulation.states.indexOf(currentState);
+        const nextIndex = (currentIndex + 1) % this.simulation.states.length;
+        nextState = this.simulation.states[nextIndex];
+      }
 
       if ((nextState as TimedHassEntity)?.duration) {
-        setTimeout(
-          this.triggerState.bind(this),
-          (currentState as TimedHassEntity).duration * 1000,
-          nextState
-        );
+        const timedEntity = currentState as TimedHassEntity;
+        const milliseconds =
+          typeof timedEntity.duration === 'number'
+            ? timedEntity.duration * 1000
+            : parseDuration(timedEntity.duration);
+
+        setTimeout(this.triggerState.bind(this), milliseconds, nextState);
       }
     }
   }

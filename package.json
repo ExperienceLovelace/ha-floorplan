@@ -41,6 +41,7 @@
     "home-assistant-js-websocket": "^8.0.1",
     "js-yaml": "^4.1.0",
     "lit": "^2.4.1",
+    "parse-duration": "^1.0.2",
     "strftime": "^0.10.1",
     "superstruct": "^1.0.3",
     "sval": "^0.4.8"

@@ -683,9 +683,9 @@
      inkscape:window-height="1001"
      id="namedview428"
      showgrid="false"
-     inkscape:zoom="5.6568544"
-     inkscape:cx="168.82174"
-     inkscape:cy="124.53918"
+     inkscape:zoom="5.6568545"
+     inkscape:cx="66.468034"
+     inkscape:cy="224.24123"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -1740,6 +1740,77 @@
        id="path3204"
        d="m -98.955746,122.83479 4.24264,-4.24264 4.242641,6.0104 4.949747,-5.65685 5.303298,6.01041 5.65686,-6.01041 5.3033,5.3033 4.94975,-5.3033 4.24264,4.59619 -1.41422,2.47488 -3.18198,-3.53554 -4.59619,4.94975 -5.3033,-5.65685 -5.65686,6.36396 -5.656851,-5.3033 -5.656854,4.94975 -3.889088,-5.30331 -3.535533,4.5962 -2.828424,-1.41422 z"
        style="fill:#ad7b16;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4619-6)" />
+  </g>
+  <g
+     id="g3755"
+     transform="matrix(0.22292308,0,0,0.22292308,6.4208852,205.49973)">
+    <svg
+       width="100%"
+       height="177"
+       viewBox="0 0 385 185"
+       version="1.1"
+       id="svg3753">
+      <g
+         id="Page-1"
+         stroke="none"
+         stroke-width="1"
+         fill="none"
+         fill-rule="evenodd">
+        <g
+           id="Artboard"
+           transform="translate(-15,-224)">
+          <g
+             id="Group"
+             transform="translate(15,220)">
+            <g
+               id="guage">
+              <path
+                 d="m 84.804187,178.85678 v 0.3125 H 25 v -0.5 C 25,119.5193 57.193191,67.889477 105.01151,40.35019 L 135,92.298995 C 105.00962,109.48375 84.804187,141.81032 84.804187,178.85678 Z"
+                 id="red"
+                 fill="#bd3632" />
+              <path
+                 d="M 235.0508,92.486474 C 205.21439,75.102809 167.16984,73.765245 135.13316,92.288475 l -0.27024,0.15625 L 105,40.645581 l 0.43238,-0.25 C 156.58355,10.820588 217.307,12.889675 265,40.537669 Z"
+                 id="yellow"
+                 fill="#eeaf30" />
+              <path
+                 d="M 235,92.298995 264.98849,40.35019 C 312.80681,67.889477 345,119.5193 345,178.66928 v 0.5 h -59.80419 v -0.3125 c 0,-37.04646 -20.20543,-69.37303 -50.19581,-86.557785 z"
+                 id="green"
+                 fill="#008542" />
+              <text
+                 id="100%"
+                 font-size="15px"
+                 fill="#000000"><tspan
+                   x="350"
+                   y="180"
+                   id="tspan3738">100%</tspan></text>
+              <text
+                 id="50%"
+                 font-size="15px"
+                 fill="#000000"><tspan
+                   x="171"
+                   y="14"
+                   id="tspan3741">50%</tspan></text>
+              <text
+                 id="0%"
+                 font-size="15px"
+                 fill="#000000"><tspan
+                   x="0"
+                   y="178"
+                   id="tspan3744">0%</tspan></text>
+            </g>
+            <g
+               id="needle"
+               transform="translate(175,18)">
+              <polygon
+                 id="triangle"
+                 fill="#3c3c3b"
+                 points="10,0 15,162 5,162 "
+                  />
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
   </g>
   <g
      transform="matrix(0.13970147,0,0,0.13970147,130.7653,195.01979)"
