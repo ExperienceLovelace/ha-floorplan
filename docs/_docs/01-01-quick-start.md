@@ -68,7 +68,7 @@ The **H**ome **A**ssistant **C**ommunity **S**tore (HACS) is a great addition to
   1. Ensure that [HACS is installed](https://hacs.xyz/docs/installation/installation).
   2. Go to HACS > Integrations > Frontend.
   3. Select 'Explore & Add Repositories'.
-  4. Find 'Ha Floorplan' and install it.
+  4. Find 'ha-floorplan' and install it.
   5. Remember to add the `/hacsfiles/ha-floorplan/floorplan.js` as a module to your resource file - like you do with other modules.
   6. Follow [this step by step guide](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico), to add your first Floorplan. There's plenty of ways of doing this, but this is the best way for beginners. If you generally use YAML in HA, you may want to move on to the 'Examples' pages. You'll also find useful links by looking at the [What's next](#whats-next)-section on this page.
  
