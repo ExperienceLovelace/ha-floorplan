@@ -132,3 +132,13 @@ export class FloorplanVariableConfig {
   name!: string;
   value!: unknown;
 }
+
+export class FloorplanCustomEvent extends Event {
+  detail!: FloorplanCallServiceEventConfig;
+}
+
+export interface FloorplanCallServiceEventConfig
+  extends FloorplanCallServiceActionConfig {
+  entity?: string;
+  element?: string;
+}

@@ -65,3 +65,11 @@ g.floorplan-long-click > :not(text):hover,
 .button-off tspan {
   fill: white !important;
 }
+
+
+/* Hover */
+
+.hover {
+  stroke: red !important;
+  stroke-width: 10px !important;
+}

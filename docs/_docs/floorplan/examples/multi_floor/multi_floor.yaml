@@ -81,3 +81,9 @@ config:
         state_action:
           service: floorplan.class_set
           service_data: '${ entity.state === "on" ? "binary-sensor-on" : "binary-sensor-off"}'
+
+      - entities:
+          - binary_sensor.garage
+        hover_action:
+          - service: floorplan.class_set
+            service_data: '${element.matches(":hover") ? "hover" : ""}'
