@@ -88,8 +88,6 @@ export class Utils {
     text: string,
     shiftAxisY: string
   ): void {
-    debugger;
-
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
     const texts = text.split('\n');
 
