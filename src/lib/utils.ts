@@ -91,6 +91,18 @@ export class Utils {
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
     const texts = text.split('\n');
 
+    // If more than one tspan, we'd need to make some adjustments
+    if (texts.length > 1) {
+      // Check if textElement has a tspan and if it does, get the x and y attributes
+      const currentTspanElement = textElement.querySelector('tspan');
+      const tspanX = currentTspanElement?.getAttribute('x');
+      const tspanY = currentTspanElement?.getAttribute('y');
+
+      // If tspan has x and y attributes, set the text element to the same values
+      if (tspanX && !textElement.getAttribute('x')) textElement.setAttribute('x', tspanX);
+      if (tspanY && !textElement.getAttribute('y')) textElement.setAttribute('y', tspanY);
+    }
+
     // Empty the current text element
     textElement.textContent = '';
 
