@@ -15,12 +15,12 @@ export class Utils {
     element.classList
       ? element.classList.remove(className)
       : (element.className = element.className.replace(
-          new RegExp(
-            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-            'gi'
-          ),
-          ' '
-        ));
+        new RegExp(
+          '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+          'gi'
+        ),
+        ' '
+      ));
   }
 
   static hassClass(element: Element, className: string): boolean {
@@ -85,17 +85,48 @@ export class Utils {
 
   static setText(
     textElement: HTMLElement | SVGGraphicsElement,
-    text: string
+    text: string,
+    shiftAxisY: string
   ): void {
-    let tspanElement = textElement.querySelector('tspan');
-    if (!tspanElement) {
-      tspanElement = document.createElementNS(
+    // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
+    const texts = text.split('\n');
+
+    // If more than one tspan, we'd need to make some adjustments
+    if (texts.length > 1) {
+      // Check if textElement has a tspan and if it does, get the x and y attributes
+      const currentTspanElement = textElement.querySelector('tspan');
+      const tspanX = currentTspanElement?.getAttribute('x');
+      const tspanY = currentTspanElement?.getAttribute('y');
+
+      // If tspan has x and y attributes, set the text element to the same values
+      if (tspanX && !textElement.getAttribute('x')) textElement.setAttribute('x', tspanX);
+      if (tspanY && !textElement.getAttribute('y')) textElement.setAttribute('y', tspanY);
+    }
+
+    // Empty the current text element
+    textElement.textContent = '';
+
+    // Get x location of text, if no found, set to 0
+    const textXPosition = textElement.getAttribute('x') || '0';
+
+    // Dy indicates a shift along the y-axis, for every tspan in the text element except the first one
+    const dy = shiftAxisY ? shiftAxisY : '1em'
+
+    texts.forEach((textPart, i) => {
+      const tspanElement = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'tspan'
       );
+      tspanElement.textContent = textPart;
+
+      // If more than one text string, use y-axis offset
+      if (texts.length > 1) {
+        // Add x + dy if more than one string (linebreakes)
+        tspanElement.setAttribute('x', textXPosition);
+        tspanElement.setAttribute('dy', (i >= 1 ? dy : '0'));
+      }
       textElement.appendChild(tspanElement);
-    }
-    tspanElement.textContent = text;
+    })
   }
 
   static waitForChildNodes(
