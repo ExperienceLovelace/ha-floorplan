@@ -290,6 +290,18 @@ If text_set spots a newline-character (`\n`), the text will be broken into multi
 
 `shift_y_axis: 2em`
 
+#### Using `hover_action` to set a class while mouse hovering a element
+
+By moving your cursor over a element, you can also trigger over hover action. With the hover_action, it's easy to toggle a `hover` class on a given elemen if needed. Here our element will get a `hover-over` class added, if the mouse hovers over the element related to the entity.
+
+```yaml
+- entities:
+    - binary_sensor.garage
+  hover_action:
+    - service: floorplan.class_set
+      service_data: '${element.matches(":hover") ? "hover-over" : ""}'
+```
+
 #### Using `dataset_set` to add data-keys to the DOM-element
 
 Following is an example of using dataset and JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to dynamically evaluate data attribute to use.
