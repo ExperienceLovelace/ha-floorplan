@@ -33,7 +33,8 @@ config:
           class: button-off
       - service: floorplan.text_set
         service_data: 
-          element: "sample.multilinegroup_text"
+          element: sample.multilinegroup_text
+          shift_y_axis: 1.5em
           text: |
             > /* Split text to two tspans*/
             return 'Multiline\nTSPAN-Print';
