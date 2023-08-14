@@ -586,7 +586,7 @@ export class FloorplanElement extends LitElement {
         masterPageInfo.config.master_page.content_element;
 
       if (pageInfo.config.page_id === masterPageId) {
-        this.floorplanElement.appendChild(svg);
+        this.floorplanElement.replaceChildren(svg);
       } else {
         // const masterPageElement = this.floorplanElement.querySelector('#' + masterPageId);
         const contentElement = this.floorplanElement.querySelector(
@@ -611,10 +611,10 @@ export class FloorplanElement extends LitElement {
         svg.setAttribute('x', contentElement.getAttribute('x') as string);
         svg.setAttribute('y', contentElement.getAttribute('y') as string);
 
-        contentElement.parentElement?.appendChild(svg);
+        contentElement.parentElement?.replaceChildren(svg);
       }
     } else {
-      this.floorplanElement.appendChild(svg);
+      this.floorplanElement.replaceChildren(svg);
     }
 
     // TODO: Re-enable???
