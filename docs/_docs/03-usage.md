@@ -237,7 +237,7 @@ Below are the services that are specific to Floorplan.
 | `floorplan.class_set`    | Set the CSS class of the SVG element(s)        | `class` (string)                                                               |
 | `floorplan.dataset_set`  | Set a data attribute of the SVG element(s)     | `key` (string)<br /> `value` (string)                                          |
 | `floorplan.style_set`    | Set the CSS style of the of the SVG element(s) | `style` (string)                                                               |
-| `floorplan.text_set`     | Set the text of the SVG element(s)             | `text` (string)                                                                |
+| `floorplan.text_set`     | Set the text of the SVG element(s)             | `text` (string)<br />`shift_y_axis: 2em`                                                               |
 | `floorplan.image_set`    | Set the image of the SVG element(s)            | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
 | `floorplan.execute`      | Execute your own JS, defined in service_data   | `<all>` (array)                                                                |
 
@@ -267,6 +267,39 @@ Below is an example of using JavaScript [template literals](https://developer.mo
     service: floorplan.class_set
     service_data:
       class: '${(entity.state === "on") ? "motion-on" : "motion-off"}'
+```
+
+#### Using `text_set` to render mulitple tspans on linebreakes
+
+If text_set spots a newline-character (`\n`), the text will be broken into multiple tspans. Find the related example [here](https://experiencelovelace.github.io/ha-floorplan/docs/example-multi-floor/). By providing `shift_y_axis: 2em` as a key, you'll be able to control the offset of each tspan. If a x or/an y offset are defined on the tspan, but not on the text-element, we'll secure that the offset of the tspan, will be used on the text-element.
+
+```yaml
+- entities:
+    - binary_sensor.kitchen
+    - binary_sensor.laundry
+  state_action:
+    action: call-service
+    service: floorplan.text_set
+    service_data:
+      element: sample.multilinegroup_text
+      shift_y_axis: 1.5em
+      text: |
+        > /* Note that this is a JavaScript block, where you normally can do cool stuff like console.log()*/
+        return 'Multiline\nTSPAN-Print';
+```
+
+`shift_y_axis: 2em`
+
+#### Using `hover_action` to set a class while mouse hovering a element
+
+By moving your cursor over a element, you can also trigger over hover action. With the hover_action, it's easy to toggle a `hover` class on a given elemen if needed. Here our element will get a `hover-over` class added, if the mouse hovers over the element related to the entity.
+
+```yaml
+- entities:
+    - binary_sensor.garage
+  hover_action:
+    - service: floorplan.class_set
+      service_data: '${element.matches(":hover") ? "hover-over" : ""}'
 ```
 
 #### Using `dataset_set` to add data-keys to the DOM-element

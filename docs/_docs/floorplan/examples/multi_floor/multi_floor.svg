@@ -69,7 +69,8 @@
      style="font-size:7.55913687px;stroke-width:0.94489211">First Floor </tspan></text>
 
 
-</g><g
+</g>
+<g
    transform="translate(-269.16284,13.901268)"
    id="ground_floor.button"
    inkscape:label="ground_floor.button"><rect
@@ -93,8 +94,23 @@
      y="67.363495"
      style="font-size:7.55913687px;stroke-width:0.94489211">Ground Floor</tspan></text>
 
-
-</g><g
+</g>
+<g
+   transform="translate(-269.16284,13.901268)"
+   id="sample.multilinegroup"
+   inkscape:label="sample.multilinegroup"><text
+   xml:space="preserve"
+   id="sample.multilinegroup_text"
+   inkscape:label="sample.multilinegroup_text"
+   style="font-size: 8px;"
+   transform="scale(1.0242454,0.97632852)"><tspan
+     sodipodi:role="line"
+     id="tspan5095-4-6"
+   x="269.16284"
+      y="86.5"
+     style="font-size:3px;stroke-width:0.94489211;fill:#1aba92">Empty</tspan></text>
+</g>
+<g
    transform="translate(-77.154919,-1.1097272)"
    id="first_floor"
    inkscape:label="first_floor"

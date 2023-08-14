@@ -94,9 +94,8 @@ export class FloorplanElement extends LitElement {
         <div id="floorplan"></div>
         
         <div id="log" style="display: ${this.isShowLog ? 'block' : 'none'};">
-          <a href="#" onclick="return false;" @click=${
-            this.clearLog
-          }>Clear log<a/>
+          <a href="#" onclick="return false;" @click=${this.clearLog
+      }>Clear log<a/>
           <ul></ul>
         </div>
       </div>
@@ -349,9 +348,8 @@ export class FloorplanElement extends LitElement {
       script.onerror = (err) => {
         reject(
           new URIError(
-            `${
-              (err as unknown as Record<string, Record<string, unknown>>).target
-                .src
+            `${(err as unknown as Record<string, Record<string, unknown>>).target
+              .src
             }`
           )
         );
@@ -588,7 +586,7 @@ export class FloorplanElement extends LitElement {
         masterPageInfo.config.master_page.content_element;
 
       if (pageInfo.config.page_id === masterPageId) {
-        this.floorplanElement.appendChild(svg);
+        this.floorplanElement.replaceChildren(svg);
       } else {
         // const masterPageElement = this.floorplanElement.querySelector('#' + masterPageId);
         const contentElement = this.floorplanElement.querySelector(
@@ -613,10 +611,10 @@ export class FloorplanElement extends LitElement {
         svg.setAttribute('x', contentElement.getAttribute('x') as string);
         svg.setAttribute('y', contentElement.getAttribute('y') as string);
 
-        contentElement.parentElement?.appendChild(svg);
+        contentElement.parentElement?.replaceChildren(svg);
       }
     } else {
-      this.floorplanElement.appendChild(svg);
+      this.floorplanElement.replaceChildren(svg);
     }
 
     // TODO: Re-enable???
@@ -698,7 +696,7 @@ export class FloorplanElement extends LitElement {
       );
 
       svgElement.onmouseover = () => {
-        this.handleEntityIdSetHoverOver(entityId);
+        this.handleEntityIdSetHoverOver(entityId, svgElementInfo);
       };
     }
 
@@ -786,7 +784,7 @@ export class FloorplanElement extends LitElement {
     );
 
     svgElementInfo.svgElement.onmouseover = () => {
-      this.handleEntityIdSetHoverOver(entityId);
+      this.handleEntityIdSetHoverOver(entityId, svgElementInfo);
     };
 
     return svg;
@@ -1087,8 +1085,12 @@ export class FloorplanElement extends LitElement {
           );
         }
 
-        svgElement.onmouseover = () => {
-          this.handleEntitySetHoverOver(entityInfo);
+        svgElement.onmouseenter = () => {
+          this.handleEntitySetHoverOver(entityInfo, svgElementInfo);
+        };
+
+        svgElement.onmouseleave = () => {
+          this.handleEntitySetHoverOver(entityInfo, svgElementInfo);
         };
 
         this.attachClickHandlers(
@@ -1262,13 +1264,13 @@ export class FloorplanElement extends LitElement {
 
         const singleTapContext = singleTapAction
           ? new FloorplanClickContext(
-              this,
-              entityId,
-              elementId,
-              svgElementInfo,
-              ruleInfo,
-              singleTapAction
-            )
+            this,
+            entityId,
+            elementId,
+            svgElementInfo,
+            ruleInfo,
+            singleTapAction
+          )
           : false;
 
         // Use simple function without delay, if doubleTap is not in use
@@ -1278,13 +1280,13 @@ export class FloorplanElement extends LitElement {
         if (doubleTapAction) {
           const doubleTapContext = doubleTapAction
             ? new FloorplanClickContext(
-                this,
-                entityId,
-                elementId,
-                svgElementInfo,
-                ruleInfo,
-                doubleTapAction
-              )
+              this,
+              entityId,
+              elementId,
+              svgElementInfo,
+              ruleInfo,
+              doubleTapAction
+            )
             : false;
 
           ManyClicks.observe(element as HTMLElement | SVGElement);
@@ -1483,12 +1485,12 @@ export class FloorplanElement extends LitElement {
     }
   }
 
-  handleEntityIdSetHoverOver(entityId: string): void {
+  handleEntityIdSetHoverOver(entityId: string, svgElementInfo: FloorplanSvgElementInfo): void {
     const entityInfo = this.entityInfos[entityId];
-    if (entityInfo) this.handleEntitySetHoverOver(entityInfo);
+    if (entityInfo) this.handleEntitySetHoverOver(entityInfo, svgElementInfo);
   }
 
-  handleEntitySetHoverOver(entityInfo: FloorplanEntityInfo): void {
+  handleEntitySetHoverOver(entityInfo: FloorplanEntityInfo, svgElementInfo: FloorplanSvgElementInfo): void {
     const entityId = entityInfo.entityId as string;
     const entityState = this.hass.states[entityId];
 
@@ -1501,7 +1503,7 @@ export class FloorplanElement extends LitElement {
           isHoverInfo ||
           (typeof ruleInfo.rule.hover_action === 'object' &&
             (ruleInfo.rule.hover_action as FloorplanActionConfig).action ===
-              'hover-info');
+            'hover-info');
         isHoverInfo =
           isHoverInfo ||
           (Array.isArray(ruleInfo.rule.hover_action) &&
@@ -1529,9 +1531,8 @@ export class FloorplanElement extends LitElement {
 
                 Object.keys(entityState.attributes).map((key) => {
                   if (!hoverInfoFilter.has(key)) {
-                    titleText += `${key}: ${
-                      (entityState.attributes as Record<string, unknown>)[key]
-                    }\n`;
+                    titleText += `${key}: ${(entityState.attributes as Record<string, unknown>)[key]
+                      }\n`;
                   }
                 });
                 titleText += '\n';
@@ -1546,6 +1547,15 @@ export class FloorplanElement extends LitElement {
                 titleElement.textContent = titleText;
               });
           }
+        }
+        else if (ruleInfo.rule.hover_action) {
+          this.handleActions(
+            ruleInfo.rule.hover_action,
+            entityInfo.entityId,
+            svgElementInfo,
+            ruleInfo
+          );
+
         }
       }
     }
@@ -1701,7 +1711,7 @@ export class FloorplanElement extends LitElement {
         if (
           !confirm(
             actionConfig.confirmation.text ||
-              `Are you sure you want to ${actionConfig.action}?`
+            `Are you sure you want to ${actionConfig.action}?`
           )
         ) {
           return;
@@ -2092,7 +2102,10 @@ export class FloorplanElement extends LitElement {
             typeof serviceData === 'string'
               ? serviceData
               : (serviceData.text as string);
-          Utils.setText(targetSvgElement, text);
+
+          // If the text has linebreakes, setText will split them up, into more than a single tspan element. Each tspan will use the shift y axis as a offset (except for the first element)
+          const shiftYAxis = actionConfig.service_data?.shift_y_axis ? actionConfig.service_data?.shift_y_axis : '1em';
+          Utils.setText(targetSvgElement, text, shiftYAxis);
         }
         break;
 

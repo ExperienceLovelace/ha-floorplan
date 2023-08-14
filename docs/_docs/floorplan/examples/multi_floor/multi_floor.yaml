@@ -31,6 +31,13 @@ config:
           elements:
             - first_floor.button
           class: button-off
+      - service: floorplan.text_set
+        service_data: 
+          element: sample.multilinegroup_text
+          shift_y_axis: 1.5em
+          text: |
+            > /* Split text to two tspans*/
+            return 'Multiline\nTSPAN-Print';
 
     rules:
       - element: ground_floor.button
@@ -79,5 +86,11 @@ config:
           - binary_sensor.garage
           - binary_sensor.activity
         state_action:
-          service: floorplan.class_set
-          service_data: '${ entity.state === "on" ? "binary-sensor-on" : "binary-sensor-off"}'
+          - service: floorplan.class_set
+            service_data: '${ entity.state === "on" ? "binary-sensor-on" : "binary-sensor-off"}'
+
+      - entities:
+          - binary_sensor.garage
+        hover_action:
+          - service: floorplan.class_set
+            service_data: '${element.matches(":hover") ? "hover" : ""}'
