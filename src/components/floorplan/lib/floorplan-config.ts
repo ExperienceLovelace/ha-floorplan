@@ -19,6 +19,7 @@ export class FloorplanConfig {
   stylesheet!: FloorplanStylesheetConfig | string;
   log_level!: string;
   console_log_level!: string;
+  element_data_attribute?: string;
   rules!: FloorplanRuleConfig[];
 
   // Optional features

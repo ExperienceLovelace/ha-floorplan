@@ -982,10 +982,22 @@ export class FloorplanElement extends LitElement {
       true
     ) as SVGGraphicsElement[];
 
+    // TODO REMOVE: console.log("T1 Config", config);
     for (const svgElement of svgElements) {
       if (svgElement.id) {
         this.svgElements[svgElement.id] = svgElement;
       }
+
+      // TODO REMOVE: console.log("T11", config.element_data_attribute);
+      // TODO REMOVE: if(svgElement.dataset) console.log("svgElement.dataset", svgElement.dataset);
+
+      const custom_data_attribute = config?.element_data_attribute;
+      if(custom_data_attribute && custom_data_attribute in svgElement?.dataset){
+        const identifier = svgElement?.dataset?.[custom_data_attribute];
+        if(identifier) this.svgElements[identifier] = svgElement;
+      }
+
+      // TODO REMOVE: console.log("All elements", this.svgElements);
     }
 
     this.initRules(config, svg, svgElements);
@@ -1029,9 +1041,9 @@ export class FloorplanElement extends LitElement {
 
     for (const rule of config.rules) {
       if (rule.entity || rule.entities) {
-        this.initEntityRule(rule, svg, svgElements);
+        this.initEntityRule(rule, svg, svgElements, config);
       } else if (rule.element || rule.elements) {
-        this.initElementRule(rule, svg, svgElements);
+        this.initElementRule(rule, svg, svgElements, config);
       }
     }
   }
@@ -1039,7 +1051,8 @@ export class FloorplanElement extends LitElement {
   initEntityRule(
     rule: FloorplanRuleConfig,
     svg: SVGGraphicsElement,
-    svgElements: SVGGraphicsElement[]
+    svgElements: SVGGraphicsElement[],
+    config: FloorplanConfig
   ): void {
     const entities = this.initGetEntityRuleEntities(rule);
     for (const entity of entities) {
@@ -1059,8 +1072,20 @@ export class FloorplanElement extends LitElement {
       entityInfo.ruleInfos.push(ruleInfo);
 
       for (const elementId of entity.elementIds) {
+        // TODO REMOVE ... console.log("T3 TESTING", entity, entity.elementIds);
         const svgElement = svgElements.find(
-          (svgElement) => svgElement.id === elementId
+          (svgElement) => {
+            // Normal case with id as reference
+            if(svgElement.id === elementId) return svgElement;
+
+            // Check datakey if custom datakey attribute defined
+            const attr = config?.element_data_attribute;
+            if(!attr) return false;
+            if(attr in svgElement?.dataset) return svgElement?.dataset?.[attr] == elementId || false;
+
+            // Else return false
+            return false;
+          }
         );
         if (!svgElement) {
           this.logWarning(
@@ -1069,6 +1094,8 @@ export class FloorplanElement extends LitElement {
           );
           continue;
         }
+
+        // TODO REMOVE: console.log("T33 TESTING", svgElement)
 
         const svgElementInfo = this.addSvgElementToRule(
           svg,
@@ -1185,7 +1212,8 @@ export class FloorplanElement extends LitElement {
   initElementRule(
     rule: FloorplanRuleConfig,
     svg: SVGGraphicsElement,
-    svgElements: SVGGraphicsElement[]
+    svgElements: SVGGraphicsElement[],
+    config: FloorplanConfig
   ): void {
     if (!rule.element && !rule.elements) return;
 
@@ -1196,7 +1224,18 @@ export class FloorplanElement extends LitElement {
 
     for (const elementId of rule.elements) {
       const svgElement = svgElements.find(
-        (svgElement) => svgElement.id === elementId
+        (svgElement) => {
+          // Normal case with id as reference
+          if(svgElement.id === elementId) return true;
+
+          // Check datakey if custom datakey attribute defined
+          const attr = config?.element_data_attribute;
+          if(!attr) return false;
+          if(attr in svgElement?.dataset) return svgElement?.dataset?.[attr] == elementId || false;
+
+          // Else return false
+          return false;
+        }
       );
       if (svgElement) {
         let elementInfo = this.elementInfos[elementId];
@@ -1224,6 +1263,8 @@ export class FloorplanElement extends LitElement {
           elementId,
           ruleInfo
         );
+
+        // TODO REMOVE: console.log("T2 TESTING", this.elementInfos, svgElements);
       } else {
         this.logWarning('CONFIG', `Cannot find '${elementId}' in SVG file`);
       }
@@ -1272,6 +1313,8 @@ export class FloorplanElement extends LitElement {
             singleTapAction
           )
           : false;
+
+        // TODO REMOVE: console.log(svgElementInfo, elementId, entityId, ruleInfo, this)
 
         // Use simple function without delay, if doubleTap is not in use
         if (singleTapAction && !doubleTapAction)
