@@ -121,8 +121,7 @@ export class Utils {
 
     texts.forEach((textPart, i) => {
       const tspanElement = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'tspan'
+        'http://www.w3.org/2000/svg', 'tspan'
       );
       tspanElement.textContent = textPart;
 
