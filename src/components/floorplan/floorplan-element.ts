@@ -203,8 +203,9 @@ export class FloorplanElement extends LitElement {
 
     const deviceId = Utils.deviceId();
 
-    this.hass.states['*'] = {
-      entity_id: `sensor.${deviceId}`,
+    // Expose ha-floorplan as a sensor on basis of a random-generated id
+    this.hass.states[`sensor.ha_floorplan_${deviceId}`] = {
+      entity_id: `sensor.ha_floorplan_${deviceId}`,
       state: 'on',
       last_changed: new Date().toString(),
       last_updated: new Date().toString(),
@@ -1378,8 +1379,10 @@ export class FloorplanElement extends LitElement {
 
     const entityIds = Object.keys(this.hass.states);
 
+    const deviceId = Utils.deviceId();
+
     for (const entityId of entityIds) {
-      if (entityId === '*' && !changedEntityIds.has(entityId)) {
+      if (entityId === `sensor.ha_floorplan_${deviceId}` && !changedEntityIds.has(entityId)) {
         changedEntityIds.add(entityId);
       } else {
         const entityInfo = this.entityInfos[entityId];
