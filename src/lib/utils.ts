@@ -375,7 +375,7 @@ export class Utils {
   }
 
   static deviceId(): string {
-    const ID_BROWER_KEY = 'lovelace-ha-floorplan-device-id';
+    const ID_BROWER_KEY = 'ha-floorplan-device-id';
 
     if (!localStorage[ID_BROWER_KEY]) {
       const s4 = () => {
@@ -383,7 +383,7 @@ export class Utils {
           .toString(16)
           .substring(1);
       };
-      localStorage[ID_BROWER_KEY] = `${s4()}${s4()}-${s4()}${s4()}`;
+      localStorage[ID_BROWER_KEY] = `${s4()}${s4()}_${s4()}${s4()}`;
     }
     return localStorage[ID_BROWER_KEY];
   }
