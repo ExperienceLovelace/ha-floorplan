@@ -88,6 +88,10 @@ export class Utils {
     text: string,
     shiftAxisY: string
   ): void {
+    // If textElement is not a text element, try to find the first text element
+    if (!(textElement instanceof SVGTextElement)) {
+      textElement = textElement.querySelector('text') || textElement;
+    }
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
     const texts = text.split('\n');
 
