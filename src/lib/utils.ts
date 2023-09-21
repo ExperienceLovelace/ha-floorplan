@@ -88,6 +88,10 @@ export class Utils {
     text: string,
     shiftAxisY: string
   ): void {
+    // If textElement is not a text element, try to find the first text element
+    if (!(textElement instanceof SVGTextElement)) {
+      textElement = textElement.querySelector('text') || textElement;
+    }
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
     const texts = text.split('\n');
 
@@ -97,11 +101,14 @@ export class Utils {
       const currentTspanElement = textElement.querySelector('tspan');
       const tspanX = currentTspanElement?.getAttribute('x');
       const tspanY = currentTspanElement?.getAttribute('y');
-
+      
       // If tspan has x and y attributes, set the text element to the same values
       if (tspanX && !textElement.getAttribute('x')) textElement.setAttribute('x', tspanX);
       if (tspanY && !textElement.getAttribute('y')) textElement.setAttribute('y', tspanY);
     }
+
+    // Save existing tspan element if exists
+    const existingTspanElement = textElement.querySelector('tspan') || false;
 
     // Empty the current text element
     textElement.textContent = '';
@@ -114,8 +121,7 @@ export class Utils {
 
     texts.forEach((textPart, i) => {
       const tspanElement = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'tspan'
+        'http://www.w3.org/2000/svg', 'tspan'
       );
       tspanElement.textContent = textPart;
 
@@ -124,6 +130,12 @@ export class Utils {
         // Add x + dy if more than one string (linebreakes)
         tspanElement.setAttribute('x', textXPosition);
         tspanElement.setAttribute('dy', (i >= 1 ? dy : '0'));
+      }else if(texts.length == 1 && i == 0 && existingTspanElement){
+        // Preserve x and y attributes if only one string
+        ['x', 'y'].forEach((attr) => {
+          const value = existingTspanElement?.getAttribute(attr);
+          if (typeof value !== 'undefined' && value !== null) tspanElement.setAttribute(attr, value);
+        });
       }
       textElement.appendChild(tspanElement);
     })
