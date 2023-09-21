@@ -93,7 +93,8 @@ export class Utils {
       textElement = textElement.querySelector('text') || textElement;
     }
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
-    const texts = text.split('\n');
+    // Replace all \\n, as it's a excape character for \n in YAML handled through Home Assistant 
+    const texts = text.replace(/\\n/g, '\n').split('\n');
 
     // If more than one tspan, we'd need to make some adjustments
     if (texts.length > 1) {
