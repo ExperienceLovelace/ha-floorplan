@@ -54,9 +54,11 @@ If applicable, add screenshots to help explain your problem.
 
 **Share configuration**
 Please share:
-- `YAML`
+- `YAML` (**IMPORTANT!**)
 - `CSS`
-- SVG-file (Use gofile.io, or something simular)
+- SVG-file (**IMPORTANT!**) (Use gofile.io, or something simular)
+
+_If you create a issue without a SVG example, including the required YAML and CSS to reproduce the issue, it's likely what your issue will be closed, or marked as unresolvable, as it's lacking the proper amount of details. Thank you for understanding the situation._
 
 **Additional context**
 Add any other context about the problem here.
