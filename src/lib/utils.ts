@@ -131,9 +131,15 @@ export class Utils {
         // Add x + dy if more than one string (linebreakes)
         tspanElement.setAttribute('x', textXPosition);
         tspanElement.setAttribute('dy', (i >= 1 ? dy : '0'));
+
+        // If existing tspan element contains a style, set it to the new tspan element
+        if (existingTspanElement) {
+          const style = existingTspanElement.getAttribute('style');
+          if (style) tspanElement.setAttribute('style', style);
+        }
       }else if(texts.length == 1 && i == 0 && existingTspanElement){
         // Preserve x and y attributes if only one string
-        ['x', 'y'].forEach((attr) => {
+        ['x', 'y', 'style'].forEach((attr) => {
           const value = existingTspanElement?.getAttribute(attr);
           if (typeof value !== 'undefined' && value !== null) tspanElement.setAttribute(attr, value);
         });
