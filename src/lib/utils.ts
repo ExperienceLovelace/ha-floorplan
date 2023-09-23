@@ -95,39 +95,42 @@ export class Utils {
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
     // Replace all \\n, as it's a excape character for \n in YAML handled through Home Assistant 
     const texts = text.replace(/\\n/g, '\n').split('\n');
+    const textContainsLinebreaks = texts.length > 1;
 
-    // If more than one tspan, we'd need to make some adjustments
-    if (texts.length > 1) {
+    // Get existing tspan element if exists
+    const currentTspanElement = textElement.querySelector('tspan');
+
+    // If more than one tspan required, we'd need to make some adjustments
+    if (textContainsLinebreaks) {
       // Check if textElement has a tspan and if it does, get the x and y attributes
-      const currentTspanElement = textElement.querySelector('tspan');
       const tspanX = currentTspanElement?.getAttribute('x');
       const tspanY = currentTspanElement?.getAttribute('y');
       
       // If tspan has x and y attributes, set the text element to the same values
       if (tspanX && !textElement.getAttribute('x')) textElement.setAttribute('x', tspanX);
       if (tspanY && !textElement.getAttribute('y')) textElement.setAttribute('y', tspanY);
-    }
 
-    // Save existing tspan element if exists
-    const existingTspanElement = textElement.querySelector('tspan') || false;
+      // Save existing tspan element if exists
+      const existingTspanElement = textElement.querySelector('tspan') || false;
 
-    // Empty the current text element
-    textElement.textContent = '';
+      // Empty the current text element
+      textElement.textContent = ''; 
 
-    // Get x location of text, if no found, set to 0
-    const textXPosition = textElement.getAttribute('x') || '0';
+      // Note the user about the intended change in a dataset
+      textElement.dataset.ha_floorplan_notice = 'The text_set function splitted your text into multiple tspans. Only the style of the first tspan is preserved. The style from the original tspan is reused on every tspan. The x and y are calculated on basis of the first tspan or text-element.';
 
-    // Dy indicates a shift along the y-axis, for every tspan in the text element except the first one
-    const dy = shiftAxisY ? shiftAxisY : '1em'
+      // Get x location of text, if no found, set to 0
+      const textXPosition = textElement.getAttribute('x') || '0';
 
-    texts.forEach((textPart, i) => {
-      const tspanElement = document.createElementNS(
-        'http://www.w3.org/2000/svg', 'tspan'
-      );
-      tspanElement.textContent = textPart;
+      // Dy indicates a shift along the y-axis, for every tspan in the text element except the first one
+      const dy = shiftAxisY ? shiftAxisY : '1em'
 
-      // If more than one text string, use y-axis offset
-      if (texts.length > 1) {
+      texts.forEach((textPart, i) => {
+        const tspanElement = document.createElementNS(
+          'http://www.w3.org/2000/svg', 'tspan'
+        );
+        tspanElement.textContent = textPart;
+
         // Add x + dy if more than one string (linebreakes)
         tspanElement.setAttribute('x', textXPosition);
         tspanElement.setAttribute('dy', (i >= 1 ? dy : '0'));
@@ -137,15 +140,12 @@ export class Utils {
           const style = existingTspanElement.getAttribute('style');
           if (style) tspanElement.setAttribute('style', style);
         }
-      }else if(texts.length == 1 && i == 0 && existingTspanElement){
-        // Preserve x and y attributes if only one string
-        ['x', 'y', 'style'].forEach((attr) => {
-          const value = existingTspanElement?.getAttribute(attr);
-          if (typeof value !== 'undefined' && value !== null) tspanElement.setAttribute(attr, value);
-        });
-      }
-      textElement.appendChild(tspanElement);
-    })
+        textElement.appendChild(tspanElement);
+      })
+    }else{
+      const textTarget = currentTspanElement || textElement;
+      textTarget.textContent = text;
+    }
   }
 
   static waitForChildNodes(
