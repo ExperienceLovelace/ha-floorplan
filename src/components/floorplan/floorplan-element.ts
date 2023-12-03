@@ -758,10 +758,14 @@ export class FloorplanElement extends LitElement {
 
     svg.id = svgElementInfo.svgElement.id;
     svg.setAttribute('preserveAspectRatio', 'xMinYMin meet');
-    svg.setAttribute('height', svgElementInfo.originalBBox.height.toString());
-    svg.setAttribute('width', svgElementInfo.originalBBox.width.toString());
-    svg.setAttribute('x', svgElementInfo.originalBBox.x.toString());
-    svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
+
+    // A clipPath does not have the clipPath function on the element, therefore originalBBox can be null in some cases
+    if (svgElementInfo.originalBBox !== null) {
+      svg.setAttribute('height', svgElementInfo.originalBBox.height.toString());
+      svg.setAttribute('width', svgElementInfo.originalBBox.width.toString());
+      svg.setAttribute('x', svgElementInfo.originalBBox.x.toString());
+      svg.setAttribute('y', svgElementInfo.originalBBox.y.toString());
+    }
 
     if (svgElementInfo.svgElement.nodeName !== 'g') {
       const originalTransform =
@@ -1330,11 +1334,12 @@ export class FloorplanElement extends LitElement {
     svgElement: SVGGraphicsElement,
     ruleInfo: FloorplanRuleInfo
   ): FloorplanSvgElementInfo {
+    const svgBBox = svgElement.getBBox ? svgElement.getBBox() : null;
     const svgElementInfo = new FloorplanSvgElementInfo(
       svgElement.id,
       svgElement,
       svgElement,
-      svgElement.getBBox()
+      svgBBox
     );
     ruleInfo.svgElementInfos[svgElement.id] = svgElementInfo;
 

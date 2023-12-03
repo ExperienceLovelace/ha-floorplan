@@ -22,7 +22,7 @@ export class FloorplanSvgElementInfo {
     public entityId: string,
     public svgElement: SVGGraphicsElement,
     public originalSvgElement: SVGGraphicsElement,
-    public originalBBox: DOMRect
+    public originalBBox: DOMRect | null
   ) { }
 }
 
