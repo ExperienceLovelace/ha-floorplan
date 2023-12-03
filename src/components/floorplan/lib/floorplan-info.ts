@@ -23,7 +23,7 @@ export class FloorplanSvgElementInfo {
     public svgElement: SVGGraphicsElement,
     public originalSvgElement: SVGGraphicsElement,
     public originalBBox: DOMRect | null
-  ) { }
+  ) {}
 }
 
 export class FloorplanRuleInfo {
@@ -31,7 +31,7 @@ export class FloorplanRuleInfo {
   imageUrl!: string;
   imageLoader!: number | undefined;
 
-  constructor(public rule: FloorplanRuleConfig) { }
+  constructor(public rule: FloorplanRuleConfig) {}
 }
 
 export class FloorplanEntityInfo {
@@ -48,5 +48,5 @@ export class FloorplanClickContext {
     public svgElementInfo: FloorplanSvgElementInfo,
     public ruleInfo: FloorplanRuleInfo,
     public actions: Array<FloorplanActionConfig>
-  ) { }
+  ) {}
 }
