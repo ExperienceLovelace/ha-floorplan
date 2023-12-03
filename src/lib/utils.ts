@@ -117,7 +117,7 @@ export class Utils {
       textElement.textContent = ''; 
 
       // Note the user about the intended change in a dataset
-      textElement.dataset.ha_floorplan_notice = 'The text_set function splitted your text into multiple tspans. Only the style of the first tspan is preserved. The style from the original tspan is reused on every tspan. The x and y are calculated on basis of the first tspan or text-element.';
+      textElement.dataset.ha_floorplan_notice = 'The text_set function split your text into multiple tspans. Only the style of the first tspan is preserved. The style from the original tspan is reused on every tspan. The x and y are calculated on the basis of the first tspan or text-element.';
 
       // Get x location of text, if no found, set to 0
       const textXPosition = textElement.getAttribute('x') || '0';
