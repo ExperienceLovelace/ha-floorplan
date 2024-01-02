@@ -1,6 +1,6 @@
 # ha-floorplan
 
-![ha-floorplan logo](https://raw.githubusercontent.com/ExperienceLovelace/ha-floorplan/master/docs/assets/images/logo-200x200.png)
+![image](https://github.com/ExperienceLovelace/ha-floorplan/assets/3549445/196cd771-7d29-4975-a741-0a5c8a76e095)
 
 Floorplan for Home Assistant - your imagination (almost) defines the limits.
 
@@ -41,7 +41,9 @@ Floorplan for Home Assistant - your imagination (almost) defines the limits.
 
 <br>
 
-[![Click to see the live floorplan example](https://raw.githubusercontent.com/ExperienceLovelace/ha-floorplan/master/docs/assets/images/home/floorplan-background_with_floorplanner.png)](https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/)
+[🔗 Open the live example](https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/)
+
+![image](https://github.com/ExperienceLovelace/ha-floorplan/assets/3549445/a110a5fe-72d3-4004-970b-1e07159e5577)
 
 ## Draw it and bring it to life
 
