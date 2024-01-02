@@ -96,6 +96,7 @@ export interface EditSubElementEvent {
 export const actionConfigStruct = object({
   action: string(),
   navigation_path: optional(string()),
+  navigation_replace: optional(boolean()),
   url_path: optional(string()),
   service: optional(string()),
   service_data: optional(object()),
