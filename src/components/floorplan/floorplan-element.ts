@@ -1756,7 +1756,13 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${actionConfig.navigation_path}`
             );
           } else {
-            navigate(this, actionConfig.navigation_path);
+            // Evaluate the navigation path
+            const navigationPath = this.evaluate(
+              actionConfig.navigation_path,
+              entityId,
+              svgElementInfo?.svgElement
+            ) as string;
+            navigate(this, navigationPath, actionConfig.navigation_replace ?? false);
           }
           break;
 
