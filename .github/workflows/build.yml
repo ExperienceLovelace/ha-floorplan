@@ -46,7 +46,7 @@ jobs:
       id: can_commit
       run: |-
        commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
-       echo "::set-output name=commit_result::$commit_result"
+       echo "commit_result=$commit_result" >> $GITHUB_ENV
 
     - name: Nothing to commit
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
