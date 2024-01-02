@@ -1,23 +1,3 @@
-<!--
-Please remove the disclaimer - cause it's not work-in-progrss anymore
--->
-<!--
-<table align="center">
-<tr>
-<td>
-<h1 align="center">
-⚠️ WORK IN PROGRESS ⚠️ 
-</h1>
-<p align="center">
-You're welcome to test it, but we suggest you to use the <a href="https://github.com/ExperienceLovelace/lovelace-floorplan" target="_blank">current version</a> for daily usage.
-</p>
-</td>
-</tr>
-</table>
-<br><br>
-<hr>
--->
-
 <h1 align="center">
 	<img src="/docs/assets/images/logo-200x200.png">
 	<br>
@@ -70,6 +50,23 @@ You're welcome to test it, but we suggest you to use the <a href="https://github
 
 If you're searching for __getting started__ information, good __examples__, and details about __usage__, please visit our 
 👉 **[documentation](https://experiencelovelace.github.io/ha-floorplan/)** 👈, hosted on [GitHub Page](https://experiencelovelace.github.io/ha-floorplan/).
+
+## 📚 Read the <a href="https://experiencelovelace.github.io/ha-floorplan/" target="_blank">documentation</a> 📚
+
+You'll find information about:
+- [Installation](https://experiencelovelace.github.io/ha-floorplan/docs/quick-start/)
+- [Usage](https://experiencelovelace.github.io/ha-floorplan/docs/usage/)
+- [Examples](https://experiencelovelace.github.io/ha-floorplan/docs/examples/)
+- _And more..._
+
+
+### Features
+
+- Make Floorplan(s) with SVG-files
+- Trigger states, visualize states and more
+- Call services and more, for even more options
+- Use as Lovelace-card, or as a panel
+- _It's hard to mention everything in a list like this, so **give it a try**_ 🥳
 
 <br>
 
