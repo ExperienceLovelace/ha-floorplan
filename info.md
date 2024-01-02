@@ -31,7 +31,7 @@ You'll find information about:
 - Use as Lovelace-card, or as a panel
 - _It's hard to mention everything in a list like this, so **give it a try**_ 🥳
 
-<img style="border: 3px solid #26c7fb;border-radius: 10px;max-width: 350px;width: 100%;box-sizing: border-box;margin:0 auto;display:block;text-align:center;" src="https://github.com/ExperienceLovelace/ha-floorplan/blob/master/docs/assets/images/home/floorplan-background_with_floorplanner.png?raw=true" alt="SVG Preview">
+<img style="border: 1px solid #26c7fb;border-radius: 3px;max-width: 350px;width: 100%;box-sizing: border-box;margin:0 auto;display:block;text-align:center;" src="https://github.com/ExperienceLovelace/ha-floorplan/blob/master/docs/assets/images/home/floorplan-background_with_floorplanner.png?raw=true" alt="SVG Preview">
 
 <hr>
 
