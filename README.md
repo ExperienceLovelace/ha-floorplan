@@ -1,14 +1,10 @@
-<h1 align="center">
-     <img src="https://github.com/ExperienceLovelace/ha-floorplan/blob/master/docs/assets/images/logo-200x200.png?raw=true">
-	<br>
-  <br>
-  HA Floorplan
-</h1>
+# ha-floorplan
 
+![ha-floorplan logo](https://raw.githubusercontent.com/ExperienceLovelace/ha-floorplan/master/docs/assets/images/logo-200x200.png)
 
-<h4 align="center">Floorplan for Home Assistant - your imagination (almost) defines the limits </h4>
+Floorplan for Home Assistant - your imagination (almost) defines the limits.
 
-<p align="center">
+<p>
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/commits/master" target="_blank">
     <img src="https://github.com/ExperienceLovelace/ha-floorplan/workflows/Last%20commit/badge.svg?style=flat-square&logo=github&logoColor=white"
          alt="GitHub Last commit">
@@ -35,20 +31,17 @@
          </a>
 </p>
 
-<p align="center">
-	•
+<p>
   <a href="https://experiencelovelace.github.io/ha-floorplan/" target="_blank">Floorplan Documentation</a> •
   <a href="https://github.com/ExperienceLovelace/ha-floorplan/discussions" target="_blank">Discussion (Ask for help, feedback & support)</a> •
-  <a href="https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489" target="_blank">Home Assistant Community</a> •
+  <a href="https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489" target="_blank">Home Assistant Community</a>
 </p>
 
 <hr>
 
 <br>
 
-<span align="center">
-	<a href="https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/" target="_blank" title="See it in action - Go to our docs"><img style="border: 2px solid #26c7fb;border-radius: 3px;max-width: 350px;width: 100%;box-sizing: border-box;margin:0 auto;display:block;text-align:center;" src="https://github.com/ExperienceLovelace/ha-floorplan/blob/master/docs/assets/images/home/floorplan-background_with_floorplanner.png?raw=true"></a>
-</span>
+[![Click to see the live floorplan example](https://raw.githubusercontent.com/ExperienceLovelace/ha-floorplan/master/docs/assets/images/home/floorplan-background_with_floorplanner.png)](https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/)
 
 ## Draw it and bring it to life
 
