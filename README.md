@@ -73,6 +73,16 @@ Find more documentation on how to use each action and functions, by visiting the
 <br>
 
 <hr>
+
+#### Ressource template for Home Assistant
+
+```yaml
+resources:
+  - url: /hacsfiles/ha-floorplan/floorplan.js
+    type: module
+```
+
+<hr>
 <br>
 
 <table>
