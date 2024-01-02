@@ -1,4 +1,5 @@
 {
   "name": "ha-floorplan 🖌🎨 - Your imagination just become the new limit",
-  "filename": "floorplan.js"
+  "filename": "floorplan.js",
+  "render_readme": true
 }
