@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="/docs/assets/images/logo-200x200.png">
+     <img src="https://github.com/ExperienceLovelace/ha-floorplan/blob/master/docs/assets/images/logo-200x200.png?raw=true">
 	<br>
   <br>
   HA Floorplan
@@ -46,21 +46,24 @@
 
 <br>
 
-# Getting started
+<span align="center">
+	<a href="https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/" target="_blank" title="See it in action - Go to our docs"><img style="border: 2px solid #26c7fb;border-radius: 3px;max-width: 350px;width: 100%;box-sizing: border-box;margin:0 auto;display:block;text-align:center;" src="https://github.com/ExperienceLovelace/ha-floorplan/blob/master/docs/assets/images/home/floorplan-background_with_floorplanner.png?raw=true"></a>
+</span>
 
-If you're searching for __getting started__ information, good __examples__, and details about __usage__, please visit our 
-👉 **[documentation](https://experiencelovelace.github.io/ha-floorplan/)** 👈, hosted on [GitHub Page](https://experiencelovelace.github.io/ha-floorplan/).
+## Draw it and bring it to life
 
-## 📚 Read the <a href="https://experiencelovelace.github.io/ha-floorplan/" target="_blank">documentation</a> 📚
+This tool expands way beyond creating just floorplans. If you can draw it in an SVG file, you can bring it to life with ha-floorplan. Explore endless possibilities and customize your home automation experience to your liking.
 
-You'll find information about:
-- [Installation](https://experiencelovelace.github.io/ha-floorplan/docs/quick-start/)
-- [Usage](https://experiencelovelace.github.io/ha-floorplan/docs/usage/)
-- [Examples](https://experiencelovelace.github.io/ha-floorplan/docs/examples/)
-- _And more..._
+## Getting started
+
+We'll suggest you to visit our [Installation](https://experiencelovelace.github.io/ha-floorplan/docs/quick-start/) guide.
+
+If you're unsure on where to start in the creation process, we'll suggest you to check our  [Live Examples](https://experiencelovelace.github.io/ha-floorplan/docs/examples/).
+
+Find more documentation on how to use each action and functions, by visiting the [Usage](https://experiencelovelace.github.io/ha-floorplan/docs/usage/) page.
 
 
-### Features
+## Features
 
 - Make Floorplan(s) with SVG-files
 - Trigger states, visualize states and more
@@ -69,8 +72,6 @@ You'll find information about:
 - _It's hard to mention everything in a list like this, so **give it a try**_ 🥳
 
 <br>
-
-[![Overview](/docs/assets/images/home/floorplan-background_with_floorplanner.png)](https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/)
 
 <hr>
 <br>
