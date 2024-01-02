@@ -70,11 +70,7 @@ You'll find information about:
 
 <br>
 
-
-<span align="center">
-	<a href="https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/" target="_blank" title="See it in action - Go to our docs"><img src="/docs/assets/images/home/floorplan-background_with_floorplanner.png"></a>
-</span>
-
+[![Overview](/docs/assets/images/home/floorplan-background_with_floorplanner.png)](https://experiencelovelace.github.io/ha-floorplan/docs/example-floorplanner-home/)
 
 <hr>
 <br>
