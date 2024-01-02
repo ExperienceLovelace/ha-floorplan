@@ -1773,7 +1773,12 @@ export class FloorplanElement extends LitElement {
             );
           } else {
             const open_type = actionConfig.same_tab ? '_self' : '_blank';
-            window.open(actionConfig.url_path, open_type);
+            const urlPath = this.evaluate(
+              actionConfig.url_path,
+              entityId,
+              svgElementInfo?.svgElement
+            ) as string;
+            window.open(urlPath, open_type);
           }
           break;
         }
