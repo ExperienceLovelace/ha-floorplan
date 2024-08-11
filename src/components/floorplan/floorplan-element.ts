@@ -589,7 +589,7 @@ export class FloorplanElement extends LitElement {
         masterPageInfo.config.master_page.content_element;
 
       if (pageInfo.config.page_id === masterPageId) {
-        this.floorplanElement.replaceChildren(svg);
+        if (this.floorplanElement) this.replaceChildrenUtil(this.floorplanElement, svg);
       } else {
         // const masterPageElement = this.floorplanElement.querySelector('#' + masterPageId);
         const contentElement = this.floorplanElement.querySelector(
@@ -612,12 +612,12 @@ export class FloorplanElement extends LitElement {
           contentElement.getAttribute('width') as string
         );
         svg.setAttribute('x', contentElement.getAttribute('x') as string);
-        svg.setAttribute('y', contentElement.getAttribute('y') as string);
+        svg.setAttribute('y', contentElement.getAttribute('y') as string); 
 
-        contentElement.parentElement?.replaceChildren(svg);
+        if (contentElement?.parentElement) this.replaceChildrenUtil(contentElement.parentElement, svg);
       }
     } else {
-      this.floorplanElement.replaceChildren(svg);
+      if (this.floorplanElement) this.replaceChildrenUtil(this.floorplanElement, svg);
     }
 
     // TODO: Re-enable???
@@ -634,6 +634,26 @@ export class FloorplanElement extends LitElement {
     */
 
     return svg;
+  }
+
+  /**
+   * Handle browsers that do not support replaceChildren
+   * 
+   * @param parent Element to replace children
+   * @param newChild New child to replace the existing children
+   * @returns 
+   */
+  async replaceChildrenUtil(parent: Element, newChild: Element): Promise<void> {
+    // If the parent has the replaceChildren function, use it
+    if (parent?.replaceChildren) {
+      parent.replaceChildren(newChild);
+      return;
+    }
+
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    parent.appendChild(newChild);
   }
 
   async loadImage(
