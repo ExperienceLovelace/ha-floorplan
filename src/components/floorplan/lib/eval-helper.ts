@@ -1,11 +1,13 @@
 import { HomeAssistant } from '../../../lib/homeassistant/types';
 import { HassEntity } from '../../floorplan-examples/homeassistant';
-import { FloorplanConfig } from './/floorplan-config';
+import { FloorplanConfig, FloorplanCallServiceActionConfig } from './/floorplan-config';
+import { FloorplanRuleInfo, FloorplanSvgElementInfo } from './floorplan-info';
 import { ColorUtil } from './color-util';
 import { DateUtil } from './date-util';
 import Sval from 'sval';
 import { getErrorMessage } from './error-util';
 import estree from 'estree';
+import { dispatchFloorplanActionCallEvent } from './events';
 
 export class EvalHelper {
   static cache: { [key: string]: estree.Node } = {};
@@ -41,7 +43,9 @@ export class EvalHelper {
     entityId?: string,
     svgElement?: SVGGraphicsElement,
     svgElements?: { [elementId: string]: SVGGraphicsElement },
-    functions?: unknown
+    functions?: unknown,
+    svgElementInfo?: FloorplanSvgElementInfo,
+    ruleInfo?: FloorplanRuleInfo
   ): unknown {
     this.expression = expression.trim();
 
@@ -93,6 +97,23 @@ export class EvalHelper {
     this.interpreter.import('hass', hass);
     this.interpreter.import('element', svgElement);
     this.interpreter.import('elements', svgElements);
+
+    // Let the user call "action" function (to call our service call-handler)
+    this.interpreter.import('action',
+     (actionConfig :
+        FloorplanCallServiceActionConfig) => {
+        // Set default action
+        actionConfig.action = actionConfig?.action || 'call-service';
+
+        // Dispatch event to call service
+        dispatchFloorplanActionCallEvent(svgElement as SVGGraphicsElement, {
+          actionConfig,
+          entityId,
+          svgElementInfo,
+          ruleInfo,
+        });
+    }
+  );
 
     try {
       this.interpreter.run(this.parsedFunction as estree.Node);

@@ -8,6 +8,7 @@ import {
   FloorplanPageConfig,
   FloorplanActionConfig,
   FloorplanCallServiceActionConfig,
+  FloorplanEventActionCallDetail
 } from './lib/floorplan-config';
 import {
   FloorplanRuleConfig,
@@ -43,6 +44,7 @@ import {
   TemplateResult,
   PropertyValues,
 } from 'lit';
+import { HA_FLOORPLAN_ACTION_CALL_EVENT } from './lib/events';
 import { customElement, property } from 'lit/decorators.js';
 import OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents;
@@ -84,7 +86,6 @@ export class FloorplanElement extends LitElement {
 
   constructor() {
     super();
-
     window.onerror = this.handleWindowError.bind(this);
   }
 
@@ -266,6 +267,9 @@ export class FloorplanElement extends LitElement {
       } else {
         await this.initSinglePage();
       }
+
+      // Add listener 
+      this.initEventListeners();
     } catch (err) {
       this.handleError(err as Error);
     }
@@ -277,7 +281,6 @@ export class FloorplanElement extends LitElement {
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
-      //await this.handleEntities(true);
     } catch (err) {
       this.handleError(err as Error);
     }
@@ -288,11 +291,9 @@ export class FloorplanElement extends LitElement {
       await this.loadStyleSheet(this.config.stylesheet);
       const imageConfig = this.getBestImage(this.config);
       this.svg = await this.loadFloorplanSvg(imageConfig);
-      //this.initFloorplanRules(svg, this.config!)
       this.initPageDisplay();
       this.initVariables();
       this.initStartupActions();
-      //await this.handleEntities(true);
     } catch (error) {
       this.handleError(error as Error);
     }
@@ -974,6 +975,11 @@ export class FloorplanElement extends LitElement {
     } else {
       return [];
     }
+  }
+
+  initEventListeners(): void {
+    // Add our custom event listener
+    this.addEventListener(HA_FLOORPLAN_ACTION_CALL_EVENT, this.handleEventActionCall as EventListener);
   }
 
   initStartupActions(): void {
@@ -1662,7 +1668,9 @@ export class FloorplanElement extends LitElement {
   evaluate(
     expression: string | unknown,
     entityId?: string,
-    svgElement?: SVGGraphicsElement
+    svgElement?: SVGGraphicsElement,
+    svgElementInfo?: FloorplanSvgElementInfo,
+    ruleInfo?: FloorplanRuleInfo
   ): unknown {
     if (typeof expression === 'string' && EvalHelper.isCode(expression)) {
       try {
@@ -1673,7 +1681,9 @@ export class FloorplanElement extends LitElement {
           entityId,
           svgElement,
           this.svgElements,
-          this.functions
+          this.functions,
+          svgElementInfo,
+          ruleInfo
         );
       } catch (err) {
         return this.handleError(err as Error, {
@@ -1922,7 +1932,9 @@ export class FloorplanElement extends LitElement {
   executeServiceData(
     actionConfig: FloorplanCallServiceActionConfig,
     entityId?: string,
-    svgElement?: SVGGraphicsElement
+    svgElement?: SVGGraphicsElement,
+    svgElementInfo?: FloorplanSvgElementInfo,
+    ruleInfo?: FloorplanRuleInfo
   ): boolean {
     try {
       if (typeof actionConfig.service_data === 'object') {
@@ -1930,11 +1942,13 @@ export class FloorplanElement extends LitElement {
           this.evaluate(
             actionConfig.service_data[key],
             entityId,
-            svgElement
+            svgElement,
+            svgElementInfo,
+            ruleInfo
           ) as string;
         }
       } else if (typeof actionConfig.service_data === 'string') {
-        this.evaluate(actionConfig.service_data, entityId, svgElement);
+        this.evaluate(actionConfig.service_data, entityId, svgElement, svgElementInfo, ruleInfo);
       } else if (actionConfig.service_data !== undefined) {
         this.logWarning('CONFIG', `Invalid execution data`);
       }
@@ -2279,7 +2293,9 @@ export class FloorplanElement extends LitElement {
         this.executeServiceData(
           actionConfig,
           entityId,
-          svgElementInfo?.svgElement
+          svgElementInfo?.svgElement,
+          svgElementInfo,
+          ruleInfo
         );
         for (const targetSvgElement of targetSvgElements) {
           isSameTargetElement =
@@ -2287,7 +2303,7 @@ export class FloorplanElement extends LitElement {
             targetSvgElements[0] === svgElementInfo?.svgElement;
           if (!isSameTargetElement) {
             // Evaluate service data again, this time supplying 'target' element
-            this.executeServiceData(actionConfig, entityId, targetSvgElement);
+            this.executeServiceData(actionConfig, entityId, targetSvgElement, svgElementInfo, ruleInfo);
           }
         }
         break;
@@ -2377,6 +2393,15 @@ export class FloorplanElement extends LitElement {
     if (this.isDemo) {
       this.notify(`Calling service: ${domain}.${service} (${data.entity_id})`);
     }
+  }
+
+  handleEventActionCall(event: Event) {
+    const customEvent = event as CustomEvent<FloorplanEventActionCallDetail>;
+    const { actionConfig, entityId, svgElementInfo, ruleInfo  } = customEvent.detail;
+
+    this.handleActions(actionConfig, entityId, svgElementInfo, ruleInfo);
+
+    //this.callService(actionConfig, entityId, svgElementInfo, ruleInfo);
   }
 
   /***************************************************************************************************************************/
