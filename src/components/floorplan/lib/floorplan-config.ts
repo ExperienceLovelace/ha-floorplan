@@ -13,6 +13,11 @@ import {
   CustomActionConfig,
 } from '../../../lib/homeassistant/lovelace/types';
 
+import {
+  FloorplanSvgElementInfo,
+  FloorplanRuleInfo
+} from './floorplan-info';
+
 export class FloorplanConfig {
   // Core features
   image!: FloorplanImageConfig | string;
@@ -133,12 +138,9 @@ export class FloorplanVariableConfig {
   value!: unknown;
 }
 
-export class FloorplanCustomEvent extends Event {
-  detail!: FloorplanCallServiceEventConfig;
-}
-
-export interface FloorplanCallServiceEventConfig
-  extends FloorplanCallServiceActionConfig {
-  entity?: string;
-  element?: string;
+export interface FloorplanEventActionCallDetail {
+  actionConfig: FloorplanCallServiceActionConfig;
+  entityId?: string;
+  svgElementInfo?: FloorplanSvgElementInfo;
+  ruleInfo?: FloorplanRuleInfo;
 }
