@@ -253,6 +253,7 @@ Service data can be dynamically constructed using JavaScript code. Below is the 
 | `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
 | `element`                | current SVG element                                                                         |
 | `elements`               | current SVG elements                                                                        |
+| `action`                 | Make action-executions to ha-floorplan |
 
 #### Using `class_set` to define a entity-state related class
 
@@ -378,6 +379,103 @@ hold_action:
 ```
 
 Service calls can be simplified. More information can be found in the section on [rule simplification](#rule-simplification).
+
+#### Using `execute` with `action`
+
+As of v1.0.45 we're exposing the function called `action`, which allow you to execute a limitless amount of actions, inside other executes JavaScript.
+
+Let's say you'd like to run a specific action, but on basis of some other entity-states, or similar.
+
+The solution are primary made to be used in the `execute` service, however, it's possible to use `action` on all other action calls, too.
+
+Please note that each `execute` request are fired through events, so you don't have to wait for the execution to be done. 
+
+The following shows how I'm sending a "navigate" request, but also requests ha-floorplan to send another action, where I'm pausing the current playback on a media_player. 
+
+```yaml
+element: rooms-restroom
+entities:
+  - media_player.sonos_restroom
+tap_action:
+  action: navigate
+  navigation_path: |
+    > // Simple example where navigate_path are set with code
+    const target = "/default-overview/alarm#" + element.id;
+    // With "action" I'm able to make another action, too
+    const action-data = {
+      action: 'call-service',
+      service: 'media_player.media_play_pause',
+      service_data: {
+        entity_id: 'media_player.sonos_stue'
+      }
+    };
+    action(action_data);
+    return target;
+```
+
+Below you'll find another example where a random action are executed, triggered by a `tap_action`.
+
+```yaml
+tap_action:
+  service: floorplan.execute
+  service_data:
+    execute_fnc_num_1_test: |
+      > 
+      try{
+        // Remember that ha-floorplan exposes a lot of useful properties!
+        console.log(
+          "this",this, "\nentitiy",entity, "\nelements", elements, "\nentities", entities,
+          "\nconfig",config, "\nutil", util, "\nelement", element, "\nstates", states, "\naction", action);
+
+        const actions = {
+          act1: {
+            action: 'call-service',
+            service: 'media_player.media_play_pause',
+            service_data: {
+              entity_id: 'media_player.sonos_badevaerelse'
+            }
+          },
+          act2: {
+            service: 'light.toggle',
+            service_data: {
+              entity_id: 'light.sonoff1'
+            }
+          },
+          act3: {
+            action: 'call-service',
+            service: 'floorplan.style_set',
+            service_data: {
+              element: element,
+              style: 'opacity: 0.4'
+            }
+          },
+          act4: {
+            action: 'call-service',
+            service: 'homeassistant.toggle',
+            service_data: {
+              entity_id: 'light.sonoff1'
+            }
+          },
+          act5: {
+            action: 'navigate',
+            navigation_path: '/default-overview/alarm'
+          },
+          act6: {
+            service: 'floorplan.image_set',
+            service_data: {
+              image: "https://<PATH_TO_SVG>",
+            }
+          }
+        };
+
+        // Set a random action on basis of number of actions
+        const random_action = actions[`act${Math.floor(Math.random() * Object.keys(actions).length) + 1}`]
+        console.log("Running random action:", random_action);
+        action(random_action);
+      }catch(e){
+        console.log("Well.. That didn't go as planned",e);
+      }
+```
 
 ## Advanced Topics
 
