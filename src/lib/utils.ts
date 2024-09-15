@@ -79,7 +79,9 @@ export class Utils {
 
     for (let i = 0; i < styles.length; i++) {
       const parts = styles[i].split(':').map((x) => x.trim());
-      element.style.setProperty(parts[0], parts[1]);
+      const isImportant = parts[1].includes('!important');
+      parts[1] = parts[1].replace(/!important/g, '').trim();
+      element.style.setProperty(parts[0], parts[1], isImportant ? 'important' : '');
     }
   }
 
