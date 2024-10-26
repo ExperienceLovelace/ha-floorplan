@@ -58,8 +58,8 @@ jobs:
         JSON: ${{ toJSON(github) }}
 
     - name: Push changes to target branch
-      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false)
+      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref_name }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      branch: ${{ github.ref_name }}
