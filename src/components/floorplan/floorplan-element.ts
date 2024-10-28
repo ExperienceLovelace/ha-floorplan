@@ -446,9 +446,11 @@ export class FloorplanElement extends LitElement {
       }
     } else {
       if (config.image?.sizes) {
+        // Previously we always used screen.width. This logic are here, to support the old way of doing it.
+        const target_width = config?.image?.use_screen_width === true ? screen.width : window.innerWidth;
         config.image.sizes.sort((a, b) => b.min_width - a.min_width); // sort descending
         for (const pageSize of config.image.sizes) {
-          if (screen.width >= pageSize.min_width) {
+          if (target_width >= pageSize.min_width) {
             imageUrl = pageSize.location;
             cache = pageSize.cache === true;
             break;
