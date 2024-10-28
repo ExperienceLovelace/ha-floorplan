@@ -80,6 +80,7 @@ export class FloorplanImageConfig {
   location!: string;
   cache!: boolean;
   sizes!: FloorplanImageSize[];
+  use_screen_width?: boolean;
 }
 
 export class FloorplanImageSize {
