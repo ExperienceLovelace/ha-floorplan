@@ -44,9 +44,9 @@ image:
   cache: true
 ```
 
-For supporting multiple Floorplan images based on the current screen resolution, `image` can be set to an object that contains a list of image sizes.
+For supporting multiple Floorplan images based on the current window size, `image` can be set to an object that contains a list of image sizes.
 
-In the example below, the first image will be used if the screen width is less than 1024 pixels, and the second image will be used if the screen widths is greater than that.
+In the example below, the first image will be used if the window width is less than 1024 pixels, and the second image will be used if the window widths is greater than that.
 
 ```yaml
 image:
@@ -58,6 +58,8 @@ image:
       location: /local/floorplan/examples/home/home-wide.svg
       cache: true
 ```
+
+From v1.0.45 and onwards, Floorplan will use the [window inner width](https://developer.mozilla.org/en-US/docs/Web/API/Window/innerWidth) in the calculations. If you have specific needs, it's still possible to enforce the usage of [screen width](https://developer.mozilla.org/en-US/docs/Web/API/Screen/width), by setting the `use_screen_width: true` key, on the image property. Please stick to the default option, whenever possible.
 
 Floorplan can display an alternate image for mobile devices. This can be configured using the `image_mobile` setting.
 
