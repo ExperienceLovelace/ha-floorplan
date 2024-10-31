@@ -52,11 +52,6 @@ jobs:
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
 
-    - name: Dump GitHub context
-      run: echo $JSON
-      env:
-        JSON: ${{ toJSON(github) }}
-
     - name: Push changes to target branch
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
       uses: ad-m/github-push-action@master
