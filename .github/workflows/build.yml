@@ -7,9 +7,13 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'docs/**'
   pull_request:
     branches:
       - master
+    paths-ignore:
+      - 'docs/**'
 
 jobs:
   build:
@@ -51,11 +55,6 @@ jobs:
     - name: Nothing to commit
       if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
-
-    - name: Dump GitHub context
-      run: echo $JSON
-      env:
-        JSON: ${{ toJSON(github) }}
 
     - name: Push changes to target branch
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
