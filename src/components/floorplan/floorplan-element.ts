@@ -1059,6 +1059,11 @@ export class FloorplanElement extends LitElement {
           rule.hover_info_filter === undefined
             ? defaultRule.hover_info_filter
             : rule.hover_info_filter;
+
+        rule.double_tap_action =
+          rule.double_tap_action === undefined
+            ? defaultRule.double_tap_action
+            : rule.double_tap_action;
       }
     }
 
