@@ -29,13 +29,13 @@ feature_row:
 {% capture workinprogress-notice-1 %}
 **Important notice before you begin the ha-floorplan journey**
 
-Please be aware that `ha-floorplan` will require a good amount of your time. Take a look at our [examples](https://experiencelovelace.github.io/ha-floorplan/docs/examples/), if you're getting stuck. Our [Discussion](https://github.com/ExperienceLovelace/ha-floorplan/discussions) area a also a good place to find help, but we're expecting you to read the docs and give it a try, before you're asking for help. Thanks you, for your understanding.
+Please be aware that `ha-floorplan` will require a good amount of your time. Take a look at our [examples](https://experiencelovelace.github.io/ha-floorplan/docs/examples/), if you're getting stuck. Our [Discussion](https://github.com/ExperienceLovelace/ha-floorplan/discussions) area is also a good place to find help, but we're expecting you to read the docs and give it a try, before asking for help. Thank you, for your understanding.
 
-If you're decided to go all in, we'll recommend you to draw your floorplan in Floorplanner or simular tool. After that's done, export is as an image. Sadly Floorplanner doesn't support export as a SVG-file.
+If you've decided to go all in, we recommend you draw your floorplan in Floorplanner or similar tool. After that's done, export as an image. Sadly Floorplanner doesn't support exporting as a SVG-file.
 
 In Inkscape you'll draw on top of the exported image from Floorplan. In other words, doing the drawings (almost) yet another time. If you find that to be a waste of time, it's totally possible to just draw the floorplan in Inkscape without any cool-looking background. That's your choice. In all cases remember to add ID's to all elements in Inkscape, if you're planning to interact with them.
 
-After the SVG-file are done, you're ready to create configs for each room, to match up with each element in Home Assistant. That's another journey - but opens up for a lot of new fancy things for you to do, both with the graphics, but also how you're interacting with the floor plan itself.
+After the SVG-file is done, you're ready to create configs for each room, to match up with each element in Home Assistant. That's another journey - but opens up for a lot of new fancy things for you to do, both with the graphics, but also how you're interacting with the floor plan itself.
 
 We're improving `ha-floorplan` over time, so feel free to add suggestions whenever it's relevant. With that said, we've limited time to spend. For that reason you're very welcome to improve the docs by your own, creating pull-requests and joining the discussion on GitHub.
 
@@ -60,7 +60,7 @@ With that said.... Good luck, and let's get started! 🥳
 
 ## Adding ha-floorplan to Home Assistant
 
-Here you'll learn how to add ha-floorplan to Home Assistant. You could go manual, but we'll recommend you to stick to HACS.
+Here you'll learn how to add ha-floorplan to Home Assistant. You could go manual, but we recommend you stick to HACS.
 
 ### HACS
 The **H**ome **A**ssistant **C**ommunity **S**tore (HACS) is a great addition to Home Assistant and ha-floorplan is part of the its ecosystem. Therefore, we recommend installing our integration via HACS. And, why wouldn't you use [HACS](https://hacs.xyz)? It's one of the best things out there!
@@ -88,12 +88,12 @@ You'll now need to create your SVG file. It's up to you, if you would like to ha
 
 After that's done, it's time to add the SVG-file to your Home Assistant instance. The CSS-file are almost a must-have for better visuals, too.
 
-We don't have a proper "step-by-step" guide for this part. That's mainly due to limited amount of time, but the process are also changing a bit over time, now that Home Assistant are always under active development.
+We don't have a proper "step-by-step" guide for this part. That's mainly due to limited amount of time, but the process is also changing a bit over time, now that Home Assistant is always under active development.
 
 With that said, here's a few helpful links for you to continue your journey, if you're unsure how to progress.
 
 ### How to add ha-floorplan to Home Assistant
-If you're unsure on how to get started, we'll recommend you to look at the following post:
+If you're unsure on how to get started, we recommend you look at the following post:
 
 [How to setup ha-floorplan in Hass.io](https://community.home-assistant.io/t/floorplan-now-available-as-a-lovelace-card/115489/323?u=exetico)
 
@@ -112,7 +112,7 @@ If you're unsure on how to prepare the SVG-file with your own Floorplanner image
 
 ### How to get started from scratch, but as a video 
 
-I'll recommend you to take a look at this video:
+We recommend you take a look at this video:
 
 [Getting Started (1) Add HACS & SVG-files and YAML entity mapping in Home Assistant](https://www.youtube.com/watch?v=5ue9J4WG2a8)
 
@@ -126,7 +126,7 @@ If you're still facing problems on how to use your SVG-file, try visiting our li
 
 
 ### How to get started with CSS
-There's plenty of tutorials related to CSS online. We'll recommend you to give one of them a chance, and maybe even take a look at our examples in the docs.
+There's plenty of tutorials related to CSS online. We recommend you give one of them a chance, and maybe even take a look at our examples in the docs.
 
 With that said, here's one very simple video about how to get started with CSS in ha-floorplan:
 
