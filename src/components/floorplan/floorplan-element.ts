@@ -1111,7 +1111,6 @@ export class FloorplanElement extends LitElement {
         }
 
         const svgElementInfo = this.addSvgElementToRule(
-          svg,
           svgElement,
           ruleInfo
         );
@@ -1186,7 +1185,7 @@ export class FloorplanElement extends LitElement {
           this.evaluate(rule.element, entityId, undefined) as string
         );
       else if (rule.element !== null) elementIds = elementIds.concat(entityId);
-      
+
       // Do not add target entity "*"
       if (entityId && entityId === "*") continue;
 
@@ -1256,7 +1255,6 @@ export class FloorplanElement extends LitElement {
         elementInfo.ruleInfos.push(ruleInfo);
 
         const svgElementInfo = this.addSvgElementToRule(
-          svg,
           svgElement,
           ruleInfo
         );
@@ -1368,20 +1366,25 @@ export class FloorplanElement extends LitElement {
     });
   }
 
-  addSvgElementToRule(
-    svg: SVGGraphicsElement,
-    svgElement: SVGGraphicsElement,
-    ruleInfo: FloorplanRuleInfo
+  generateSvgElementInfo(
+    svgElement: SVGGraphicsElement
   ): FloorplanSvgElementInfo {
     const svgBBox = svgElement.getBBox ? svgElement.getBBox() : null;
-    const svgElementInfo = new FloorplanSvgElementInfo(
+    return new FloorplanSvgElementInfo(
       svgElement.id,
       svgElement,
       svgElement,
       svgBBox
     );
-    ruleInfo.svgElementInfos[svgElement.id] = svgElementInfo;
+  }
 
+  addSvgElementToRule(
+    svgElement: SVGGraphicsElement,
+    ruleInfo: FloorplanRuleInfo
+  ): FloorplanSvgElementInfo {
+    
+    const svgElementInfo = this.generateSvgElementInfo(svgElement);
+    ruleInfo.svgElementInfos[svgElement.id] = svgElementInfo;
     return svgElementInfo;
   }
 
@@ -2186,6 +2189,49 @@ export class FloorplanElement extends LitElement {
         break;
 
       case 'image_set':
+        let nestedSvgElementRef = undefined;
+
+        // If rule does not have a parent element ref, we'll need to check if element is part of actionConfig.service_data
+        if(!svgElementInfo && typeof actionConfig?.service_data === "object") {
+          // We do not support elements, as nested service_data
+          if(actionConfig?.service_data?.elements) {
+            this.logError(
+              'CONFIG', 'Multiple elements are not supported in service data.'
+            )
+            break;
+          }else if(
+            actionConfig?.service_data?.element &&
+            typeof actionConfig?.service_data?.element === "string"
+          ){
+            if(actionConfig?.service_data?.image_refresh_interval) {
+              this.logError(
+                'CONFIG', 'Image refresh interval is not supported with element as service data.'
+              )
+              break;
+            };
+
+            // Else, we'll use the element as the target element
+            nestedSvgElementRef = actionConfig?.service_data?.element;
+          }
+        }
+
+        if(nestedSvgElementRef) {
+          // Check if nested elements are provided as service_data
+          const svg = this.getSvgElementsFromServiceData(
+            actionConfig?.service_data || {}
+          );
+
+          if(svg.length < 1) {
+            this.logError(
+              'CONFIG', 'No valid element found in service data.'
+            )
+            break;
+          }
+
+          // Use the first element found
+          svgElementInfo = this.generateSvgElementInfo(svg[0]);
+        }
+
         if (svgElementInfo && ruleInfo) {
           serviceData = this.getServiceData(
             actionConfig,
