@@ -272,7 +272,7 @@ GEM
     tzinfo-data (1.2024.2)
       tzinfo (>= 1.0.0)
     unicode-display_width (1.8.0)
-    uri (0.13.1)
+    uri (0.13.2)
     webrick (1.8.2)
 
 PLATFORMS
