@@ -1184,7 +1184,7 @@ export class FloorplanElement extends LitElement {
         elementIds = elementIds.concat(
           this.evaluate(rule.element, entityId, undefined) as string
         );
-      else if (rule.element !== null) elementIds = elementIds.concat(entityId);
+      else if (rule.element !== null && rule.element !== undefined) elementIds = elementIds.concat(entityId);
 
       // Do not add target entity "*"
       if (entityId && entityId === "*") continue;
