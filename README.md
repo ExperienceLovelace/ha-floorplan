@@ -10,7 +10,7 @@
 
 <p align="center">
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/commits/master" target="_blank">
-    <img src="https://github.com/ExperienceLovelace/ha-floorplan/workflows/Last%20commit/badge.svg?style=flat-square&logo=github&logoColor=white"
+    <img src="https://github.com/ExperienceLovelace/ha-floorplan/workflows/Last%20commit/badge.svg??branch=master&style=flat-square&logo=github&logoColor=white"
          alt="GitHub Last commit">
          </a>
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/issues" target="_blank">
