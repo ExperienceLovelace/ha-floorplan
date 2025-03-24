@@ -30,6 +30,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Check package version
+      run: |
+        PACKAGE_VERSION=$(node -p "require('./package.json').version")
+        if [[ "$PACKAGE_VERSION" == *-* ]]; then
+          echo "Non-final version detected ($PACKAGE_VERSION). Skipping build."
+          exit 0
+        fi
+
     - run: npm ci
 
     - run: npm run build
