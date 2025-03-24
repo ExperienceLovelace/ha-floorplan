@@ -1,11 +1,11 @@
-name: Build on Push[master] and PR[master]
+name: Test on PR[master]
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     strategy:
