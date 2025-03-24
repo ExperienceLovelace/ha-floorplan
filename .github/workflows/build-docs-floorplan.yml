@@ -1,6 +1,3 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Build Floorplan for Docs
 
 on:
@@ -11,59 +8,70 @@ on:
       - 'docs/**'
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
+
+    outputs:
+      is_final_version: ${{ steps.check_version.outputs.is_final_version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check ha-floorplan package version
+        id: check_version
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          if [[ "$PACKAGE_VERSION" == *-* ]]; then
+            echo "Non-final version detected ($PACKAGE_VERSION)."
+            echo "is_final_version=false" >> $GITHUB_OUTPUT
+          else
+            echo "Final version detected ($PACKAGE_VERSION)."
+            echo "is_final_version=true" >> $GITHUB_OUTPUT
+
+  build-and-deploy-ha-floorplan-for-docs:
+    runs-on: ubuntu-latest
+    needs: validate
+    if: needs.validate.outputs.is_final_version == 'true' # Only run if the version is final
 
     strategy:
       matrix:
         node-version: [20.x]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        ssh-key: ${{ secrets.DEPLOY_KEY_FOR_BUILDS }} # Use our DEPLOY_KEY_FOR_BUILDS, to bypass the branch protection rules.
-        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY_FOR_BUILDS }}
+          fetch-depth: 0
 
-    - name: Build files with Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Build files with Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Check ha-floorplan package version
-      run: |
-        PACKAGE_VERSION=$(node -p "require('./package.json').version")
-        if [[ "$PACKAGE_VERSION" == *-* ]]; then
-          echo "Non-final version detected ($PACKAGE_VERSION). Skipping build."
-          exit 0
-        fi
+      - run: npm ci
 
-    - run: npm ci
-      if: success()
+      - run: npm run build
 
-    - run: npm run build
-      if: success()
+      - name: Add file(s) for commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -f docs/_docs/floorplan/floorplan-examples.js
 
-    - name: Add file(s) for commit
-      if: success()
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add -f docs/_docs/floorplan/floorplan-examples.js
+      - name: Commit changes
+        id: can_commit
+        run: |-
+          commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
+          echo "commit_result=$commit_result" >> $GITHUB_ENV
 
-    - name: Commit changes
-      id: can_commit
-      if: success()
-      run: |-
-        commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
-        echo "commit_result=$commit_result" >> $GITHUB_ENV
+      - name: Nothing to commit
+        if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
+        run: echo "No changes found (for both main code and docs). Skipping push."
 
-    - name: Nothing to commit
-      if: success() && contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
-      run: echo "No changes found (for both main code and docs). Skipping push."
-
-    - name: Push changes to target branch
-      if: success() && (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
-      uses: ad-m/github-push-action@master
-      with:
-        branch: ${{ github.ref_name }}
+      - name: Push changes to target branch
+        if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.ref_name }}
