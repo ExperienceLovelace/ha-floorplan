@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Build on Push[master] and PR[master]
+name: Build Floorplan for Docs
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Check package version
+    - name: Check ha-floorplan package version
       run: |
         PACKAGE_VERSION=$(node -p "require('./package.json').version")
         if [[ "$PACKAGE_VERSION" == *-* ]]; then
@@ -39,10 +39,13 @@ jobs:
         fi
 
     - run: npm ci
+      if: success()
 
     - run: npm run build
+      if: success()
 
     - name: Add file(s) for commit
+      if: success()
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
@@ -50,16 +53,17 @@ jobs:
 
     - name: Commit changes
       id: can_commit
+      if: success()
       run: |-
-       commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
-       echo "commit_result=$commit_result" >> $GITHUB_ENV
+        commit_result=$(git commit -m "Add changes to dist and docs" -a | tr -d '\n' || true)
+        echo "commit_result=$commit_result" >> $GITHUB_ENV
 
     - name: Nothing to commit
-      if: contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
+      if: success() && contains(steps.can_commit.outputs.commit_result, 'nothing to commit')
       run: echo "No changes found (for both main code and docs). Skipping push."
 
     - name: Push changes to target branch
-      if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
+      if: success() && (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
       uses: ad-m/github-push-action@master
       with:
         branch: ${{ github.ref_name }}
