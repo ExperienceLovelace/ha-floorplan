@@ -51,6 +51,7 @@ declare global {
 export interface FloorplanCallServiceActionConfig
   extends CallServiceActionConfig {
   value: unknown;
+  _is_internal_action_scope?: boolean;
 }
 
 export interface HoverInfoActionConfig extends BaseActionConfig {

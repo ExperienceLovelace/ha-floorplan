@@ -665,29 +665,35 @@ export class FloorplanElement extends LitElement {
     entityId: string,
     ruleInfo: FloorplanRuleInfo,
     useCache: boolean
-  ): Promise<SVGGraphicsElement> {
-    const isSvg =
+  ): Promise<SVGGraphicsElement | undefined> {
+    try{
+      const isSvg =
       imageUrl.toLowerCase().includes('.svg') ||
       svgElementInfo.svgElement.nodeName === 'svg' ||
       svgElementInfo.svgElement.querySelector('svg');
 
-    if (isSvg) {
-      return await this.loadSvgImage(
-        imageUrl,
-        svgElementInfo,
-        entityId,
-        ruleInfo,
-        useCache
-      );
-    } else {
-      return await this.loadBitmapImage(
-        imageUrl,
-        svgElementInfo,
-        entityId,
-        ruleInfo,
-        useCache
-      );
+      if (isSvg) {
+        return await this.loadSvgImage(
+          imageUrl,
+          svgElementInfo,
+          entityId,
+          ruleInfo,
+          useCache
+        );
+      } else {
+        return await this.loadBitmapImage(
+          imageUrl,
+          svgElementInfo,
+          entityId,
+          ruleInfo,
+          useCache
+        );
+      }
     }
+    catch(e){
+      this.logError('IMAGE', `Could not initialize image: ${imageUrl}, error: ${e}`);
+    }
+    return; 
   }
 
   async loadBitmapImage(
@@ -1184,7 +1190,7 @@ export class FloorplanElement extends LitElement {
         elementIds = elementIds.concat(
           this.evaluate(rule.element, entityId, undefined) as string
         );
-      else if (rule.element !== null && rule.element !== undefined) elementIds = elementIds.concat(entityId);
+      else if (rule.element !== null) elementIds = elementIds.concat(entityId);
 
       // Do not add target entity "*"
       if (entityId && entityId === "*") continue;
@@ -1296,7 +1302,7 @@ export class FloorplanElement extends LitElement {
         );
       }
 
-      if (ruleInfo.rule.tap_action || ruleInfo.rule.double_tap_action) {
+      if (ruleInfo?.rule?.tap_action || ruleInfo?.rule?.double_tap_action) {
         const singleTapAction = ruleInfo.rule.tap_action
           ? this.getActionConfigs(ruleInfo.rule.tap_action)
           : false;
@@ -1345,7 +1351,7 @@ export class FloorplanElement extends LitElement {
         Utils.addClass(element, `floorplan-click${isParent ? '' : '-child'}`); // mark the element as being processed by floorplan
       }
 
-      if (ruleInfo.rule.hold_action) {
+      if (ruleInfo?.rule?.hold_action) {
         const actions = this.getActionConfigs(ruleInfo.rule.hold_action);
         const context = new FloorplanClickContext(
           this,
@@ -2191,8 +2197,8 @@ export class FloorplanElement extends LitElement {
       case 'image_set':
         let nestedSvgElementRef = undefined;
 
-        // If rule does not have a parent element ref, we'll need to check if element is part of actionConfig.service_data
-        if(!svgElementInfo && typeof actionConfig?.service_data === "object") {
+        // We'll prioritize the element from the service data, if it's provided
+        if(typeof actionConfig?.service_data === "object") {
           // We do not support elements, as nested service_data
           if(actionConfig?.service_data?.elements) {
             this.logError(
@@ -2223,8 +2229,9 @@ export class FloorplanElement extends LitElement {
 
           if(svg.length < 1) {
             this.logError(
-              'CONFIG', 'No valid element found in service data.'
-            )
+              'CONFIG',
+              'Could not locate the specified element from the service data within the SVG. Please ensure the element ID is correct and exists in the SVG.'
+            );
             break;
           }
 
@@ -2232,20 +2239,39 @@ export class FloorplanElement extends LitElement {
           svgElementInfo = this.generateSvgElementInfo(svg[0]);
         }
 
-        if (svgElementInfo && ruleInfo) {
+        if (svgElementInfo && (ruleInfo || actionConfig?._is_internal_action_scope)) {
           serviceData = this.getServiceData(
             actionConfig,
             entityId,
             svgElementInfo?.svgElement
           );
 
-          imageUrl =
-            typeof serviceData === 'string'
-              ? serviceData
-              : (serviceData.image as string);
+          let imageUrl;
+          if(typeof serviceData !== undefined){
+            // Allow internal actions to use the image from included service data
+            if(actionConfig && actionConfig._is_internal_action_scope){
+              serviceData = actionConfig?.service_data;
+              const data = actionConfig?.service_data as Record<string, unknown>;
+              if(data?.image !== null){
+                if(typeof data?.image === "string") imageUrl = data?.image as string;
+                if(typeof data?.image === "object"){
+                  const image = data?.image as FloorplanImageConfig;
+                  if('location' in image && typeof image.location === "string") imageUrl = image.location;
+                }
+              }
+            }
+            else if(typeof serviceData === "string") {
+              imageUrl = serviceData as string;
+            }else if(typeof serviceData === "object"){
+              if(typeof serviceData?.image === "string") imageUrl = serviceData?.image as string;
+              if (serviceData?.image !== null && typeof serviceData?.image === "object" && "location" in serviceData?.image && typeof serviceData.image.location === "string") {
+                imageUrl = serviceData.image.location;
+              }
+            }
+          } 
 
           imageRefreshInterval =
-            typeof serviceData === 'object'
+          !actionConfig?._is_internal_action_scope && typeof serviceData === 'object'
               ? (serviceData.image_refresh_interval as number)
               : 0;
 
@@ -2258,11 +2284,11 @@ export class FloorplanElement extends LitElement {
                 : true; // use cache by default
           }
 
-          if (ruleInfo.imageLoader) {
+          if (ruleInfo?.imageLoader) {
             clearInterval(ruleInfo.imageLoader); // cancel any previous image loading for this rule
           }
 
-          if (imageRefreshInterval) {
+          if (imageRefreshInterval && ruleInfo && !actionConfig?._is_internal_action_scope) {
             ruleInfo.imageLoader = setInterval(
               this.loadImage.bind(this),
               imageRefreshInterval * 1000,
@@ -2273,6 +2299,8 @@ export class FloorplanElement extends LitElement {
               useCache
             );
           }
+
+          if(!imageUrl) break;
 
           this.loadImage(
             imageUrl,
@@ -2456,6 +2484,7 @@ export class FloorplanElement extends LitElement {
     const customEvent = event as CustomEvent<FloorplanEventActionCallDetail>;
     const { actionConfig, entityId, svgElementInfo, ruleInfo  } = customEvent.detail;
 
+    actionConfig._is_internal_action_scope = true;
     this.handleActions(actionConfig, entityId, svgElementInfo, ruleInfo);
 
     //this.callService(actionConfig, entityId, svgElementInfo, ruleInfo);
