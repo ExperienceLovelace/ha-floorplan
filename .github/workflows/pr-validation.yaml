@@ -16,14 +16,8 @@ jobs:
         id: check-workflows
         run: |
           set -e  # Exit immediately if a command exits with a non-zero status
-          git fetch --no-tags --prune --depth=2 origin +refs/heads/${{ github.head_ref }}:refs/remotes/origin/${{ github.head_ref }}
-          BEFORE_SHA=${{ github.event.before || 'HEAD^' }}
-          if git cat-file -e $BEFORE_SHA 2>/dev/null; then
-            DIFF_BASE=$BEFORE_SHA
-          else
-            DIFF_BASE="HEAD^"
-          fi
-          if git diff --name-only $DIFF_BASE ${{ github.sha }} | grep -q '^.github/workflows/'; then
+          git fetch --no-tags --prune --depth=2 origin ${{ github.head_ref }}
+          if git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} | grep -q '^.github/workflows/'; then
             echo "workflows_modified=true" >> $GITHUB_ENV
           else
             echo "workflows_modified=false" >> $GITHUB_ENV
