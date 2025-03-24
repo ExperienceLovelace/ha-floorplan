@@ -28,6 +28,7 @@ jobs:
           else
             echo "Final version detected ($PACKAGE_VERSION)."
             echo "is_final_version=true" >> $GITHUB_ENV
+          fi
 
   build-and-deploy-ha-floorplan-for-docs:
     runs-on: ubuntu-latest
