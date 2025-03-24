@@ -24,8 +24,10 @@ jobs:
         node-version: [20.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
       with:
+        ssh-key: ${{ secrets.DEPLOY_KEY }} # We need to deploy the docs source-code, after a given release
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
@@ -42,8 +44,6 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add -f dist/floorplan.js
-        git add -f dist/floorplan-examples.js
         git add -f docs/_docs/floorplan/floorplan-examples.js
 
     - name: Commit changes
