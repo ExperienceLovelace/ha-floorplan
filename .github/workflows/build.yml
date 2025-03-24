@@ -27,8 +27,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ssh-key: ${{ secrets.DEPLOY_KEY }} # We need to deploy the docs source-code, after a given release
-        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        ssh-key: ${{ secrets.DEPLOY_KEY_FOR_BUILDS }} # Use our DEPLOY_KEY_FOR_BUILDS, to bypass the branch protection rules.
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
     - name: Build files with Node.js ${{ matrix.node-version }}
@@ -60,5 +59,4 @@ jobs:
       if: (contains(steps.can_commit.outputs.commit_result, 'nothing to commit') == false) && (github.event_name == 'push')
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref_name }}
