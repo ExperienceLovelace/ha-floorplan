@@ -1,0 +1,78 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check if workflows folder is modified
+        id: check-workflows
+        run: |
+          set -e  # Exit immediately if a command exits with a non-zero status
+          echo "workflow_modified=undefined" >> $GITHUB_ENV
+          git fetch --no-tags --prune --depth=2 origin +refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }} +refs/heads/${{ github.head_ref }}:refs/remotes/origin/${{ github.head_ref }}
+          
+          # Check if there is a merge base
+          if git merge-base origin/${{ github.base_ref }} origin/${{ github.head_ref }} > /dev/null 2>&1; then
+            # Compare changes if a merge base exists
+            if git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} | grep -q '^.github/workflows/'; then
+              echo "workflows_modified=true" >> $GITHUB_ENV
+            else
+              echo "workflows_modified=false" >> $GITHUB_ENV
+            fi
+          else
+            # No merge base, assume workflows are modified
+            echo "No merge base found between branches. Assuming workflows are modified."
+            echo "workflows_modified=true" >> $GITHUB_ENV
+          fi
+
+      - name: "Fail if workflows folder is not checked"
+        run: |
+          if [ "${{ env.workflows_modified }}" == "undefined" ]; then
+            echo "Workflows folder was not checked. Exiting..."
+            exit 1
+          fi
+
+      - name: Add warning comment if workflows are modified
+        if: env.workflows_modified == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueNumber = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const labelName = "workflow-modified";
+
+            // Check if the label already exists
+            const existingLabels = await github.rest.issues.listLabelsOnIssue({
+              owner,
+              repo,
+              issue_number: issueNumber,
+            });
+
+            const labelExists = existingLabels.data.some(label => label.name === labelName);
+
+            if (!labelExists) {
+              // Add the label
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                labels: [labelName],
+              });
+
+              // Add the warning comment
+              await github.rest.issues.createComment({
+                issue_number: issueNumber,
+                owner,
+                repo,
+                body: "⚠️ Warning: This PR modifies workflow files in the `.github/workflows/` folder. Please ensure these changes are intentional and secure.",
+              });
+            }

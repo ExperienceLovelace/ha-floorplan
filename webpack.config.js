@@ -15,8 +15,12 @@ module.exports = (env) => {
             from: path.resolve(__dirname, 'dist', 'floorplan-examples.js'),
             to: path.resolve(__dirname, 'docs', '_docs', 'floorplan'),
             force: true,
+            noErrorOnMissing: true, // Prevent errors if the file doesn't exist yet
           },
         ],
+        options: {
+          concurrency: 100, // Workaround to ensure copying are done after the build
+        },
       })
     ] : [];
 
@@ -42,12 +46,12 @@ module.exports = (env) => {
       extensions: ['.tsx', '.ts', '.js'],
     },
     plugins: [
-      ...plugins,
       new DefinePlugin({
         NAME: JSON.stringify(packageInfo.name),
         DESCRIPTION: JSON.stringify(packageInfo.description),
         VERSION: JSON.stringify(packageInfo.version),
       }),
+      ...plugins,
     ],
     output: {
       filename: '[name].js',

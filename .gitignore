@@ -99,3 +99,6 @@ stats.json
 
 # Local dist folder
 dist_local
+
+# Ignore dist folder
+dist
