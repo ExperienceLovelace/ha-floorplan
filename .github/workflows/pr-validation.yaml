@@ -14,12 +14,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Uncomment the following lines to debug the git diff
-      # - name: Debug - Show git diff
-      #   run: |
-      #     echo "Base ref: origin/${{ github.base_ref }}"
-      #     echo "Head ref: origin/${{ github.head_ref }}"
-      #     git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }}
+      - name: Debug - Show git diff
+        run: |
+          echo "Base ref: origin/${{ github.base_ref }}"
+          echo "Head ref: origin/${{ github.head_ref }}"
+          git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }}
 
 
       - name: Check if workflows folder is modified
