@@ -224,7 +224,9 @@ export class SimulationProcessor {
             ? timedEntity.duration * 1000
             : parseDuration(timedEntity.duration);
 
-        setTimeout(this.triggerState.bind(this), milliseconds, nextState);
+        if (milliseconds !== null) {
+          setTimeout(this.triggerState.bind(this), milliseconds, nextState);
+        }
       }
     }
   }
