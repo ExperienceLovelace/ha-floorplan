@@ -9,11 +9,6 @@ on:
       - master
     paths-ignore:
       - 'docs/**'
-  pull_request:
-    branches:
-      - master
-    paths-ignore:
-      - 'docs/**'
 
 jobs:
   build:
