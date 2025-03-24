@@ -1,4 +1,4 @@
-name: Test on PR[master]
+name: Test on PR
 
 on:
   pull_request:
