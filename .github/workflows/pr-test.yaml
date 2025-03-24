@@ -3,7 +3,7 @@ name: Build on Push[master] and PR[master]
 on:
   workflow_run:
     workflows:
-      - Validate Pull Request
+      - validate-pr
     types:
       - completed
 
