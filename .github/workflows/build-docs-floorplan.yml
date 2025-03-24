@@ -24,10 +24,10 @@ jobs:
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           if [[ "$PACKAGE_VERSION" == *-* ]]; then
             echo "Non-final version detected ($PACKAGE_VERSION)."
-            echo "is_final_version=false" >> $GITHUB_OUTPUT
+            echo "is_final_version=false" >> $GITHUB_ENV
           else
             echo "Final version detected ($PACKAGE_VERSION)."
-            echo "is_final_version=true" >> $GITHUB_OUTPUT
+            echo "is_final_version=true" >> $GITHUB_ENV
 
   build-and-deploy-ha-floorplan-for-docs:
     runs-on: ubuntu-latest
