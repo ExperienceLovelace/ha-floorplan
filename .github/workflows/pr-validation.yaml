@@ -16,11 +16,19 @@ jobs:
         id: check-workflows
         run: |
           set -e  # Exit immediately if a command exits with a non-zero status
+          echo "workflow_modified=undefined" >> $GITHUB_ENV
           git fetch --no-tags --prune --depth=2 origin +refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }} +refs/heads/${{ github.head_ref }}:refs/remotes/origin/${{ github.head_ref }}
           if git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} | grep -q '^.github/workflows/'; then
             echo "workflows_modified=true" >> $GITHUB_ENV
           else
             echo "workflows_modified=false" >> $GITHUB_ENV
+          fi
+
+      - name: "Fail if workflows folder is not checked"
+        run: |
+          if [ "${{ env.workflows_modified }}" == "undefined" ]; then
+            echo "Workflows folder was not checked. Exiting..."
+            exit 1
           fi
 
       - name: Add warning comment if workflows are modified
