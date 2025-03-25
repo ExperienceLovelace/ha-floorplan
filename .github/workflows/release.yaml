@@ -1,4 +1,4 @@
-name: Release
+name: Draft Release with Notes and Build Artifacts
 on:
     push:
         tags:
@@ -17,6 +17,8 @@ jobs:
               uses: softprops/action-gh-release@v2
               if: startsWith(github.ref, 'refs/tags/')
               with:
-                  draft: true
-                  generate_release_notes: true
-                  files: dist/*.js
+                draft: true
+                prerelease: ${{ contains(github.ref, '-') }}
+                generate_release_notes: true
+                append_body: true
+                files: dist/*.js
