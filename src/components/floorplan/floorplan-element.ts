@@ -1051,6 +1051,11 @@ export class FloorplanElement extends LitElement {
             ? defaultRule.hover_action
             : rule.hover_action;
 
+        rule.state_action =
+          rule.state_action === undefined
+            ? defaultRule.state_action
+            : rule.state_action;
+
         rule.tap_action =
           rule.tap_action === undefined
             ? defaultRule.tap_action
