@@ -190,7 +190,27 @@ export class SimulationProcessor {
       console.error('Simulation must contain at least one state', simulation);
     }
 
-    this.triggerState(this.simulation.state ?? this.simulation.states[0]);
+    let state;
+    if (this.simulation.state) {
+      // A dumb state
+      state = this.simulation.state as HassEntity;
+    } else if (
+      // A object with multiple states
+      this.simulation.states &&
+      typeof this.simulation.states === 'object'
+    ) {
+      state = this.simulation.states[0] as HassEntity;
+    } else if (
+      // A string for states, therefore, we need to evaluate it
+      this.simulation.states &&
+      typeof this.simulation.states === 'string'
+    ) {
+      // A custom sting to evaluate, does not come with a duration, resulting in nothing to be done
+      // Therefore, we set a dummy duration of 0, to get the first evaluated state
+      state = { duration: 0 } as TimedHassEntity;
+    }
+
+    this.triggerState(state as HassEntity);
   }
 
   triggerState(currentState: HassEntity | TimedHassEntity): void {
