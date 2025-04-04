@@ -13,6 +13,7 @@ import {
   PropertyValues,
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
 import '../floorplan-card/floorplan-card';
 import '../floorplan-panel/floorplan-panel';
 import './code-block';
@@ -45,6 +46,7 @@ export class FloorplanExampleElement extends LitElement {
                 .config=${this.config}
                 .isDemo=${this.isDemo}
                 .notify=${this.notify}
+                data-floorplan-ref=${ifDefined('card-' + this.example.name)}
               ></floorplan-card>`
             : html` <floorplan-panel
                 .examplespath=${this.examplespath}
@@ -52,6 +54,7 @@ export class FloorplanExampleElement extends LitElement {
                 .panel=${this.config}
                 .isDemo=${this.isDemo}
                 .notify=${this.notify}
+                data-floorplan-ref=${ifDefined('panel-' + this.example.name)}
               ></floorplan-panel>`}
         </div>
 
