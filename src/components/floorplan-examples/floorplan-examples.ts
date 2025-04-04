@@ -13,6 +13,13 @@ export class FloorplanExamples extends LitElement {
   floorplanExamples = [
     // Cards
     {
+      name: 'home',
+      dir: 'home',
+      configFile: 'home.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: true,
+    },
+    {
       name: 'remote',
       dir: 'remote',
       configFile: 'remote.yaml',
@@ -44,13 +51,6 @@ export class FloorplanExamples extends LitElement {
       name: 'floorplanner_home',
       dir: 'floorplanner_home',
       configFile: 'floorplanner_home.yaml',
-      simulationFile: 'simulations.yaml',
-      isCard: true,
-    },
-    {
-      name: 'home',
-      dir: 'home',
-      configFile: 'home.yaml',
       simulationFile: 'simulations.yaml',
       isCard: true,
     },
