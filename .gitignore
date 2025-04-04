@@ -105,3 +105,6 @@ dist
 
 # MacOS
 .DS_Store
+
+# Tests
+test-results/.last-run.json
