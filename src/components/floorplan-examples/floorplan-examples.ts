@@ -1,6 +1,6 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { FloorplanExanple } from './types';
+import { FloorplanExample } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';
 import { LitToast } from '../lit-toast/lit-toast';
@@ -8,7 +8,7 @@ import { LitToast } from '../lit-toast/lit-toast';
 @customElement('floorplan-examples')
 export class FloorplanExamples extends LitElement {
   @property({ type: String }) public examplespath!: string;
-  @property({ type: Array }) public examples!: FloorplanExanple[];
+  @property({ type: Array }) public examples!: FloorplanExample[];
 
   floorplanExamples = [
     // Cards
@@ -62,7 +62,7 @@ export class FloorplanExamples extends LitElement {
       simulationFile: 'simulations.yaml',
       isCard: false,
     },
-  ] as FloorplanExanple[];
+  ] as FloorplanExample[];
 
   constructor() {
     super();

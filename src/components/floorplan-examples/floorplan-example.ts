@@ -1,6 +1,6 @@
 import { HomeAssistant } from '../../lib/homeassistant/types';
 import { HassSimulator } from './hass-simulator';
-import { HassSimulatorConfig, FloorplanExanple } from './types';
+import { HassSimulatorConfig, FloorplanExample } from './types';
 import { FloorplanPanelConfig } from '../floorplan-panel/types';
 import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import { Utils } from '../../lib/utils';
@@ -18,7 +18,7 @@ import '../floorplan-panel/floorplan-panel';
 import './code-block';
 
 @customElement('floorplan-example')
-export class FloorplanExanpleElement extends LitElement {
+export class FloorplanExampleElement extends LitElement {
   @property({ type: Object }) public hass!: HomeAssistant;
   @property({ type: Object }) public config!:
     | LovelaceCardConfig
@@ -26,7 +26,7 @@ export class FloorplanExanpleElement extends LitElement {
   @property({ type: String }) public configYaml!: string;
 
   @property({ type: String }) public examplespath!: string;
-  @property({ type: Object }) public example!: FloorplanExanple;
+  @property({ type: Object }) public example!: FloorplanExample;
   @property({ type: Boolean }) public isDemo!: boolean;
   @property({ type: Function }) public notify!: (message: string) => void;
 
