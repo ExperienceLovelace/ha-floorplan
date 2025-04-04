@@ -102,3 +102,6 @@ dist_local
 
 # Ignore dist folder
 dist
+
+# MacOS
+.DS_Store
