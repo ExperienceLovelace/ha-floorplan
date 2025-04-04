@@ -93,14 +93,7 @@ export class FloorplanExampleElement extends LitElement {
         | FloorplanPanelConfig;
 
       this.configYaml = configYamlText;
-
-      // TODO: Running the config through Jest, results in a nested config-key, but I've not spotted why. Therefore, we're normalizing it here, if it's a card-type
-      // Normalize the config structure
-      if (config?.config?.config && this.example.isCard) {
-        this.config = config.config;
-      } else {
-        this.config = config;
-      }
+      this.config = config;
 
       // Preparing the simulator, which are optional
       if (this.example?.simulationFile || this.example?.simulationYaml) {
