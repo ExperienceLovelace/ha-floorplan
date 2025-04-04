@@ -36,7 +36,9 @@ export class FloorplanExampleElement extends LitElement {
     return html`
       <div>
         <div>
-          ${this.example.isCard
+          ${typeof this.config?.config === 'undefined'
+            ? ''
+            : this.example.isCard
             ? html`<floorplan-card
                 .examplespath=${this.examplespath}
                 .hass=${this.hass}
