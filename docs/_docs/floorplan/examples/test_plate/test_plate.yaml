@@ -1,0 +1,137 @@
+title: Test Plate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  log_level: info
+  console_log_level: info
+
+  defaults:
+    hover_action: hover-info
+    tap_action: more-info
+
+  startup_action:
+    - action: call-service
+      service: floorplan.text_set
+      service_data:
+        element: rect-txt-tspan
+        text: |
+          > return 'New text'
+
+    - action: call-service
+      service: floorplan.text_set
+      service_data:
+        element: entity-1-name
+        text: 'Temperature'
+
+    - action: call-service
+      service: floorplan.text_set
+      service_data:
+        element: entity-2-name
+        text: 'Lamp'
+
+  rules:
+    - entity: light.main_bedroom
+      element: light.main_bedroom
+      state_action:
+        - action: call-service
+          service: floorplan.image_set
+          service_data:
+            image: /local/floorplan/examples/test_plate/light_on.svg
+            cache: true
+        - service: floorplan.class_set
+          service_data: light-${entity.state}
+      tap_action: toggle
+
+    - entity: sensor.warning_level
+      element: rect-gradient-bg
+      state_action:
+        action: call-service
+        service: floorplan.style_set
+        service_data:
+          element: rect-gradient-bg-clip-path
+          style: |
+            >
+            var width = Math.ceil(elements['rect-gradient-bg'].getBBox().width) * -1;
+            return `transform: translate(${width - Math.floor(entity.attributes.level / (100 / width))}px,0)`;
+
+    - entity: sensor.temperature_living_area
+      element: entity-1-state
+      state_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: '${entity.state} °C'
+      tap_action: false
+
+    - entity: light.living_area
+      element: entity-2-state
+      state_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: '${entity.state.toUpperCase()}'
+      tap_action: homeassistant.toggle
+
+    - entity: sensor.temperature_living_area
+      element: temp-icons
+      state_action:
+        action: call-service
+        service: floorplan.class_set
+        service_data:
+          class: |
+            >
+            if(entity.state > 25) {
+              return 'temp-warning';
+            } else if(entity.state < 15) {
+              return 'temp-cold';
+            } else {
+              return 'temp-ok';
+            }
+      tap_action: false
+
+    - entity: light.living_area
+      element: lamp-icon
+      hover_action: hover-info
+      state_action:
+        action: call-service
+        service: floorplan.style_set
+        service_data: 
+          style: |
+            >
+            
+            const color = entity.state === 'on' ? '#eecb04' : '#8e8e8e';
+            const opacity = entity.state === 'on' ? 1 : 0.7;
+
+            return `
+              fill: ${color};
+              opacity: ${opacity};
+            `;
+      tap_action: homeassistant.toggle
+
+    - element: test-group-toggle-btn-trigger
+      tap_action: 
+        action: call-service
+        service: floorplan.class_set
+        service_data:
+          element: group-toggle-container
+          class: |
+            >
+            if(elements['group-toggle-container'].classList.contains('visible')) {
+              return 'hidden';
+            } else {
+              return 'visible';
+            }
+
+    - entity: sensor.int_0_to_100
+      element: loading-icon
+      state_action:
+        action: call-service
+        service: floorplan.style_set
+        service_data:
+          style: |
+            >
+            var rotation = ((Math.floor(entity.attributes.level) * 3.6));
+
+            return `
+              transform-box: fill-box;
+              transform-origin: right bottom;
+              transform: rotate(${rotation}deg);
+            `;

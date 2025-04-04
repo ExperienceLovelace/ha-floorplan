@@ -1,0 +1,35 @@
+/* .scroller {
+  animation: scroll_text 5s linear infinite;
+}
+
+@keyframes scroll_text {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+} */
+
+#temp-icons.temp-warning #temp-warning {
+  display: block!important;
+  fill: red;
+}
+
+#temp-icons.temp-cold #temp-cold {
+  display: block!important;
+  fill: rgb(0, 191, 255);
+}
+
+#temp-icons.temp-ok #temp-ok {
+  display: block!important;
+  fill: rgb(94, 221, 162);
+}
+
+#group-toggle-container.visible {
+  display: block;
+}
+
+#group-toggle-container.hidden {
+  display: none;
+}

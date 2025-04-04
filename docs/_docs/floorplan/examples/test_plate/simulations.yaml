@@ -1,0 +1,61 @@
+simulations:
+  - entity: sensor.int_0_to_100
+    states: |
+      >
+      var MIN = 0;
+      var MAX = 100;
+      var STEP = 1;
+
+      var currentLevel = entity.attributes ? entity.attributes.level : MIN;
+
+      var level = (currentLevel + STEP) > MAX ? MIN : currentLevel + STEP;
+
+      var isAscending = true;
+
+      return {
+        state: 'on',
+        attributes: { level: level, isAscending: isAscending },
+        duration: '25ms'
+      };
+
+  - entity: sensor.warning_level
+    states: |
+      >
+      var MIN = 0;
+      var MAX = 100;
+      var STEP = 1;
+
+      var currentLevel = entity.attributes ? entity.attributes.level : MIN;
+      var currentIsAscending = entity.attributes ? entity.attributes.isAscending : true;
+
+      var level = (currentIsAscending && (currentLevel < MAX)) || (!currentIsAscending && (currentLevel <= MIN)) ?
+        currentLevel + STEP : currentLevel - STEP;
+
+      var isAscending = (currentIsAscending && (currentLevel >= MAX)) ? false :
+      ((!currentIsAscending && (currentLevel <= MIN)) ? true : currentIsAscending);
+
+      return {
+        state: 'on',
+        attributes: { level: level, isAscending: isAscending },
+        duration: '25ms'
+      };
+
+  - entity:
+      entity_id: sensor.temperature_living_area
+      state: 20
+    states:
+      - state: 23
+        duration: 2
+      - state: 40
+        duration: 2
+      - state: 10
+        duration: 2
+
+  - entity:
+      entity_id: light.living_area
+      state: on
+    states:
+      - state: on
+        duration: 3
+      - state: off
+        duration: 2
