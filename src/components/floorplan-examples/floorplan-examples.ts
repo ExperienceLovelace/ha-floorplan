@@ -47,14 +47,14 @@ export class FloorplanExamples extends LitElement {
       simulationFile: 'simulations.yaml',
       isCard: true,
     },
-    // Panels
     {
       name: 'home',
       dir: 'home',
       configFile: 'home.yaml',
       simulationFile: 'simulations.yaml',
-      isCard: false,
+      isCard: true,
     },
+    // Panels
     {
       name: 'multi_floor',
       dir: 'multi_floor',
