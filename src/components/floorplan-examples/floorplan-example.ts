@@ -75,27 +75,46 @@ export class FloorplanExampleElement extends LitElement {
       this.example &&
       this.examplespath
     ) {
-      const configUrl = `${this.examplespath}/${this.example.dir}/${this.example.configFile}`;
-      const configYamlText = await Utils.fetchText(
-        configUrl,
-        true,
-        this.examplespath,
-        false
-      );
+      let configYamlText = this.example?.configYaml as string;
 
-      this.config = Utils.parseYaml(configYamlText) as
-        | LovelaceCardConfig
-        | FloorplanPanelConfig;
-      this.configYaml = configYamlText;
-
-      if (this.example.simulationFile) {
-        const simulatorUrl = `${this.examplespath}/${this.example.dir}/${this.example.simulationFile}`;
-        const simulatorYamlText = await Utils.fetchText(
-          simulatorUrl,
+      // Inline Yaml does have first priority, but if not set, we need to fetch it
+      if (!configYamlText) {
+        const configUrl = `${this.examplespath}/${this.example.dir}/${this.example.configFile}`;
+        configYamlText = await Utils.fetchText(
+          configUrl,
           true,
           this.examplespath,
           false
         );
+      }
+
+      const config = await Utils.parseYaml(configYamlText) as
+        | LovelaceCardConfig
+        | FloorplanPanelConfig;
+
+      this.configYaml = configYamlText;
+
+      // TODO: Running the config through Jest, results in a nested config-key, but I've not spotted why. Therefore, we're normalizing it here, if it's a card-type
+      // Normalize the config structure
+      if (config?.config?.config && this.example.isCard) {
+        this.config = config.config;
+      } else {
+        this.config = config;
+      }
+
+      // Preparing the simulator, which are optional
+      if (this.example?.simulationFile || this.example?.simulationYaml) {
+        let simulatorYamlText = this.example?.simulationYaml as string;
+        if (!simulatorYamlText) {
+          const simulatorUrl = `${this.examplespath}/${this.example.dir}/${this.example.simulationFile}`;
+          simulatorYamlText = await Utils.fetchText(
+            simulatorUrl,
+            true,
+            this.examplespath,
+            false
+          );
+        }
+
         const simulatorConfig = Utils.parseYaml(
           simulatorYamlText
         ) as HassSimulatorConfig;
