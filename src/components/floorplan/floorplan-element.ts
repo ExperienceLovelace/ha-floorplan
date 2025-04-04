@@ -46,7 +46,7 @@ import {
 } from 'lit';
 import { HA_FLOORPLAN_ACTION_CALL_EVENT } from './lib/events';
 import { customElement, property } from 'lit/decorators.js';
-import OuiDomEvents from './lib/oui-dom-events';
+import OuiDomEvents from './lib/oui-dom-events.js'; // Ensure the .js extension is included, to be handled by babel
 const E = OuiDomEvents;
 
 declare let NAME: string;
