@@ -13,7 +13,7 @@ export class ManyClicks {
 
     const doubleClickDuration = 400;
 
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
 
     let clickCount = 0;
 
