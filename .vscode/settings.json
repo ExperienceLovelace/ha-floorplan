@@ -1,19 +1,63 @@
 {
   "search.exclude": {
     "**/.cache": true,
-    "**/dist": true,
+    "**/dist": true
     // "**/docs": true
   },
   // Default (format when you paste)
   "editor.formatOnPaste": true,
   // Default (format when you save)
   "editor.formatOnSave": false,
-  "spellright.language": [
-    "en"
-  ],
-  "spellright.documentTypes": [
-    "markdown",
-    "latex",
-    "plaintext"
+  "spellright.language": ["en"],
+  "spellright.documentTypes": ["markdown", "latex", "plaintext"],
+  "todohighlight.defaultStyle": {
+    "color": "#2196f3",
+    "backgroundColor": "#ffeb3b"
+  },
+  "todohighlight.keywords": [
+    {
+      "text": "NOTE:",
+      "color": "white",
+      "backgroundColor": "#264f95",
+      "border": "1px solid white",
+      "borderRadius": "2px",
+      "overviewRulerColor": "grey",
+      "cursor": "pointer"
+    },
+    {
+      "text": "HACK:",
+      "color": "#000",
+      "isWholeLine": false
+    },
+    {
+      "text": "TODO:",
+      "color": "red",
+      "border": "1px solid red",
+      "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
+      "backgroundColor": "rgba(0,0,0,.2)"
+    },
+    {
+      "text": "WARNING:",
+      "color": "white",
+      "border": "1px solid white",
+      "borderRadius": "2px",
+      "backgroundColor": "red"
+    },
+    {
+      "text": "DEBUG:",
+      "color": "#E0E0E0",
+      "border": "1px solid rgba(255,255,255,0.2)",
+      "borderRadius": "6px",
+      "backgroundColor": "#404040",
+      "isWholeLine": true
+    },
+    {
+      "text": "DELETE:",
+      "color": "white",
+      "backgroundColor": "#5e2ca5",
+      "isWholeLine": true,
+      "border": "1px solid rgba(255,255,255,0.2)",
+      "borderRadius": "6px"
+    }
   ]
 }
