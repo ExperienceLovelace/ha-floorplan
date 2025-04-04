@@ -49,16 +49,15 @@ import { customElement, property } from 'lit/decorators.js';
 import OuiDomEvents from './lib/oui-dom-events';
 const E = OuiDomEvents;
 
-declare const NAME: string;
-declare const DESCRIPTION: string;
-declare const VERSION: string;
+declare let NAME: string;
+declare let DESCRIPTION: string | undefined;
+declare let VERSION: string;
 
-// Display version in console
-console.info(
-  `%c${DESCRIPTION} (${NAME})%c\nVersion ${VERSION}`,
-  'color: orange; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: rgb(71, 170, 238)'
-);
+if (NAME) console.info(
+    `%c${DESCRIPTION} (${NAME})%c\nVersion ${VERSION}`,
+    'color: orange; font-weight: bold; background: black',
+    'color: white; font-weight: bold; background: rgb(71, 170, 238)'
+  );
 
 @customElement('floorplan-element')
 export class FloorplanElement extends LitElement {
@@ -254,7 +253,7 @@ export class FloorplanElement extends LitElement {
         config.console_log_level
       );
 
-      this.logInfo('INIT', `${DESCRIPTION} (${NAME}) v${VERSION}`);
+      if (NAME) this.logInfo('INIT', `${DESCRIPTION} (${NAME}) v${VERSION}`);
 
       if (!this.validateConfig(config)) return;
 
