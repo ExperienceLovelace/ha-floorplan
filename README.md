@@ -94,7 +94,7 @@ resources:
 
 Would you like to play around with the code behind HA Floorplan? _There's many ways to build HA Floorplan. The question is, what you're going to do?_
 
-Just execute `npm install` to install the dependencies. Use `npm run build` for the production-env. Are you going to test something, use `npm run build:dev` instead. For other options, check [package.json](https://github.com/ExperienceLovelace/ha-floorplan/blob/master/package.json). 
+Just execute `npm install` to install the dependencies. Use `npm run build` for the production-env. Are you going to test something, use `npm run build:dev` instead. For other options, check [package.json](https://github.com/ExperienceLovelace/ha-floorplan/blob/master/package.json). Use `npm run start` to serve our example-suite. Testing can be done with `npm run test`.
 
 <br>
 </td>
