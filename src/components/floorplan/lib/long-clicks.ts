@@ -5,7 +5,7 @@ export class LongClicks {
   static observe(elem: HTMLElement | SVGElement): void {
     const longClickDuration = 400;
 
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     let isLongClick = false;
 
     const onTapStart = () => {

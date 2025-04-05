@@ -8,14 +8,14 @@ export class DateUtil {
   static MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
   static MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
   static MILLISECONDS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
+  static DEFAULT_LANG = 'en';
 
-  static relativeTimeFormat = new Intl.RelativeTimeFormat(
-    navigator.language ?? 'en',
-    {
-      numeric: 'auto',
-      style: 'long',
-    }
-  );
+  static relativeTimeFormat = new Intl.RelativeTimeFormat((
+    typeof window !== 'undefined' ? window.navigator?.language : this.DEFAULT_LANG
+  ), {
+    numeric: 'auto',
+    style: 'long',
+  });
 
   static timeago(date: string | Date): string {
     const targetDate = typeof date === 'string' ? new Date(date) : date;

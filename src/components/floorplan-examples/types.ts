@@ -1,10 +1,12 @@
 import { HassEntity } from './homeassistant';
 
-export interface FloorplanExanple {
+export interface FloorplanExample {
   name: string;
   dir: string;
-  configFile: string;
-  simulationFile: string;
+  configFile?: string;
+  configYaml?: string;
+  simulationFile?: string;
+  simulationYaml?: string;
   isCard: boolean;
 }
 
