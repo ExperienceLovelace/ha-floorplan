@@ -1,16 +1,3 @@
-/* .scroller {
-  animation: scroll_text 5s linear infinite;
-}
-
-@keyframes scroll_text {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(-100%, 0);
-  }
-} */
-
 #temp-icons.temp-warning #temp-warning {
   display: block!important;
   fill: red;
@@ -26,10 +13,27 @@
   fill: rgb(94, 221, 162);
 }
 
-#group-toggle-container.visible {
+.visible {
   display: block;
 }
 
-#group-toggle-container.hidden {
+.hidden {
   display: none;
+}
+
+#rect-long-text {
+  pointer-events: none;
+}
+
+.radar-bg-opacity-dimmed{
+  animation: fadeIn 1s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
 }

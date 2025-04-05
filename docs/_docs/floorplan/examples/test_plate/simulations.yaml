@@ -59,3 +59,19 @@ simulations:
         duration: 3
       - state: off
         duration: 2
+
+  - entity:
+      entity_id: sensor.random_text
+      state: on
+    states:
+      - state: 'Hello'
+        duration: 3
+      - state: 'World'
+        duration: 3
+
+  - entity: binary_sensor.radar_bg
+    states:
+      - state: on
+        duration: 1
+      - state: off
+        duration: 1
