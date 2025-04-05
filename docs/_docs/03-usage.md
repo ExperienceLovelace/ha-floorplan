@@ -404,7 +404,7 @@ tap_action:
     > // Simple example where navigate_path are set with code
     const target = "/default-overview/alarm#" + element.id;
     // With "action" I'm able to make another action, too
-    const action-data = {
+    const action_data = {
       action: 'call-service',
       service: 'media_player.media_play_pause',
       service_data: {
