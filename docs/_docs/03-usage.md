@@ -243,19 +243,23 @@ Below are the services that are specific to Floorplan.
 | `floorplan.image_set`    | Set the image of the SVG element(s)            | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
 | `floorplan.execute`      | Execute your own JS, defined in service_data   | `<all>` (array)                                                                |
 
-Service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
+Service data can be dynamically constructed using JavaScript code. Below is the full set of helpers, that are available when writing code.
 
 | Object                   | Description                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------- |
 | `config`                 | Floorplan configuration                                                                     |
-| `util`                   | [Utility library](#utility-library)                                                         |
-| `functions`              | [Custom functions](#custom-functions)                                                       |
 | `entity`                 | State object for the HA current entity                                                      |
 | `entities` (or `states`) | State objects for all HA entities                                                           |
 | `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
 | `element`                | current SVG element                                                                         |
 | `elements`               | current SVG elements                                                                        |
-| `action`                 | Make action-executions to ha-floorplan |
+
+| Functions                | Description                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| `action`                 | Make action-executions to ha-floorplan                                                      |
+| `util`                   | [Utility library](#utility-library)                                                         |
+| `functions`              | [Your own Custom functions](#custom-functions)                                             |
+
 
 #### Using `class_set` to define a entity-state related class
 
