@@ -7,9 +7,9 @@ import { jest } from '@jest/globals'; // Ensure Jest is recognized
 
 // Ensure Request is explicitly available
 if (typeof global.Request === 'undefined') {
-    global.Request = window.Request;
-    global.Headers = window.Headers;
-    global.origin = window.location.origin;
+  global.Request = window.Request;
+  global.Headers = window.Headers;
+  global.origin = window.location.origin;
 }
 
 // Define global variables for Jest environment
