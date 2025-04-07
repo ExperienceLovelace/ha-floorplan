@@ -8,6 +8,8 @@ type QuerySelector<T> = {
   instanceOf: new (...args: any[]) => T;
 };
 
+export const global_document_object_key = '__floorplanTest' as string;
+
 async function getElement<T>(
   query: QuerySelector<T>,
   root: ParentNode = document,
@@ -127,3 +129,26 @@ export function createFloorplanExampleElement(
   document.body.appendChild(floorplanExampleElement);
   return floorplanExampleElement;
 }
+
+// Helper to pull the result of a given execute statement, which are saved to the window dom called floorplanTest
+export async function getFloorplanHelper(helper_key: string): Promise<any> {
+  // Use the utility function to get the floorplan element
+  const floorplan_element = await getFloorplanElement();
+  expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+
+  const floorplan_view = floorplan_element?.shadowRoot?.host?.ownerDocument
+    ?.defaultView as any;
+  const document = floorplan_view?._document as Document;
+
+  let global_helper_obj;
+  if (global_document_object_key in document)
+    global_helper_obj = (document as any)[global_document_object_key] as any;
+
+  // Check that the window.${test_obj_ref} exists
+  expect(global_helper_obj).toBeDefined();
+
+  // Check if helper_to_test is part of test_obj
+  expect(helper_key in global_helper_obj);
+
+  return global_helper_obj[helper_key];
+};
