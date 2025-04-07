@@ -60,5 +60,10 @@
       "borderRadius": "6px"
     }
   ],
-  "cSpell.words": ["Floorplan", "floorplan", "ha-floorplan"]
+  "cSpell.words": [
+    "Floorplan",
+    "floorplan",
+    "ha-floorplan",
+    "homeassistant"
+  ]
 }
