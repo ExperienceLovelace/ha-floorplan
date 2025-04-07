@@ -95,6 +95,11 @@ export class Utils {
       textElement = textElement.querySelector('text') || textElement;
     }
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
+    // If text is a number, parse it as a string
+    if (!isNaN(Number(text)) && typeof text !== 'boolean') {
+      text = Number(text).toString();
+    }
+
     // Replace all \\n, as it's a excape character for \n in YAML handled through Home Assistant 
     const texts = text.replace(/\\n/g, '\n').split('\n');
     const textContainsLinebreaks = texts.length > 1;
