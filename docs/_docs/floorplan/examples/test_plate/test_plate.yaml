@@ -1,4 +1,4 @@
-title: Test Plate
+title: TestPlate
 config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
@@ -28,6 +28,13 @@ config:
       service_data:
         element: entity-2-name
         text: 'Lamp'
+
+    - action: call-service
+      service: floorplan.dataset_set
+      service_data:
+          key: floorplanRef
+          element: radar-toggle-btn-text
+          value: 'test|floorplan-dataset_set|startup|radar-toggle-btn-text'
 
   rules:
     - entity: light.living_area
@@ -179,7 +186,7 @@ config:
               transform: rotate(${rotation}deg);
             `;
 
-    - element: rect-long
+    - element: radar-toggle-btn
       tap_action:
         - action: call-service
           service: floorplan.execute
@@ -187,21 +194,21 @@ config:
             script_1: ${console.log("Script 1 Starting, but I'm doing nothing")}
             script_2: |
              > console.log("Script 2 Starting, but I do something!");
-             elements['rect-long-text'].dataset.floorplanRef = 'test|floorplan-execute|triggered|rect-long-text'; /* Ignore this line, added for testing */
+             elements['radar-toggle-btn-text'].dataset.floorplanRef = 'test|floorplan-execute|triggered|radar-toggle-btn-text'; /* Ignore this line, added for testing */
              // We'll need to check if the element are visible, or what, and set the text, on basis of that
-             // Here we use another element, do make a custom condition, for our rect-long element.
+             // Here we use another element, do make a custom condition, for our radar-toggle-btn element.
              const text = elements['radar-bg'].style.display === 'none' ? 'It\'s back!' : 'Good job! Want it back?';
              // We could update the text by using the elements-reference, but here's a way to make a custom action, inside this action.
              const action_data = {
                 action: 'call-service',
                 service: 'floorplan.text_set',
                 service_data: {
-                  element: 'rect-long-text',
+                  element: 'radar-toggle-btn-text',
                   text: text
                 }
              };
              action(action_data);
-             elements['rect-long-text'].dataset.floorplanRef = 'test|floorplan-execute|done|rect-long-text'; /* Ignore this line, added for testing */
+             elements['radar-toggle-btn-text'].dataset.floorplanRef = 'test|floorplan-execute|done|radar-toggle-btn-text'; /* Ignore this line, added for testing */
         - action: call-service
           service: floorplan.style_set
           service_data:
