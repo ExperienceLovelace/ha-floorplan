@@ -49,49 +49,74 @@ test.afterAll(() => {
   devServer.kill();
 });
 
-test('Log all content of the page', async ({ page }) => {
+test('Rules: Query Elements Methods | Evaluate and build-in playwright query', async ({ page }) => {
   // Capture console logs from the page
   page.on('console', (msg) => {
     console.log(`[FLOORPLAN PAGE LOG] ${msg.type()}: ${msg.text()}`);
   });
 
-  await page.goto('http://localhost:8080'); // Navigate to the local dev server
+  // References
+  const pageUrl = 'http://localhost:8080/index-test_plate.html';
+  const svgTarget = 'element-TestPlate';
+  const btnQueryJSEvaluateSelector = '#radar-toggle-btn';
+  const btnTxtQueryJSEvaluateSelector = `#radar-toggle-btn-text tspan`;
+  const btnTxtBefore = 'Click to hide radar';
+  const btnTxtAfter = 'Good job! Want it back?';
 
-  // Make sure that the floorplan example is loaded, and ready to be tested
-  // Else, you'll face a situation where the simulator does toggle the state, but no rules are triggered
-  await page.waitForTimeout(5000);
+  // Element references for Playwright
+  const btnTxtRefStartup =
+    'test|floorplan-dataset_set|startup|radar-toggle-btn-text';
+  const btnTxtRefDone = 'test|floorplan-execute|done|radar-toggle-btn-text';
 
-  // Try and get 'example-home' from the original page
-  const exampleHome = await page.getByTestId('element-Home');
-  if (!exampleHome) {
-    throw new Error('example-home not found');
+  // Navigate to the local dev server
+  await page.goto(pageUrl);
+
+  // Wait for btnTxtRefStartup reference to become available. The reference is added as part of startup_action
+  const btnTxtContentBefore = page.locator(
+    `[data-floorplan-ref="${btnTxtRefStartup}"]`
+  );
+  await btnTxtContentBefore.waitFor({
+    timeout: 10000,
+  });
+
+  // Expect the button text to match the expected value
+  expect(await btnTxtContentBefore.textContent()).toBe(btnTxtBefore);
+
+  /*
+    NOTE: Beginning of native query selector-method
+    We'll now use the native evaluate method to get the button text, and then click it.
+    This is done, to both have a example of both methods, and if we ever need to rely on native element queries, instead of the helpers provided by Playwright.
+  */
+  // First we need to get our SVG example element, to have some kind of DOM to work with
+  const exampleTestPlate = await page.getByTestId(svgTarget);
+  if (!exampleTestPlate) {
+    throw new Error('example-TestPlate not found');
   }
-  // Access the shadow root of the example-home element
-  const exampleHomeShadowRoot = await exampleHome.evaluateHandle(
+
+  // Access the shadow root
+  const exampleTestPlateShadowRoot = await exampleTestPlate.evaluateHandle(
     (el) => el.shadowRoot
   );
-  if (!exampleHomeShadowRoot) {
-    throw new Error('Shadow root not found in element-Home');
+  if (!exampleTestPlateShadowRoot) {
+    throw new Error('Shadow root not found in element-TestPlate');
   }
+
   // Get the inner HTML of the shadow root
-  const btn_query = '#light\\.main_bedroom\\.button';
-  const btn_txt_query = `${btn_query} #light\\.main_bedroom\\.text tspan`;
-  const okButton = await exampleHomeShadowRoot.evaluate(
-    (root, selector_query) => {
-      const btn_txt = root?.querySelector(selector_query) as HTMLElement;
+  const toggleBtn = await exampleTestPlateShadowRoot.evaluate(
+    (root, selectorQuery) => {
+      const btnTxt = root?.querySelector(selectorQuery) as HTMLElement;
 
-      console.log('btn_txt', btn_txt.innerHTML);
-
-      if (btn_txt?.innerHTML) return btn_txt.innerHTML;
+      if (btnTxt?.innerHTML) return btnTxt.innerHTML;
       return '';
     },
-    btn_txt_query // Pass btn_txt_query as an argument to the evaluate function
+    btnTxtQueryJSEvaluateSelector // Pass btnTxtQueryJSEvaluateSelector as an argument to the evaluate function
   );
 
-  if (!okButton || okButton !== 'ON') throw new Error('Button text is not ON');
+  if (!toggleBtn || toggleBtn !== btnTxtBefore)
+    throw new Error(`Button text is not ${btnTxtBefore}`);
 
-  // Now click the button
-  await exampleHomeShadowRoot.evaluateHandle((root, selector_query) => {
+  // Now click the button, with native evaluate
+  await exampleTestPlateShadowRoot.evaluateHandle((root, selector_query) => {
     const btn = root?.querySelector(selector_query) as HTMLElement;
 
     if (btn) {
@@ -99,25 +124,27 @@ test('Log all content of the page', async ({ page }) => {
       return btn;
     }
     return null;
-  }, btn_query);
+  }, btnQueryJSEvaluateSelector);
 
+  // Wait for the button text to change
   const buttonOff = await retry(
     async () => {
-      const newTestElRoot = await exampleHome.evaluateHandle(
+      const newTestElRoot = await exampleTestPlate.evaluateHandle(
         (el) => el.shadowRoot
       );
+      console.log();
       if (!newTestElRoot) {
-        throw new Error('Shadow root not found in element-Home');
+        throw new Error('Shadow root not found in element-TestPlate');
       }
 
-      const btn_txt = await newTestElRoot.evaluate((root, selector_query) => {
-        const btn_txt = root?.querySelector(selector_query) as HTMLElement;
-        if (btn_txt.innerHTML) return btn_txt.innerHTML;
+      const btnTxt = await newTestElRoot.evaluate((root, selector_query) => {
+        const btnTxt = root?.querySelector(selector_query) as HTMLElement;
+        if (btnTxt.innerHTML) return btnTxt.innerHTML;
         return '';
-      }, btn_txt_query);
+      }, btnTxtQueryJSEvaluateSelector);
 
-      if (btn_txt !== 'OFF') {
-        expect(btn_txt).toBe('OFF');
+      if (btnTxt !== btnTxtAfter) {
+        expect(btnTxt).toBe(btnTxtAfter);
         return await page.waitForTimeout(500);
       } else {
         return true;
@@ -128,4 +155,17 @@ test('Log all content of the page', async ({ page }) => {
   );
 
   expect(buttonOff).toBe(true);
+
+  /*
+    NOTE: End of native query selector-method
+  */
+
+  // Use the Playwright method to get the button text
+  const btnTxtContentAfter = await page
+    .getByTestId(svgTarget)
+    .getByTestId(btnTxtRefDone)
+    .textContent();
+
+  // Expect the button text to match the expected value
+  expect(btnTxtContentAfter).toBe(btnTxtAfter);
 });
