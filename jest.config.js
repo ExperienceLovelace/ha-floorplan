@@ -18,4 +18,7 @@ export default {
   maxWorkers: 1, // Limit to one worker to avoid issues with ESM
   testMatch: ['<rootDir>/tests/jest/tests/**/*.test.ts'], // Adjust to match your Jest test files
   testTimeout: 30000, // Extend timeout for tests
+  testEnvironmentOptions: {
+    url: 'http://localhost:8080',
+  },
 };
