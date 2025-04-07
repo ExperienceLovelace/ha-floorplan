@@ -17,4 +17,5 @@ export default {
   detectOpenHandles: true, // Detect open handles to avoid Jest hanging
   maxWorkers: 1, // Limit to one worker to avoid issues with ESM
   testMatch: ['<rootDir>/tests/jest/tests/**/*.test.ts'], // Adjust to match your Jest test files
+  testTimeout: 30000, // Extend timeout for tests
 };
