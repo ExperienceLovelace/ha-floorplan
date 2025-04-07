@@ -14,32 +14,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug - Show git diff
-        run: |
-          echo "Base ref: origin/${{ github.base_ref }}"
-          echo "Head ref: origin/${{ github.head_ref }}"
-          git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }}
-
-
       - name: Check if workflows folder is modified
         id: check-workflows
         run: |
           set -e  # Exit immediately if a command exits with a non-zero status
-          echo "workflow_modified=undefined" >> $GITHUB_ENV
-          git fetch --no-tags --prune --depth=2 origin +refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }} +refs/heads/${{ github.head_ref }}:refs/remotes/origin/${{ github.head_ref }}
-          
-          # Check if there is a merge base
-          if git merge-base origin/${{ github.base_ref }} origin/${{ github.head_ref }} > /dev/null 2>&1; then
-            # Compare changes if a merge base exists
-            if git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} | grep -q '^.github/workflows/'; then
-              echo "workflows_modified=true" >> $GITHUB_ENV
-            else
-              echo "workflows_modified=false" >> $GITHUB_ENV
-            fi
-          else
-            # No merge base, assume workflows are modified
-            echo "No merge base found between branches. Assuming workflows are modified."
+          git fetch --no-tags --depth=2 origin ${{ github.base_ref }} ${{ github.head_ref }}
+          if git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} | grep -q '^.github/workflows/'; then
             echo "workflows_modified=true" >> $GITHUB_ENV
+          else
+            echo "workflows_modified=false" >> $GITHUB_ENV
           fi
 
       - name: "Fail if workflows folder is not checked"
