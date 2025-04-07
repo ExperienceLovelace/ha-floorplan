@@ -45,18 +45,18 @@ simulations:
       state: 20
     states:
       - state: 23
-        duration: 2
+        duration: 1
       - state: 40
-        duration: 2
+        duration: 1
       - state: 10
-        duration: 2
+        duration: 1
 
   - entity:
       entity_id: light.living_area
       state: on
     states:
       - state: on
-        duration: 3
+        duration: 1
       - state: off
         duration: 2
 
