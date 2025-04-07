@@ -11,7 +11,7 @@ export class FloorplanExamples extends LitElement {
   @property({ type: Array }) public examples!: FloorplanExanple[];
 
   floorplanExamples = [
-    // Cards
+    // Cards.
     {
       name: 'remote',
       dir: 'remote',
