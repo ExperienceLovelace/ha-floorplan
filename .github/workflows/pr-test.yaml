@@ -28,6 +28,17 @@ jobs:
 
     - run: npm run build
 
+    - name: Run tests
+      run: npm test
+      env:
+        CI: true
+
+    - name: Publish test results
+      if: always() # Publish results even if tests fail
+      uses: actions/upload-test-results@v2
+      with:
+        path: test-results/junit.xml
+
     - name: Validate build success
       run: |
         if [ ! -f "dist/floorplan.js" ]; then

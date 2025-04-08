@@ -108,3 +108,4 @@ dist
 
 # Tests
 test-results/.last-run.json
+test-results/junit.xml
