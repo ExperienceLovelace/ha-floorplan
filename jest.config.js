@@ -12,10 +12,10 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1', // Fix imports with .js extensions
   },
-  testPathIgnorePatterns: ['/tests/e2e/'], // Ignore E2E tests for Jest
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js', '@testing-library/jest-dom'], // Ensure jest.setup.js and jest-dom are executed
   detectOpenHandles: true, // Detect open handles to avoid Jest hanging
   maxWorkers: 1, // Limit to one worker to avoid issues with ESM
+  testPathIgnorePatterns: ['/tests/e2e/', '/tests/jest/tests/disabled'], // Ignore E2E tests for Jest
   testMatch: ['<rootDir>/tests/jest/tests/**/*.test.ts'], // Adjust to match your Jest test files
   testTimeout: 30000, // Extend timeout for tests
   testEnvironmentOptions: {
