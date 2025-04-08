@@ -489,13 +489,17 @@ export class FloorplanElement extends LitElement {
     const stylesheetUrl =
       typeof stylesheetConfig === 'string'
         ? stylesheetConfig
-        : stylesheetConfig.location;
+        : stylesheetConfig?.location;
+
+    if (!stylesheetUrl) {
+      this.logDebug('debug', 'No stylesheet provided in configuration.');
+      return;
+    };
+
     const useCache =
       typeof stylesheetConfig === 'string'
         ? false
-        : stylesheetConfig.cache === true;
-
-    if (!stylesheetUrl) return;
+        : stylesheetConfig?.cache === true;
 
     let stylesheet: string;
 
