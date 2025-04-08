@@ -287,7 +287,6 @@ config:
     // Validate that our entity is part of the states
     expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
 
-    // Get the element by looking after the dataset, and compare value with state
     await retry(
       async () => {
         const target_el = svg.querySelector(
@@ -346,7 +345,6 @@ config:
     // Validate that our entity is part of the states
     expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
 
-    // Get the element by looking after the dataset, and compare value with state
     await retry(
       async () => {
         const target_el = svg.querySelector(
@@ -410,7 +408,6 @@ config:
     // Validate that our entity is part of the states
     expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
 
-    // Get the element by looking after the dataset, and compare value with state
     await retry(
       async () => {
         const target_el = svg.querySelector(
