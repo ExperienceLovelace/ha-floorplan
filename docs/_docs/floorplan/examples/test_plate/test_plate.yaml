@@ -122,6 +122,14 @@ config:
             }
       tap_action: false
 
+    - element: group-row-1
+      entity: light.living_area # Entity is required for hover_actions to be set for a given element
+      hover_action:
+        action: call-service
+        service: floorplan.class_set
+        service_data: 'hover_action_class'
+        # Make a class, which gets removed once mouse out of focus: service_data: '${element.matches(":hover") ? "hover-over" : ""}'
+
     - entity: light.living_area
       element: lamp-icon
       hover_action: hover-info
