@@ -485,11 +485,40 @@ tap_action:
 
 ## Advanced Topics
 
+
+### Start up Actions
+
+Floorplan supports pre-defined start-up actions, which can be executed when the floorplan is loaded. This feature is particularly useful for making initial changes to your SVG file, such as setting a default text, applying a style, or performing other customizations without relying on user interactions or other triggers.
+
+Below is an example of a start-up action that sets the text of an SVG element:
+
+```yaml
+rules: 
+  ...
+stylesheet:
+  ...
+startup_action:
+  - action: call-service
+    service: floorplan.text_set
+    service_data:
+      element: rect-txt-tspan
+      text: |
+        > return 'New text'
+```
+
+The startup_action lives at the same level as `rules` and `image` property.
+
+Start-up actions provide a flexible way to initialize your floorplan with specific configurations or visual elements tailored to your needs.
+
 ### Custom Functions
 
 Floorplan supports user-defined custom functions, which can be configured using the `functions` setting.
 
 ```yaml
+rules: 
+  ...
+stylesheet:
+  ...
 functions: |
   >
   return {
