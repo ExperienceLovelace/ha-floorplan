@@ -570,7 +570,7 @@ If you're running into any difficulties with Floorplan, below is a list of thing
 
 - If you encounter any issues with your entities not appearing, or not correctly showing state changes, firstly make sure you enable [logging](#logging) in your floorplan config. It will report any SVG elements that are missing, misspelt, etc.
 
-- If you're adding your own CSS classes for styling your entities, make sure you escape the dot character in the id, by prefixing it with a backlash:
+- When adding custom CSS classes for styling entities, ensure you escape the dot character in the `id` by prefixing it with a backslash. However, it is strongly recommended to **avoid** using dot characters in the `id` altogether.
 
   ```css
   #light\.hallway:hover {
