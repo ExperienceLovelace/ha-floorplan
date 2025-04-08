@@ -33,11 +33,14 @@ jobs:
       env:
         CI: true
 
-    - name: Publish test results
-      if: always() # Publish results even if tests fail
-      uses: actions/upload-test-results@v2
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
       with:
-        path: test-results/junit.xml
+        files: |
+          test-results/**/*.xml
+          test-results/**/*.trx
+          test-results/**/*.json
 
     - name: Validate build success
       run: |
