@@ -1,17 +1,10 @@
-/**
- * @jest-environment-options {"url": "http://localhost:8080"}
- */
-
-import { screen } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import '../../../src/components/floorplan-examples/floorplan-examples';
-import { jest } from '@jest/globals'; // Ensure Jest is recognized
 import { FloorplanExampleElement } from '../../../src/components/floorplan-examples/floorplan-example';
 import {
   HassSimulator,
   SimulationProcessor,
 } from '../../../src/components/floorplan-examples/hass-simulator';
-import { FloorplanCard } from '../../../src/components/floorplan-card/floorplan-card';
 import { FloorplanElement } from '../../../src/components/floorplan/floorplan-element';
 import { FloorplanCallServiceActionConfig } from '../../../src/components/floorplan/lib/floorplan-config';
 import {
@@ -21,7 +14,7 @@ import {
   getFloorplanExampleElement,
 } from '../jest-floorplan-utils';
 import {SVGElementWithStyle} from '../../types/svg';
-import { sleep, retry } from '../jest-common-utils';
+import { retry } from '../jest-common-utils';
 
 describe('Constructors for Tests', () => {
   beforeEach(() => {

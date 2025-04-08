@@ -9,7 +9,6 @@ import {
   global_document_object_key,
 } from '../jest-floorplan-utils';
 import { retry } from '../jest-common-utils';
-import { HomeAssistant } from '../../../src/components/floorplan-examples/homeassistant';
 
 describe('Evaluated JS Helpers: Functions', () => {
   beforeEach(() => {});
