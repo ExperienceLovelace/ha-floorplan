@@ -436,6 +436,10 @@ export class FloorplanElement extends LitElement {
     let imageUrl = '';
     let cache = true;
 
+    if(typeof config?.image === 'undefined'){
+      throw 'No image provided in configuration.';
+    }
+
     if (typeof config.image === 'string') {
       // Device detection
       if (Utils.isMobile && typeof config.image_mobile === 'string') {
