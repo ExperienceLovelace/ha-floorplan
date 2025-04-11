@@ -107,5 +107,5 @@ dist
 .DS_Store
 
 # Tests
-test-results/.last-run.json
-test-results/junit.xml
+test-results/*
+test-results/*
