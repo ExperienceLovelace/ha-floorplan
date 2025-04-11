@@ -12,6 +12,7 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
   devServer = spawn('npx', ['webpack', 'serve', '--mode=production'], {
     stdio: 'pipe',
     shell: false,
+    detached: true, // Run in its own process group
   });
 
   // Wait for the server to start
@@ -51,32 +52,71 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
 test.afterAll(async () => {
   if (devServer) {
     console.log(`Attempting to shut down webpack-dev-server (PID: ${devServer.pid})...`);
-    devServer.kill('SIGTERM'); // Send SIGTERM to terminate the server
+    try {
+      if (devServer.pid === undefined) {
+        console.warn('webpack-dev-server PID is undefined. Skipping termination.');
+        return;
+      }
 
-    await new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        console.error('webpack-dev-server did not shut down in time. Attempting SIGKILL...');
-        devServer.kill('SIGKILL'); // Forcefully kill the process
-        resolve(false); // Indicate that the shutdown was not graceful
-      }, 10000); // 10 seconds timeout
+      // Check if the process is still running
+      try {
+        process.kill(devServer.pid, 0); // Signal 0 does not kill the process but checks if it exists
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException)?.code === 'ESRCH') {
+          console.warn(
+            'webpack-dev-server process does not exist. Skipping termination.'
+          );
+          return;
+        }
+        throw err; // Re-throw unexpected errors
+      }
 
-      devServer.on('close', (code) => {
-        clearTimeout(timeout);
-        console.log(`webpack-dev-server shut down successfully with exit code ${code}.`);
-        resolve(true); // Indicate that the shutdown was successful
+      // Send SIGTERM to the entire process group
+      process.kill(-devServer.pid, 'SIGTERM');
+
+      await new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          console.error('webpack-dev-server did not shut down in time. Attempting SIGKILL...');
+          try {
+            if (devServer.pid !== undefined) process.kill(-devServer.pid, 'SIGKILL'); // Forcefully kill the process group
+          } catch (err) {
+            if ((err as NodeJS.ErrnoException)?.code === 'ESRCH') {
+              console.warn('Process group already terminated.');
+            } else {
+              console.error('Error while forcefully killing process group:', err);
+            }
+          }
+          resolve(false); // Indicate that the shutdown was not graceful
+        }, 10000); // 10 seconds timeout
+
+        devServer.on('close', (code) => {
+          clearTimeout(timeout);
+          console.log(`webpack-dev-server shut down successfully with exit code ${code}.`);
+          resolve(true); // Indicate that the shutdown was successful
+        });
+
+        devServer.on('error', (error) => {
+          clearTimeout(timeout);
+          console.error('Error while shutting down webpack-dev-server:', error);
+          resolve(false); // Indicate that an error occurred during shutdown
+        });
       });
 
-      devServer.on('error', (error) => {
-        clearTimeout(timeout);
-        console.error('Error while shutting down webpack-dev-server:', error);
-        resolve(false); // Indicate that an error occurred during shutdown
-      });
-    });
-
-    // Ensure the process is terminated
-    if (!devServer.killed) {
-      console.warn('webpack-dev-server process is still running. Forcefully killing...');
-      devServer.kill('SIGKILL');
+      // Ensure the process is terminated
+      if (!devServer.killed) {
+        console.warn('webpack-dev-server process is still running. Forcefully killing...');
+        try {
+          process.kill(-devServer.pid, 'SIGKILL');
+        } catch (err) {
+          if ((err as NodeJS.ErrnoException)?.code === 'ESRCH') {
+            console.warn('Process group already terminated.');
+          } else {
+            console.error('Error while forcefully killing process group:', err);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to terminate webpack-dev-server:', error);
     }
   }
 });
