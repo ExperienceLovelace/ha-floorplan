@@ -243,19 +243,23 @@ Below are the services that are specific to Floorplan.
 | `floorplan.image_set`    | Set the image of the SVG element(s)            | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
 | `floorplan.execute`      | Execute your own JS, defined in service_data   | `<all>` (array)                                                                |
 
-Service data can be dynamically constructed using JavaScript code. Below is the full set of objects that are available when writing code.
+Service data can be dynamically constructed using JavaScript code. Below is the full set of helpers, that are available when writing code.
 
 | Object                   | Description                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------- |
 | `config`                 | Floorplan configuration                                                                     |
-| `util`                   | [Utility library](#utility-library)                                                         |
-| `functions`              | [Custom functions](#custom-functions)                                                       |
 | `entity`                 | State object for the HA current entity                                                      |
 | `entities` (or `states`) | State objects for all HA entities                                                           |
 | `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
 | `element`                | current SVG element                                                                         |
 | `elements`               | current SVG elements                                                                        |
-| `action`                 | Make action-executions to ha-floorplan |
+
+| Functions                | Description                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| `action`                 | Make action-executions to ha-floorplan                                                      |
+| `util`                   | [Utility library](#utility-library)                                                         |
+| `functions`              | [Your own Custom functions](#custom-functions)                                             |
+
 
 #### Using `class_set` to define a entity-state related class
 
@@ -404,7 +408,7 @@ tap_action:
     > // Simple example where navigate_path are set with code
     const target = "/default-overview/alarm#" + element.id;
     // With "action" I'm able to make another action, too
-    const action-data = {
+    const action_data = {
       action: 'call-service',
       service: 'media_player.media_play_pause',
       service_data: {
@@ -481,11 +485,40 @@ tap_action:
 
 ## Advanced Topics
 
+
+### Start up Actions
+
+Floorplan supports pre-defined start-up actions, which can be executed when the floorplan is loaded. This feature is particularly useful for making initial changes to your SVG file, such as setting a default text, applying a style, or performing other customizations without relying on user interactions or other triggers.
+
+Below is an example of a start-up action that sets the text of an SVG element:
+
+```yaml
+rules: 
+  ...
+stylesheet:
+  ...
+startup_action:
+  - action: call-service
+    service: floorplan.text_set
+    service_data:
+      element: rect-txt-tspan
+      text: |
+        > return 'New text'
+```
+
+The startup_action lives at the same level as `rules` and `image` property.
+
+Start-up actions provide a flexible way to initialize your floorplan with specific configurations or visual elements tailored to your needs.
+
 ### Custom Functions
 
 Floorplan supports user-defined custom functions, which can be configured using the `functions` setting.
 
 ```yaml
+rules: 
+  ...
+stylesheet:
+  ...
 functions: |
   >
   return {
@@ -537,7 +570,7 @@ If you're running into any difficulties with Floorplan, below is a list of thing
 
 - If you encounter any issues with your entities not appearing, or not correctly showing state changes, firstly make sure you enable [logging](#logging) in your floorplan config. It will report any SVG elements that are missing, misspelt, etc.
 
-- If you're adding your own CSS classes for styling your entities, make sure you escape the dot character in the id, by prefixing it with a backlash:
+- When adding custom CSS classes for styling entities, ensure you escape the dot character in the `id` by prefixing it with a backslash. However, it is strongly recommended to **avoid** using dot characters in the `id` altogether.
 
   ```css
   #light\.hallway:hover {

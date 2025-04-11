@@ -1,35 +1,40 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const { DefinePlugin } = require('webpack');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import TerserPlugin from 'terser-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+import webpack from 'webpack'; // Import the default export
+import packageInfo from './package.json' with { type: 'json' };
 
-module.exports = (env) => {
+const { DefinePlugin } = webpack; // Destructure DefinePlugin from the default export
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default (env) => {
   const isProduction = env.production;
 
-  const plugins = isProduction ?
-    [
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(__dirname, 'dist', 'floorplan-examples.js'),
-            to: path.resolve(__dirname, 'docs', '_docs', 'floorplan'),
-            force: true,
-            noErrorOnMissing: true, // Prevent errors if the file doesn't exist yet
+  const plugins = isProduction
+    ? [
+        new CopyPlugin({
+          patterns: [
+            {
+              from: path.resolve(__dirname, 'dist', 'floorplan-examples.js'),
+              to: path.resolve(__dirname, 'docs', '_docs', 'floorplan'),
+              force: true,
+              noErrorOnMissing: true, // Prevent errors if the file doesn't exist yet
+            },
+          ],
+          options: {
+            concurrency: 100, // Workaround to ensure copying is done after the build
           },
-        ],
-        options: {
-          concurrency: 100, // Workaround to ensure copying are done after the build
-        },
-      })
-    ] : [];
-
-  const packageInfo = require("./package.json");
+        }),
+      ]
+    : [];
 
   return {
     mode: isProduction ? 'production' : 'development',
     entry: {
-      'floorplan': './src/index.ts',
+      floorplan: './src/index.ts',
       'floorplan-examples': './src/components/floorplan-examples/floorplan-examples.ts',
     },
     devtool: isProduction ? undefined : 'inline-source-map',
@@ -44,6 +49,7 @@ module.exports = (env) => {
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
+      mainFields: ['browser', 'module', 'main'], // Ensure ES Modules are prioritized
     },
     plugins: [
       new DefinePlugin({
@@ -57,17 +63,23 @@ module.exports = (env) => {
       filename: '[name].js',
       path: path.resolve(__dirname, isProduction ? 'dist' : 'dist_local'),
       clean: true,
+      libraryTarget: 'module', // Use ES Module output
+    },
+    experiments: {
+      outputModule: true, // Enable ES Module output
     },
     optimization: {
       minimize: true,
-      minimizer: [new TerserPlugin({
-        extractComments: false,
-      })],
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
     },
     performance: {
       hints: false,
       maxEntrypointSize: 512000,
-      maxAssetSize: 512000
+      maxAssetSize: 512000,
     },
     devServer: {
       static: {

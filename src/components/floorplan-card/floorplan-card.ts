@@ -12,6 +12,7 @@ import {
 import { customElement, property } from 'lit/decorators.js';
 import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 @customElement('floorplan-card')
@@ -53,6 +54,7 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
             ._config=${this.config?.config}
             .isDemo=${this.isDemo}
             .notify=${this.notify}
+            data-floorplan-ref=${ifDefined(`element-${this.config?.title}`)}
           ></floorplan-element>
         </div>
       </ha-card>

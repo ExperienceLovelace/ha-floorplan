@@ -10,6 +10,7 @@ import {
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../floorplan/floorplan-element';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 
 @customElement('floorplan-panel')
@@ -48,7 +49,9 @@ export class FloorplanPanel extends LitElement {
     }
           ._config=${this.panel?.config?.config} .isDemo=${
       this.isDemo
-    } .notify=${this.notify}>
+    } .notify=${this.notify}
+          data-floorplan-ref=${ifDefined(`element-${this.panel?.title}`)}
+          >
           </floorplan-element>
         </div>
 

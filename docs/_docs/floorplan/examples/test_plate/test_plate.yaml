@@ -1,0 +1,243 @@
+title: TestPlate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  log_level: info
+  console_log_level: info
+
+  defaults:
+    hover_action: hover-info
+    tap_action: more-info
+
+  startup_action:
+    - action: call-service
+      service: floorplan.text_set
+      service_data:
+        element: rect-txt-tspan
+        text: |
+          > return 'New text'
+
+    - action: call-service
+      service: floorplan.text_set
+      service_data:
+        element: entity-1-name
+        text: 'Temperature'
+
+    - action: call-service
+      service: floorplan.text_set
+      service_data:
+        element: entity-2-name
+        text: 'Lamp'
+
+    - action: call-service
+      service: floorplan.dataset_set
+      service_data:
+          key: floorplanRef
+          element: radar-toggle-btn-text
+          value: 'test|floorplan-dataset_set|startup|radar-toggle-btn-text'
+
+  rules:
+    - entity: light.living_area
+      element: svg-icon-target
+      state_action:
+        - action: call-service
+          service: floorplan.image_set
+          service_data:
+            image: |
+              >
+              elements['svg-icon-target'].dataset.floorplanRef = 'test|floorplan-image_set|triggered|svg-icon-target'; /* Ignore this line, added for testing */
+              return `/local/floorplan/examples/test_plate/light_${entity.state}.svg`;
+            cache: true
+        - service: floorplan.class_set
+          service_data: light-${entity.state}
+      tap_action: toggle
+
+    - entity: sensor.warning_level
+      element: rect-gradient-bg
+      state_action:
+        - action: call-service
+          service: floorplan.style_set
+          service_data:
+            element: rect-gradient-bg-clip-path
+            style: |
+              >
+              var width = Math.ceil(elements['rect-gradient-bg'].getBBox().width) * -1;
+              return `transform: translate(${width - Math.floor(entity.attributes.level / (100 / width))}px,0)`;
+        - action: call-service
+          service: floorplan.dataset_set
+          service_data:
+              key: custom_attribute_val
+              value: |
+               > /* Could be done with: 'value: ${entity.state}', but I need another line for the test */
+               elements['rect-gradient-bg'].dataset.floorplanRef = 'test|floorplan-dataset_set|triggered|rect-gradient-bg'; /* Ignore this line, added for testing */
+               return entity.attributes.level;
+
+    - entity: sensor.temperature_living_area
+      element: entity-1-state
+      state_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: '${entity.state} °C'
+      tap_action: false
+
+    - entity: sensor.random_text
+      element: rect-txt-scroller
+      state_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: |
+          > // Add state 4 times
+          elements['rect-txt-scroller'].dataset.floorplanRef = 'test|floorplan-text_set|triggered|rect-txt-scroller'; /* Ignore this line, added for testing */
+          var text = entity.state;
+          var textLength = 4;
+          var textArray = [];
+          for (var i = 0; i < textLength; i++) {
+            textArray.push(text);
+          }
+          return textArray.join(' ');
+      tap_action: false
+
+    - entity: light.living_area
+      element: entity-2-state
+      state_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: '${entity.state.toUpperCase()}'
+      tap_action: homeassistant.toggle
+
+    - entity: sensor.temperature_living_area
+      element: temp-icons
+      state_action:
+        action: call-service
+        service: floorplan.class_set
+        service_data:
+          class: |
+            >
+            if(entity.state > 25) {
+              return 'temp-warning';
+            } else if(entity.state < 15) {
+              return 'temp-cold';
+            } else {
+              return 'temp-ok';
+            }
+      tap_action: false
+
+    - element: group-row-1
+      entity: light.living_area # Entity is required for hover_actions to be set for a given element
+      hover_action:
+        action: call-service
+        service: floorplan.class_set
+        service_data: 'hover_action_class'
+        # Make a class, which gets removed once mouse out of focus: service_data: '${element.matches(":hover") ? "hover-over" : ""}'
+
+    - entity: light.living_area
+      element: lamp-icon
+      hover_action: hover-info
+      state_action:
+        action: call-service
+        service: floorplan.style_set
+        service_data: 
+          style: |
+            >
+            elements['lamp-icon'].dataset.floorplanRef = 'test|floorplan-style_set|triggered|lamp-icon'; /* Ignore this line, added for testing */
+            const color = entity.state === 'on' ? '#eecb04' : '#8e8e8e';
+            const opacity = entity.state === 'on' ? 1 : 0.7;
+
+            return `
+              fill: ${color};
+              opacity: ${opacity};
+            `;
+      tap_action: homeassistant.toggle
+
+    - element: test-group-toggle-btn-trigger
+      tap_action: 
+        action: call-service
+        service: floorplan.class_set
+        service_data:
+          element: group-toggle-container
+          class: |
+            >
+            elements['group-toggle-container'].dataset.floorplanRef = 'test|floorplan-class_set|triggered|group-toggle-container'; /* Ignore this line, added for testing */
+            if(elements['group-toggle-container'].classList.contains('visible')) {
+              return 'hidden';
+            } else {
+              return 'visible';
+            }
+
+    - entity: binary_sensor.radar_bg
+      element: radar-bg
+      state_action:
+        - action: call-service
+          service: floorplan.class_toggle
+          service_data:
+            class: 'radar-bg-opacity-dimmed'
+
+        - action: call-service
+          service: floorplan.execute
+          service_data:
+            script_custom_name_goes_here: |
+             >
+             elements['radar-bg'].dataset.floorplanRef = 'test|floorplan-execute|triggered|radar-bg'; /* Ignore this line, added for testing */
+    - entity: sensor.int_0_to_100
+      element: radar-search-line
+      state_action:
+        action: call-service
+        service: floorplan.style_set
+        service_data:
+          style: |
+            >
+            var rotation = ((Math.floor(entity.attributes.level) * 3.6));
+
+            return `
+              transform-box: fill-box;
+              transform-origin: center bottom;
+              transform: rotate(${rotation}deg);
+            `;
+
+    - element: radar-toggle-btn
+      tap_action:
+        - action: call-service
+          service: floorplan.execute
+          service_data:
+            script_1: ${console.log("Script 1 Starting, but I'm doing nothing")}
+            script_2: |
+             > console.log("Script 2 Starting, but I do something!");
+             elements['radar-toggle-btn-text'].dataset.floorplanRef = 'test|floorplan-execute|triggered|radar-toggle-btn-text'; /* Ignore this line, added for testing */
+             // We'll need to check if the element are visible, or what, and set the text, on basis of that
+             // Here we use another element, do make a custom condition, for our radar-toggle-btn element.
+             const text = elements['radar-bg'].style.display === 'none' ? 'It\'s back!' : 'Good job! Want it back?';
+             // We could update the text by using the elements-reference, but here's a way to make a custom action, inside this action.
+             const action_data = {
+                action: 'call-service',
+                service: 'floorplan.text_set',
+                service_data: {
+                  element: 'radar-toggle-btn-text',
+                  text: text
+                }
+             };
+             action(action_data);
+             elements['radar-toggle-btn-text'].dataset.floorplanRef = 'test|floorplan-execute|done|radar-toggle-btn-text'; /* Ignore this line, added for testing */
+        - action: call-service
+          service: floorplan.style_set
+          service_data:
+            element: radar-bg
+            style: |
+              >
+              elements['radar-bg'].dataset.floorplanRef = 'test|floorplan-execute|triggered|radar-bg'; /* Ignore this line, added for testing */
+              if(elements['radar-bg'].style.display === 'none') {
+                // We could set the style for both radar-bg and radar-search-line, by running two style_set actions,
+                // but it's also possible to change the style here.
+                elements['radar-search-line'].style.display = 'block';
+                return `display: block;`;
+              } else {
+                elements['radar-search-line'].style.display = 'none';
+                return `display: none;`;
+              }
+        - action: call-service
+          service: floorplan.style_set
+          service_data:
+            element: radar-search-line
+            style: |
+              >
+              // Here, we'd return display:none; for radar-search-line, but as that's handled in the first action, we do nothing here.
+              return ``;

@@ -46,19 +46,18 @@ import {
 } from 'lit';
 import { HA_FLOORPLAN_ACTION_CALL_EVENT } from './lib/events';
 import { customElement, property } from 'lit/decorators.js';
-import OuiDomEvents from './lib/oui-dom-events';
+import OuiDomEvents from './lib/oui-dom-events.js'; // Ensure the .js extension is included, to be handled by babel
 const E = OuiDomEvents;
 
-declare const NAME: string;
-declare const DESCRIPTION: string;
-declare const VERSION: string;
+declare let NAME: string;
+declare let DESCRIPTION: string | undefined;
+declare let VERSION: string;
 
-// Display version in console
-console.info(
-  `%c${DESCRIPTION} (${NAME})%c\nVersion ${VERSION}`,
-  'color: orange; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: rgb(71, 170, 238)'
-);
+if (NAME) console.info(
+    `%c${DESCRIPTION} (${NAME})%c\nVersion ${VERSION}`,
+    'color: orange; font-weight: bold; background: black',
+    'color: white; font-weight: bold; background: rgb(71, 170, 238)'
+  );
 
 @customElement('floorplan-element')
 export class FloorplanElement extends LitElement {
@@ -254,7 +253,7 @@ export class FloorplanElement extends LitElement {
         config.console_log_level
       );
 
-      this.logInfo('INIT', `${DESCRIPTION} (${NAME}) v${VERSION}`);
+      if (NAME) this.logInfo('INIT', `${DESCRIPTION} (${NAME}) v${VERSION}`);
 
       if (!this.validateConfig(config)) return;
 
@@ -437,6 +436,10 @@ export class FloorplanElement extends LitElement {
     let imageUrl = '';
     let cache = true;
 
+    if(typeof config?.image === 'undefined'){
+      throw 'No image provided in configuration.';
+    }
+
     if (typeof config.image === 'string') {
       // Device detection
       if (Utils.isMobile && typeof config.image_mobile === 'string') {
@@ -490,13 +493,17 @@ export class FloorplanElement extends LitElement {
     const stylesheetUrl =
       typeof stylesheetConfig === 'string'
         ? stylesheetConfig
-        : stylesheetConfig.location;
+        : stylesheetConfig?.location;
+
+    if (!stylesheetUrl) {
+      this.logDebug('debug', 'No stylesheet provided in configuration.');
+      return;
+    };
+
     const useCache =
       typeof stylesheetConfig === 'string'
         ? false
-        : stylesheetConfig.cache === true;
-
-    if (!stylesheetUrl) return;
+        : stylesheetConfig?.cache === true;
 
     let stylesheet: string;
 

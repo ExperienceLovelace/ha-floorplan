@@ -1,6 +1,6 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { FloorplanExanple } from './types';
+import { FloorplanExample } from './types';
 import './floorplan-example';
 import '../lit-toast/lit-toast';
 import { LitToast } from '../lit-toast/lit-toast';
@@ -8,10 +8,24 @@ import { LitToast } from '../lit-toast/lit-toast';
 @customElement('floorplan-examples')
 export class FloorplanExamples extends LitElement {
   @property({ type: String }) public examplespath!: string;
-  @property({ type: Array }) public examples!: FloorplanExanple[];
+  @property({ type: Array }) public examples!: FloorplanExample[];
 
   floorplanExamples = [
     // Cards
+    {
+      name: 'test_plate',
+      dir: 'test_plate',
+      configFile: 'test_plate.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: true,
+    },
+    {
+      name: 'home',
+      dir: 'home',
+      configFile: 'home.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: true,
+    },
     {
       name: 'remote',
       dir: 'remote',
@@ -49,20 +63,13 @@ export class FloorplanExamples extends LitElement {
     },
     // Panels
     {
-      name: 'home',
-      dir: 'home',
-      configFile: 'home.yaml',
-      simulationFile: 'simulations.yaml',
-      isCard: false,
-    },
-    {
       name: 'multi_floor',
       dir: 'multi_floor',
       configFile: 'multi_floor.yaml',
       simulationFile: 'simulations.yaml',
       isCard: false,
     },
-  ] as FloorplanExanple[];
+  ] as FloorplanExample[];
 
   constructor() {
     super();
