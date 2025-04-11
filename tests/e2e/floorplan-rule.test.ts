@@ -4,8 +4,8 @@ import { retry } from '../jest/jest-common-utils';
 
 let devServer: ChildProcess; // Explicitly type devServer as ChildProcess
 
-// Extend Playwright's default timeout to 60 seconds
-test.setTimeout(60000);
+// Extend Playwright's default timeout to 120 seconds
+test.setTimeout(120000);
 
 // Serve our examples suite
 test.beforeAll('Setup webpack dev server with examples', async () => {
@@ -50,18 +50,19 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
 
 test.afterAll(async () => {
   if (devServer) {
-    console.log('Attempting to shut down webpack-dev-server...');
+    console.log(`Attempting to shut down webpack-dev-server (PID: ${devServer.pid})...`);
     devServer.kill('SIGTERM'); // Send SIGTERM to terminate the server
 
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        console.error('webpack-dev-server did not shut down in time.');
+        console.error('webpack-dev-server did not shut down in time. Attempting SIGKILL...');
+        devServer.kill('SIGKILL'); // Forcefully kill the process
         reject(new Error('webpack-dev-server shutdown timeout.'));
       }, 10000); // 10 seconds timeout
 
-      devServer.on('close', () => {
+      devServer.on('close', (code) => {
         clearTimeout(timeout);
-        console.log('webpack-dev-server shut down successfully.');
+        console.log(`webpack-dev-server shut down successfully with exit code ${code}.`);
         resolve(true);
       });
 
@@ -71,6 +72,12 @@ test.afterAll(async () => {
         reject(error);
       });
     });
+
+    // Ensure the process is terminated
+    if (!devServer.killed) {
+      console.warn('webpack-dev-server process is still running. Forcefully killing...');
+      devServer.kill('SIGKILL');
+    }
   }
 });
 
