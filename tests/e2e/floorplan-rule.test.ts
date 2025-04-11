@@ -4,6 +4,9 @@ import { retry } from '../jest/jest-common-utils';
 
 let devServer: ChildProcess; // Explicitly type devServer as ChildProcess
 
+// Extend Playwright's default timeout to 60 seconds
+test.setTimeout(60000);
+
 // Serve our examples suite
 test.beforeAll('Setup webpack dev server with examples', async () => {
   devServer = spawn('npx', ['webpack-dev-server'], {
@@ -17,7 +20,7 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
       reject(
         new Error('webpack-dev-server did not start within the expected time.')
       );
-    }, 60000); // 60 seconds timeout
+    }, 30000); // 30 seconds timeout
 
     const handleOutput = (data: Buffer) => {
       const output = data.toString();
@@ -43,7 +46,7 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
       }
     });
   });
-}); // Extend Playwright's default timeout to 60 seconds
+}); 
 
 test.afterAll(async () => {
   if (devServer) {
