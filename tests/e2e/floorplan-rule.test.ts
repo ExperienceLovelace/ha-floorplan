@@ -9,7 +9,7 @@ test.setTimeout(120000);
 
 // Serve our examples suite
 test.beforeAll('Setup webpack dev server with examples', async () => {
-  devServer = spawn('npx', ['webpack-dev-server'], {
+  devServer = spawn('npx', ['webpack-dev-server', '--watch-options-poll'], {
     stdio: 'pipe',
     shell: true,
   });
