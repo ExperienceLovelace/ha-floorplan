@@ -46,9 +46,8 @@ jobs:
       if: always()
       with:
         files: |
-          test-results/**/*.xml
-          test-results/**/*.trx
-          test-results/**/*.json
+          test-results/jest/*.xml
+          test-results/e2e/*.xml
 
     - name: Validate build success
       run: |
