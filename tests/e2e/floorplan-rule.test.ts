@@ -53,23 +53,23 @@ test.afterAll(async () => {
     console.log(`Attempting to shut down webpack-dev-server (PID: ${devServer.pid})...`);
     devServer.kill('SIGTERM'); // Send SIGTERM to terminate the server
 
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       const timeout = setTimeout(() => {
         console.error('webpack-dev-server did not shut down in time. Attempting SIGKILL...');
         devServer.kill('SIGKILL'); // Forcefully kill the process
-        reject(new Error('webpack-dev-server shutdown timeout.'));
+        resolve(false); // Indicate that the shutdown was not graceful
       }, 10000); // 10 seconds timeout
 
       devServer.on('close', (code) => {
         clearTimeout(timeout);
         console.log(`webpack-dev-server shut down successfully with exit code ${code}.`);
-        resolve(true);
+        resolve(true); // Indicate that the shutdown was successful
       });
 
       devServer.on('error', (error) => {
         clearTimeout(timeout);
         console.error('Error while shutting down webpack-dev-server:', error);
-        reject(error);
+        resolve(false); // Indicate that an error occurred during shutdown
       });
     });
 
