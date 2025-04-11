@@ -10,8 +10,8 @@
 
 <p align="center">
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/commits/master" target="_blank">
-    <img src="https://github.com/ExperienceLovelace/ha-floorplan/workflows/merge-to-master.yaml/badge.svg??branch=master&style=flat-square&logo=github&logoColor=white"
-         alt="GitHub Build & Test">
+    <img src="https://github.com/ExperienceLovelace/ha-floorplan/actions/workflows/merge-to-master.yaml/badge.svg?branch=master&style=flat-square&logo=github&logoColor=white"
+         alt="GitHub Build & Test on Master">
          </a>
     <a href="https://github.com/ExperienceLovelace/ha-floorplan/issues" target="_blank">
     <img src="https://img.shields.io/github/issues-raw/ExperienceLovelace/ha-floorplan.svg?style=flat-square&logo=github&logoColor=white"
