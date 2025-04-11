@@ -26,7 +26,15 @@ jobs:
 
     - run: npm ci
 
+    # Install other required resources
+    - run: ./tests/setup_tests.sh
+
     - run: npm run build
+
+    - name: Run playwright tests
+      run: npm test:e2e
+      env:
+        CI: true
 
     - name: Run tests
       run: npm test
