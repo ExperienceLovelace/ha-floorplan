@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import TerserPlugin from 'terser-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import webpack from 'webpack'; // Import the default export
-import packageInfo from './package.json' assert { type: 'json' };
+import packageInfo from './package.json' with { type: 'json' };
 
 const { DefinePlugin } = webpack; // Destructure DefinePlugin from the default export
 
