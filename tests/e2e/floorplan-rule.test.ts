@@ -45,8 +45,14 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
   });
 }); // Extend Playwright's default timeout to 60 seconds
 
-test.afterAll(() => {
-  devServer.kill();
+test.afterAll(async () => {
+  if (devServer) {
+    await new Promise((resolve, reject) => {
+      devServer.on('close', resolve);
+      devServer.on('error', reject);
+      devServer.kill();
+    });
+  }
 });
 
 test('Rules: Query Elements Methods | Evaluate and build-in playwright query', async ({ page }) => {
