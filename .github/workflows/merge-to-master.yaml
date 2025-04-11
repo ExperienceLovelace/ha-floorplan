@@ -7,6 +7,13 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/common-build-test.yaml
-    with:
-      upload-artifacts: true
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run common build and test
+        uses: ./.github/workflows/common-build-test.yaml
+        with:
+          upload-artifacts: true

@@ -3,9 +3,6 @@ name: Common Build and Test
 on:
   workflow_call:
     inputs:
-      ssh-key:
-        required: false
-        type: string
       upload-artifacts:
         required: false
         type: boolean
@@ -23,7 +20,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ssh-key: ${{ inputs.ssh-key }}
         fetch-depth: 0
 
     - name: Build files with Node.js ${{ matrix.node-version }}
