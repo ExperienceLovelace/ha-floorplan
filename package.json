@@ -29,7 +29,7 @@
   "repository": "https://github.com/ExperienceLovelace/ha-floorplan",
   "type": "module",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "npx webpack serve --progress",
     "build": "webpack --env production",
     "build:dev": "webpack",
     "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
