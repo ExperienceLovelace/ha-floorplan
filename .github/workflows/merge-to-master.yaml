@@ -1,0 +1,12 @@
+name: Test on Merge to Master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/common-build-test.yaml
+    with:
+      upload-artifacts: true
