@@ -7,14 +7,6 @@ on:
 jobs:
   build:
     name: Build and Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run common build and test
-        uses: ./.github/workflows/common-build-test.yaml
-        with:
-          upload-artifacts: false
+    uses: ./.github/workflows/common-build-test.yaml
+    with:
+      upload-artifacts: false
