@@ -83,7 +83,7 @@
     "whatwg-fetch": "^3.6.20"
   },
   "jest-junit": {
-    "outputDirectory": "test-results",
+    "outputDirectory": "test-results/jest",
     "outputName": "junit.xml"
   }
 }
