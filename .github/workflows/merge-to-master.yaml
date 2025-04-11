@@ -1,12 +1,13 @@
-name: Test on PR
+name: Test on Merge to Master
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
 
 jobs:
   build:
     name: Build and Test
     uses: ./.github/workflows/common-build-test.yaml
     with:
-      upload-artifacts: false
+      upload-artifacts: true
