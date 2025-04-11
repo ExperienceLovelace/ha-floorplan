@@ -50,10 +50,26 @@ test.beforeAll('Setup webpack dev server with examples', async () => {
 
 test.afterAll(async () => {
   if (devServer) {
+    console.log('Attempting to shut down webpack-dev-server...');
+    devServer.kill('SIGTERM'); // Send SIGTERM to terminate the server
+
     await new Promise((resolve, reject) => {
-      devServer.on('close', resolve);
-      devServer.on('error', reject);
-      devServer.kill();
+      const timeout = setTimeout(() => {
+        console.error('webpack-dev-server did not shut down in time.');
+        reject(new Error('webpack-dev-server shutdown timeout.'));
+      }, 10000); // 10 seconds timeout
+
+      devServer.on('close', () => {
+        clearTimeout(timeout);
+        console.log('webpack-dev-server shut down successfully.');
+        resolve(true);
+      });
+
+      devServer.on('error', (error) => {
+        clearTimeout(timeout);
+        console.error('Error while shutting down webpack-dev-server:', error);
+        reject(error);
+      });
     });
   }
 });
