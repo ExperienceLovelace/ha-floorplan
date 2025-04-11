@@ -20,9 +20,9 @@ describe('Events', () => {
   });
 
   it('Trigger Service Call', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
-    const text_to_set = "Hello there";
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
+    const textToSet = "Hello there";
 
     createFloorplanExampleElement(
       {
@@ -41,21 +41,21 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
     // Validate that our entity is part of the states
-    expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
 
     // Now we expect that the text has changed
     await retry(
       async () => {
         const element = svg.querySelector(
-          `#${target_svg_element_id}`
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
         expect(element).toBeInstanceOf(SVGElement);
@@ -67,26 +67,26 @@ config:
               action: 'call-service',
               service: 'floorplan.text_set',
               service_data: {
-                element: target_svg_element_id,
-                text: text_to_set,
+                element: targetSvgElementId,
+                text: textToSet,
               },
             },
           ],
-          entityId: simulated_entity,
+          entityId: simulatedEntity,
           /* text_set can handle a situation without svgElementInfo, but it's added for good measure */
           svgElementInfo:
-            floorplan_element.entityInfos?.[simulated_entity]?.ruleInfos[0]
-              ?.svgElementInfos[target_svg_element_id],
+            floorplanElementInstance.entityInfos?.[simulatedEntity]?.ruleInfos[0]
+              ?.svgElementInfos[targetSvgElementId],
           ruleInfo:
-            floorplan_element.entityInfos?.[simulated_entity]?.ruleInfos,
+            floorplanElementInstance.entityInfos?.[simulatedEntity]?.ruleInfos,
         });
 
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
         // Expect the innerHTML to match the text
-        expect(target_el.innerHTML).toMatch(text_to_set);
+        expect(targetEl.innerHTML).toMatch(textToSet);
       },
       10,
       700 // This should not match the emulator time sequence

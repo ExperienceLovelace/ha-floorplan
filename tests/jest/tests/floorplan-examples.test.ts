@@ -42,16 +42,18 @@ describe('Constructors for Tests', () => {
     );
 
     // Use the utility function to get the floorplan element
-    const element = await getFloorplanElement();
-    expect(element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
-    const entity_to_be_expected = 'sensor.moisture_level';
+    const entityToBeExpected = 'sensor.moisture_level';
 
     // Check if entity is part of element.entityInfos, meaning that the rules are correctly loaded
-    expect(element?.entityInfos?.[entity_to_be_expected]).toHaveProperty('lastState');
+    expect(
+      floorplanElementInstance?.entityInfos?.[entityToBeExpected]
+    ).toHaveProperty('lastState');
 
-    const action = element?.entityInfos?.[entity_to_be_expected]?.ruleInfos[0]
-      ?.rule?.state_action as FloorplanCallServiceActionConfig;
+    const action = floorplanElementInstance?.entityInfos?.[entityToBeExpected]
+      ?.ruleInfos[0]?.rule?.state_action as FloorplanCallServiceActionConfig;
     expect(action?.service).toEqual('floorplan.style_set');
   });
 
@@ -92,17 +94,19 @@ config:
     return await retry(
       async () => {
         // Use the utility function to get the floorplan element
-        const element = await getFloorplanElement();
-        expect(element).toBeInstanceOf(FloorplanElement);
+        const floorplanElementInstance = await getFloorplanElement();
+        expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
-        const entity_to_be_expected = 'sensor.moisture_level';
+        const entityToBeExpected = 'sensor.moisture_level';
 
         // Check if entity is part of element.entityInfos, meaning that the rules are correctly loaded
-        expect(element?.entityInfos?.[entity_to_be_expected]).toHaveProperty(
-          'lastState'
-        );
+        expect(
+          floorplanElementInstance?.entityInfos?.[entityToBeExpected]
+        ).toHaveProperty('lastState');
 
-        const action = element?.entityInfos?.[entity_to_be_expected]?.ruleInfos[0]?.rule?.state_action as FloorplanCallServiceActionConfig;
+        const action = floorplanElementInstance?.entityInfos?.[
+          entityToBeExpected
+        ]?.ruleInfos[0]?.rule?.state_action as FloorplanCallServiceActionConfig;
         expect(action?.service).toEqual('floorplan.style_set');
         expect(action?.service_data?.style).toEqual('height: 10px');        
       },
@@ -144,22 +148,22 @@ config:
       () => {}
     );
 
-    const entity_to_be_expected = 'sensor.moisture_level';
+    const entityToBeExpected = 'sensor.moisture_level';
 
     let simulator: HassSimulator | undefined;
 
     await retry(
       async () => {
         // Use the utility function to get the floorplan element
-        const example_element = await getFloorplanExampleElement();
-        expect(example_element).toBeInstanceOf(FloorplanExampleElement);
+        const exampleElement = await getFloorplanExampleElement();
+        expect(exampleElement).toBeInstanceOf(FloorplanExampleElement);
 
         // Get the simulator object
-        simulator = example_element?.simulator;
+        simulator = exampleElement?.simulator;
         expect(simulator).toBeInstanceOf(HassSimulator);
 
 
-        // Check if entity_to_be_expected is part of simulator.simulationProcessors
+        // Check if entityToBeExpected is part of simulator.simulationProcessors
         const simulationProcessors =
           simulator?.simulationProcessors as SimulationProcessor[];
 
@@ -167,7 +171,7 @@ config:
         let found = false;
 
         for (const simulationProcessor of simulationProcessors) {
-          if (simulationProcessor.entities.includes(entity_to_be_expected)) {
+          if (simulationProcessor.entities.includes(entityToBeExpected)) {
             found = true;
             break;
           }
@@ -180,19 +184,19 @@ config:
     );
 
     // Check the state of the entity
-    const entity_attribute_value_before = (simulator?.hass?.states?.[
-      entity_to_be_expected
+    const entityAttributeValueBefore = (simulator?.hass?.states?.[
+      entityToBeExpected
     ]?.attributes as Record<string, unknown>)?.level as number;
 
     // Retry until the state changes
     return await retry(
       async () => {
         const entity_attribute_value_after = (
-          simulator?.hass?.states?.[entity_to_be_expected]
+          simulator?.hass?.states?.[entityToBeExpected]
             ?.attributes as Record<string, unknown>
         )?.level as number;
 
-        expect(entity_attribute_value_before).not.toEqual(
+        expect(entityAttributeValueBefore).not.toEqual(
           entity_attribute_value_after
         );
       },
@@ -257,21 +261,21 @@ simulations:
       () => {}
     );
 
-    const entity_to_be_expected = 'sensor.moisture_level';
+    const entityToBeExpected = 'sensor.moisture_level';
 
     let simulator: HassSimulator | undefined;
 
     await retry(
       async () => {
         // Use the utility function to get the floorplan element
-        const example_element = await getFloorplanExampleElement();
-        expect(example_element).toBeInstanceOf(FloorplanExampleElement);
+        const exampleElement = await getFloorplanExampleElement();
+        expect(exampleElement).toBeInstanceOf(FloorplanExampleElement);
 
         // Get the simulator object
-        simulator = example_element?.simulator;
+        simulator = exampleElement?.simulator;
         expect(simulator).toBeInstanceOf(HassSimulator);
 
-        // Check if entity_to_be_expected is part of simulator.simulationProcessors
+        // Check if entityToBeExpected is part of simulator.simulationProcessors
         const simulationProcessors =
           simulator?.simulationProcessors as SimulationProcessor[];
 
@@ -279,7 +283,7 @@ simulations:
         let found = false;
 
         for (const simulationProcessor of simulationProcessors) {
-          if (simulationProcessor.entities.includes(entity_to_be_expected)) {
+          if (simulationProcessor.entities.includes(entityToBeExpected)) {
             found = true;
             break;
           }
@@ -292,14 +296,14 @@ simulations:
     );
 
     // Check the state of the entity
-    const entity_attribute_value_before = (simulator?.hass?.states?.[entity_to_be_expected]?.attributes as Record<string, unknown>)?.level as number;
+    const entityAttributeValueBefore = (simulator?.hass?.states?.[entityToBeExpected]?.attributes as Record<string, unknown>)?.level as number;
 
     // Retry until the state changes
     return await retry(
       async () => {
-        const entity_attribute_value_after = (simulator?.hass?.states?.[entity_to_be_expected]?.attributes as Record<string, unknown>)?.level as number;
+        const entity_attribute_value_after = (simulator?.hass?.states?.[entityToBeExpected]?.attributes as Record<string, unknown>)?.level as number;
 
-        expect(entity_attribute_value_before).not.toEqual(
+        expect(entityAttributeValueBefore).not.toEqual(
           entity_attribute_value_after
         );
       },
@@ -336,20 +340,24 @@ describe('Simulator', () => {
 
   it('Will Simulate Values and trigger Rules', async () => {
     // Use the utility function to get the floorplan element
-    const element = await getFloorplanElement();
-    expect(element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
-    const level_before = element?.hass?.states?.['sensor.moisture_level']?.attributes?.level ?? null;
+    const levelBefore =
+      floorplanElementInstance?.hass?.states?.['sensor.moisture_level']
+        ?.attributes?.level ?? null;
     
     // The moisture level is meant to change over time, so wait and validate that it changes
     return await retry(
       async () => {
-      const updated_level = element?.hass?.states?.['sensor.moisture_level']?.attributes?.level ?? null;
-      expect(updated_level).not.toEqual(level_before);
+      const updatedLevel =
+        floorplanElementInstance?.hass?.states?.['sensor.moisture_level']
+          ?.attributes?.level ?? null;
+      expect(updatedLevel).not.toEqual(levelBefore);
       },
       10,
       100
@@ -372,25 +380,25 @@ describe('Simulator', () => {
     expect(moistureLevelClipPath).toBeInstanceOf(SVGElement);
     expect(moistureLevelClipPath).toHaveProperty('style');
 
-    const level_before =
+    const levelBefore =
       element?.hass?.states?.['sensor.moisture_level']?.attributes?.level ??
       null;
-    const transform_before =
+    const transformBefore =
       moistureLevelClipPath?.style?.getPropertyValue('transform') ?? '';
 
       // The moisture level is meant to change over time, so wait and validate that it changes
     return await retry(
       async () => {
-        const level_after =
+        const levelAfter =
           element?.hass?.states?.['sensor.moisture_level']?.attributes?.level ??
           null;
-        const transform_after =
+        const transformAfter =
           moistureLevelClipPath?.style?.getPropertyValue('transform') ?? '';
 
         // Check that the level and transform have changed
-        expect(level_before).not.toEqual(level_after);
-        expect(transform_before).not.toEqual(transform_after);
-        expect(transform_after).toMatch(/translate\(\d+, \d+px\)/);
+        expect(levelBefore).not.toEqual(levelAfter);
+        expect(transformBefore).not.toEqual(transformAfter);
+        expect(transformAfter).toMatch(/translate\(\d+, \d+px\)/);
       },
       10,
       100

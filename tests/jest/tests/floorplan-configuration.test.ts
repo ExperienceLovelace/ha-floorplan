@@ -20,8 +20,8 @@ describe('Configuration', () => {
   });
 
   it('Will initiate ha-floorplan if no rules and stylesheet', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
 
     createFloorplanExampleElement(
       {
@@ -40,25 +40,27 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
     // Validate that our entity is part of the states
-    expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
+    expect(
+      floorplanElementInstance?.hass?.states?.[simulatedEntity]
+    ).toBeDefined();
 
     // Now we expect that the text has changed
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
         // Expect the innerHTML to match the text
-        expect(target_el.innerHTML).toMatch('Click to hide radar');
+        expect(targetEl.innerHTML).toMatch('Click to hide radar');
       },
       10,
       700 // This should not match the emulator time sequence
@@ -94,8 +96,8 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     await expect(async () => {

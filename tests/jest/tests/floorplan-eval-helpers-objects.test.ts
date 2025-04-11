@@ -21,9 +21,9 @@ describe('Evaluated JS Helpers: Objects', () => {
   });
 
   it('config: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const helper_to_test = 'config';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const helperToTest = 'config';
 
     createFloorplanExampleElement(
       {
@@ -34,15 +34,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
           `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -55,21 +55,21 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Check if "rules" is set
-        expect(helper_ref.rules).toBeDefined();
+        expect(helperRef.rules).toBeDefined();
 
         // Check if "rules" is an array with length 1
-        expect(helper_ref.rules.length).toEqual(1);
+        expect(helperRef.rules.length).toEqual(1);
 
         // Check if it's a execute statement
         expect(
-          helper_ref.rules[0].state_action[0].service
+          helperRef.rules[0].state_action[0].service
         ).toEqual('floorplan.execute');
       },
       10,
@@ -78,9 +78,9 @@ config:
   });
 
   it('entity: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const helper_to_test = 'entity';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const helperToTest = 'entity';
 
     createFloorplanExampleElement(
       {
@@ -91,15 +91,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
             `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -110,22 +110,24 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
-        expect(helper_ref).toHaveProperty('entity_id');
-        expect(helper_ref).toHaveProperty('state');
-        expect(helper_ref.entity_id).toEqual(simulated_entity);
-        expect(helper_ref.state).toEqual(floorplan_element?.hass?.states?.[simulated_entity]?.state);
+        expect(helperRef).toHaveProperty('entity_id');
+        expect(helperRef).toHaveProperty('state');
+        expect(helperRef.entity_id).toEqual(simulatedEntity);
+        expect(helperRef.state).toEqual(
+          floorplanElementInstance?.hass?.states?.[simulatedEntity]?.state
+        );
       },
       10,
       700 // This should not match the emulator time sequence
@@ -133,10 +135,10 @@ config:
   });
 
   it('entities: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const extra_simulated_entity = 'sensor.random_text';
-    const target_svg_element_id = 'entity-1-state';
-    const helper_to_test = 'entities';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const extraSimulatedEntity = 'sensor.random_text';
+    const targetSvgElementId = 'entity-1-state';
+    const helperToTest = 'entities';
 
     createFloorplanExampleElement(
       {
@@ -147,15 +149,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
             `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -166,38 +168,38 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Ensure the helper contains at least one entity
-        expect(Object.keys(helper_ref).length).toBeGreaterThan(0);
+        expect(Object.keys(helperRef).length).toBeGreaterThan(0);
 
         // Validate the simulated entity
-        const entity = helper_ref[simulated_entity];
+        const entity = helperRef[simulatedEntity];
         expect(entity).toBeDefined();
-        expect(entity).toHaveProperty('entity_id', simulated_entity);
+        expect(entity).toHaveProperty('entity_id', simulatedEntity);
         expect(entity).toHaveProperty('state');
         expect(entity.state).toEqual(
-          floorplan_element?.hass?.states?.[simulated_entity]?.state
+          floorplanElementInstance?.hass?.states?.[simulatedEntity]?.state
         );
 
         // Validate an additional entity
-        const extra_entity = helper_ref[extra_simulated_entity];
-        expect(extra_entity).toBeDefined();
-        expect(extra_entity).toHaveProperty(
+        const extraEntity = helperRef[extraSimulatedEntity];
+        expect(extraEntity).toBeDefined();
+        expect(extraEntity).toHaveProperty(
           'entity_id',
-          extra_simulated_entity
+          extraSimulatedEntity
         );
-        expect(extra_entity).toHaveProperty('state');
+        expect(extraEntity).toHaveProperty('state');
       },
       10,
       700 // This should not match the emulator time sequence
@@ -205,9 +207,9 @@ config:
   });
 
   it('states: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const helper_to_test = 'states';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const helperToTest = 'states';
 
     createFloorplanExampleElement(
       {
@@ -218,15 +220,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
             `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -237,36 +239,36 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Ensure the helper contains at least one entity
-        expect(Object.keys(helper_ref).length).toBeGreaterThan(0);
+        expect(Object.keys(helperRef).length).toBeGreaterThan(0);
 
         // Validate the simulated entity
-        const entity = helper_ref[simulated_entity];
+        const entity = helperRef[simulatedEntity];
         expect(entity).toBeDefined();
-        expect(entity).toHaveProperty('entity_id', simulated_entity);
+        expect(entity).toHaveProperty('entity_id', simulatedEntity);
         expect(entity).toHaveProperty('state');
         expect(entity.state).toEqual(
-          floorplan_element?.hass?.states?.[simulated_entity]?.state
+          floorplanElementInstance?.hass?.states?.[simulatedEntity]?.state
         );
 
         // Validate an additional entity
-        const extra_entity_name = 'sensor.random_text';
-        const extra_entity = helper_ref[extra_entity_name];
-        expect(extra_entity).toBeDefined();
-        expect(extra_entity).toHaveProperty('entity_id', extra_entity_name);
-        expect(extra_entity).toHaveProperty('state');
+        const extraEntityName = 'sensor.random_text';
+        const extraEntity = helperRef[extraEntityName];
+        expect(extraEntity).toBeDefined();
+        expect(extraEntity).toHaveProperty('entity_id', extraEntityName);
+        expect(extraEntity).toHaveProperty('state');
       },
       10,
       700 // This should not match the emulator time sequence
@@ -274,9 +276,9 @@ config:
   });
 
   it('hass: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const helper_to_test = 'hass';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const helperToTest = 'hass';
 
     createFloorplanExampleElement(
       {
@@ -287,15 +289,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
             `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -308,20 +310,20 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
-        expect(Object.keys(helper_ref).length).toBeGreaterThan(0);
+        expect(Object.keys(helperRef).length).toBeGreaterThan(0);
 
         // Expect the object to be a instance of HomeAssistant
-        expect(helper_ref).toBeInstanceOf(HomeAssistant);
+        expect(helperRef).toBeInstanceOf(HomeAssistant);
 
         // Expected keys or functions
-        expect(helper_ref?.states).toBeInstanceOf(Object);
-        expect(helper_ref?.callService).toBeInstanceOf(Function);
+        expect(helperRef?.states).toBeInstanceOf(Object);
+        expect(helperRef?.callService).toBeInstanceOf(Function);
       },
       10,
       700 // This should not match the emulator time sequence
@@ -329,9 +331,9 @@ config:
   });
 
   it('element: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const helper_to_test = 'element';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const helperToTest = 'element';
 
     createFloorplanExampleElement(
       {
@@ -342,15 +344,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
             `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -363,13 +365,13 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
-        expect(helper_ref.id).toEqual(target_svg_element_id);
+        expect(helperRef.id).toEqual(targetSvgElementId);
       },
       10,
       700 // This should not match the emulator time sequence
@@ -377,10 +379,10 @@ config:
   });
 
   it('elements: Is Defined', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const extra_target_svg_element_id = 'entity-2-state';
-    const helper_to_test = 'elements';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const extraTargetSvgElementId = 'entity-2-state';
+    const helperToTest = 'elements';
 
     createFloorplanExampleElement(
       {
@@ -391,15 +393,15 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-              document.${global_document_object_key}['${helper_to_test}'] = ${helper_to_test};
+              document.${global_document_object_key}['${helperToTest}'] = ${helperToTest};
             `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -412,25 +414,25 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Ensure the helper contains at least one element
-        expect(Object.keys(helper_ref).length).toBeGreaterThan(0);
+        expect(Object.keys(helperRef).length).toBeGreaterThan(0);
 
         // Validate the target SVG element
-        const target_element = helper_ref[target_svg_element_id];
-        expect(target_element).toBeDefined();
-        expect(target_element).toBeInstanceOf(SVGElement);
+        const targetElement = helperRef[targetSvgElementId];
+        expect(targetElement).toBeDefined();
+        expect(targetElement).toBeInstanceOf(SVGElement);
 
         // Validate another element
-        const extra_element = helper_ref[extra_target_svg_element_id];
-        expect(extra_element).toBeDefined();
-        expect(extra_element).toHaveProperty('id', extra_target_svg_element_id);
-        expect(extra_element).toBeInstanceOf(SVGElement);
+        const extraElement = helperRef[extraTargetSvgElementId];
+        expect(extraElement).toBeDefined();
+        expect(extraElement).toHaveProperty('id', extraTargetSvgElementId);
+        expect(extraElement).toBeInstanceOf(SVGElement);
       },
       10,
       700 // This should not match the emulator time sequence

@@ -20,9 +20,8 @@ describe('Action Triggers', () => {
   });
 
   it('startup_action', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'temp-icons';
-    const class_to_add = 'temp-ok';
+    const targetSvgElementId = 'temp-icons';
+    const classToAdd = 'temp-ok';
 
     createFloorplanExampleElement(
       {
@@ -35,8 +34,8 @@ config:
     - action: call-service
       service: floorplan.class_set
       service_data:
-        element: '${target_svg_element_id}'
-        class: '${class_to_add}'
+        element: '${targetSvgElementId}'
+        class: '${classToAdd}'
         `,
         isCard: true,
       },
@@ -46,8 +45,8 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
@@ -56,12 +55,12 @@ config:
     // First we need to check if the class does show up, that's possibly by simply query by the class
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
         // Check if one of the classes is part of the target_classes
-        expect(target_el.classList.contains(class_to_add)).toBeTruthy()
+        expect(targetEl.classList.contains(classToAdd)).toBeTruthy()
       },
       10,
       700 // This should not match the emulator time sequence
@@ -69,9 +68,9 @@ config:
   });
 
   it('tap_action', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const text_to_match = ' °C';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const textToMatch = ' °C';
 
     createFloorplanExampleElement(
       {
@@ -82,8 +81,8 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       tap_action:
         action: call-service
         service: floorplan.text_set
@@ -98,26 +97,26 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
     // Validate that our entity is part of the states
-    expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
 
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle;
 
-        expect(target_el.textContent).toEqual('Entity State 1');
+        expect(targetEl.textContent).toEqual('Entity State 1');
         
         // Simulate a click on the target element, to trigger tap_action
-        target_el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        targetEl.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
       },
       10,
       700 // This should not match the emulator time sequence
@@ -125,19 +124,19 @@ config:
 
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetEl.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
-        expect(text_content).toContain(text_to_match);
+        const textContent = targetEl.textContent;
+        expect(textContent).toBeDefined();
+        expect(textContent).toContain(textToMatch);
         // The value should be included, but string-typed
-        expect(text_content).toContain(
-          '' + floorplan_element?.hass?.states?.[simulated_entity].state
+        expect(textContent).toContain(
+          '' + floorplanElementInstance?.hass?.states?.[simulatedEntity].state
         );
       },
       10,
@@ -146,9 +145,9 @@ config:
   });
 
   it('hold_action', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const text_to_match = ' °C';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const textToMatch = ' °C';
 
     createFloorplanExampleElement(
       {
@@ -159,8 +158,8 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       hold_action:
         action: call-service
         service: floorplan.text_set
@@ -175,22 +174,22 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
     // Validate that our entity is part of the states
-    expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
 
     await retry(
       async () => {
         expect(
           (
             svg.querySelector(
-              `#${target_svg_element_id}`
+              `#${targetSvgElementId}`
             ) as SVGElementWithStyle
           ).textContent
         ).toEqual('Entity State 1');
@@ -199,35 +198,35 @@ config:
       700
     );
 
-    const target_el = svg.querySelector(
-      `#${target_svg_element_id}`
+    const targetEl = svg.querySelector(
+      `#${targetSvgElementId}`
     ) as SVGElementWithStyle;
     // Simulate a hold action on the target element
-    target_el.dispatchEvent(
+    targetEl.dispatchEvent(
       new MouseEvent('mousedown', { bubbles: true, cancelable: true })
     );
 
     await sleep(500); // Simulate the hold duration, minimum 400
 
-    target_el.dispatchEvent(
+    targetEl.dispatchEvent(
       new MouseEvent('mouseup', { bubbles: true, cancelable: true })
     );
 
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetEl.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
-        expect(text_content).toContain(text_to_match);
+        const textContent = targetEl.textContent;
+        expect(textContent).toBeDefined();
+        expect(textContent).toContain(textToMatch);
         // The value should be included, but string-typed
-        expect(text_content).toContain(
-          '' + floorplan_element?.hass?.states?.[simulated_entity].state
+        expect(textContent).toContain(
+          '' + floorplanElementInstance?.hass?.states?.[simulatedEntity].state
         );
       },
       10,
@@ -236,9 +235,9 @@ config:
   });
 
   it('double_tap_action', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const text_to_match = ' °C';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const textToMatch = ' °C';
 
     createFloorplanExampleElement(
       {
@@ -249,8 +248,8 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       double_tap_action:
         action: call-service
         service: floorplan.text_set
@@ -265,56 +264,56 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
     // Validate that our entity is part of the states
-    expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
 
     await retry(
       async () => {
         expect((svg.querySelector(
-          `#${target_svg_element_id}`
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle).textContent).toEqual('Entity State 1');
       },
       10,
       700
     );
 
-    const target_el = svg.querySelector(
-      `#${target_svg_element_id}`
+    const targetEl = svg.querySelector(
+      `#${targetSvgElementId}`
     ) as SVGElementWithStyle;
 
     // Simulate a double click on the target element
-    target_el.dispatchEvent(
+    targetEl.dispatchEvent(
       new MouseEvent('click', { bubbles: true, cancelable: true })
     );
 
     await sleep(100); // Ensure the delay is less than the threshold for double click
 
-    target_el.dispatchEvent(
+    targetEl.dispatchEvent(
       new MouseEvent('click', { bubbles: true, cancelable: true })
     );
 
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetEl.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
-        expect(text_content).toContain(text_to_match);
+        const textContent = targetEl.textContent;
+        expect(textContent).toBeDefined();
+        expect(textContent).toContain(textToMatch);
         // The value should be included, but string-typed
-        expect(text_content).toContain(
-          '' + floorplan_element?.hass?.states?.[simulated_entity].state
+        expect(textContent).toContain(
+          '' + floorplanElementInstance?.hass?.states?.[simulatedEntity].state
         );
       },
       10,
@@ -323,9 +322,9 @@ config:
   });
 
   it('state_action', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
-    const text_to_match = ' °C';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const textToMatch = ' °C';
 
     createFloorplanExampleElement(
       {
@@ -336,8 +335,8 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         action: call-service
         service: floorplan.text_set
@@ -352,31 +351,31 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
     expect(svg).toBeInstanceOf(SVGElement);
 
     // Validate that our entity is part of the states
-    expect(floorplan_element?.hass?.states?.[simulated_entity]).toBeDefined();
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
 
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetEl.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
-        expect(text_content).toContain(text_to_match);
+        const textContent = targetEl.textContent;
+        expect(textContent).toBeDefined();
+        expect(textContent).toContain(textToMatch);
         // The value should be included, but string-typed
-        expect(text_content).toContain(
-          '' + floorplan_element?.hass?.states?.[simulated_entity].state
+        expect(textContent).toContain(
+          '' + floorplanElementInstance?.hass?.states?.[simulatedEntity].state
         );
       },
       10,
@@ -385,10 +384,10 @@ config:
   });
 
   it('hover_action', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
+    const simulatedEntity = 'sensor.temperature_living_area';
     // "g" elements can have a hover-event by default. We manipulate text and other elements, to work with hover, by adding a title
-    const target_svg_element_id = 'group-row-1'; // That's a <g> element
-    const class_to_add = 'mouse_hover_works';
+    const targetSvgElementId = 'group-row-1'; // That's a <g> element
+    const classToAdd = 'mouse_hover_works';
 
     createFloorplanExampleElement(
       {
@@ -399,11 +398,11 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: '${simulated_entity}'
-      element: '${target_svg_element_id}'
+    - entity: '${simulatedEntity}'
+      element: '${targetSvgElementId}'
       hover_action:
         - service: floorplan.class_set
-          service_data: '${class_to_add}'
+          service_data: '${classToAdd}'
       `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -414,8 +413,8 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
@@ -424,19 +423,19 @@ config:
     await retry(
       async () => {
         expect(
-          svg.querySelector(`#${target_svg_element_id}`) as SVGElementWithStyle
+          svg.querySelector(`#${targetSvgElementId}`) as SVGElementWithStyle
         ).toBeDefined();
       },
       10,
       700
     );
 
-    const target_el = svg.querySelector(
-      `#${target_svg_element_id}`
+    const targetEl = svg.querySelector(
+      `#${targetSvgElementId}`
     ) as SVGElementWithStyle;
 
     // Simulate a hover action on the target element
-    target_el.dispatchEvent(
+    targetEl.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true, cancelable: true })
     );
 
@@ -444,18 +443,18 @@ config:
     await sleep(300);
 
     // Simulate the mouseout action
-    target_el.dispatchEvent(
+    targetEl.dispatchEvent(
       new MouseEvent('mouseout', { bubbles: true, cancelable: true })
     );
 
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElementWithStyle;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
-        expect(target_el.classList.contains(class_to_add)).toBeTruthy();
+        expect(targetEl.id).toEqual(targetSvgElementId);
+        expect(targetEl.classList.contains(classToAdd)).toBeTruthy();
       },
       10,
       700 // This should not match the emulator time sequence

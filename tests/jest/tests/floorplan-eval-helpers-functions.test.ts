@@ -20,64 +20,12 @@ describe('Evaluated JS Helpers: Functions', () => {
   });
 
   it('util > color > miredToRGB: Converts mired (light temperature) to RGB', async () => {
-      const miredValue = 80; // Example mired value
-      const expectedRGB = [189, 210, 255]; // Expected RGB value for the given mired
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-1-state';
+    const miredValue = 80; // Example mired value
+    const expectedRgb = [189, 210, 255]; // Expected RGB value for the given mired
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
 
-      const helper_to_test = 'miredToRGB';
-
-      createFloorplanExampleElement(
-        {
-          name: 'TestPlate',
-          dir: 'test_plate',
-          configYaml: `title: TestPlate
-config:
-  image: /local/floorplan/examples/test_plate/test_plate.svg
-  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
-  rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
-      state_action:
-        - action: call-service
-          service: floorplan.execute
-          service_data:
-            test_script_for_helper: |
-              > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-               const mired_number = ${miredValue};
-              document.${global_document_object_key}['${helper_to_test}'] = util.color.miredToRGB(mired_number);
-        `,
-          simulationFile: 'simulations.yaml',
-          isCard: true,
-        },
-        'examples',
-        true,
-        () => {}
-      );
-
-      await retry(
-        async () => {
-          const helper_ref = await getFloorplanHelper(helper_to_test);
-
-          // Check if helper to test exists
-          expect(helper_ref).toBeDefined();
-
-          // SPECIFIC FOR THIS HELPER:
-          // Validate the RGB value
-          expect(helper_ref).toEqual(expectedRGB);
-        },
-        10,
-        700
-      );
-  });
-
-  it('util > color > kelvinToRGB: Converts kelvin (light temperature) to RGB', async () => {
-    const kelvinValue = 1700; // Example kelvin value
-    const expectedRGB = [255, 121, 0]; // Expected RGB value for the given kelvin
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-2-state';
-
-    const helper_to_test = 'kelvinToRGB';
+    const helperToTest = 'miredToRGB';
 
     createFloorplanExampleElement(
       {
@@ -88,16 +36,16 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
           service_data:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
-               const kelvin_number = ${kelvinValue};
-              document.${global_document_object_key}['${helper_to_test}'] = util.color.kelvinToRGB(kelvin_number);
+               const mired_number = ${miredValue};
+              document.${global_document_object_key}['${helperToTest}'] = util.color.miredToRGB(mired_number);
         `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -109,30 +57,27 @@ config:
 
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Validate the RGB value
-        expect(helper_ref).toEqual(expectedRGB);
+        expect(helperRef).toEqual(expectedRgb);
       },
       10,
       700
     );
   });
 
+  it('util > color > kelvinToRGB: Converts kelvin (light temperature) to RGB', async () => {
+    const kelvinValue = 1700; // Example kelvin value
+    const expectedRgb = [255, 121, 0]; // Expected RGB value for the given kelvin
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-2-state';
 
-
-  it('util > date > strftime: Formats date/time according to a format string', async () => {
-    const dateStrInput = '2025-07-04 17:00:00';
-    const formatString = '%d-%m-%Y %I:%M:%S %p'; // Example format string
-    const expectedFormattedDate = '04-07-2025 05:00:00 PM'; // Expected formatted date
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-2-state';
-
-    const helper_to_test = 'strftime';
+    const helperToTest = 'kelvinToRGB';
 
     createFloorplanExampleElement(
       {
@@ -143,8 +88,61 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
+      state_action:
+        - action: call-service
+          service: floorplan.execute
+          service_data:
+            test_script_for_helper: |
+              > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
+               const kelvin_number = ${kelvinValue};
+              document.${global_document_object_key}['${helperToTest}'] = util.color.kelvinToRGB(kelvin_number);
+        `,
+        simulationFile: 'simulations.yaml',
+        isCard: true,
+      },
+      'examples',
+      true,
+      () => {}
+    );
+
+    await retry(
+      async () => {
+        const helperRef = await getFloorplanHelper(helperToTest);
+
+        // Check if helper to test exists
+        expect(helperRef).toBeDefined();
+
+        // SPECIFIC FOR THIS HELPER:
+        // Validate the RGB value
+        expect(helperRef).toEqual(expectedRgb);
+      },
+      10,
+      700
+    );
+  });
+
+  it('util > date > strftime: Formats date/time according to a format string', async () => {
+    const dateStrInput = '2025-07-04 17:00:00';
+    const formatString = '%d-%m-%Y %I:%M:%S %p'; // Example format string
+    const expectedFormattedDate = '04-07-2025 05:00:00 PM'; // Expected formatted date
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-2-state';
+
+    const helperToTest = 'strftime';
+
+    createFloorplanExampleElement(
+      {
+        name: 'TestPlate',
+        dir: 'test_plate',
+        configYaml: `title: TestPlate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  rules:
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
@@ -153,7 +151,7 @@ config:
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
                const input_date = new Date('${dateStrInput}');
                const format = '${formatString}';
-              document.${global_document_object_key}['${helper_to_test}'] = util.date.strftime(format, input_date);
+              document.${global_document_object_key}['${helperToTest}'] = util.date.strftime(format, input_date);
         `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -165,14 +163,14 @@ config:
 
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Validate the formatted date
-        expect(helper_ref).toEqual(expectedFormattedDate);
+        expect(helperRef).toEqual(expectedFormattedDate);
       },
       2,
       700
@@ -182,10 +180,10 @@ config:
   it('util > date > timeago: Converts a date to a human-readable "time ago" format', async () => {
     const pastDate = new Date(Date.now() - 3600 * 1000); // 1 hour ago
     const expectedTimeAgo = '1 hour ago'; // Expected human-readable format
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'entity-2-state';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-2-state';
 
-    const helper_to_test = 'timeago';
+    const helperToTest = 'timeago';
 
     createFloorplanExampleElement(
       {
@@ -196,8 +194,8 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute
@@ -205,7 +203,7 @@ config:
             test_script_for_helper: |
               > if(typeof document['${global_document_object_key}'] === 'undefined') document.${global_document_object_key} = {};
                const date = new Date(${pastDate.getTime()});
-              document.${global_document_object_key}['${helper_to_test}'] = util.date.timeago(date);
+              document.${global_document_object_key}['${helperToTest}'] = util.date.timeago(date);
         `,
         simulationFile: 'simulations.yaml',
         isCard: true,
@@ -217,14 +215,14 @@ config:
 
     await retry(
       async () => {
-        const helper_ref = await getFloorplanHelper(helper_to_test);
+        const helperRef = await getFloorplanHelper(helperToTest);
 
         // Check if helper to test exists
-        expect(helper_ref).toBeDefined();
+        expect(helperRef).toBeDefined();
 
         // SPECIFIC FOR THIS HELPER:
         // Validate the "time ago" value
-        expect(helper_ref).toEqual(expectedTimeAgo);
+        expect(helperRef).toEqual(expectedTimeAgo);
       },
       10,
       700
@@ -232,8 +230,8 @@ config:
   });
 
   it('action: Execute services', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
     const text_to_set = 'Hi from inline-js action fnc fired by floorplan.class_set';
 
     createFloorplanExampleElement(
@@ -245,8 +243,8 @@ config:
   image: /local/floorplan/examples/test_plate/test_plate.svg
   stylesheet: /local/floorplan/examples/test_plate/test_plate.css
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.class_set
@@ -258,7 +256,7 @@ config:
                 action: 'call-service',
                 service: 'floorplan.text_set',
                 service_data: {
-                  element: '${target_svg_element_id}',
+                  element: '${targetSvgElementId}',
                   text: '${text_to_set}',
                 }
               };
@@ -281,17 +279,17 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetElement = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetElement.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
+        const textContent = targetElement.textContent;
+        expect(textContent).toBeDefined();
 
-        expect(text_content).toEqual(text_to_set);
+        expect(textContent).toEqual(text_to_set);
       },
       10,
       700 // This should not match the emulator time sequence
@@ -299,8 +297,8 @@ config:
   });
 
   it('functions > function without arguments', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
     const text_to_expect = 'Hej med dig';
 
     createFloorplanExampleElement(
@@ -319,13 +317,13 @@ config:
       },      
     };
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.text_set          
           service_data:
-            element: '${target_svg_element_id}'
+            element: '${targetSvgElementId}'
             text: |
              > return functions.say_hello_in_danish();
         `,
@@ -344,17 +342,17 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetElement = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetElement.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
+        const textContent = targetElement.textContent;
+        expect(textContent).toBeDefined();
 
-        expect(text_content).toEqual(text_to_expect);
+        expect(textContent).toEqual(text_to_expect);
       },
       10,
       700 // This should not match the emulator time sequence
@@ -362,8 +360,8 @@ config:
   });
 
   it('functions > function with arguments', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
     const int_1 = 1;
     const int_2 = 2;
 
@@ -383,13 +381,13 @@ config:
       },      
     };
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.text_set          
           service_data:
-            element: '${target_svg_element_id}'
+            element: '${targetSvgElementId}'
             text: |
              > return functions.sum_my_numbers(${int_1}, ${int_2}) + "";
         `,
@@ -408,17 +406,17 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetElement = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetElement.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
+        const textContent = targetElement.textContent;
+        expect(textContent).toBeDefined();
 
-        expect(text_content).toEqual(Number(int_1 + int_2).toString());
+        expect(textContent).toEqual(Number(int_1 + int_2).toString());
       },
       10,
       700 // This should not match the emulator time sequence
@@ -426,8 +424,8 @@ config:
   });
 
   it('functions > function to other function-call', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
 
     createFloorplanExampleElement(
       {
@@ -449,13 +447,13 @@ config:
       },
     };
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.text_set          
           service_data:
-            element: '${target_svg_element_id}'
+            element: '${targetSvgElementId}'
             text: |
              > return functions.fnc_1("bar");
         `,
@@ -474,17 +472,17 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetElement = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetElement.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
+        const textContent = targetElement.textContent;
+        expect(textContent).toBeDefined();
 
-        expect(text_content).toEqual("foobar");
+        expect(textContent).toEqual("foobar");
       },
       10,
       700 // This should not match the emulator time sequence
@@ -492,8 +490,8 @@ config:
   });
 
   it('functions > function to call action() fnc', async () => {
-    const simulated_entity = 'sensor.temperature_living_area';
-    const target_svg_element_id = 'radar-toggle-btn-text';
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'radar-toggle-btn-text';
 
     createFloorplanExampleElement(
       {
@@ -511,7 +509,7 @@ config:
           action: 'call-service',
           service: 'floorplan.text_set',
           service_data: {
-            element: '${target_svg_element_id}',
+            element: '${targetSvgElementId}',
             text: \`state: \${entity.state}\ \${a}bar\`,
           }
         };
@@ -519,8 +517,8 @@ config:
       },
     };
   rules:
-    - entity: ${simulated_entity}
-      element: ${target_svg_element_id}
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
       state_action:
         - action: call-service
           service: floorplan.execute          
@@ -537,8 +535,8 @@ config:
     );
 
     // Use the utility function to get the floorplan element
-    const floorplan_element = await getFloorplanElement();
-    expect(floorplan_element).toBeInstanceOf(FloorplanElement);
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
 
     // Get the svg
     const svg = await getFloorplanSvg();
@@ -547,18 +545,18 @@ config:
     // We'll check if the text is set
     await retry(
       async () => {
-        const target_el = svg.querySelector(
-          `#${target_svg_element_id}`
+        const targetElement = svg.querySelector(
+          `#${targetSvgElementId}`
         ) as SVGElement;
 
-        expect(target_el.id).toEqual(target_svg_element_id);
+        expect(targetElement.id).toEqual(targetSvgElementId);
 
         // Expect the text content to match the expected value
-        const text_content = target_el.textContent;
-        expect(text_content).toBeDefined();
+        const textContent = targetElement.textContent;
+        expect(textContent).toBeDefined();
 
-        const state_from_entity = floorplan_element?.hass?.states?.[simulated_entity]?.state;
-        expect(text_content).toEqual(`state: ${state_from_entity} foobar`);
+        const state_from_entity = floorplanElementInstance?.hass?.states?.[simulatedEntity]?.state;
+        expect(textContent).toEqual(`state: ${state_from_entity} foobar`);
       },
       10,
       700 // This should not match the emulator time sequence
