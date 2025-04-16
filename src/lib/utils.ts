@@ -96,7 +96,11 @@ export class Utils {
     }
     // If text contains linebreakes, let's split the text into multiple tspans, cause tspans doesnt allow linebreakes
     // If text is a number, parse it as a string
-    if (!isNaN(Number(text)) && typeof text !== 'boolean') {
+    if (
+      typeof text !== 'string' &&
+      typeof text !== 'boolean' &&
+      Number.isFinite(Number(text))
+    ) {
       text = Number(text).toString();
     }
 
