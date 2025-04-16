@@ -27,7 +27,7 @@ config:
       service: floorplan.text_set
       service_data:
         element: entity-2-name
-        text: 'Lamp'
+        text: 'Empty String'
 
     - action: call-service
       service: floorplan.dataset_set
@@ -97,12 +97,12 @@ config:
           return textArray.join(' ');
       tap_action: false
 
-    - entity: light.living_area
+    - entity: sensor.empty_text
       element: entity-2-state
       state_action:
         action: call-service
         service: floorplan.text_set
-        service_data: '${entity.state.toUpperCase()}'
+        service_data: '${entity.state}'
       tap_action: homeassistant.toggle
 
     - entity: sensor.temperature_living_area
