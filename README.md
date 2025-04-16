@@ -66,7 +66,7 @@ Find more documentation on how to use each action and functions, by visiting the
 
 ## Features
 
-- Make Floorplan(s) with SVG-files
+- Make Floorplan(s) based on SVG-files
 - Trigger states, visualize states and more
 - Call services and more, for even more options
 - Use as Lovelace-card, or as a panel
@@ -76,7 +76,7 @@ Find more documentation on how to use each action and functions, by visiting the
 
 <hr>
 
-#### Ressource template for Home Assistant
+#### Resource template for Home Assistant
 
 ```yaml
 resources:
