@@ -20,7 +20,8 @@ jobs:
             set -e  # Exit immediately if a command exits with a non-zero status
             git remote add pr-origin "${{ github.event.pull_request.head.repo.clone_url }}"
             git fetch pr-origin "${{ github.event.pull_request.head.ref }}"
-            if git diff --name-only "pr-origin/${{ github.event.pull_request.head.ref }}" "${{ github.base_ref }}" | grep -q '^.github/workflows/'; then
+            git fetch origin "${{ github.base_ref }}"
+            if git diff --name-only "origin/${{ github.base_ref }}" "pr-origin/${{ github.event.pull_request.head.ref }}" | grep -q '^.github/workflows/'; then
             echo "workflows_modified=true" >> $GITHUB_ENV
             else
             echo "workflows_modified=false" >> $GITHUB_ENV
