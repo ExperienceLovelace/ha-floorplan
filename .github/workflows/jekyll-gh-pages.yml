@@ -65,10 +65,18 @@ jobs:
         with:
           source: ./docs
           destination: ./_site
-      - name: Copy floorplan-examples.js to _site
-        run: cp docs/_docs/floorplan/floorplan-examples.js _site/docs/floorplan/floorplan-examples.js
+
+      - name: Prepare final site directory
+        run: |
+          mkdir final_site
+          cp -r _site/* final_site/
+          mkdir -p final_site/docs/floorplan
+          cp docs/_docs/floorplan/floorplan-examples.js final_site/docs/floorplan/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: final_site
 
   # Deployment job
   deploy:
