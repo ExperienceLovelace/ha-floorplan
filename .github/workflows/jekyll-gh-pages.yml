@@ -58,7 +58,6 @@ jobs:
           node-version: "20.x"
       - run: npm ci
       - run: npm run build
-      - run: mv docs/_docs/floorplan/floorplan-examples.js docs/docs/floorplan/floorplan-examples.js
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
@@ -66,7 +65,8 @@ jobs:
         with:
           source: ./docs
           destination: ./_site
-          
+      - name: Copy floorplan-examples.js to _site
+        run: cp docs/_docs/floorplan/floorplan-examples.js _site/docs/floorplan/floorplan-examples.js
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
