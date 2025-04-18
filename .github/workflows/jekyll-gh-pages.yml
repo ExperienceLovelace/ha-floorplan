@@ -71,7 +71,6 @@ jobs:
 
       - name: Debug files
         run: "ls -alht docs/_docs/floorplan"
-
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
@@ -93,6 +92,15 @@ jobs:
 
       - name: Confirm content of final site
         run: find ./final_site/ -type f | xargs ls -lh
+
+      - name: Confirm content of docs/_docs
+        run: find _site/ -type f | xargs ls -lh
+
+      - name: Confirm content of docs/_docs
+        run: find _site/ -type f | xargs ls -lh
+
+      - name: Confirm content of final site
+        run: find final_site/ -type f | xargs ls -lh
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
