@@ -80,7 +80,7 @@ If you're not ready to initiate it on your own. What about testing it? Below you
       <p class="page__lead">Here's a real world example of how to use ha-floorplan, with a background created with Floorplanner. This is just a simple example of how to get started. Use a combination of YAML, CSS and JavaScript to get the most out of it, or take a look at the examples to get inspired.
       </p>
       <div class="example_wrapper">
-         <script src="docs/floorplan/floorplan-examples.js"></script>
+         <script src="docs/floorplan/floorplan-examples.js" type="module"></script>
          <link rel="stylesheet" href="assets/css/tabs.css">
          <div class="tabcontent-container size-auto">
             <div data-tab="floorplanner_home-floorplan">
