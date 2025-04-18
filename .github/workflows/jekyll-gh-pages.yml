@@ -38,16 +38,16 @@ jobs:
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           if [[ "$PACKAGE_VERSION" == *-* ]]; then
             echo "Non-final version detected ($PACKAGE_VERSION)."
-            echo "is_final_version=false" >> $GITHUB_ENV
-          else
+            echo "is_final_version=false" >> $GITHUB_OUTPUT
+            else
             echo "Final version detected ($PACKAGE_VERSION)."
-            echo "is_final_version=true" >> $GITHUB_ENV
+            echo "is_final_version=true" >> $GITHUB_OUTPUT
           fi
           
   # Build job
   build:
     needs: validate
-    if: needs.validate.outputs.is_final_version == 'true' # Only run if the version is final
+    if: needs.validate.outputs.is_final_version == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
