@@ -253,6 +253,7 @@ Service data can be dynamically constructed using JavaScript code. Below is the 
 | `hass`                   | Home Assistant [hass](https://home-assistant.io/developers/development_hass_object/) object |
 | `element`                | current SVG element                                                                         |
 | `elements`               | current SVG elements                                                                        |
+| `svg`                    | Root `<svg>` element for the current floorplan page (use for scoped `querySelector(...)`)   |
 
 | Functions                | Description                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------- |

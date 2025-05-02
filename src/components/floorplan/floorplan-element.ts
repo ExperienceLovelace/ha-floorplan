@@ -1715,6 +1715,7 @@ export class FloorplanElement extends LitElement {
           this.svgElements,
           this.functions,
           svgElementInfo,
+          this.svg,
           ruleInfo
         );
       } catch (err) {
