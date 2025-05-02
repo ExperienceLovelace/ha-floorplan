@@ -45,6 +45,7 @@ export class EvalHelper {
     svgElements?: { [elementId: string]: SVGGraphicsElement },
     functions?: unknown,
     svgElementInfo?: FloorplanSvgElementInfo,
+    svg?: SVGGraphicsElement,
     ruleInfo?: FloorplanRuleInfo
   ): unknown {
     this.expression = expression.trim();
@@ -97,6 +98,7 @@ export class EvalHelper {
     this.interpreter.import('hass', hass);
     this.interpreter.import('element', svgElement);
     this.interpreter.import('elements', svgElements);
+    this.interpreter.import('svg', svg); // Provide direct access to the root <svg> element for rule scripts
 
     // Let the user call "action" function (to call our service call-handler)
     this.interpreter.import('action',
