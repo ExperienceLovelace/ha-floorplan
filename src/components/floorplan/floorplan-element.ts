@@ -1207,7 +1207,25 @@ export class FloorplanElement extends LitElement {
       // Do not add target entity "*"
       if (entityId && entityId === "*") continue;
 
-      this.addTargetEntity(entityId, elementIds, targetEntities);
+      // support wildcard entityId
+      if (entityId.includes('*')) {
+        const regex = wildcardsToRegex(entityId);
+        let foundAny = false;
+        for (const hassEntityId of Object.keys(this.hass.states)) {
+          if (regex.test(hassEntityId)) {
+            this.addTargetEntity(hassEntityId, [hassEntityId], targetEntities);
+            foundAny = true;
+          }
+        }
+        if (!foundAny) {
+          this.logWarning(
+            'CONFIG',
+            `Cannot find entities matching '${entityId}' in Home Assistant`
+          );
+        }
+      } else {
+        this.addTargetEntity(entityId, elementIds, targetEntities);
+      }
     }
 
     // Entities as a list of objects
@@ -1223,6 +1241,10 @@ export class FloorplanElement extends LitElement {
     }
 
     return targetEntities;
+
+    function wildcardsToRegex(entityId: string) {
+      return new RegExp('^' + entityId.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
+    }
   }
 
   addTargetEntity(
