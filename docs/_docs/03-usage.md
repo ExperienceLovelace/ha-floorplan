@@ -185,6 +185,8 @@ The following types of items can be used as subjects within a rule.
 
 The special case `entity: '*'` represents all HA entities. It can be used in rules that need to run whenever the state of any HA entity changes.
 
+Wildcards (*) can also be used to match subsets of entities, for example `light.*`, `sensor.*_temperature`.
+
 ### Action Triggers
 
 Floorplan supports the same action triggers used in [Lovelace](https://www.home-assistant.io/lovelace/actions) (`tap_action`, `hold_action`, `double_tap_action`). In addition to these, Floorplan adds two of its own action triggers.
