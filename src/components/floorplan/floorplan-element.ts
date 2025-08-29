@@ -1,3 +1,5 @@
+import { LovelaceCard } from '../../lib/homeassistant/panels/lovelace/types';
+import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import { HomeAssistant, CurrentUser } from '../../lib/homeassistant/types';
 import { HassEntityBase } from 'home-assistant-js-websocket';
 import { fireEvent } from '../../lib/homeassistant/common/dom/fire_event';
@@ -82,6 +84,9 @@ export class FloorplanElement extends LitElement {
 
   isRulesLoaded = false;
   svg!: SVGGraphicsElement;
+
+  private _helpers?: any;
+  private _cards = new Map<string, { container: Element; card?: LovelaceCard }>();
 
   constructor() {
     super();
@@ -226,6 +231,13 @@ export class FloorplanElement extends LitElement {
       await this.handleEntities(true);
     } else {
       this.handleEntities();
+    }
+
+    // Update cards hass
+    for (const { card } of this._cards.values()) {
+      if (card) {
+        card.hass = this.hass;
+      }
     }
   }
 
@@ -868,6 +880,66 @@ export class FloorplanElement extends LitElement {
     parentElement?.appendChild(svgElement);
 
     return svgElement;
+  }
+
+  private async loadCardHelpers(): Promise<void> {
+    this._helpers = await (window as any).loadCardHelpers();
+  }
+
+  private async setCard(containerId : string, config? : LovelaceCardConfig) : Promise<void> {
+    // Check helpers
+    if (!this._helpers) {
+      //throw new Error('Helpers not available');
+      await this.loadCardHelpers();
+    }
+
+	  // Get entry for this containerId
+	  let entry = this._cards.get(containerId);
+	  
+    // If entry doesn't exist
+    if (!entry) {
+      let container = this.shadowRoot?.querySelector("#" + containerId);
+      if (!container) {
+        this.logError(
+          'CONFIG',//TODO: ca ou FLOORPLAN_ACTION ?
+          `Cannot find element '${containerId}' in SVG file`
+        );
+        return;
+      }
+
+		  // Create entry (wait for container to be available)
+		  entry = {
+        container: container
+		  };
+
+      // Add entry to _cards
+      this._cards.set(containerId, entry);
+    }
+
+    // If a card config is defined
+    if (config) {
+      // Create card with helpers
+      const card = this._helpers.createCardElement({...config});
+      
+      // Set its hass
+      if (this.hass) {
+        card.hass = this.hass;
+      }
+	    
+	    // Set card
+	    entry.card = card;
+      
+      // Inject card inside foreignObject tag (card container)
+      entry.container.replaceChildren(card);
+    }
+    // Remove card
+    else {
+      // Reset card
+      entry.card = undefined;
+
+      // Remove card inside foreignObject tag (card container)
+      entry.container.replaceChildren();
+    }
   }
 
   /***************************************************************************************************************************/
@@ -2054,7 +2126,7 @@ export class FloorplanElement extends LitElement {
     let serviceData = null;
 
     // Evaluate service data, in order to determine 'target' elements
-    const servicesWithoutPreparation: string[] = ['execute'];
+    const servicesWithoutPreparation: string[] = ['execute', 'card_set'];
     const prepareServiceData = !servicesWithoutPreparation.includes(service);
 
     if (prepareServiceData) {
@@ -2403,6 +2475,39 @@ export class FloorplanElement extends LitElement {
             // Evaluate service data again, this time supplying 'target' element
             this.executeServiceData(actionConfig, entityId, targetSvgElement, svgElementInfo, ruleInfo);
           }
+        }
+        break;
+
+      case 'card_set':
+        // Check for service_data
+        if (!actionConfig?.service_data) {
+          this.logError(
+            'CONFIG', 'Must have service data for card_set.'
+          );
+          break;
+        }
+
+        // If service_data is not an array, convert it to array
+        const cardSetServiceData = (Array.isArray(actionConfig.service_data)) ? actionConfig.service_data : [actionConfig.service_data];
+        
+        // Browse each entry
+        for (const entry of cardSetServiceData) {
+          // If no container_id in service_data
+          if (!entry.container_id) {
+            this.logError(
+              'CONFIG', 'Must have container_id in service data for card_set.'
+            );
+            continue;
+          }
+
+          // If config exist and has no type
+          if ((entry.config) && (!entry.config.type)) {
+            this.logError(
+              'CONFIG', 'Must have type in config for card_set.'
+            );
+          }
+
+          this.setCard(entry.container_id, entry.config);
         }
         break;
 
