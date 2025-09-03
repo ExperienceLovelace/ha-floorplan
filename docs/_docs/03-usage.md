@@ -350,10 +350,9 @@ The following example shows how the style is generated using a block of JavaScri
 
 If you want to embed HA card in your SVG, add a foreignObject tag inside your SVG, like this example :
 
-```svg
-...
+```html
 <foreignObject id="CardContainer" x="700" y="600" width="400" height="200"></foreignObject>
-...
+```
 
 Then you can use card_set to set (change in case of card already set before) a HA card, here is an example with the map card :
 
