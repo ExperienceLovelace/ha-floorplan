@@ -901,7 +901,7 @@ export class FloorplanElement extends LitElement {
       let container = this.shadowRoot?.querySelector("#" + containerId);
       if (!container) {
         this.logError(
-          'CONFIG',//TODO: ca ou FLOORPLAN_ACTION ?
+          'CONFIG',
           `Cannot find element '${containerId}' in SVG file`
         );
         return;
