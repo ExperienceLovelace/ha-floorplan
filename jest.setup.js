@@ -20,6 +20,24 @@ global.VERSION = packageJson.version;
 let examples_server;
 
 beforeAll(() => {
+  global.window = global;
+  window.customElements = window.customElements || {
+    define: jest.fn(),
+    get: jest.fn(),
+  };
+  
+  window.loadCardHelpers = jest.fn().mockResolvedValue({
+    createCardElement: jest.fn().mockImplementation((config) => {
+      const card = document.createElement("ha-card");
+
+      card.config = config;
+      card.hass = null;
+      card.updateComplete = Promise.resolve();
+      
+      return card;
+    }),
+  });
+
   // Mock getBBox for SVG elements
   Object.defineProperty(SVGElement.prototype, 'getBBox', {
     value: jest.fn().mockReturnValue({

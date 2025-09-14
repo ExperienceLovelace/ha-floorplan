@@ -241,6 +241,7 @@ Below are the services that are specific to Floorplan.
 | `floorplan.style_set`    | Set the CSS style of the of the SVG element(s) | `style` (string)                                                               |
 | `floorplan.text_set`     | Set the text of the SVG element(s)             | `text` (string)<br />`shift_y_axis: 2em`                                                               |
 | `floorplan.image_set`    | Set the image of the SVG element(s)            | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
+| `floorplan.card_set`     | Set HA card of a SVG foreignObject element     | `container_id` (string)<br />`config` (array, optional)                                                               |
 | `floorplan.execute`      | Execute your own JS, defined in service_data   | `<all>` (array)                                                                |
 
 Service data can be dynamically constructed using JavaScript code. Below is the full set of helpers, that are available when writing code.
@@ -344,6 +345,65 @@ The following example shows how the style is generated using a block of JavaScri
         var height = Math.ceil(elements['sensor.moisture_level'].getBBox().height);
         return `transform: translate(0, ${height - Math.floor(entity.attributes.level / (100 / height))}px)`;
 ```
+
+#### Using `card_set` to set / reset / change a HA card inside a foreignObject tag
+
+If you want to embed HA card in your SVG, add a foreignObject tag inside your SVG, like this example :
+
+```html
+<foreignObject id="CardContainer" x="700" y="600" width="400" height="200"></foreignObject>
+```
+
+Then you can use card_set to set (change in case of card already set before) a HA card, here is an example with the map card :
+
+```yaml
+- entity:
+    - binary_sensor.garage
+  state_action:
+    action: call-service
+    service: floorplan.card_set
+    service_data:
+      container_id: CardContainer
+      config:
+        type: map
+        entities:
+          - zone.home
+        aspect_ratio: "2"
+```
+
+In the config, you must specify the type of the card you want (here type: map), you can use a custom card with custom: prefix (type: custom:mycustomcard).
+Then you can specify the configuration of this card directly in config, as you normally do in the yaml configuration.
+
+If you want to remove a card already set before, you can also use card_set but without config, like this example :
+
+```yaml
+- element:
+    - MyButton
+  tap_action:
+    action: call-service
+    service: floorplan.card_set
+    service_data:
+      container_id: CardContainer
+```
+
+You can also specify multiple cards at once with an array :
+
+```yaml
+- element:
+    - MyButton
+  tap_action:
+    action: call-service
+    service: floorplan.card_set
+    service_data:
+      - container_id: CardContainer
+      - container_id: CardContainer2
+        config:
+          type: weather-forecast
+          entity: weather.forecast_maison
+          forecast_type: daily
+```
+
+In this example, when MyButton receives a tap, the card in CardContainer is removed and the CardContainer2 receives the card weather-forecast.
 
 #### Using `execute` with browser_mod
 
