@@ -82,4 +82,71 @@ config:
       700 // This should not match the emulator time sequence
     );
   });
+
+  it('will remove extra tspans when switching from multi-line to single-line text', async () => {
+    const simulatedEntity = 'sensor.multiline_text';
+    const targetSvgElementId = 'entity-2-state';
+
+    createFloorplanExampleElement(
+      {
+        name: 'TestPlate',
+        dir: 'test_plate',
+        configYaml: `title: TestPlate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  rules:
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
+      state_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: '\${entity.state}'
+        `,
+        simulationFile: 'simulations.yaml',
+        isCard: true,
+      },
+      'examples',
+      true,
+      () => {}
+    );
+
+    // Use the utility function to get the floorplan element
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
+
+    // Get the svg
+    const svg = await getFloorplanSvg();
+    expect(svg).toBeInstanceOf(SVGElement);
+
+    // Validate that our entity is part of the states
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
+
+    // First, wait until multi-line text has been rendered (multiple tspans)
+    await retry(
+      async () => {
+        const targetEl = svg.querySelector(`#${targetSvgElementId}`) as SVGElementWithStyle;
+        const tspans = targetEl.querySelectorAll('tspan');
+        expect(tspans.length).toBeGreaterThan(1);
+      },
+      10,
+      700
+    );
+
+    // Then, wait until the entity transitions to single-line text and verify extra tspans are removed
+    await retry(
+      async () => {
+        const targetEl = svg.querySelector(`#${targetSvgElementId}`) as SVGElementWithStyle;
+        const tspans = targetEl.querySelectorAll('tspan');
+
+        // Should have at most 1 tspan after switching to single-line text
+        expect(tspans.length).toBeLessThanOrEqual(1);
+
+        // The text content should reflect the single-line state
+        expect(targetEl.textContent).toEqual('Single Line');
+      },
+      10,
+      700
+    );
+  });
 });

@@ -153,9 +153,17 @@ export class Utils {
         }
         textElement.appendChild(tspanElement);
       })
-    }else{
+    } else {
       const textTarget = currentTspanElement || textElement;
       textTarget.textContent = text;
+
+      // Remove any extra tspan elements that may remain from a previous multi-line text_set call.
+      // Only needed when currentTspanElement exists; otherwise textElement.textContent already
+      // removes all child nodes.
+      if (currentTspanElement) {
+        const allTspans = Array.from(textElement.querySelectorAll('tspan'));
+        allTspans.slice(1).forEach(tspan => tspan.remove());
+      }
     }
   }
 
