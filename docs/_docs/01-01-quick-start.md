@@ -76,11 +76,10 @@ The **H**ome **A**ssistant **C**ommunity **S**tore (HACS) is a great addition to
 
 To avoid any frustration, installation via HACS is the recommended method.
 
-Nevertheless, if you still prefer to do it manually, feel free to grab the latest version from the [/dist](https://github.com/ExperienceLovelace/ha-floorplan/tree/master/dist) directory. (Almost) stable releases can be found [here](https://github.com/ExperienceLovelace/ha-floorplan/releases).
-
-  1. Download the required resources.
-  2. Add references to the new module you just added.
-  3. Use ha-lovelace in a card. Move ahead to our examples if you need inspiration.
+1. Download the latest `floorplan.js` file from the [Releases page](https://github.com/ExperienceLovelace/ha-floorplan/releases). Check the "Assets" section if needed.
+2. Add the file to your Home Assistant configuration directory. Normally you'd add it to the `www` folder, but it depends.
+3. Reference the module in your Lovelace configuration and use it in a card.
+4. Use ha-lovelace in a card. Move ahead to our examples if you need inspiration.
 
 ## What's next?
 
