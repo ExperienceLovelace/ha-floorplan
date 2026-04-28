@@ -428,6 +428,153 @@ config:
   it.todo('floorplan.image_set with "image_refresh_interval"');
   it.todo('floorplan.image_set with "cache: false"');
 
+  it('floorplan.card_set (set)', async () => {
+    const simulatedEntity = 'binary_sensor.radar_bg';
+    const targetSvgElementId = 'CardContainer1';
+
+    createFloorplanExampleElement(
+      {
+        name: 'TestPlate',
+        dir: 'test_plate',
+        configYaml: `title: TestPlate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  rules:
+    - entity: ${simulatedEntity}
+      state_action:
+        - action: call-service
+          service: floorplan.card_set
+          service_data:
+            container_id: ${targetSvgElementId}
+            config:
+              type: iframe
+              url: https://www.home-assistant.io
+              aspect_ratio: 2
+        `,
+        simulationFile: 'simulations.yaml',
+        isCard: true,
+      },
+      'examples',
+      true,
+      () => {}
+    );
+
+    // Use the utility function to get the floorplan element
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
+
+    // Get the svg
+    const svg = await getFloorplanSvg();
+    expect(svg).toBeInstanceOf(SVGElement);
+
+    // Validate that our entities are part of the states
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
+
+    // We'll check if the card is set in CardContainer1
+    await retry(
+      async () => {
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
+        ) as SVGElement;
+
+        expect(targetEl.id).toEqual(targetSvgElementId);
+
+        // Expect to have a iframe card inside targetEl
+        const card = targetEl.querySelector("ha-card");
+        expect(card).toBeDefined();
+
+        expect((card as any).config.type).toBe("iframe");
+      },
+      10,
+      700 // This should not match the emulator time sequence
+    );
+  });
+
+  it('floorplan.card_set (reset and multiple)', async () => {
+    const simulatedEntity = 'binary_sensor.radar_bg';
+    const targetSvgElementId1 = 'CardContainer1';
+    const targetSvgElementId2 = 'CardContainer2';
+
+    createFloorplanExampleElement(
+      {
+        name: 'TestPlate',
+        dir: 'test_plate',
+        configYaml: `title: TestPlate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  startup_action:
+    - action: call-service
+      service: floorplan.card_set
+      service_data:
+        container_id: ${targetSvgElementId1}
+        config:
+          type: iframe
+          url: https://www.home-assistant.io
+          aspect_ratio: 2
+  rules:
+    - entity: ${simulatedEntity}
+      state_action:
+        - action: call-service
+          service: floorplan.card_set
+          service_data:
+            - container_id: ${targetSvgElementId1}
+            - container_id: ${targetSvgElementId2}
+              config:
+                type: markdown
+                content: |
+                  Hello World
+        `,
+        simulationFile: 'simulations.yaml',
+        isCard: true,
+      },
+      'examples',
+      true,
+      () => {}
+    );
+
+    // Use the utility function to get the floorplan element
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
+
+    // Get the svg
+    const svg = await getFloorplanSvg();
+    expect(svg).toBeInstanceOf(SVGElement);
+
+    // Validate that our entities are part of the states
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
+
+    // We'll check if the card is set in CardContainer1
+    await retry(
+      async () => {
+        const targetEl1 = svg.querySelector(
+          `#${targetSvgElementId1}`
+        ) as SVGElement;
+
+        expect(targetEl1.id).toEqual(targetSvgElementId1);
+
+        // Expect to not have a card inside targetEl1
+        const card = targetEl1.querySelector("ha-card");
+        expect(card).toBeNull();
+
+        const targetEl2 = svg.querySelector(
+          `#${targetSvgElementId2}`
+        ) as SVGElement;
+
+        expect(targetEl2.id).toEqual(targetSvgElementId2);
+
+        // Expect to have a markdown card inside targetEl2
+        const card2 = targetEl2.querySelector("ha-card");
+        expect(card2).toBeDefined();
+
+        expect((card2 as any).config.type).toBe("markdown");
+      },
+      10,
+      700 // This should not match the emulator time sequence
+    );
+  });
+
   it('floorplan.execute', async () => {
     const simulatedEntity = 'sensor.temperature_living_area';
     const targetSvgElementId = 'radar-toggle-btn-text';

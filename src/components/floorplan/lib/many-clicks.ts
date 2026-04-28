@@ -34,6 +34,9 @@ export class ManyClicks {
       }
     };
 
+
+
+
     E.on(elem, 'click', onClickEvent.bind(this));
   }
 }

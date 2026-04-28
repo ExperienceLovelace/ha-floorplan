@@ -305,5 +305,8 @@
        id="tspan2"
        style="font-size:4px;stroke-width:0.264583"
        x="22.885237"
-       y="21.933382">Click to hide radar</tspan></text></g>
+       y="21.933382">Click to hide radar</tspan></text>
+	   <foreignObject id="CardContainer1" x="500" y="300" width="200" height="100"></foreignObject>
+	   <foreignObject id="CardContainer2" x="500" y="400" width="100" height="100"></foreignObject>
+	   </g>
        </svg>
