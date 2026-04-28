@@ -234,6 +234,144 @@ config:
     );
   });
 
+
+  it('Scroll_action without hold_action', async () => {
+    const simulatedEntity = 'sensor.temperature_living_area';
+    const targetSvgElementId = 'entity-1-state';
+    const textToMatch = ' °C';
+
+    createFloorplanExampleElement(
+      {
+        name: 'TestPlate',
+        dir: 'test_plate',
+        configYaml: `title: TestPlate
+config:
+  image: /local/floorplan/examples/test_plate/test_plate.svg
+  stylesheet: /local/floorplan/examples/test_plate/test_plate.css
+  rules:
+    - entity: ${simulatedEntity}
+      element: ${targetSvgElementId}
+      hold_action:
+        action: call-service
+        service: floorplan.text_set
+        service_data: '\${entity.state} °C'
+        `,
+        simulationFile: 'simulations.yaml',
+        isCard: true,
+      },
+      'examples',
+      true,
+      () => { }
+    );
+
+    // Use the utility function to get the floorplan element
+    const floorplanElementInstance = await getFloorplanElement();
+    expect(floorplanElementInstance).toBeInstanceOf(FloorplanElement);
+
+    // Get the svg
+    const svg = await getFloorplanSvg();
+    expect(svg).toBeInstanceOf(SVGElement);
+
+    // Validate that our entity is part of the states
+    expect(floorplanElementInstance?.hass?.states?.[simulatedEntity]).toBeDefined();
+
+    await retry(
+      async () => {
+        expect(
+          (
+            svg.querySelector(
+              `#${targetSvgElementId}`
+            ) as SVGElementWithStyle
+          ).textContent
+        ).toEqual('Entity State 1');
+      },
+      10,
+      700
+    );
+
+    const targetEl = svg.querySelector(
+      `#${targetSvgElementId}`
+    ) as SVGElementWithStyle;
+
+    // Simulate a hold action on the target element
+    // Simulate touchstart at position (100, 100)
+
+    var touch = new Touch({
+      identifier: 42,
+      target: targetEl,
+      clientX: 100,
+      clientY: 100,
+      screenX: 300,
+      screenY: 300,
+      pageX: 200,
+      pageY: 200,
+      radiusX: 5,
+      radiusY: 5
+    });
+
+
+    var touchstartEvent = new TouchEvent("touchstart", {
+      cancelable: true,
+      bubbles: true,
+      composed: true,
+      touches: [touch],
+      targetTouches: [touch],
+      changedTouches: [touch]
+    });
+
+    floorplanElementInstance.dispatchEvent(touchstartEvent);
+
+    // Simulate touchmove to position (120, 120) - 28.28 pixels movement
+    
+    touch = new Touch({
+      identifier: 42,
+      target: targetEl,
+      clientX: 120,
+      clientY: 120,
+      screenX: 300,
+      screenY: 300,
+      pageX: 200,
+      pageY: 200,
+      radiusX: 5,
+      radiusY: 5
+    });
+
+    const touchmoveEvent = new TouchEvent("touchmove", {
+      cancelable: true,
+      bubbles: true,
+      composed: true,
+      touches: [touch],
+      targetTouches: [touch],
+      changedTouches: [touch]
+    });
+
+    floorplanElementInstance.dispatchEvent(touchmoveEvent);
+
+    await sleep(500); // Simulate the hold duration, minimum 400
+
+    floorplanElementInstance.dispatchEvent(
+      new TouchEvent('touchend')
+    );
+
+
+    await retry(
+      async () => {
+        const targetEl = svg.querySelector(
+          `#${targetSvgElementId}`
+        ) as SVGElementWithStyle;
+
+        expect(targetEl.id).toEqual(targetSvgElementId);
+
+        // Expect the text content to match the expected value
+        const textContent = targetEl.textContent;
+        expect(textContent).toBeDefined();
+        expect(textContent).toContain('Entity State 1');
+      },
+      10,
+      700 // This should not match the emulator time sequence
+    );
+  });
+
   it('double_tap_action', async () => {
     const simulatedEntity = 'sensor.temperature_living_area';
     const targetSvgElementId = 'entity-1-state';
