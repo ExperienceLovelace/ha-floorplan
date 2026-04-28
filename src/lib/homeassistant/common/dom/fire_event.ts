@@ -75,7 +75,7 @@ export const fireEvent = <HassEvent extends ValidHassDomEvent>(
   }
 ) => {
   options = options || {};
-  // @ts-ignore
+  // @ts-expect-error: Assigning {} for undefined event detail types (e.g. `change: undefined`)
   detail = detail === null || detail === undefined ? {} : detail;
   const event = new Event(type, {
     bubbles: options.bubbles === undefined ? true : options.bubbles,
