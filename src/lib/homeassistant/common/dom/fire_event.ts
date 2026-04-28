@@ -41,6 +41,14 @@ export interface HASSDomEvent<T> extends Event {
   detail: T;
 }
 
+export type HASSDomTargetEvent<T extends EventTarget> = Event & {
+  target: T;
+};
+
+export type HASSDomCurrentTargetEvent<T extends EventTarget> = Event & {
+  currentTarget: T;
+};
+
 /**
  * Dispatches a custom event with an optional detail value.
  *
@@ -67,7 +75,8 @@ export const fireEvent = <HassEvent extends ValidHassDomEvent>(
   }
 ) => {
   options = options || {};
-  detail = (detail === null || detail === undefined ? {} : detail) as any;
+  // @ts-ignore
+  detail = detail === null || detail === undefined ? {} : detail;
   const event = new Event(type, {
     bubbles: options.bubbles === undefined ? true : options.bubbles,
     cancelable: Boolean(options.cancelable),

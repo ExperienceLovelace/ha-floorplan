@@ -1897,7 +1897,7 @@ export class FloorplanElement extends LitElement {
               entityId,
               svgElementInfo?.svgElement
             ) as string;
-            navigate(this, navigationPath, actionConfig.navigation_replace ?? false);
+            navigate(navigationPath, { replace: actionConfig.navigation_replace ?? false });
           }
           break;
 

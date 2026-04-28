@@ -5,6 +5,7 @@ import {
   // HassConfig,
   HassEntities,
   // HassServices,
+  HassServiceTarget,
   MessageBase,
 } from 'home-assistant-js-websocket';
 // import { LocalizeFunc } from "./common/translations/localize";
@@ -13,11 +14,13 @@ import {
 // import { Themes } from "./data/ws-themes";
 // import { ExternalMessaging } from "./external_app/external_messaging";
 
+export type { HassServiceTarget };
+
 declare global {
   /* eslint-disable no-var, no-redeclare */
   var __DEV__: boolean;
   var __DEMO__: boolean;
-  var __BUILD__: 'latest' | 'es5';
+  var __BUILD__: 'modern' | 'legacy';
   var __VERSION__: string;
   var __STATIC_PATH__: string;
   var __BACKWARDS_COMPAT__: boolean;
@@ -96,6 +99,7 @@ export interface PanelInfo<T = Record<string, any> | null> {
   icon: string | null;
   title: string | null;
   url_path: string;
+  config_panel_domain?: string;
 }
 
 export interface Panels {
@@ -123,11 +127,11 @@ export type FullCalendarView =
   | 'dayGridMonth'
   | 'dayGridWeek'
   | 'dayGridDay'
-  | 'list';
+  | 'listWeek';
 
 export interface ToggleButton {
   label: string;
-  iconPath: string;
+  iconPath?: string;
   value: string;
 }
 
@@ -168,18 +172,20 @@ export interface Resources {
 
 export interface Context {
   id: string;
-  parent_id?: string;
-  user_id?: string;
+  parent_id?: string | null;
+  user_id?: string | null;
 }
 
-export interface ServiceCallResponse {
+export interface ServiceCallResponse<T = any> {
   context: Context;
+  response?: T;
 }
 
 export interface ServiceCallRequest {
   domain: string;
   service: string;
   serviceData?: Record<string, any>;
+  target?: HassServiceTarget;
 }
 
 export interface HomeAssistant {
@@ -215,19 +221,18 @@ export interface HomeAssistant {
   user?: CurrentUser;
   // userData?: CoreFrontendUserData | null;
   // hassUrl(path?: any): string;
-  callService(
+  callService<T = any>(
     domain: ServiceCallRequest['domain'],
     service: ServiceCallRequest['service'],
-    serviceData?: ServiceCallRequest['serviceData']
-  ): Promise<ServiceCallResponse>;
-  /*
-  callApi<T>(
-    method: "GET" | "POST" | "PUT" | "DELETE",
+    serviceData?: ServiceCallRequest['serviceData'],
+    target?: ServiceCallRequest['target']
+  ): Promise<ServiceCallResponse<T>>;
+  callApi?<T>(
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     path: string,
     parameters?: Record<string, any>,
     headers?: Record<string, string>
   ): Promise<T>;
-  */
   // fetchWithAuth(path: string, init?: Record<string, any>): Promise<Response>;
   // sendWS(msg: MessageBase): void;
   callWS<T>(msg: MessageBase): Promise<T>;
