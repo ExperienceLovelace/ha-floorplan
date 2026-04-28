@@ -76,6 +76,15 @@ simulations:
       - state: ''
         duration: 1
 
+  - entity:
+      entity_id: sensor.multiline_text
+      state: 'Line1\nLine2\nLine3'
+    states:
+      - state: 'Line1\nLine2\nLine3'
+        duration: 1
+      - state: 'Single Line'
+        duration: 1
+
   - entity: binary_sensor.radar_bg
     states:
       - state: on
