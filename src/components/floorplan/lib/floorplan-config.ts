@@ -104,7 +104,9 @@ export class FloorplanRuleConfig {
 
   // action_name?: string;
   service?: string;
+  /** @deprecated Use `data` instead. Kept for backwards compatibility. */
   service_data?: Record<string, unknown>;
+  data?: Record<string, unknown>;
   // url?: string;
   state_action!:
     | FloorplanActionConfig
