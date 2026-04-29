@@ -1878,8 +1878,9 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${entityId}`
             );
           } else {
+            const moreInfoEntityId = actionConfig.entity_id ?? entityId;
             fireEvent(this, 'hass-more-info', {
-              entityId: entityId,
+              entityId: moreInfoEntityId,
             } as MoreInfoDialogParams);
           }
           break;
