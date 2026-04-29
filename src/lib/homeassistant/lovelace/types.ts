@@ -122,7 +122,12 @@ export interface ToggleActionConfig extends BaseActionConfig {
 export interface CallServiceActionConfig extends BaseActionConfig {
   action: 'call-service';
   service: string;
+  /** @deprecated Use `data` instead. Kept for backwards compatibility. */
   service_data?: {
+    entity_id?: string | [string];
+    [key: string]: any;
+  };
+  data?: {
     entity_id?: string | [string];
     [key: string]: any;
   };
