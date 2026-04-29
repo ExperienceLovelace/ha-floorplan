@@ -2316,7 +2316,7 @@ export class FloorplanElement extends LitElement {
         if(nestedSvgElementRef) {
           // Check if nested elements are provided as service data
           const svg = this.getSvgElementsFromServiceData(
-            effectiveImageData as Record<string, unknown> || {}
+            (effectiveImageData || {}) as Record<string, unknown>
           );
 
           if(svg.length < 1) {
