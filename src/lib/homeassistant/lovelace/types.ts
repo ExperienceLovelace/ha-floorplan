@@ -160,7 +160,23 @@ export interface CustomActionConfig extends BaseActionConfig {
 
 export interface BaseActionConfig {
   confirmation?: ConfirmationRestrictionConfig;
+  haptic?: HapticType | boolean;
 }
+
+/**
+ * Haptic feedback types matching the Home Assistant companion app patterns.
+ * Use `true` for a default 'light' haptic, or specify a pattern name.
+ * On Android, navigator.vibrate() is used. On iOS companion app, the
+ * haptic event is forwarded to the native bridge.
+ */
+export type HapticType =
+  | 'success'
+  | 'warning'
+  | 'failure'
+  | 'light'
+  | 'medium'
+  | 'heavy'
+  | 'selection';
 
 export interface ConfirmationRestrictionConfig {
   text?: string;
