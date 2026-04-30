@@ -605,6 +605,9 @@ export class FloorplanElement extends LitElement {
     svg.style.opacity = '0';
     svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
 
+    // Resolve relative image URLs inside the SVG using image_resource_prefix
+    this.resolveRelativeSvgImageUrls(svg);
+
     if (pageInfo && masterPageInfo) {
       const masterPageId = masterPageInfo.config.page_id;
       const contentElementId =
@@ -657,6 +660,52 @@ export class FloorplanElement extends LitElement {
 
     return svg;
   }
+
+  /**
+   * Prepends image_resource_prefix to relative URLs in SVG <image> elements.
+   * Only affects URLs that do not start with '/', 'http://', 'https://', 'data:', or '#'.
+   * This resolves the issue where relative paths inside an SVG break when the SVG
+   * is embedded inline into a dashboard page at a different URL.
+   */
+  resolveRelativeSvgImageUrls(svg: SVGGraphicsElement): void {
+    const prefix = this.config?.image_resource_prefix;
+    if (!prefix) return;
+
+    const normalizedPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+
+    const isRelativeUrl = (url: string): boolean => {
+      if (!url) return false;
+      return (
+        !url.startsWith('/') &&
+        !url.startsWith('http://') &&
+        !url.startsWith('https://') &&
+        !url.startsWith('data:') &&
+        !url.startsWith('#')
+      );
+    };
+
+    const imageElements = svg.querySelectorAll('image');
+    for (const imageElement of Array.from(imageElements)) {
+      // Handle both 'href' and legacy 'xlink:href' attributes
+      const href = imageElement.getAttribute('href');
+      if (href && isRelativeUrl(href)) {
+        imageElement.setAttribute('href', `${normalizedPrefix}${href}`);
+      }
+
+      const xlinkHref = imageElement.getAttributeNS(
+        'http://www.w3.org/1999/xlink',
+        'href'
+      );
+      if (xlinkHref && isRelativeUrl(xlinkHref)) {
+        imageElement.setAttributeNS(
+          'http://www.w3.org/1999/xlink',
+          'xlink:href',
+          `${normalizedPrefix}${xlinkHref}`
+        );
+      }
+    }
+  }
+
 
   /**
    * Handle browsers that do not support replaceChildren
@@ -1839,6 +1888,46 @@ export class FloorplanElement extends LitElement {
     }, 300);
   }
 
+  /**
+   * Triggers haptic feedback.
+   * - On Android (and browsers supporting the Vibration API), uses navigator.vibrate().
+   * - On the iOS Home Assistant companion app, fires a haptic event forwarded to the native bridge.
+   *
+   * @param haptic - A haptic type name or `true` (defaults to 'light').
+   */
+  triggerHaptic(haptic: string | boolean): void {
+    const HAPTIC_PATTERNS: Record<string, number | number[]> = {
+      success: 100,
+      warning: [50, 50, 100],
+      failure: [50, 50, 50, 50, 200],
+      light: 50,
+      medium: 100,
+      heavy: 200,
+      selection: 30,
+    };
+
+    const pattern = haptic === true ? 'light' : String(haptic);
+
+    // Attempt to use the HA companion app haptic bridge (iOS and Android HA app).
+    // Note: _hapticFeedback is an internal implementation detail of the HA companion app.
+    // It is not part of the public API and may change in future HA versions.
+    try {
+      const haElem = document.querySelector('home-assistant');
+      if (haElem && typeof (haElem as unknown as Record<string, unknown>)['_hapticFeedback'] === 'function') {
+        ((haElem as unknown) as Record<string, (type: string) => void>)['_hapticFeedback'](pattern);
+        return;
+      }
+    } catch {
+      // not available
+    }
+
+    // Map haptic type to vibration duration (ms) for browsers supporting the Vibration API
+    if (typeof navigator.vibrate === 'function') {
+      const vibrationPattern = HAPTIC_PATTERNS[pattern] ?? 50;
+      navigator.vibrate(vibrationPattern);
+    }
+  }
+
   handleActions(
     actionConfigs:
       | FloorplanActionConfig[]
@@ -1859,7 +1948,7 @@ export class FloorplanElement extends LitElement {
             (e) => e.user === (this.hass.user as CurrentUser).id
           ))
       ) {
-        // forwardHaptic("warning");
+        this.triggerHaptic('warning');
 
         if (
           !confirm(
@@ -1871,6 +1960,11 @@ export class FloorplanElement extends LitElement {
         }
       }
 
+      // Trigger haptic feedback if configured
+      if (actionConfig.haptic) {
+        this.triggerHaptic(actionConfig.haptic);
+      }
+
       switch (actionConfig.action) {
         case 'more-info': {
           if (this.isDemo) {
@@ -1878,8 +1972,9 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${entityId}`
             );
           } else {
+            const moreInfoEntityId = actionConfig.entity_id ?? entityId;
             fireEvent(this, 'hass-more-info', {
-              entityId: entityId,
+              entityId: moreInfoEntityId,
             } as MoreInfoDialogParams);
           }
           break;

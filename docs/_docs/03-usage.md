@@ -69,6 +69,21 @@ image_mobile: /local/floorplan/examples/home/home-mobile.svg
 
 Just like the regular `image` setting, `image_mobile` can also be set to an object in order to configure caching, specify multiple image sizes, etc.
 
+## Image Resource Prefix
+
+When an SVG file is embedded inline into a Lovelace dashboard, any relative `href` or `xlink:href` URLs inside `<image>` elements are resolved relative to the **dashboard URL**, not the SVG file's location. This causes linked raster images (PNG, JPG, etc.) to break when they are stored next to the SVG.
+
+The `image_resource_prefix` setting lets you specify a base path that Floorplan will prepend to every relative image URL found in the SVG. URLs that already start with `/`, `http://`, `https://`, `data:`, or `#` are left untouched.
+
+```yaml
+image: /local/floorplan/home.svg
+image_resource_prefix: /local/floorplan
+```
+
+With this config, a `<image href="lights/lamp.png">` element inside `home.svg` will be resolved to `/local/floorplan/lights/lamp.png`.
+
+> **Tip:** This is particularly useful when editing SVG files in Inkscape with linked (not embedded) images. The images will display correctly both in Inkscape (using their relative paths) and inside the Lovelace dashboard (using the resolved prefix paths).
+
 ## Stylesheet
 
 Floorplan also requires a CSS file, which can be configured using the `stylesheet` setting.
@@ -226,6 +241,58 @@ Even further simplified version of the rule, where `action` defaults to `call-se
 - entity: light.kitchen
   tap_action: homeassistant.toggle
 ```
+
+#### more-info
+
+The `more-info` action opens the Home Assistant more-info dialog for an entity.
+
+By default, the dialog is opened for the entity associated with the rule. You can override this by specifying a different `entity_id` in the action config.
+
+```yaml
+- entities:
+    - switch.ikea_outlet
+  tap_action:
+    action: more-info
+    entity_id: climate.living_room   # opens more-info for this entity instead
+```
+
+This is useful when a floorplan element represents a helper entity (e.g. an input_boolean or sensor), but you want tapping it to reveal the details of a related device.
+
+#### Haptic Feedback
+
+Any action (`tap_action`, `hold_action`, `double_tap_action`, etc.) can include an optional `haptic` field that triggers haptic feedback when the action is performed.
+
+```yaml
+- entities:
+    - light.living_room
+  tap_action:
+    action: toggle
+    haptic: light          # trigger light haptic on tap
+  hold_action:
+    action: more-info
+    haptic: success
+```
+
+The following haptic types are supported:
+
+| Type        | Description                                 |
+| ----------- | ------------------------------------------- |
+| `light`     | Short, subtle vibration (default for `true`)|
+| `medium`    | Medium vibration                            |
+| `heavy`     | Strong vibration                            |
+| `success`   | Single short pulse                          |
+| `warning`   | Double pulse                                |
+| `failure`   | Triple pulse pattern                        |
+| `selection` | Very brief tick                             |
+
+You can also set `haptic: true` as a shorthand for `haptic: light`.
+
+**Platform support:**
+- **Android** (browser and HA app): uses the [Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API) with mapped durations.
+- **iOS Home Assistant companion app**: forwards to the native haptic bridge.
+- **Desktop / unsupported browsers**: silently ignored — no side effects.
+
+> **Note:** Confirmation dialogs always trigger a `warning` haptic regardless of the configured value.
 
 ### Services
 

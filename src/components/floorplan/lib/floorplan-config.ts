@@ -35,6 +35,7 @@ export class FloorplanConfig {
   defaults!: FloorplanRuleConfig;
   image_mobile!: FloorplanImageConfig | string;
   functions!: string;
+  image_resource_prefix!: string;
 
   // Experimental features
   pages!: string[];
