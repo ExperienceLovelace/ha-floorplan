@@ -1,5 +1,8 @@
 import { HomeAssistant } from '../../lib/homeassistant/types';
-import { LovelaceCard } from '../../lib/homeassistant/panels/lovelace/types';
+import {
+  LovelaceCard,
+  LovelaceCardEditor,
+} from '../../lib/homeassistant/panels/lovelace/types';
 import { LovelaceCardConfig } from '../../lib/homeassistant/data/lovelace';
 import {
   css,
@@ -12,8 +15,24 @@ import {
 import { customElement, property } from 'lit/decorators.js';
 import { ShadowDomHelper } from './../floorplan/lib/shadow-dom-helper';
 import '../floorplan/floorplan-element';
+import './floorplan-card-editor';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
+
+//Register the card in the UI
+  let windowWithCards = window as unknown as Window & {
+    customCards: unknown[];
+  };
+  const customCards = windowWithCards.customCards || [];
+  customCards.push({
+    type: 'floorplan-card',
+    name: 'Floorplan Card',
+    description: 'Ha-floorplan  allows you to create tons of things. Create an SVG, and map entities to it.',
+    documentationURL: "https://experiencelovelace.github.io/ha-floorplan",
+    preview: true,
+  });
+  windowWithCards.customCards = customCards;
+
 
 @customElement('floorplan-card')
 export class FloorplanCard extends LitElement implements LovelaceCard {
@@ -117,6 +136,29 @@ export class FloorplanCard extends LitElement implements LovelaceCard {
     return 1;
   }
 
+  static getStubConfig(
+    hass: HomeAssistant,
+    entities: string[],
+    entitiesFallback: string[]
+  ): LovelaceCardConfig {
+    // This is the config that will be used when a user adds the card to their Lovelace dashboard.
+    // It should be a valid config that can be rendered by the card.
+    return {
+      type: 'custom:floorplan-card',
+      title: 'Floorplan',
+      full_height: false,
+      config: {
+        image: 'https://raw.githubusercontent.com/ExperienceLovelace/ha-floorplan/ccbf6a5afeffca6c185f3bf5dffaa2e8a53a5155/docs/_docs/floorplan/examples/floorplanner_home/floorplanner_home.svg',
+        stylesheet: '',
+        rules: [],
+      },
+    };
+  }
+
+  static getConfigElement(): LovelaceCardEditor {
+    return document.createElement('floorplan-card-editor') as LovelaceCardEditor;
+  }
+  
   setConfig(config: LovelaceCardConfig): void {
     this.config = config;
   }
