@@ -145,85 +145,9 @@ export class FloorplanCardEditor extends LitElement implements LovelaceCardEdito
   protected render(): TemplateResult {
     return html`
       <div class="editor">  
-        <ha-expansion-panel outlined>
-          <h4 slot="header">
-            <ha-icon icon="mdi:image-edit-outline"></ha-icon> image & styles
-          </h4>
-          <div class="content">
-            <div class="field">      
-              <ha-textfield
-                  label="Card title"
-                  name="title"
-                  type="text"
-                  .value="${this._config?.title ?? ''}"
-                  .configValue="title"
-                  @input="${this._valueChanged}"
-              ></ha-textfield>
-            </div>
-            <div class="field">
-              <ha-formfield
-                  .label="Full Height"
-                  name="full_height">
-                  <ha-switch
-                          label="Full Height"
-                          name="full_height"
-                          .checked=${this._config?.full_height}
-                          .configValue="full_height"
-                          @input="${this._valueChanged}"
-                  ></ha-switch>
-
-                  <div class="mdc-form-field">
-                      <label class="mdc-label">Full Height</label>
-                  </div>
-              </ha-formfield>
-            </div>
-
-            <div class="field">
-              <ha-textfield
-                  label="Image URL"
-                  name="config.image"
-                  type="text"
-                  .value="${this._config?.config?.image ?? ''}"
-                  .configValue="config.image"
-                  @input="${this._valueChanged}"
-              ></ha-textfield>
-            </div>
-            <div class="field">
-              <ha-textfield
-                  label="Stylesheet URL"
-                  name="config.stylesheet"
-                  type="text"
-                  .value="${this._config?.config?.stylesheet ?? ''}"
-                  .configValue="config.stylesheet"
-                  @input="${this._valueChanged}"
-              ></ha-textfield>
-            </div>
-          </div>
-        </ha-expansion-panel>
-          
+        ${this.renderImageSettings()}
         ${this.renderLogging()}
-
-        <ha-expansion-panel outlined>
-            <h4 slot="header">
-              <ha-icon icon="mdi:gesture-tap"></ha-icon> Default Actions YAML
-            </h4>
-            <div class="content">
-              <div class="field">
-                <ha-code-editor
-                  id="config_yaml"
-                  name="config.defaults"
-                  configValue="config.defaults"
-                  mode="yaml"
-                  .value=${dump(this._config?.config?.defaults ?? {}, { indent: 2 }) || ''}
-                  @value-changed=${this._valueChanged}
-                  placeholder="image: /local/floorplan.svg\nrules: []"
-                ></ha-code-editor>
-                ${this._error
-        ? html`<div class="error">Invalid YAML: ${this._error}</div>`
-        : html`<div class="help">Edit the card's floorplan definition in YAML.</div>`}
-              </div>
-            </div>
-        </ha-expansion-panel>
+        ${this.renderDefaults()}
 
         <ha-expansion-panel outlined expanded>
             <h4 slot="header">
@@ -240,6 +164,100 @@ export class FloorplanCardEditor extends LitElement implements LovelaceCardEdito
 
         </ha-expansion-panel>
       </div>
+    `;
+  }
+
+
+  protected renderImageSettings(): TemplateResult {
+    return html`
+    <ha-expansion-panel outlined>
+            <h4 slot="header">
+              <ha-icon icon="mdi:image-edit-outline"></ha-icon> image & styles
+            </h4>
+            <div class="content">
+              <div class="field">
+                <ha-input
+                    label="Card title"
+                    name="title"
+                    type="text"
+                    .value="${this._config?.title ?? ''}"
+                    .configValue="title"
+                    @input="${this._valueChanged}"
+                  ></ha-input>
+              </div>
+              <div class="field">
+                <ha-formfield
+                    .label="Full Height"
+                    name="full_height">
+                    <ha-switch
+                            label="Full Height"
+                            name="full_height"
+                            .checked=${this._config?.full_height}
+                            .configValue="full_height"
+                            @input="${this._valueChanged}"
+                    ></ha-switch>
+
+                    <div class="mdc-form-field">
+                        <label class="mdc-label">Full Height</label>
+                    </div>
+                </ha-formfield>
+              </div>
+
+              <div class="field">
+                <ha-code-editor
+                    id="image_yaml"
+                    name="config.image"
+                    configValue="config.image"
+                    mode="yaml"
+                    .value=${dump(this._config?.config?.image ?? {}, { indent: 2 }) || ''}
+                    @value-changed=${this._valueChanged}
+                    placeholder="/local/floorplan.svg"
+                  ></ha-code-editor>
+                  ${this._error
+                      ? html`<div class="error">Invalid YAML: ${this._error}</div>`
+                      : html`<div class="help">Edit the image used in the floorplan. See <a href="https://experiencelovelace.github.io/ha-floorplan/docs/usage/#image" target="_blank">the documentation</a> for more information.</div>`}
+              
+              </div>
+              
+              <div class="field">
+                <ha-input
+                    label="Stylesheet URL"
+                    name="config.stylesheet"
+                    type="text"
+                    .value="${this._config?.config?.stylesheet ?? ''}"
+                    .configValue="config.stylesheet"
+                    @input="${this._valueChanged}"
+                ></ha-input>
+              </div>
+
+            </div>
+    </ha-expansion-panel>    `;
+  }
+
+  protected renderDefaults(): TemplateResult {
+    return html`
+      <ha-expansion-panel outlined>
+            <h4 slot="header">
+              <ha-icon icon="mdi:gesture-tap"></ha-icon> Default Actions YAML
+            </h4>
+            <div class="content">
+              <div class="field">
+                <ha-code-editor
+                  id="config_yaml"
+                  name="config.defaults"
+                  configValue="config.defaults"
+                  mode="yaml"
+                  .value=${dump(this._config?.config?.defaults ?? {}, { indent: 2 }) || ''}
+                  @value-changed=${this._valueChanged}
+                  placeholder="image: /local/floorplan.svg\nrules: []"
+                ></ha-code-editor>
+                ${this._error
+        ? html`<div class="error">Invalid YAML: ${this._error}</div>`
+        : html`<div class="help">Edit the default actions for the floorplan. See <a href="https://experiencelovelace.github.io/ha-floorplan/docs/usage/#defaults" target="_blank">the documentation</a> for more information.</div>`}
+              </div>
+             </div>
+      </ha-expansion-panel>
+
     `;
   }
 
@@ -337,7 +355,7 @@ export class FloorplanCardEditor extends LitElement implements LovelaceCardEdito
               ></ha-code-editor>
               ${this._error
       ? html`<div class="error">Invalid YAML: ${this._error}</div>`
-      : html`<div class="help">Edit the card's floorplan rule in YAML.</div>`}
+      : html`<div class="help">Edit the floorplan rule in YAML. See <a href="https://experiencelovelace.github.io/ha-floorplan/docs/usage/#rules" target="_blank">the documentation</a> for more information.</div>`}
             </div>
           </div>
       </ha-expansion-panel>
@@ -391,7 +409,7 @@ export class FloorplanCardEditor extends LitElement implements LovelaceCardEdito
       width: 100%;
     }
     
-    .field ha-textfield{
+    .field ha-input{
       width: 100%;
       padding: 5px;
     }
