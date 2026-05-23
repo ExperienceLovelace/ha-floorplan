@@ -13,26 +13,28 @@ export class LongClicks {
     let touchStartY = 0;
 
     const onTapStart = (evt: Event) => {
-      // console.log('onTapStart: isLongClick:', isLongClick);
+      //console.log('onTapStart: isLongClick:', isLongClick);
 
       isLongClick = false;
       isTouchMoved = false;
 
+
       // Track touch position for movement detection
-      if (evt instanceof TouchEvent && evt.touches.length > 0) {
+      if ('touches' in evt && evt instanceof TouchEvent && evt.touches.length > 0) {
         touchStartX = evt.touches[0].clientX;
         touchStartY = evt.touches[0].clientY;
-        // console.log('onTapStart: touchStartX:', touchStartX, 'touchStartY:', touchStartY);
+        //console.log('onTapStart: touchStartX:', touchStartX, 'touchStartY:', touchStartY);
       }
 
       timer = setTimeout(() => {
         if (isTouchMoved) {
-           //console.log('timer timed out: movement detected, not a long click');
+        //   console.log('timer timed out: movement detected, not a long click');
           return;
         }
+
         isLongClick = true;
-        // console.log('timer timed out: isLongClick:', isLongClick);
-        // console.log('timer timed out: dispatching event:', 'longClick');
+        //console.log('timer timed out: isLongClick:', isLongClick);
+        //console.log('timer timed out: dispatching event:', 'longClick');
         elem.dispatchEvent(new Event('longClick'));
       }, longClickDuration);
     };
@@ -40,8 +42,7 @@ export class LongClicks {
     const onTouchmove = (evt: Event) => {
       var touchEndX = 0;
       var touchEndY = 0;
-
-      if (evt instanceof TouchEvent && evt.touches.length > 0) {
+      if ('touches' in evt && evt instanceof TouchEvent && evt.touches.length > 0) {
         touchEndX = evt.touches[0].clientX;
         touchEndY = evt.touches[0].clientY;
         //console.log('onMove: touchEndX:', touchEndX, 'touchEndY:', touchEndY);
@@ -50,7 +51,7 @@ export class LongClicks {
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         //console.log('OnMove: distance:', distance);
         if (distance > touchMoveThreshold) {
-          // console.log('onTapEnd: movement detected, canceling long click');
+          //console.log('onTapEnd: movement detected, canceling long click');
           isTouchMoved = true;
         }
       }
@@ -60,7 +61,7 @@ export class LongClicks {
       clearTimeout(timer);
 
       if (isLongClick) {
-        // console.log('onTapEnd: isLongClick:', isLongClick);
+        console.log('onTapEnd: isLongClick:', isLongClick);
         // have already triggered long click
       } else {
         // trigger shortClick, shortMouseup etc
