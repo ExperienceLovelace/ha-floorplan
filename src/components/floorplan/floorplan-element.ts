@@ -47,6 +47,7 @@ import {
   PropertyValues,
 } from 'lit';
 import { HA_FLOORPLAN_ACTION_CALL_EVENT } from './lib/events';
+import { forwardHaptic, HapticType } from '../../lib/homeassistant/data/haptics';
 import { customElement, property } from 'lit/decorators.js';
 import OuiDomEvents from './lib/oui-dom-events.js'; // Ensure the .js extension is included, to be handled by babel
 const E = OuiDomEvents;
@@ -1889,14 +1890,16 @@ export class FloorplanElement extends LitElement {
   }
 
   /**
-   * Triggers haptic feedback.
-   * - On Android (and browsers supporting the Vibration API), uses navigator.vibrate().
-   * - On the iOS Home Assistant companion app, fires a haptic event forwarded to the native bridge.
+   * Triggers haptic feedback using the standard HA haptic event mechanism.
+   *
+   * Fires a `haptic` event on `window` which is intercepted by the HA companion
+   * apps (iOS and Android) to trigger native haptic feedback. On Android browsers
+   * that support the Vibration API, a fallback vibration is also triggered.
    *
    * @param haptic - A haptic type name or `true` (defaults to 'light').
    */
-  triggerHaptic(haptic: string | boolean): void {
-    const HAPTIC_PATTERNS: Record<string, number | number[]> = {
+  triggerHaptic(haptic: HapticType | boolean): void {
+    const VIBRATION_PATTERNS: Record<HapticType, number | number[]> = {
       success: 100,
       warning: [50, 50, 100],
       failure: [50, 50, 50, 50, 200],
@@ -1906,25 +1909,16 @@ export class FloorplanElement extends LitElement {
       selection: 30,
     };
 
-    const pattern = haptic === true ? 'light' : String(haptic);
+    const hapticType: HapticType = haptic === true ? 'light' : (haptic as HapticType);
 
-    // Attempt to use the HA companion app haptic bridge (iOS and Android HA app).
-    // Note: _hapticFeedback is an internal implementation detail of the HA companion app.
-    // It is not part of the public API and may change in future HA versions.
-    try {
-      const haElem = document.querySelector('home-assistant');
-      if (haElem && typeof (haElem as unknown as Record<string, unknown>)['_hapticFeedback'] === 'function') {
-        ((haElem as unknown) as Record<string, (type: string) => void>)['_hapticFeedback'](pattern);
-        return;
-      }
-    } catch {
-      // not available
-    }
+    // Fire the standard HA `haptic` window event.
+    // The iOS and Android HA companion apps intercept this event and trigger native haptic feedback.
+    forwardHaptic(hapticType);
 
-    // Map haptic type to vibration duration (ms) for browsers supporting the Vibration API
+    // Also trigger the Vibration API as a fallback for Android browsers (not HA app).
+    // Note: navigator.vibrate() is not supported on iOS.
     if (typeof navigator.vibrate === 'function') {
-      const vibrationPattern = HAPTIC_PATTERNS[pattern] ?? 50;
-      navigator.vibrate(vibrationPattern);
+      navigator.vibrate(VIBRATION_PATTERNS[hapticType] ?? 50);
     }
   }
 
