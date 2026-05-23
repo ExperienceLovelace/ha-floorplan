@@ -19,22 +19,23 @@ export class HomeAssistant implements IHomeAssistant {
     return Promise.resolve<T>(null as any);
   }
 
-  callService(
+  callService<T = any>(
     domain: ServiceCallRequest['domain'],
     service: ServiceCallRequest['service'],
-    serviceData?: ServiceCallRequest['serviceData']
-  ): Promise<ServiceCallResponse> {
-    if (domain && service && serviceData) {
+    serviceData?: ServiceCallRequest['serviceData'],
+    target?: ServiceCallRequest['target']
+  ): Promise<ServiceCallResponse<T>> {
+    if (domain && service && (serviceData || target)) {
       // placeholder
     }
 
     const response = {
       context: {
         id: '',
-        parent_id: undefined,
-        user_id: undefined,
+        parent_id: null,
+        user_id: null,
       },
-    } as ServiceCallResponse;
+    } as ServiceCallResponse<T>;
 
     return Promise.resolve(response);
   }

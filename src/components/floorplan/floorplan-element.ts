@@ -47,6 +47,7 @@ import {
   PropertyValues,
 } from 'lit';
 import { HA_FLOORPLAN_ACTION_CALL_EVENT } from './lib/events';
+import { forwardHaptic, HapticType } from '../../lib/homeassistant/data/haptics';
 import { customElement, property } from 'lit/decorators.js';
 import OuiDomEvents from './lib/oui-dom-events.js'; // Ensure the .js extension is included, to be handled by babel
 const E = OuiDomEvents;
@@ -605,6 +606,9 @@ export class FloorplanElement extends LitElement {
     svg.style.opacity = '0';
     svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
 
+    // Resolve relative image URLs inside the SVG using image_resource_prefix
+    this.resolveRelativeSvgImageUrls(svg);
+
     if (pageInfo && masterPageInfo) {
       const masterPageId = masterPageInfo.config.page_id;
       const contentElementId =
@@ -657,6 +661,52 @@ export class FloorplanElement extends LitElement {
 
     return svg;
   }
+
+  /**
+   * Prepends image_resource_prefix to relative URLs in SVG <image> elements.
+   * Only affects URLs that do not start with '/', 'http://', 'https://', 'data:', or '#'.
+   * This resolves the issue where relative paths inside an SVG break when the SVG
+   * is embedded inline into a dashboard page at a different URL.
+   */
+  resolveRelativeSvgImageUrls(svg: SVGGraphicsElement): void {
+    const prefix = this.config?.image_resource_prefix;
+    if (!prefix) return;
+
+    const normalizedPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+
+    const isRelativeUrl = (url: string): boolean => {
+      if (!url) return false;
+      return (
+        !url.startsWith('/') &&
+        !url.startsWith('http://') &&
+        !url.startsWith('https://') &&
+        !url.startsWith('data:') &&
+        !url.startsWith('#')
+      );
+    };
+
+    const imageElements = svg.querySelectorAll('image');
+    for (const imageElement of Array.from(imageElements)) {
+      // Handle both 'href' and legacy 'xlink:href' attributes
+      const href = imageElement.getAttribute('href');
+      if (href && isRelativeUrl(href)) {
+        imageElement.setAttribute('href', `${normalizedPrefix}${href}`);
+      }
+
+      const xlinkHref = imageElement.getAttributeNS(
+        'http://www.w3.org/1999/xlink',
+        'href'
+      );
+      if (xlinkHref && isRelativeUrl(xlinkHref)) {
+        imageElement.setAttributeNS(
+          'http://www.w3.org/1999/xlink',
+          'xlink:href',
+          `${normalizedPrefix}${xlinkHref}`
+        );
+      }
+    }
+  }
+
 
   /**
    * Handle browsers that do not support replaceChildren
@@ -1839,6 +1889,39 @@ export class FloorplanElement extends LitElement {
     }, 300);
   }
 
+  /**
+   * Triggers haptic feedback using the standard HA haptic event mechanism.
+   *
+   * Fires a `haptic` event on `window` which is intercepted by the HA companion
+   * apps (iOS and Android) to trigger native haptic feedback. On Android browsers
+   * that support the Vibration API, a fallback vibration is also triggered.
+   *
+   * @param haptic - A haptic type name or `true` (defaults to 'light').
+   */
+  triggerHaptic(haptic: HapticType | boolean): void {
+    const VIBRATION_PATTERNS: Record<HapticType, number | number[]> = {
+      success: 100,
+      warning: [50, 50, 100],
+      failure: [50, 50, 50, 50, 200],
+      light: 50,
+      medium: 100,
+      heavy: 200,
+      selection: 30,
+    };
+
+    const hapticType: HapticType = haptic === true ? 'light' : (haptic as HapticType);
+
+    // Fire the standard HA `haptic` window event.
+    // The iOS and Android HA companion apps intercept this event and trigger native haptic feedback.
+    forwardHaptic(hapticType);
+
+    // Also trigger the Vibration API as a fallback for Android browsers (not HA app).
+    // Note: navigator.vibrate() is not supported on iOS.
+    if (typeof navigator.vibrate === 'function') {
+      navigator.vibrate(VIBRATION_PATTERNS[hapticType] ?? 50);
+    }
+  }
+
   handleActions(
     actionConfigs:
       | FloorplanActionConfig[]
@@ -1859,7 +1942,7 @@ export class FloorplanElement extends LitElement {
             (e) => e.user === (this.hass.user as CurrentUser).id
           ))
       ) {
-        // forwardHaptic("warning");
+        this.triggerHaptic('warning');
 
         if (
           !confirm(
@@ -1871,6 +1954,11 @@ export class FloorplanElement extends LitElement {
         }
       }
 
+      // Trigger haptic feedback if configured
+      if (actionConfig.haptic) {
+        this.triggerHaptic(actionConfig.haptic);
+      }
+
       switch (actionConfig.action) {
         case 'more-info': {
           if (this.isDemo) {
@@ -1878,8 +1966,9 @@ export class FloorplanElement extends LitElement {
               `Performing action: ${actionConfig.action} ${entityId}`
             );
           } else {
+            const moreInfoEntityId = actionConfig.entity_id ?? entityId;
             fireEvent(this, 'hass-more-info', {
-              entityId: entityId,
+              entityId: moreInfoEntityId,
             } as MoreInfoDialogParams);
           }
           break;
@@ -1897,7 +1986,7 @@ export class FloorplanElement extends LitElement {
               entityId,
               svgElementInfo?.svgElement
             ) as string;
-            navigate(this, navigationPath, actionConfig.navigation_replace ?? false);
+            navigate(navigationPath, { replace: actionConfig.navigation_replace ?? false });
           }
           break;
 
@@ -2009,17 +2098,20 @@ export class FloorplanElement extends LitElement {
   ): Record<string, unknown> {
     let serviceData = {} as Record<string, unknown>;
 
-    if (typeof actionConfig.service_data === 'object') {
-      for (const key of Object.keys(actionConfig.service_data)) {
+    // `data` takes precedence; `service_data` is kept for legacy compatibility
+    const rawData = actionConfig.data ?? actionConfig.service_data;
+
+    if (typeof rawData === 'object') {
+      for (const key of Object.keys(rawData)) {
         serviceData[key] = this.evaluate(
-          actionConfig.service_data[key],
+          rawData[key],
           entityId,
           svgElement
         ) as string;
       }
-    } else if (typeof actionConfig.service_data === 'string') {
+    } else if (typeof rawData === 'string') {
       const result = this.evaluate(
-        actionConfig.service_data,
+        rawData,
         entityId,
         svgElement
       );
@@ -2027,8 +2119,8 @@ export class FloorplanElement extends LitElement {
         typeof result === 'string' && result.trim().startsWith('{')
           ? JSON.parse(result)
           : result;
-    } else if (actionConfig.service_data !== undefined) {
-      serviceData = actionConfig.service_data;
+    } else if (rawData !== undefined) {
+      serviceData = rawData;
     }
 
     return serviceData;
@@ -2042,19 +2134,21 @@ export class FloorplanElement extends LitElement {
     ruleInfo?: FloorplanRuleInfo
   ): boolean {
     try {
-      if (typeof actionConfig.service_data === 'object') {
-        for (const key of Object.keys(actionConfig.service_data)) {
+      // `data` takes precedence; `service_data` is kept for legacy compatibility
+      const rawData = actionConfig.data ?? actionConfig.service_data;
+      if (typeof rawData === 'object') {
+        for (const key of Object.keys(rawData)) {
           this.evaluate(
-            actionConfig.service_data[key],
+            rawData[key],
             entityId,
             svgElement,
             svgElementInfo,
             ruleInfo
           ) as string;
         }
-      } else if (typeof actionConfig.service_data === 'string') {
-        this.evaluate(actionConfig.service_data, entityId, svgElement, svgElementInfo, ruleInfo);
-      } else if (actionConfig.service_data !== undefined) {
+      } else if (typeof rawData === 'string') {
+        this.evaluate(rawData, entityId, svgElement, svgElementInfo, ruleInfo);
+      } else if (rawData !== undefined) {
         this.logWarning('CONFIG', `Invalid execution data`);
       }
       return true;
@@ -2272,8 +2366,9 @@ export class FloorplanElement extends LitElement {
               : (serviceData.text as string);
 
           // If the text has linebreakes, setText will split them up, into more than a single tspan element. Each tspan will use the shift y axis as a offset (except for the first element)
-          const shiftYAxis = actionConfig.service_data?.shift_y_axis
-            ? actionConfig.service_data?.shift_y_axis
+          const effectiveTextData = actionConfig.data ?? actionConfig.service_data;
+          const shiftYAxis = effectiveTextData?.shift_y_axis
+            ? effectiveTextData?.shift_y_axis
             : '1em';
           Utils.setText(targetSvgElement, text, shiftYAxis);
         }
@@ -2283,18 +2378,19 @@ export class FloorplanElement extends LitElement {
         let nestedSvgElementRef = undefined;
 
         // We'll prioritize the element from the service data, if it's provided
-        if(typeof actionConfig?.service_data === "object") {
+        const effectiveImageData = actionConfig.data ?? actionConfig.service_data;
+        if(typeof effectiveImageData === "object") {
           // We do not support elements, as nested service_data
-          if(actionConfig?.service_data?.elements) {
+          if(effectiveImageData?.elements) {
             this.logError(
               'CONFIG', 'Multiple elements are not supported in service data.'
             )
             break;
           }else if(
-            actionConfig?.service_data?.element &&
-            typeof actionConfig?.service_data?.element === "string"
+            effectiveImageData?.element &&
+            typeof effectiveImageData?.element === "string"
           ){
-            if(actionConfig?.service_data?.image_refresh_interval) {
+            if(effectiveImageData?.image_refresh_interval) {
               this.logError(
                 'CONFIG', 'Image refresh interval is not supported with element as service data.'
               )
@@ -2302,14 +2398,14 @@ export class FloorplanElement extends LitElement {
             };
 
             // Else, we'll use the element as the target element
-            nestedSvgElementRef = actionConfig?.service_data?.element;
+            nestedSvgElementRef = effectiveImageData?.element;
           }
         }
 
         if(nestedSvgElementRef) {
-          // Check if nested elements are provided as service_data
+          // Check if nested elements are provided as service data
           const svg = this.getSvgElementsFromServiceData(
-            actionConfig?.service_data || {}
+            (effectiveImageData || {}) as Record<string, unknown>
           );
 
           if(svg.length < 1) {
@@ -2335,12 +2431,12 @@ export class FloorplanElement extends LitElement {
           if(typeof serviceData !== undefined){
             // Allow internal actions to use the image from included service data
             if(actionConfig && actionConfig._is_internal_action_scope){
-              serviceData = actionConfig?.service_data;
-              const data = actionConfig?.service_data as Record<string, unknown>;
-              if(data?.image !== null){
-                if(typeof data?.image === "string") imageUrl = data?.image as string;
-                if(typeof data?.image === "object"){
-                  const image = data?.image as FloorplanImageConfig;
+              const effectiveInternalData = (actionConfig.data ?? actionConfig.service_data) as Record<string, unknown>;
+              serviceData = effectiveInternalData;
+              if(effectiveInternalData?.image !== null){
+                if(typeof effectiveInternalData?.image === "string") imageUrl = effectiveInternalData?.image as string;
+                if(typeof effectiveInternalData?.image === "object"){
+                  const image = effectiveInternalData?.image as FloorplanImageConfig;
                   if('location' in image && typeof image.location === "string") imageUrl = image.location;
                 }
               }
@@ -2479,16 +2575,17 @@ export class FloorplanElement extends LitElement {
         break;
 
       case 'card_set':
-        // Check for service_data
-        if (!actionConfig?.service_data) {
+        // Check for service data (supports both `data` and legacy `service_data`)
+        const cardSetRawData = actionConfig?.data ?? actionConfig?.service_data;
+        if (!cardSetRawData) {
           this.logError(
             'CONFIG', 'Must have service data for card_set.'
           );
           break;
         }
 
-        // If service_data is not an array, convert it to array
-        const cardSetServiceData = (Array.isArray(actionConfig.service_data)) ? actionConfig.service_data : [actionConfig.service_data];
+        // If the data is not an array, convert it to array
+        const cardSetServiceData = (Array.isArray(cardSetRawData)) ? cardSetRawData : [cardSetRawData];
         
         // Browse each entry
         for (const entry of cardSetServiceData) {
