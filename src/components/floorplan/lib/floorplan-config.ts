@@ -101,7 +101,7 @@ export class FloorplanRuleConfig {
   entities!: (string | FloorplanRuleEntityElementConfig)[];
   groups!: string[];
   element!: string;
-  elements!: string[];
+  elements!: (string | FloorplanRuleEntityElementConfig)[];
 
   // action_name?: string;
   service?: string;
