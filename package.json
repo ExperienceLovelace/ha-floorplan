@@ -79,7 +79,7 @@
     "webpack": "^5.105.0",
     "webpack-bundle-analyzer": "^4.10.0",
     "webpack-cli": "^5.0.0",
-    "webpack-dev-server": "^5.2.4",
+    "webpack-dev-server": "^5.2.5",
     "whatwg-fetch": "^3.6.20"
   },
   "jest-junit": {
