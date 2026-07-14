@@ -1319,7 +1319,10 @@ export class FloorplanElement extends LitElement {
     ) as string[];
     for (const entityId of entityIds) {
       let elementIds = [] as string[];
-      if (rule.elements) elementIds = elementIds.concat(rule.elements);
+      if (rule.elements)
+        elementIds = elementIds.concat(
+          rule.elements.filter((x) => typeof x === 'string') as string[]
+        );
       else if (rule.element)
         elementIds = elementIds.concat(
           this.evaluate(rule.element, entityId, undefined) as string
@@ -1372,12 +1375,26 @@ export class FloorplanElement extends LitElement {
   ): void {
     if (!rule.element && !rule.elements) return;
 
-    rule.elements = rule.elements ? rule.elements : [];
-    rule.elements = rule.element
-      ? rule.elements.concat(rule.element)
-      : rule.elements;
+    let targetElements = rule.elements ? [...rule.elements] : [];
+    targetElements = rule.element
+      ? targetElements.concat(rule.element)
+      : targetElements;
 
-    for (const elementId of rule.elements) {
+    for (const targetElement of targetElements) {
+      let elementId: string | undefined;
+      let entityId: string | undefined;
+      if (typeof targetElement === 'string') {
+        elementId = targetElement;
+      } else if (targetElement) {
+        elementId = targetElement.element;
+        entityId = targetElement.entity;
+      }
+
+      if (!elementId) {
+        this.logWarning('CONFIG', `Invalid element rule in SVG file`);
+        continue;
+      }
+
       const svgElement = svgElements.find(
         (svgElement) => svgElement.id === elementId
       );
@@ -1402,7 +1419,7 @@ export class FloorplanElement extends LitElement {
         this.attachClickHandlers(
           svgElement,
           svgElementInfo,
-          undefined,
+          entityId,
           elementId,
           ruleInfo
         );
