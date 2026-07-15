@@ -45,6 +45,11 @@ export default (env) => {
           use: 'ts-loader',
           exclude: /node_modules/,
         },
+        {
+          // apexcharts/src imports its stylesheets as raw strings
+          test: /node_modules[\\/]apexcharts[\\/].*\.css$/,
+          type: 'asset/source',
+        },
       ],
     },
     resolve: {

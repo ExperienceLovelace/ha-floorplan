@@ -54,3 +54,6 @@ docs:
         
   - title: Usage
     url: /docs/usage/
+    children:
+      - title: "Charts"
+        url: /docs/charts/

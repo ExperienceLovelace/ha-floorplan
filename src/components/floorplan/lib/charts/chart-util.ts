@@ -13,7 +13,7 @@
  * forced off, since the chart is a static snapshot between renders).
  */
 
-import ApexCharts from 'apexcharts';
+import ApexCharts from './apexcharts-loader';
 import {
   createSvgGroup,
   createSvgRect,
@@ -79,6 +79,43 @@ export async function renderApexChart(
 
   // Lift the rendered chart <svg> out of the div and inline it in the group.
   let chartSvg = div.querySelector('svg') as SVGSVGElement;
+
+  // ApexCharts v4+ renders the legend as an absolutely-positioned HTML
+  // sibling of the chart <svg> (v3 placed it in a foreignObject inside the
+  // svg), so it would be lost when only the svg is serialized. Move it into
+  // a foreignObject inside the svg at its measured position first.
+  const externalLegend = div.querySelector(
+    '.apexcharts-legend'
+  ) as HTMLDivElement | null;
+  if (
+    externalLegend &&
+    !chartSvg.contains(externalLegend) &&
+    externalLegend.children.length
+  ) {
+    // Measure before reparenting; the temporary render surface is attached
+    // to the DOM, so offsets reflect the legend's rendered position within
+    // the chart canvas (the svg's coordinate space).
+    const legendX = externalLegend.offsetLeft;
+    const legendY = externalLegend.offsetTop;
+    const legendWidth = externalLegend.offsetWidth;
+    const legendHeight = externalLegend.offsetHeight;
+
+    const legendForeignObject = createSvgForeignObject(
+      legendX,
+      legendY,
+      legendWidth,
+      legendHeight
+    );
+    legendForeignObject.appendChild(externalLegend);
+    externalLegend.style.position = 'static';
+    // Clear the absolute-positioning styles so the legacy (v3) legend
+    // fix-up below leaves the placement we just measured untouched.
+    externalLegend.style.left = '';
+    externalLegend.style.top = '';
+    externalLegend.style.right = '';
+    externalLegend.style.bottom = '';
+    chartSvg.appendChild(legendForeignObject);
+  }
   chartSvg.setAttribute('x', bbox.x.toString());
   chartSvg.setAttribute('y', bbox.y.toString());
   chartSvg.setAttribute(

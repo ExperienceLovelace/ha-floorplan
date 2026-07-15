@@ -10,7 +10,7 @@
  * attribute series (hvac_action bands, target temps, etc.) were not ported.
  */
 
-import { getColorByIndex } from '../../../../lib/homeassistant/common/color/colors';
+import { getGraphColorByIndex } from '../../../../lib/homeassistant/common/color/colors';
 import { HomeAssistant } from '../../../../lib/homeassistant/types';
 import { LineChartUnit } from '../../../../lib/homeassistant/data/history';
 
@@ -90,7 +90,8 @@ export class StateHistoryChartLine {
       onItemClick: { toggleDataSeries: false },
     };
     options.dataLabels = { enabled: false };
-    options.stroke = { curve: 'stepline', width: 1 };
+    // Matches current HA's history chart line weight
+    options.stroke = { curve: 'stepline', width: 1.5 };
     options.xaxis = {
       type: 'datetime',
       labels: {
@@ -146,7 +147,7 @@ export class StateHistoryChartLine {
 
       const addDataSet = (nameY: string, color?: string) => {
         if (!color) {
-          color = getColorByIndex(colorIndex);
+          color = getGraphColorByIndex(colorIndex);
           colorIndex++;
         }
         data.push({ name: nameY, color, data: [] });

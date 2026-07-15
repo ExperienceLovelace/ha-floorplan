@@ -9,6 +9,7 @@ import {
   formatNumber,
   numberFormatToLocale,
 } from '../../../src/lib/homeassistant/common/number/format_number';
+import { getGraphColorByIndex } from '../../../src/lib/homeassistant/common/color/colors';
 import {
   NumberFormat,
   TimeFormat,
@@ -121,6 +122,23 @@ describe('Charts - history data layer', () => {
     });
 
     expect(result.line.map((line) => line.unit).sort()).toEqual(['%', '°C']);
+  });
+});
+
+describe('Charts - graph colors', () => {
+  it('falls back to the modern HA default palette', () => {
+    // No --graph-color-N / --color-N variables defined in jsdom
+    expect(getGraphColorByIndex(0)).toBe('#4269d0'); // blue
+    expect(getGraphColorByIndex(1)).toBe('#f4bd4a'); // amber
+  });
+
+  it('prefers theme-provided CSS variables', () => {
+    const style = {
+      getPropertyValue: (prop: string) =>
+        prop === '--graph-color-1' ? ' #123456 ' : '',
+    } as CSSStyleDeclaration;
+    expect(getGraphColorByIndex(0, style)).toBe('#123456');
+    expect(getGraphColorByIndex(1, style)).toBe('#f4bd4a'); // fallback
   });
 });
 
@@ -237,7 +255,7 @@ describe('Charts - gauge', () => {
     expect(valuePath).not.toBeNull();
     expect(valuePath.getAttribute('style')).toContain('rotate(126deg)'); // 70%
     expect(svg.getAttribute('style')).toContain(
-      '--gauge-color:var(--warning-color)'
+      '--gauge-color:var(--warning-color, #ffa600)'
     );
     expect(svg.textContent).toContain('70');
     expect(svg.textContent).toContain('Humidity');

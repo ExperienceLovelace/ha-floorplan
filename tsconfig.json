@@ -3,6 +3,8 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "strict": true,
+    "skipLibCheck": true, // apexcharts 5.x ships a self-inconsistent .d.ts
+
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "module": "ESNext",

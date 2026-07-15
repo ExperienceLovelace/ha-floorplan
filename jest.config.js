@@ -11,6 +11,12 @@ export default {
   ],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1', // Fix imports with .js extensions
+    // apexcharts 5 resolves to an ESM bundle jest can't parse; tests never
+    // render charts, so the full CommonJS build is sufficient (this also
+    // stands in for the tree-shaken charts/apexcharts-loader module).
+    '^apexcharts$': '<rootDir>/node_modules/apexcharts/dist/apexcharts.common.js',
+    'charts/apexcharts-loader$': '<rootDir>/node_modules/apexcharts/dist/apexcharts.common.js',
+    '(.+)/apexcharts-loader$': '<rootDir>/node_modules/apexcharts/dist/apexcharts.common.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js', '@testing-library/jest-dom'], // Ensure jest.setup.js and jest-dom are executed
   detectOpenHandles: true, // Detect open handles to avoid Jest hanging
