@@ -360,10 +360,9 @@ describe('Charts - getStateHistory sandbox helper', () => {
       service_data: 'placeholder',
     } as unknown as FloorplanCallServiceActionConfig;
 
-    // NOTE: the sandbox parses ES2019, so no ?? / ?. in templates
     const expression = `>
       const history = await getStateHistory('sensor.power');
-      const series = history['sensor.power'].map(s => ({ x: (s.lu || s.lc) * 1000, y: Number(s.s) }));
+      const series = history['sensor.power'].map(s => ({ x: (s.lc ?? s.lu) * 1000, y: Number(s.s) }));
       return JSON.stringify({ type: 'apex-chart', points: series });
     `;
 
@@ -390,5 +389,29 @@ describe('Charts - getStateHistory sandbox helper', () => {
       { x: 1700000060000, y: 150 },
     ]);
     expect(callWS).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Evaluation sandbox - modern syntax', () => {
+  it('parses optional chaining and nullish coalescing in code-line templates', () => {
+    const hass = makeHass({
+      'sensor.grid_import_filtered': {
+        entity_id: 'sensor.grid_import_filtered',
+        state: '0',
+        attributes: {},
+      },
+    });
+
+    const expression =
+      '${parseFloat(hass.states["sensor.grid_export_missing"]?.state ?? "0") == 0 ? "always-visible" : "always-invisible"}';
+
+    const result = EvalHelper.evaluate(
+      expression,
+      hass,
+      {} as FloorplanConfig,
+      'sensor.grid_import_filtered'
+    );
+
+    expect(result).toBe('always-visible');
   });
 });

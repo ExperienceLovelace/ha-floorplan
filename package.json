@@ -1,6 +1,6 @@
 {
   "name": "ha-floorplan",
-  "version": "1.2.0-graphs.1",
+  "version": "1.2.0-graphs.2",
   "description": "Floorplan for Home Assistant",
   "homepage": "https://experiencelovelace.github.io/ha-floorplan",
   "keywords": [
@@ -52,7 +52,7 @@
     "serialize-javascript": "^7.0.5",
     "strftime": "^0.10.1",
     "superstruct": "^1.0.3",
-    "sval": "^0.4.8"
+    "sval": "^0.6.12"
   },
   "devDependencies": {
     "@babel/core": "^7.29.6",
