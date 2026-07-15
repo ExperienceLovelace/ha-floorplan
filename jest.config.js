@@ -7,7 +7,7 @@ export default {
   },
   extensionsToTreatAsEsm: ['.ts', '.tsx'], // Treat TypeScript files as ESM
   transformIgnorePatterns: [
-    '/node_modules/(?!lit|@testing-library|@lit|home-assistant-js-websocket|oui-dom-events)', // Allow specific ESM dependencies to be transformed
+    '/node_modules/(?!lit|@testing-library|@lit|home-assistant-js-websocket|oui-dom-events|p-throttle)', // Allow specific ESM dependencies to be transformed
   ],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1', // Fix imports with .js extensions
