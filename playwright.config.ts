@@ -6,6 +6,15 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:8080', // Adjust to your local dev server
     testIdAttribute: 'data-floorplan-ref',
+    // Allow overriding the browser binary (e.g. sandboxed environments with
+    // a pre-installed Chromium); unset means Playwright's own download.
+    ...(process.env.CHROMIUM_EXECUTABLE_PATH
+      ? {
+          launchOptions: {
+            executablePath: process.env.CHROMIUM_EXECUTABLE_PATH,
+          },
+        }
+      : {}),
   },
   reporter: [
     ['list'], // Keep the default list reporter
