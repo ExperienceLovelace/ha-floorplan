@@ -237,7 +237,7 @@ describe('Charts - gauge', () => {
     expect(valuePath).not.toBeNull();
     expect(valuePath.getAttribute('style')).toContain('rotate(126deg)'); // 70%
     expect(svg.getAttribute('style')).toContain(
-      '--gauge-color:var(--warning-color)'
+      '--gauge-color:var(--warning-color, #ffa600)'
     );
     expect(svg.textContent).toContain('70');
     expect(svg.textContent).toContain('Humidity');
