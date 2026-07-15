@@ -20,6 +20,13 @@ export class FloorplanExamples extends LitElement {
       isCard: true,
     },
     {
+      name: 'chart_plate',
+      dir: 'chart_plate',
+      configFile: 'chart_plate.yaml',
+      simulationFile: 'simulations.yaml',
+      isCard: true,
+    },
+    {
       name: 'home',
       dir: 'home',
       configFile: 'home.yaml',

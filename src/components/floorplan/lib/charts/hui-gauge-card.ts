@@ -28,11 +28,13 @@ export type RenderGaugeFn = (
   styles: string
 ) => Promise<void>;
 
+// Fallback colors (HA's defaults) apply when the HA theme variables are
+// not defined, e.g. in the examples/demo pages.
 const severityMap: Record<string, string> = {
-  red: 'var(--error-color)',
-  green: 'var(--success-color)',
-  yellow: 'var(--warning-color)',
-  normal: 'var(--info-color)',
+  red: 'var(--error-color, #db4437)',
+  green: 'var(--success-color, #43a047)',
+  yellow: 'var(--warning-color, #ffa600)',
+  normal: 'var(--info-color, #039be5)',
 };
 
 export interface GaugeSegment {
@@ -333,19 +335,19 @@ export class HaGauge {
     return `
       .dial {
         fill: none;
-        stroke: var(--primary-background-color);
+        stroke: var(--primary-background-color, #e8e8e8);
         stroke-width: 15;
       }
 
       .value {
         fill: none;
         stroke-width: 15;
-        stroke: var(--gauge-color);
+        stroke: var(--gauge-color, #039be5);
         transition: all 1s ease 0s;
       }
 
       .needle {
-        fill: var(--primary-text-color);
+        fill: var(--primary-text-color, #212121);
         transition: all 1s ease 0s;
       }
 
@@ -364,13 +366,13 @@ export class HaGauge {
 
       .value-text {
         font-size: 50px;
-        fill: var(--primary-text-color);
+        fill: var(--primary-text-color, #212121);
         text-anchor: middle;
       }
 
       .name-text {
         font-size: 20px;
-        fill: var(--primary-text-color);
+        fill: var(--primary-text-color, #212121);
         text-anchor: middle;
       }
     `;
