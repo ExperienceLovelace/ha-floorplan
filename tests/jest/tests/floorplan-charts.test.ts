@@ -27,14 +27,20 @@ import {
   FloorplanCallServiceActionConfig,
 } from '../../../src/components/floorplan/lib/floorplan-config';
 
+type CallWSMock = jest.Mock<(msg: Record<string, any>) => Promise<any>>;
+
+const makeCallWS = (result: any): CallWSMock =>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  jest.fn(async (_msg: Record<string, any>) => result);
+
 const makeHass = (
   states: Record<string, any>,
-  callWS?: jest.Mock
+  callWS?: CallWSMock
 ): HomeAssistant =>
   ({
     states,
     language: 'en',
-    callWS: callWS ?? jest.fn(),
+    callWS: callWS ?? makeCallWS({}),
     callService: jest.fn(),
     dockedSidebar: 'auto',
   } as unknown as HomeAssistant);
@@ -266,7 +272,7 @@ describe('Charts - gauge', () => {
 
 describe('Charts - getStateHistory sandbox helper', () => {
   it('fetches the last 24h of history via the history WS API', async () => {
-    const callWS = jest.fn().mockResolvedValue({
+    const callWS = makeCallWS({
       'sensor.power': [
         { s: '1', lu: 1 },
         { s: '2', lu: 2 },
@@ -312,7 +318,7 @@ describe('Charts - getStateHistory sandbox helper', () => {
   });
 
   it('throttles fetches to one per refresh interval', async () => {
-    const callWS = jest.fn().mockResolvedValue({});
+    const callWS = makeCallWS({});
     const hass = makeHass({}, callWS);
     const actionConfig = {
       action: 'call-service',
@@ -332,7 +338,7 @@ describe('Charts - getStateHistory sandbox helper', () => {
   });
 
   it('is exposed to chart_set templates via the evaluation sandbox', async () => {
-    const callWS = jest.fn().mockResolvedValue({
+    const callWS = makeCallWS({
       'sensor.power': [
         { s: '100', lu: 1700000000 },
         { s: '150', lu: 1700000060 },
