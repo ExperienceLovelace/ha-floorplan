@@ -309,6 +309,7 @@ Below are the services that are specific to Floorplan.
 | `floorplan.text_set`     | Set the text of the SVG element(s)             | `text` (string)<br />`shift_y_axis: 2em`                                                               |
 | `floorplan.image_set`    | Set the image of the SVG element(s)            | `image` (string)<br />`image_refresh_interval` (number)<br />`cache` (boolean) |
 | `floorplan.card_set`     | Set HA card of a SVG foreignObject element     | `container_id` (string)<br />`config` (array, optional)                                                               |
+| `floorplan.chart_set`    | Render a chart in place of the SVG element     | `type` (string)<br />See the [Charts](https://experiencelovelace.github.io/ha-floorplan/docs/charts/) page for the full set of options |
 | `floorplan.execute`      | Execute your own JS, defined in service_data   | `<all>` (array)                                                                |
 
 Service data can be dynamically constructed using JavaScript code. Below is the full set of helpers, that are available when writing code.
@@ -471,6 +472,10 @@ You can also specify multiple cards at once with an array :
 ```
 
 In this example, when MyButton receives a tap, the card in CardContainer is removed and the CardContainer2 receives the card weather-forecast.
+
+#### Using `chart_set` to render charts
+
+The `chart_set` service renders live charts (history graphs, gauges and fully custom ApexCharts) directly inside the floorplan SVG. The service is documented on its own [Charts](https://experiencelovelace.github.io/ha-floorplan/docs/charts/) page.
 
 #### Using `execute` with browser_mod
 
