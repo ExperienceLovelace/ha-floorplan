@@ -106,23 +106,27 @@ export async function renderApexChart(
     const legendForeignObject = chartSvg.querySelector(
       'foreignObject'
     ) as SVGForeignObjectElement;
-    legendForeignObject.setAttribute(
-      'x',
-      `${parseFloat(legendDiv.style.left)}`
-    );
-    // With legend position 'bottom', ApexCharts leaves top:'auto' and
-    // positions via max-height; place the legend below the plot instead.
-    legendForeignObject.setAttribute(
-      'y',
-      `${
+    if (legendForeignObject) {
+      // A hidden/unpositioned legend has no left/top styles; only rewrite
+      // the coordinates when they resolve to real numbers, otherwise keep
+      // whatever ApexCharts set (writing "NaN" is an SVG attribute error).
+      const legendX = parseFloat(legendDiv.style.left);
+      // With legend position 'bottom', ApexCharts leaves top:'auto' and
+      // positions via max-height; place the legend below the plot instead.
+      const legendY =
         legendDiv.style.top !== 'auto'
           ? parseFloat(legendDiv.style.top)
-          : parseFloat(legendDiv.style.maxHeight) + 10
-      }`
-    );
-    legendForeignObject
-      .querySelectorAll('span')
-      .forEach((span) => (span.style.position = 'static'));
+          : parseFloat(legendDiv.style.maxHeight) + 10;
+      if (isFinite(legendX)) {
+        legendForeignObject.setAttribute('x', `${legendX}`);
+      }
+      if (isFinite(legendY)) {
+        legendForeignObject.setAttribute('y', `${legendY}`);
+      }
+      legendForeignObject
+        .querySelectorAll('span')
+        .forEach((span) => (span.style.position = 'static'));
+    }
   }
 }
 
