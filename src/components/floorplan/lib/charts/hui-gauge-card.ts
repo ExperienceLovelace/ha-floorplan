@@ -243,7 +243,9 @@ export class HaGauge {
     const viewBoxHeight = this.title ? 50 + titleOffset : 50;
     const svg = `
       <svg viewBox="0 0 100 ${viewBoxHeight}" style="${this.style}">
-        <svg viewBox="-50 -50 100 50" class="gauge" y="${-titleOffset / 2}">
+        <svg viewBox="-50 -50 100 50" class="gauge" width="100" height="50" y="${
+          -titleOffset / 2
+        }">
           ${
             this.needle && this.levels
               ? ''
