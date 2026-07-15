@@ -1,36 +1,39 @@
-// Port of home-assistant/frontend src/common/color/colors.ts (20220802.0)
+// Port of home-assistant/frontend src/common/color/colors.ts (current).
+//
+// Modern HA resolves graph colors from theme CSS variables
+// (--graph-color-N, falling back to --color-N); the COLORS table below is
+// the current default --color-1..54 palette from
+// src/resources/theme/color/color.globals.ts, used when the variables are
+// not defined (e.g. outside Home Assistant).
 
 export const COLORS = [
-  '#44739e',
-  '#984ea3',
-  '#00d2d5',
-  '#ff7f00',
-  '#af8d00',
-  '#7f80cd',
-  '#b3e900',
-  '#c42e60',
-  '#a65628',
-  '#f781bf',
-  '#8dd3c7',
-  '#bebada',
-  '#fb8072',
-  '#80b1d3',
-  '#fdb462',
-  '#fccde5',
-  '#bc80bd',
-  '#ffed6f',
-  '#c4eaff',
-  '#cf8c00',
-  '#1b9e77',
-  '#d95f02',
-  '#e7298a',
-  '#e6ab02',
-  '#a6761d',
-  '#0097ff',
-  '#00d067',
-  '#f43600',
-  '#4ba93b',
-  '#5779bb',
+  '#4269d0',
+  '#f4bd4a',
+  '#ff725c',
+  '#6cc5b0',
+  '#a463f2',
+  '#ff8ab7',
+  '#9c6b4e',
+  '#97bbf5',
+  '#01ab63',
+  '#094bad',
+  '#c99000',
+  '#d84f3e',
+  '#49a28f',
+  '#048732',
+  '#d96895',
+  '#8043ce',
+  '#7599d1',
+  '#7a4c31',
+  '#6989f4',
+  '#ffd444',
+  '#ff957c',
+  '#8fe9d3',
+  '#62cc71',
+  '#ffadda',
+  '#c884ff',
+  '#badeff',
+  '#bf8b6d',
   '#927acc',
   '#97ee3f',
   '#bf3947',
@@ -43,7 +46,6 @@ export const COLORS = [
   '#d9b100',
   '#9d7a00',
   '#698cff',
-  '#d9d9d9',
   '#00d27e',
   '#d06800',
   '#009f82',
@@ -58,7 +60,31 @@ export const COLORS = [
   '#f48800',
   '#27d0df',
   '#a04a9b',
+  '#4269d0',
 ];
 
 export const getColorByIndex = (index: number): string =>
   COLORS[index % COLORS.length];
+
+/*
+ * Resolves the color for a series like current HA: a theme's
+ * --graph-color-N wins, then the theme's --color-N, then the built-in
+ * default palette. Inside Home Assistant the variables are defined on the
+ * document root by the active theme.
+ */
+export const getGraphColorByIndex = (
+  index: number,
+  style?: CSSStyleDeclaration
+): string => {
+  const computedStyle =
+    style ??
+    (typeof window !== 'undefined'
+      ? window.getComputedStyle(document.documentElement)
+      : undefined);
+  const themeColor =
+    computedStyle?.getPropertyValue(`--graph-color-${index + 1}`)?.trim() ||
+    computedStyle
+      ?.getPropertyValue(`--color-${(index % COLORS.length) + 1}`)
+      ?.trim();
+  return themeColor || getColorByIndex(index);
+};
