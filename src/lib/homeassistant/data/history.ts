@@ -1,11 +1,10 @@
-// Port of home-assistant/frontend src/data/history.ts (20220802.0),
-// trimmed to the history fetching/processing used by the floorplan
-// chart feature (statistics APIs and localized timeline states removed).
+// Port of home-assistant/frontend src/data/history.ts, trimmed to the
+// history fetching and processing used by the floorplan chart feature.
 //
-// The `history/history_during_period` WebSocket command and its
-// compressed-state response shape (`s` state, `a` attributes, `lu`
-// last_updated epoch-seconds, `lc` last_changed — only present when it
-// differs from `lu`) are still supported by current Home Assistant core.
+// The history/history_during_period WebSocket command returns compressed
+// states: s holds the state, a holds the attributes, lu holds the last
+// updated time in epoch seconds and lc holds the last changed time, which
+// is only present when it differs from lu.
 
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant } from '../types';

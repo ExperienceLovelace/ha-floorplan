@@ -1,13 +1,11 @@
 /*
- * Ported from ha-floorplan v1.0.36beta181. Ports of HA frontend's
- * hui-gauge-card and ha-gauge, de-Lit-ified. The gauge builds an SVG string
- * directly (no ApexCharts) and hands the resulting SVGElement to
- * renderChart, which embeds it in the floorplan.
+ * Ports of the Home Assistant gauge card and ha-gauge as plain classes.
+ * The gauge builds an SVG string directly and hands the resulting element
+ * to renderChart, which embeds it in the floorplan.
  *
- * Config surface matches HA's gauge card: entity, name, unit, min, max,
- * needle, severity{red,green,yellow}, segments[{from,color,label}].
- * Floorplan extension: label on segments (shown instead of the numeric
- * value).
+ * The config surface matches the Home Assistant gauge card: entity, name,
+ * unit, min, max, needle, severity and segments. Segments may carry a
+ * label, which is shown in place of the numeric value.
  */
 
 import {
@@ -28,8 +26,8 @@ export type RenderGaugeFn = (
   styles: string
 ) => Promise<void>;
 
-// Fallback colors (HA's defaults) apply when the HA theme variables are
-// not defined, e.g. in the examples/demo pages.
+// The fallback colors match the Home Assistant defaults and apply when
+// the theme variables are not defined, for example on the demo pages.
 const severityMap: Record<string, string> = {
   red: 'var(--error-color, #db4437)',
   green: 'var(--success-color, #43a047)',

@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/common/color/convert-color.ts (20220802.0)
+// Port of home-assistant/frontend src/common/color/convert-color.ts
 // (trimmed to the conversions used by apply_themes_on_element)
 
 import { expandHex } from './hex';

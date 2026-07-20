@@ -1,6 +1,4 @@
 // SVG helpers for the floorplan chart feature.
-// Reconstructed from ha-floorplan v1.0.36beta181 (see chart-util.ts for
-// the feature overview).
 
 import { Utils } from '../../../../lib/utils';
 import OuiDomEvents from '../oui-dom-events.js'; // Ensure the .js extension is included, to be handled by babel

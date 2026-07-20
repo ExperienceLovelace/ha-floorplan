@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/common/color/hex.ts (20220802.0)
+// Port of home-assistant/frontend src/common/color/hex.ts
 
 export const expandHex = (hex: string): string => {
   hex = hex.replace('#', '');

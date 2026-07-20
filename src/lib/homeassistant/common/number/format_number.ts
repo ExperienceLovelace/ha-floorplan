@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/common/number/format_number.ts (20220802.0)
+// Port of home-assistant/frontend src/common/number/format_number.ts
 
 import { FrontendLocaleData, NumberFormat } from '../../data/translation';
 import { round } from './round';

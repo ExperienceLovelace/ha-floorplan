@@ -1,5 +1,5 @@
 // Port of home-assistant/frontend
-// src/panels/lovelace/common/process-config-entities.ts (20220802.0),
+// src/panels/lovelace/common/process-config-entities.ts,
 // simplified to the plain entity-config shape used by the chart feature.
 
 export interface EntityConfig {
