@@ -45,6 +45,11 @@ export default (env) => {
           use: 'ts-loader',
           exclude: /node_modules/,
         },
+        {
+          // apexcharts/src imports its stylesheets as raw strings
+          test: /node_modules[\\/]apexcharts[\\/].*\.css$/,
+          type: 'asset/source',
+        },
       ],
     },
     resolve: {
@@ -82,9 +87,15 @@ export default (env) => {
       maxAssetSize: 512000,
     },
     devServer: {
-      static: {
-        directory: path.join(__dirname, 'docs/_docs/floorplan'),
-      },
+      static: [
+        {
+          directory: path.join(__dirname, 'docs/_docs/floorplan'),
+        },
+        {
+          // Test fixtures (e.g. the chart_plate example) live outside docs
+          directory: path.join(__dirname, 'tests/e2e/fixtures'),
+        },
+      ],
       compress: true,
     },
   };

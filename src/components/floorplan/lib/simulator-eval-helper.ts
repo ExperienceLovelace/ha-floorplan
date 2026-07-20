@@ -4,15 +4,17 @@ import { FloorplanConfig } from './/floorplan-config';
 import { ColorUtil } from './color-util';
 import { DateUtil } from './date-util';
 import Sval from 'sval';
+
+// Node type produced by Sval's bundled parser
+type SvalNode = ReturnType<Sval['parse']>;
 import { getErrorMessage } from './error-util';
-import estree from 'estree';
 import { TimedHassEntity } from '../../floorplan-examples/types';
 
 export class SimulatorEvalHelper {
-  static cache: { [key: string]: estree.Node } = {};
+  static cache: { [key: string]: SvalNode } = {};
 
-  static interpreter = new Sval({ ecmaVer: 2019, sandBox: true });
-  static parsedFunction: estree.Node;
+  static interpreter = new Sval({ ecmaVer: 'latest', sandBox: true });
+  static parsedFunction: SvalNode;
 
   static expression: string;
   static functionBody: string;
@@ -71,7 +73,7 @@ export class SimulatorEvalHelper {
 
       this.parsedFunction = this.interpreter.parse(
         `exports.result = (() => { ${this.functionBody} })();`
-      ) as estree.Node;
+      ) as SvalNode;
       this.cache[cacheKey] = this.parsedFunction;
 
       // Add global modules in interpreter (static data)
@@ -84,7 +86,7 @@ export class SimulatorEvalHelper {
     this.interpreter.import('entity', this.entityState);
 
     try {
-      this.interpreter.run(this.parsedFunction as estree.Node);
+      this.interpreter.run(this.parsedFunction);
     } catch (error) {
       throw new EvalError(getErrorMessage(error));
 

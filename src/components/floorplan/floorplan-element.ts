@@ -34,6 +34,9 @@ import {
 import { LongClicks } from './lib/long-clicks';
 import { ManyClicks } from './lib/many-clicks';
 import { EvalHelper } from './lib/eval-helper';
+import { ChartHandler } from './lib/charts/floorplan-charts';
+import { appendStyle } from './lib/charts/svg-util';
+import { processConfigEntities } from '../../lib/homeassistant/panels/lovelace/common/process-config-entities';
 import yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
 import { DateUtil } from './lib/date-util';
@@ -1208,12 +1211,76 @@ export class FloorplanElement extends LitElement {
     }
 
     for (const rule of config.rules) {
+      // A chart rule usually has no entity at the rule level because the
+      // entities live inside the chart_set service data. Promote them to
+      // rule entities so the rule fires again on their state changes.
+      this.collectChartTriggerEntities(rule);
+
       if (rule.entity || rule.entities) {
         this.initEntityRule(rule, svg, svgElements);
       } else if (rule.element || rule.elements) {
         this.initElementRule(rule, svg, svgElements);
       }
     }
+  }
+
+  /*
+   * Extracts trigger entities from floorplan.chart_set state actions and
+   * merges them into the rule's entities. Reads the RAW (unevaluated)
+   * service data, so `entities` must be a literal list here; a chart whose
+   * entities exist only inside a template needs the rule's own
+   * entity/entities to drive refreshes.
+   */
+  collectChartTriggerEntities(rule: FloorplanRuleConfig): void {
+    const stateActions = this.getActionConfigs(rule.state_action);
+    const chartActions = stateActions.filter(
+      (action) =>
+        (action as FloorplanCallServiceActionConfig).service ===
+        'floorplan.chart_set'
+    ) as FloorplanCallServiceActionConfig[];
+    if (!chartActions.length) return;
+
+    const chartEntities: string[] = [];
+    for (const action of chartActions) {
+      const serviceData = action.data ?? action.service_data;
+      if (typeof serviceData !== 'object' || serviceData === null) continue;
+
+      // Any chart_set action with an entities array contributes trigger
+      // entities (apex-chart included), not just history/statistics types.
+      if (Array.isArray(serviceData.entities) && serviceData.entities.length) {
+        try {
+          chartEntities.push(
+            ...processConfigEntities(serviceData.entities).map(
+              (entity) => entity.entity
+            )
+          );
+        } catch (err) {
+          this.logWarning(
+            'CONFIG',
+            `Invalid entities in chart_set service data: ${err}`
+          );
+        }
+      } else if (
+        serviceData.type === 'gauge' &&
+        typeof serviceData.entity === 'string'
+      ) {
+        chartEntities.push(serviceData.entity);
+      }
+    }
+    if (!chartEntities.length) return;
+
+    const entities = rule.entities ? [...rule.entities] : [];
+    for (const entityId of chartEntities) {
+      const alreadyPresent =
+        rule.entity === entityId ||
+        entities.some((entity) =>
+          typeof entity === 'string'
+            ? entity === entityId
+            : entity.entity === entityId
+        );
+      if (!alreadyPresent) entities.push(entityId);
+    }
+    rule.entities = entities;
   }
 
   initEntityRule(
@@ -1841,7 +1908,8 @@ export class FloorplanElement extends LitElement {
     entityId?: string,
     svgElement?: SVGGraphicsElement,
     svgElementInfo?: FloorplanSvgElementInfo,
-    ruleInfo?: FloorplanRuleInfo
+    ruleInfo?: FloorplanRuleInfo,
+    actionConfig?: FloorplanCallServiceActionConfig
   ): unknown {
     if (typeof expression === 'string' && EvalHelper.isCode(expression)) {
       try {
@@ -1855,7 +1923,8 @@ export class FloorplanElement extends LitElement {
           this.functions,
           svgElementInfo,
           this.svg,
-          ruleInfo
+          ruleInfo,
+          actionConfig
         );
       } catch (err) {
         return this.handleError(err as Error, {
@@ -2143,6 +2212,113 @@ export class FloorplanElement extends LitElement {
     return serviceData;
   }
 
+  /*
+   * Like getServiceData(), but threads the action config into the template
+   * sandbox (exposing getStateHistory()) and awaits async template results.
+   * Used by floorplan.chart_set, whose templates may fetch entity history.
+   */
+  async getChartServiceData(
+    actionConfig: FloorplanCallServiceActionConfig,
+    entityId?: string,
+    svgElement?: SVGGraphicsElement
+  ): Promise<Record<string, unknown>> {
+    let serviceData = {} as Record<string, unknown>;
+
+    // `data` takes precedence; `service_data` is kept for legacy compatibility
+    const rawData = actionConfig.data ?? actionConfig.service_data;
+
+    if (typeof rawData === 'object') {
+      for (const key of Object.keys(rawData)) {
+        serviceData[key] = await Promise.resolve(
+          this.evaluate(
+            rawData[key],
+            entityId,
+            svgElement,
+            undefined,
+            undefined,
+            actionConfig
+          )
+        );
+      }
+    } else if (typeof rawData === 'string') {
+      const result = await Promise.resolve(
+        this.evaluate(
+          rawData,
+          entityId,
+          svgElement,
+          undefined,
+          undefined,
+          actionConfig
+        )
+      );
+      serviceData =
+        typeof result === 'string' && result.trim().startsWith('{')
+          ? JSON.parse(result)
+          : result;
+    } else if (rawData !== undefined) {
+      serviceData = rawData;
+    }
+
+    return serviceData;
+  }
+
+  /*
+   * floorplan.chart_set: renders a chart (history-graph, statistics-graph,
+   * gauge or apex-chart) into the rule's SVG element via ChartHandler.
+   */
+  async handleChartSet(
+    actionConfig: FloorplanCallServiceActionConfig,
+    entityId?: string,
+    svgElementInfo?: FloorplanSvgElementInfo,
+    ruleInfo?: FloorplanRuleInfo
+  ): Promise<void> {
+    if (!svgElementInfo) {
+      this.logWarning(
+        'CONFIG',
+        `chart_set requires a rule with a target element`
+      );
+      return;
+    }
+
+    try {
+      const serviceData = await this.getChartServiceData(
+        actionConfig,
+        entityId,
+        svgElementInfo.svgElement
+      );
+
+      await ChartHandler.chartSet(
+        this.hass,
+        svgElementInfo,
+        actionConfig,
+        serviceData,
+        async (isFirstRender: boolean, styles: string) => {
+          // On first render, inject the chart CSS (ApexCharts tweaks or
+          // gauge styles) into the element's renderRoot once.
+          if (isFirstRender && styles.length) {
+            await appendStyle(this.renderRoot, styles);
+          }
+          // The chart replaced/rewrote the SVG element, so click/hover
+          // handlers must be re-attached after every render.
+          this.attachClickHandlers(
+            svgElementInfo.svgElement,
+            svgElementInfo,
+            entityId,
+            undefined,
+            ruleInfo as FloorplanRuleInfo
+          );
+          if (entityId) {
+            svgElementInfo.svgElement.onmouseover = () => {
+              this.handleEntityIdSetHoverOver(entityId, svgElementInfo);
+            };
+          }
+        }
+      );
+    } catch (err) {
+      this.handleError(err as Error, { actionConfig, entityId });
+    }
+  }
+
   executeServiceData(
     actionConfig: FloorplanCallServiceActionConfig,
     entityId?: string,
@@ -2236,8 +2412,14 @@ export class FloorplanElement extends LitElement {
     let isSameTargetElement: boolean;
     let serviceData = null;
 
-    // Evaluate service data, in order to determine 'target' elements
-    const servicesWithoutPreparation: string[] = ['execute', 'card_set'];
+    // Evaluate service data, in order to determine 'target' elements.
+    // chart_set evaluates its own service data because its templates may
+    // be async and must only be evaluated once per state change.
+    const servicesWithoutPreparation: string[] = [
+      'execute',
+      'card_set',
+      'chart_set',
+    ];
     const prepareServiceData = !servicesWithoutPreparation.includes(service);
 
     if (prepareServiceData) {
@@ -2589,6 +2771,10 @@ export class FloorplanElement extends LitElement {
             this.executeServiceData(actionConfig, entityId, targetSvgElement, svgElementInfo, ruleInfo);
           }
         }
+        break;
+
+      case 'chart_set':
+        this.handleChartSet(actionConfig, entityId, svgElementInfo, ruleInfo);
         break;
 
       case 'card_set':

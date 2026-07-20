@@ -4,16 +4,19 @@ import { FloorplanConfig, FloorplanCallServiceActionConfig } from './/floorplan-
 import { FloorplanRuleInfo, FloorplanSvgElementInfo } from './floorplan-info';
 import { ColorUtil } from './color-util';
 import { DateUtil } from './date-util';
+import { getThrottledStateHistoryFetcher } from './charts/get-state-history';
 import Sval from 'sval';
+
+// Node type produced by Sval's bundled parser
+type SvalNode = ReturnType<Sval['parse']>;
 import { getErrorMessage } from './error-util';
-import estree from 'estree';
 import { dispatchFloorplanActionCallEvent } from './events';
 
 export class EvalHelper {
-  static cache: { [key: string]: estree.Node } = {};
+  static cache: { [key: string]: SvalNode } = {};
 
-  static interpreter = new Sval({ ecmaVer: 2019, sandBox: true });
-  static parsedFunction: estree.Node;
+  static interpreter = new Sval({ ecmaVer: 'latest', sandBox: true });
+  static parsedFunction: SvalNode;
 
   static expression: string;
   static functionBody: string;
@@ -46,7 +49,8 @@ export class EvalHelper {
     functions?: unknown,
     svgElementInfo?: FloorplanSvgElementInfo,
     svg?: SVGGraphicsElement,
-    ruleInfo?: FloorplanRuleInfo
+    ruleInfo?: FloorplanRuleInfo,
+    actionConfig?: FloorplanCallServiceActionConfig
   ): unknown {
     this.expression = expression.trim();
 
@@ -78,9 +82,16 @@ export class EvalHelper {
         }
       }
 
+      // Expressions using await (e.g. getStateHistory() in chart_set
+      // templates) run in an async wrapper; the result is then a Promise,
+      // awaited by async-aware callers such as getChartServiceData().
+      const isAsync = /\bawait\b/.test(this.functionBody);
+
       this.parsedFunction = this.interpreter.parse(
-        `exports.result = (() => { ${this.functionBody} })();`
-      ) as estree.Node;
+        `exports.result = (${isAsync ? 'async ' : ''}() => { ${
+          this.functionBody
+        } })();`
+      ) as SvalNode;
       this.cache[cacheKey] = this.parsedFunction;
 
       // Add global modules in interpreter (static data)
@@ -100,6 +111,34 @@ export class EvalHelper {
     this.interpreter.import('elements', svgElements);
     this.interpreter.import('svg', svg); // Provide direct access to the root <svg> element for rule scripts
 
+    // When evaluating a chart_set action, expose getStateHistory() so
+    // templates can fetch raw entity history (throttled per action config;
+    // see charts/get-state-history.ts). Imported as undefined otherwise so
+    // a previous action's fetcher never leaks into another evaluation.
+    this.interpreter.import(
+      'getStateHistory',
+      actionConfig
+        ? async (entityIds: string) => {
+            let refreshInterval: number | undefined;
+            // refresh_interval is read from the RAW (unevaluated) service
+            // data of the action, and only for type 'apex-chart'.
+            const serviceData = actionConfig.data ?? actionConfig.service_data;
+            if (
+              typeof serviceData === 'object' &&
+              serviceData?.type === 'apex-chart' &&
+              serviceData?.refresh_interval !== undefined
+            ) {
+              refreshInterval = Number(serviceData.refresh_interval);
+            }
+            const fetcher = getThrottledStateHistoryFetcher(
+              actionConfig,
+              refreshInterval
+            );
+            return await fetcher(hass, entityIds);
+          }
+        : undefined
+    );
+
     // Let the user call "action" function (to call our service call-handler)
     this.interpreter.import('action',
      (actionConfig :
@@ -118,7 +157,7 @@ export class EvalHelper {
   );
 
     try {
-      this.interpreter.run(this.parsedFunction as estree.Node);
+      this.interpreter.run(this.parsedFunction);
     } catch (error) {
       throw new EvalError(getErrorMessage(error));
 

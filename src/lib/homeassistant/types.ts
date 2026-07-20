@@ -11,7 +11,8 @@ import {
 // import { LocalizeFunc } from "./common/translations/localize";
 // import { CoreFrontendUserData } from "./data/frontend";
 // import { getHassTranslations } from "./data/translation";
-// import { Themes } from "./data/ws-themes";
+import { Themes } from './data/ws-themes';
+import { FrontendLocaleData } from './data/translation';
 // import { ExternalMessaging } from "./external_app/external_messaging";
 
 export type { HassServiceTarget };
@@ -195,7 +196,15 @@ export interface HomeAssistant {
   states: HassEntities;
   // services: HassServices;
   // config: HassConfig;
-  // themes: Themes;
+  // Minimal config subset (used by chart history unit resolution)
+  config?: {
+    unit_system?: {
+      temperature?: string;
+      [key: string]: string | undefined;
+    };
+    [key: string]: any;
+  };
+  themes?: Themes;
   // selectedTheme?: ThemeSettings | null;
   // panels: Panels;
   // panelUrl: string;
@@ -206,7 +215,8 @@ export interface HomeAssistant {
   //   - language in local appstorage
   //   - browser language
   //   - english (en)
-  // language: string;
+  language?: string;
+  locale?: FrontendLocaleData;
   // local stored language, keep that name for backward compability
   // selectedLanguage: string | null;
   // resources: Resources;

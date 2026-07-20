@@ -1,0 +1,26 @@
+simulations:
+  - entity: sensor.humidity
+    states: |
+      >
+      var current = parseFloat(entity.state);
+      if (isNaN(current)) current = 40;
+      var next = current >= 90 ? 30 : current + 10;
+
+      return {
+        state: String(next),
+        attributes: { unit_of_measurement: '%', friendly_name: 'Humidity' },
+        duration: '1s'
+      };
+
+  - entity: sensor.cpu
+    states: |
+      >
+      var current = parseFloat(entity.state);
+      if (isNaN(current)) current = 10;
+      var next = current >= 95 ? 5 : current + 7;
+
+      return {
+        state: String(next),
+        attributes: { unit_of_measurement: '%', friendly_name: 'CPU' },
+        duration: '1s'
+      };

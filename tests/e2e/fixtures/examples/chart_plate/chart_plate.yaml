@@ -1,0 +1,51 @@
+title: ChartPlate
+config:
+  image: /local/floorplan/examples/chart_plate/chart_plate.svg
+  log_level: info
+  console_log_level: info
+
+  rules:
+    - element: my_gauge
+      state_action:
+        - service: floorplan.chart_set
+          service_data:
+            type: gauge
+            entity: sensor.humidity
+            min: 0
+            max: 100
+            severity:
+              green: 0
+              yellow: 60
+              red: 80
+
+    - element: my_chart
+      entity: sensor.cpu
+      state_action:
+        - service: floorplan.chart_set
+          service_data:
+            type: apex-chart
+            entities:
+              - sensor.cpu
+            apex_chart_options: |
+              >
+              const value = parseFloat(entity.state);
+              return {
+                chart: { type: 'line' },
+                series: [
+                  {
+                    name: 'CPU',
+                    data: [
+                      { x: 1, y: 10 },
+                      { x: 2, y: 35 },
+                      { x: 3, y: 22 },
+                      { x: 4, y: value },
+                    ],
+                  },
+                ],
+                xaxis: { type: 'numeric' },
+                legend: {
+                  show: true,
+                  showForSingleSeries: true,
+                  position: 'top',
+                },
+              };
