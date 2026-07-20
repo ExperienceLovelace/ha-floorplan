@@ -1,5 +1,5 @@
 // Port of home-assistant/frontend
-// src/common/dom/apply_themes_on_element.ts (20220802.0).
+// src/common/dom/apply_themes_on_element.ts.
 //
 // Deviations from the original:
 // - `themes`/`themeSettings` are typed against this repo's trimmed

@@ -1,10 +1,9 @@
-// Port of home-assistant/frontend src/common/color/colors.ts (current).
+// Port of home-assistant/frontend src/common/color/colors.ts
 //
-// Modern HA resolves graph colors from theme CSS variables
-// (--graph-color-N, falling back to --color-N); the COLORS table below is
-// the current default --color-1..54 palette from
-// src/resources/theme/color/color.globals.ts, used when the variables are
-// not defined (e.g. outside Home Assistant).
+// Home Assistant resolves graph colors from the theme CSS variables
+// --graph-color-N and --color-N. The table below holds the default
+// palette, which is used when the variables are not defined, for example
+// outside Home Assistant.
 
 export const COLORS = [
   '#4269d0',

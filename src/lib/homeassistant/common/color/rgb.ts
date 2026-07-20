@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/common/color/rgb.ts (20220802.0)
+// Port of home-assistant/frontend src/common/color/rgb.ts
 
 export const luminosity = (rgb: [number, number, number]): number => {
   // http://www.w3.org/TR/WCAG20/#relativeluminancedef

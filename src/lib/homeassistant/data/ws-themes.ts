@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/data/ws-themes.ts (20220802.0),
+// Port of home-assistant/frontend src/data/ws-themes.ts,
 // types only (the theme subscription helpers are not needed here).
 
 export interface ThemeVars {

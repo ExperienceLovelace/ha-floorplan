@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/common/color/lab.ts (20220802.0)
+// Port of home-assistant/frontend src/common/color/lab.ts
 // From https://github.com/gka/chroma.js
 // Copyright (c) 2011-2019, Gregor Aisch
 

@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/common/util/throttle.ts (20220802.0)
+// Port of home-assistant/frontend src/common/util/throttle.ts
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

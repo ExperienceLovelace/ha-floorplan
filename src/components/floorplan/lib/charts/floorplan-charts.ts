@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*
- * Ported from ha-floorplan v1.0.36beta181 (reconstructed from the minified
- * bundle; the feature was never merged to master).
+ * ChartHandler dispatches the floorplan.chart_set service to one of the
+ * chart implementations. Chart instances are keyed per action config so
+ * each chart_set action keeps a persistent chart across state changes,
+ * which the history card's caching and the first render logic rely on.
  *
- * ChartHandler dispatches the `floorplan.chart_set` service to one of the
- * chart implementations, keyed per ACTION CONFIG so each chart_set action
- * keeps a persistent chart instance across state changes (needed for the
- * history card's throttle/cache and the isFirstRender logic).
- *
- * NOTE: 'statistics-graph' is accepted but routed to the exact same
- * HistoryGraphChart class — long-term statistics are never fetched. This
- * matches the beta's behavior.
+ * The statistics-graph type is accepted but routed to HistoryGraphChart.
+ * Long term statistics are not fetched.
  */
 
 import { renderApexChart } from './chart-util';
@@ -129,8 +125,8 @@ export class GaugeChart extends FloorplanChart {
       gaugeSvgElement
     );
 
-    // Gauge supports HA themes (applyThemesOnElement port), unlike the
-    // ApexCharts path which uses ApexCharts' own light/dark theme.
+    // The gauge supports Home Assistant themes. The ApexCharts based
+    // charts use the ApexCharts light and dark theme modes instead.
     if (
       serviceData.theme &&
       hass.themes &&

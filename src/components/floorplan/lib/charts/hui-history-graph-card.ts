@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*
- * Ported from ha-floorplan v1.0.36beta181. Ports of HA frontend's
- * state-history-charts and hui-history-graph-card, de-Lit-ified, with
- * rendering delegated to renderChart (ApexCharts).
+ * Ports of the Home Assistant state-history-charts and history graph card
+ * as plain classes, with rendering delegated to renderChart.
  *
- * KNOWN LIMITATIONS inherited from the beta:
- * - Only ONE StateHistoryChartLine instance exists; if entities have mixed
- *   units, HA renders one chart per unit but this port re-renders the same
- *   chart per unit, so effectively the LAST unit group wins.
- * - Timeline (non-numeric) entities are skipped.
+ * Limitations:
+ * - A single StateHistoryChartLine instance is reused, so when entities
+ *   have mixed units only the last unit group is drawn.
+ * - Timeline (non numeric) entities are skipped.
  */
 
 import { StateHistoryChartLine, RenderChartFn } from './state-history-chart-line';
@@ -97,8 +95,8 @@ export interface HistoryGraphCardConfig {
   entities: (string | EntityConfig)[];
   title?: string;
   hours_to_show?: number;
-  refresh_interval?: number; // seconds; floorplan extension, default 10s
-  show_names?: boolean; // floorplan extension (HA has no such option)
+  refresh_interval?: number; // seconds, default 10
+  show_names?: boolean; // whether the legend is shown, default true
   [key: string]: unknown;
 }
 

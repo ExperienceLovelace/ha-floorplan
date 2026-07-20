@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/resources/styles.ts (20220802.0),
+// Port of home-assistant/frontend src/resources/styles.ts,
 // trimmed to the darkStyles/derivedStyles theme tables used by
 // apply_themes_on_element (the lit CSS exports are not needed here).
 

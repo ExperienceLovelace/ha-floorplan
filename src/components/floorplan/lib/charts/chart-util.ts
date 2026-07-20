@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*
- * Ported from ha-floorplan v1.0.36beta181 (reconstructed from the minified
- * bundle; the feature was never merged to master).
+ * Renders an ApexCharts chart into the floorplan SVG.
  *
- * Core trick of the whole graph feature:
- * ApexCharts renders into an HTML <div> inside a <foreignObject>, then the
- * resulting <svg> is SERIALIZED and re-inserted as inline SVG inside the
- * floorplan's own SVG (group.innerHTML = chartSvg.outerHTML). The
- * foreignObject/div is only used as a temporary render surface.
- * This means the chart scales/pans with the floorplan like any other
- * element, at the cost of interactivity (tooltips/toolbar/animations are
- * forced off, since the chart is a static snapshot between renders).
+ * ApexCharts draws into an HTML div, so the chart is first rendered into a
+ * temporary foreignObject and the resulting svg is then serialized and
+ * inlined into the floorplan. The chart scales and pans with the floorplan
+ * like any other element. Interactive features are disabled because the
+ * result is a static image between renders.
  */
 
 import ApexCharts from './apexcharts-loader';

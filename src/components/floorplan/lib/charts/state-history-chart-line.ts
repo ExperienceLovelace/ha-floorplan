@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*
- * Ported from ha-floorplan v1.0.36beta181. Port of HA frontend's
- * state-history-chart-line, de-Lit-ified into a plain class, with Chart.js
- * replaced by ApexCharts. The Lit lifecycle is emulated:
- * triggerWillUpdate() -> willUpdate(changedProps) -> render().
+ * Port of the Home Assistant state-history-chart-line component as a plain
+ * class, rendering through ApexCharts. The Lit lifecycle is emulated with
+ * triggerWillUpdate() calling willUpdate() and render().
  *
- * SIMPLIFICATION vs HA (inherited from the beta): only the plain numeric
- * path of _generateData was kept. The climate/humidifier/water_heater
- * attribute series (hvac_action bands, target temps, etc.) were not ported.
+ * Only numeric state history is charted. The attribute series that Home
+ * Assistant draws for climate style entities are not supported.
  */
 
 import { getGraphColorByIndex } from '../../../../lib/homeassistant/common/color/colors';
@@ -90,7 +88,7 @@ export class StateHistoryChartLine {
       onItemClick: { toggleDataSeries: false },
     };
     options.dataLabels = { enabled: false };
-    // Matches current HA's history chart line weight
+    // Matches the line weight of the Home Assistant history card
     options.stroke = { curve: 'stepline', width: 1.5 };
     options.xaxis = {
       type: 'datetime',

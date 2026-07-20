@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/data/translation.ts (20220802.0),
+// Port of home-assistant/frontend src/data/translation.ts,
 // trimmed to the locale types used by format_number.
 
 export enum NumberFormat {

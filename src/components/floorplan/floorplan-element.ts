@@ -1211,9 +1211,9 @@ export class FloorplanElement extends LitElement {
     }
 
     for (const rule of config.rules) {
-      // A chart rule usually has no entity at the rule level — the entities
-      // live inside the chart_set action's service data. Promote them to
-      // rule entities so the rule re-triggers on their state changes.
+      // A chart rule usually has no entity at the rule level because the
+      // entities live inside the chart_set service data. Promote them to
+      // rule entities so the rule fires again on their state changes.
       this.collectChartTriggerEntities(rule);
 
       if (rule.entity || rule.entities) {
@@ -2412,9 +2412,9 @@ export class FloorplanElement extends LitElement {
     let isSameTargetElement: boolean;
     let serviceData = null;
 
-    // Evaluate service data, in order to determine 'target' elements
-    // (chart_set evaluates its own service data — templates may be async
-    // and must only be evaluated once per state change)
+    // Evaluate service data, in order to determine 'target' elements.
+    // chart_set evaluates its own service data because its templates may
+    // be async and must only be evaluated once per state change.
     const servicesWithoutPreparation: string[] = [
       'execute',
       'card_set',

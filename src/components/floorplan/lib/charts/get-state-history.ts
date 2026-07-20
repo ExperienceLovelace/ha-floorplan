@@ -1,16 +1,15 @@
 /*
- * Ported from ha-floorplan v1.0.36beta181.
+ * Exposes getStateHistory(entityIds) inside the template sandbox of a
+ * chart_set action, so a template can fetch raw entity history and build
+ * arbitrary chart series.
  *
- * Exposes `getStateHistory(entityIds)` inside the floorplan template
- * evaluation sandbox, so a chart_set template can fetch raw history and
- * build arbitrary ApexCharts series for type: 'apex-chart'.
- *
- * Throttling is per ACTION CONFIG: 1 call per `refresh_interval` seconds
- * (default 10). The window fetched is fixed at the last 24 hours. The
- * result is the raw `history/history_during_period` response keyed by
- * entity_id, with minimal-response fields (`s` state, `lu`/`lc`
- * epoch-seconds timestamps — `lc` only when it differs from `lu` — and
- * `a` attributes on the first entry).
+ * Fetches are throttled per action config to one call per refresh_interval
+ * seconds, ten by default, and the window is fixed at the last 24 hours.
+ * The result is the raw history/history_during_period response keyed by
+ * entity id, with minimal response fields: s holds the state, lu holds the
+ * last updated time in epoch seconds, lc holds the last changed time and
+ * is only present when it differs from lu, and a holds the attributes on
+ * the first entry.
  */
 
 import pThrottle from 'p-throttle';

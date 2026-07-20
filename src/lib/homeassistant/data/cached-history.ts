@@ -1,4 +1,4 @@
-// Port of home-assistant/frontend src/data/cached-history.ts (20220802.0),
+// Port of home-assistant/frontend src/data/cached-history.ts,
 // trimmed to getRecentWithCache (no localize; the RECENT_CACHE variant is
 // not used by the floorplan chart feature).
 

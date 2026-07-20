@@ -1,18 +1,17 @@
 /*
  * Composed ApexCharts build for the floorplan chart feature.
  *
- * ApexCharts 5 is modular: chart types and features are registered into a
- * shared core. The floorplan's apex-chart service is user-scriptable YAML,
- * so EVERY chart type stays available — but of the optional features only
- * legend and annotations are included. The others (toolbar, export menu,
- * keyboard navigation, morph animations, drilldown) are interactive-only
- * and can never work in the serialized static SVG the floorplan produces,
- * so excluding them just trims the bundle.
+ * ApexCharts 5 is modular, with chart types and features registered into a
+ * shared core. Chart configurations are user supplied, so all chart types
+ * are included. Of the optional features only legend and annotations are
+ * included. The others (toolbar, export menu, keyboard navigation, morph
+ * animations and drilldown) are interactive and cannot work in the static
+ * SVG that the floorplan produces, so leaving them out trims the bundle.
  *
- * Composed from apexcharts/src (an exported, tree-shakable surface of the
- * package) mirroring apexcharts/src/entries/full.js; the prebuilt dist
- * entries each bundle their own copy of shared chart code and would bloat
- * the bundle if combined.
+ * The build is composed from apexcharts/src, which the package exports,
+ * mirroring apexcharts/src/entries/full.js. The prebuilt dist entries each
+ * bundle their own copy of shared chart code and would inflate the bundle
+ * if combined.
  */
 
 import ApexCharts from 'apexcharts/src/apexcharts';
