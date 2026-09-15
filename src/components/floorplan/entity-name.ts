@@ -8,6 +8,12 @@ import { HomeAssistant } from '../../lib/homeassistant/types';
  * version has to be checked.
  */
 const supportsEntityNames = (hass: HomeAssistant | undefined): boolean => {
+  // A hass can report a recent version without carrying the helper (a test
+  // harness, or a hass that has not finished initialising), and calling it
+  // then throws - so the version gate alone is not enough.
+  if (!hass || typeof (hass as { formatEntityName?: unknown }).formatEntityName !== 'function') {
+    return false;
+  }
   // This card's HomeAssistant type does not declare config; read it loosely.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const version: string = (hass as any)?.config?.version ?? '';
