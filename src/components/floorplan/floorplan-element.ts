@@ -38,6 +38,7 @@ import yaml from 'js-yaml';
 import { Utils } from '../../lib/utils';
 import { DateUtil } from './lib/date-util';
 import { Logger } from './lib/logger';
+import { computeEntityName } from './entity-name';
 import {
   css,
   CSSResult,
@@ -1742,7 +1743,7 @@ export class FloorplanElement extends LitElement {
             svgElementInfo.svgElement
               .querySelectorAll('title')
               .forEach((titleElement) => {
-                let titleText = `${entityState.attributes.friendly_name}\n`;
+                let titleText = `${computeEntityName(this.hass, entityState)}\n`;
                 titleText += `State: ${entityState.state}\n\n`;
 
                 Object.keys(entityState.attributes).map((key) => {
